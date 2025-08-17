@@ -1,11 +1,19 @@
 # FPSProject
 
+#### This project was made using the following template: [GDExtensionTemplate](https://github.com/asmaloney/GDExtensionTemplate)
+
 ### Build & Install
 
-```sh
-$ cmake -B FPSProject-build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=FPSProject-install GDExtensionTemplate
-$ cmake --build FPSProject-build -j$(nproc)
-$ cmake --install FPSProject-build
+```bash
+mkdir build && cd build/
+cmake -B FPSProject-build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=FPSProject-install FPSProject ..
+cmake --build FPSProject-build -j$(nproc)
+cmake --install FPSProject-build
 ```
 
-#### CMake With GDExtension is made by using [GDExtensionTemplate](https://github.com/asmaloney/GDExtensionTemplate)
+- To recompile any code changes from the src folder just run the following commands:
+```bash
+cmake --build FPSProject-build -j$(nproc)
+cmake --install FPSProject-build
+```
+### Make sure to create your godot project inside the build/FPSProject-install/FPSProject folder.

@@ -1,6 +1,11 @@
 CMakeLists.txt.user
 .vscode/settings.json
 .cache
-build/
+build/FPSProject-build
+.godot
+lib/
 cmake/
 compile_commands.json
+icons/
+FPSProject.gdextension
+FPSProject.gdextension.uid
