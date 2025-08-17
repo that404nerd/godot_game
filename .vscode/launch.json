@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Godot Editor (Linux, LLDB)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "/usr/bin/godot",
+      "args": [
+        "--path",
+        "/home/revanth/Dev/Godot/godot_game"
+      ],
+      "cwd": "${workspaceFolder}",
+      "stopOnEntry": false,
+      "preLaunchTask": "build_module",
+      "terminal": "integrated"
+    }
+  ]
+}
