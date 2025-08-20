@@ -11,9 +11,8 @@ cmake --build FPSProject-build -j$(nproc)
 cmake --install FPSProject-build
 ```
 
-- To recompile any code changes from the src folder just run the following commands:
+- To recompile any code changes from the src folder just run the following commands (inside build/FPSProject-install/FPSProject):
 ```bash
-cmake --build FPSProject-build -j$(nproc)
-cmake --install FPSProject-build
+sh build.sh
 ```
 ### Make sure to create your godot project inside the build/FPSProject-install/FPSProject folder.

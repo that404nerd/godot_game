@@ -45,7 +45,6 @@ protected:
     Node3D* m_PlayerHead = nullptr;
     Timer* m_DashTimer = nullptr;
 
-    Camera3D* m_PlayerCamera = nullptr;
 
     // Get Collision shapes
     CollisionShape3D* m_StandingCollisionShape = nullptr;
@@ -55,16 +54,18 @@ protected:
     RayCast3D* m_RaycastLeft = nullptr;
     RayCast3D* m_RaycastRight = nullptr;
 
+    // Player vectors
     Vector3 m_WishDir;
-
     Vector3 m_PlayerVel;
     Vector2 m_SlideVector;
     Vector2 m_JumpVector;
 
     float m_HeadBobTime = 0.0f;
-
     int m_CurrentJumps;
 
+    float m_JumpBufferTimer = 0.0f;
+
+    // Movement states
     bool m_IsCrouching = false;
     bool m_IsSliding = false;
     bool m_IsMoving = false;
