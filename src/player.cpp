@@ -1,9 +1,5 @@
 #include "player.h"
 
-/* 
-    TODO: What's the horizontal velocity?
-*/
-
 Player::Player()
 {
 }
@@ -14,16 +10,17 @@ void Player::_bind_methods()
 
 void Player::_ready()
 {
+    Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
     
     m_PlayerVel = get_velocity();
     
-    m_JumpBufferTimer = Globals::MAX_JUMP_BUFFER_TIME;
+    m_PlayerHead = get_node<Node3D>(NodePath("PlayerRot/PlayerHead"));
+    m_PlayerRotNode = get_node<Node3D>(NodePath("PlayerRot"));
+    m_PlayerCamera = get_node<Camera3D>(NodePath("PlayerRot/PlayerHead/Camera3D"));
 
-    m_PlayerHead = get_node<Node3D>(NodePath("PlayerHead"));
-    m_DashTimer = get_node<Timer>(NodePath("DashTimer"));
+    m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
     
     m_StandingCollisionShape = get_node<CollisionShape3D>(NodePath("StandingCollisionShape"));
-    m_CrouchingCollisionShape = get_node<CollisionShape3D>(NodePath("CrouchingCollisionShape"));
     
     m_RaycastUp = get_node<RayCast3D>(NodePath("RayCastUp"));
     m_RaycastLeft = get_node<RayCast3D>(NodePath("RayCastLeft"));
@@ -32,7 +29,6 @@ void Player::_ready()
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
-    Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
 
     // Set the event to an mouse input event
     Ref<InputEventMouseMotion> mouse_event = event;
@@ -47,6 +43,26 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
     }
 }
 
+bool Player::_noclip(double delta) 
+{
+    if(Input::get_singleton()->is_action_pressed("noclip") && OS::get_singleton()->has_feature("debug")) {
+        m_IsNoClip = !m_IsNoClip;
+    }
+
+    if(!m_IsNoClip) return false;
+
+    m_StandingCollisionShape->set_disabled(true);
+    // m_CrouchingCollisionShape->set_disabled(true);
+
+    float noclip_speed = Globals::SprintSpeed * 3.0f;
+
+    m_PlayerVel = m_CamWishDir * noclip_speed;
+    global_translate(m_PlayerVel * delta);
+    set_velocity(m_PlayerVel);
+
+    return true;
+}
+
 // Depends on the horizontal velocity
 void Player::headbob_effect(double delta)
 {
@@ -54,7 +70,7 @@ void Player::headbob_effect(double delta)
     m_HeadBobTime += playerVelHeadbob.length() * delta;
 
     Transform3D headbobTransform = m_PlayerHead->get_transform(); // get the player's transform
-    headbobTransform.origin = Vector3(
+    headbobTransform.origin = Vector3( // like a sine wave
         Math::cos(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * Globals::HEADBOB_MOVE_AMOUNT,
         Math::sin(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * Globals::HEADBOB_MOVE_AMOUNT,
         0.0f
@@ -64,14 +80,59 @@ void Player::headbob_effect(double delta)
 
 void Player::_handle_ground_physics(double delta) 
 {
-    m_PlayerVel.x = m_WishDir.x * get_move_speed();
-    m_PlayerVel.z = m_WishDir.z * get_move_speed();
-    set_velocity(m_PlayerVel);
+    float currentSpeedInWishDir = m_PlayerVel.dot(m_WishDir);
+    float addSpeed = get_move_speed() - currentSpeedInWishDir;
+
+    if(addSpeed > 0.0f) {
+        float accel = m_GroundAccel * get_move_speed() * delta;
+        accel = Math::min(accel, addSpeed);
+        m_PlayerVel += accel * m_WishDir;
+    }
+
+    float control = Math::max(m_PlayerVel.length(), m_GroundDecel);
+    float drop = control * m_GroundFriction * delta;
+    float newSpeed = Math::max(m_PlayerVel.length() - drop, 0.0f);
+
+    if(m_PlayerVel.length() > 0.0f) {
+        newSpeed /= m_PlayerVel.length();
+    }
+    
+    m_PlayerVel *= newSpeed;
+
+    // Tilt camera angle when moving sideways
+    if(!Math::is_equal_approx(m_InputDir.x, 0.0f) && is_on_floor()) {
+        m_PlayerTiltVector.z = Math::lerp(Math::deg_to_rad(get_rotation().z), (m_InputDir.x > 0 ? Math::deg_to_rad(-Globals::SideTiltAngle) : Math::deg_to_rad(Globals::SideTiltAngle)), (float)delta * 5.0f);
+    } else {
+        m_PlayerTiltVector.z = Math::lerp(Math::deg_to_rad(get_rotation().z), Math::deg_to_rad(0.0f), (float)delta * 5.0f);
+    }     
+        
+    m_PlayerRotNode->set_rotation(m_PlayerTiltVector);
+
     
     headbob_effect(delta);
+    set_velocity(m_PlayerVel);
+    
+}
+
+// TODO: Do crouch logic
+void Player::_handle_crouch(double delta) {
+    // if(Input::get_singleton()->is_action_just_pressed("crouch")) {
+    //     m_IsCrouching = true;
+    // } else if(m_IsCrouching && test_move(get_transform(), Vector3(0.0f, 2.0f, 0.0f))) {
+    //     m_IsCrouching = false;
+    // }
+
+    // Vector3 crouchPosition;
+    // crouchPosition.y = Math::move_toward(m_PlayerHead->get_position().y, m_IsCrouching ? -5.0f : 0.0f, (float)delta * 5.0f);
+    // m_PlayerHead->set_position(crouchPosition);
 }
 
 void Player::_handle_air_physics(double delta) {
+    
+    float gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
+    if(!is_on_floor()) {
+        m_PlayerVel.y -= gravity * delta;
+    }
     
     // Air strafing
     float currentSpeed = m_PlayerVel.dot(m_WishDir);
@@ -98,46 +159,40 @@ void Player::_handle_air_physics(double delta) {
 
 void Player::_physics_process(double delta) 
 {
-    // Apply gravity
-    float gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
-    if(!is_on_floor()) {
-        m_PlayerVel.y -= gravity * delta;
-    }
-    
-    Vector2 input_dir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
+    m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
     
     /*
         global_transform - position/rotation/scale of the player relative to the world
-        Basis - where the player is actually pointing to (3x3 rotation matrix)
+        Basis - rotation & scale (no translation) of the player
+        Everything that rotates the player (mouse look, aim, head tilt, body rotation) modifies the basis.
         basis.xform(vector) - convert the local direction to world spaced direction
+        Ignore the y-coordinate since that affects gravity
     */
-    m_WishDir = get_transform().basis.xform(Vector3(input_dir.x, 0.0f, input_dir.y)).normalized();
-       
-       
+    m_WishDir = this->get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
+    m_CamWishDir = m_PlayerCamera->get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
+
     // Set the jump state
     if(Input::get_singleton()->is_action_just_pressed("jump")) {
-        m_JumpBufferTimer = Globals::MAX_JUMP_BUFFER_TIME;
+       m_JumpBufferTimer->start();
     } 
+
+    _handle_crouch(delta);
     
-    if(m_JumpBufferTimer > 0.0f) {
-        m_JumpBufferTimer -= delta;
-    }
-    
-    // Handle the jump state
-    if(m_CurrentJumps > 0 && m_JumpBufferTimer > 0.0f) {
-        m_PlayerVel.y = Globals::JumpSpeed;
-        m_CurrentJumps--;
-        m_JumpBufferTimer = 0.0f;
-    } 
+    if(!_noclip(delta)) {
+        if(is_on_floor()) {
+            
+            if(m_JumpBufferTimer->get_time_left() > 0.0f) {
+                m_PlayerVel.y = Globals::JumpSpeed;
+                m_JumpBufferTimer->stop();
+            } 
+            
+            _handle_ground_physics(delta);
+        } else {
+            _handle_air_physics(delta);
+        }
         
-    if(is_on_floor()) {
-        m_CurrentJumps = Globals::MAX_JUMPS;
-        _handle_ground_physics(delta);
-    } else {
-        _handle_air_physics(delta);
+        move_and_slide();
     }
-    
-    move_and_slide();
 }
 
 

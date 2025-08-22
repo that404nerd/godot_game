@@ -11,6 +11,7 @@
 #include <godot_cpp/classes/timer.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
+#include <godot_cpp/classes/os.hpp>
 
 #include "globals.h"
 
@@ -32,6 +33,8 @@ public:
 
     void _handle_ground_physics(double delta);
     void _handle_air_physics(double delta);
+    void _handle_crouch(double delta);
+    bool _noclip(double delta);
 
     float get_move_speed() { return Input::get_singleton()->is_action_pressed("sprint") ? Globals::SprintSpeed : Globals::WalkSpeed; }
 
@@ -43,27 +46,35 @@ public:
 
 protected:
     Node3D* m_PlayerHead = nullptr;
-    Timer* m_DashTimer = nullptr;
-
+    Node3D* m_PlayerRotNode = nullptr;
+    Timer* m_JumpBufferTimer = nullptr;
 
     // Get Collision shapes
     CollisionShape3D* m_StandingCollisionShape = nullptr;
-    CollisionShape3D* m_CrouchingCollisionShape = nullptr;
 
     RayCast3D* m_RaycastUp = nullptr;
     RayCast3D* m_RaycastLeft = nullptr;
     RayCast3D* m_RaycastRight = nullptr;
 
-    // Player vectors
-    Vector3 m_WishDir;
-    Vector3 m_PlayerVel;
+    Camera3D* m_PlayerCamera = nullptr;
+
+    // Player vectors & Input vectors
+    Vector2 m_InputDir = Vector2(0.0f, 0.0f);
+    Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
+    Vector3 m_CamWishDir = Vector3(0.0f, 0.0f, 0.0f);
+    Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
+    Vector3 m_PlayerVel = Vector3(0.0f, 0.0f, 0.0f);
+
     Vector2 m_SlideVector;
     Vector2 m_JumpVector;
 
     float m_HeadBobTime = 0.0f;
-    int m_CurrentJumps;
+    bool m_IsNoClip = false;
 
-    float m_JumpBufferTimer = 0.0f;
+    // Ground physics variables  
+    float m_GroundAccel = 14.0f;
+    float m_GroundDecel = 10.0f;
+    float m_GroundFriction = 6.0f; 
 
     // Movement states
     bool m_IsCrouching = false;

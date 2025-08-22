@@ -1,10 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://2c0bf6m5ugct"]
+[gd_scene load_steps=3 format=3 uid="uid://2c0bf6m5ugct"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8vuu"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
-radius = 0.325429
-height = 1.0
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3vyb7"]
 rings = 7
@@ -14,21 +10,8 @@ rings = 7
 [node name="StandingCollisionShape" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_u8vuu")
 
-[node name="CrouchingCollisionShape" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_3vyb7")
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_3vyb7")
-
-[node name="PlayerHead" type="Node3D" parent="."]
-
-[node name="Camera3D" type="Camera3D" parent="PlayerHead"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.432839, 0)
-current = true
-
-[node name="DashTimer" type="Timer" parent="."]
-wait_time = 0.1
-one_shot = true
 
 [node name="RayCastUp" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.012084)
@@ -39,3 +22,15 @@ target_position = Vector3(2, 0, 0)
 
 [node name="RayCastLeft" type="RayCast3D" parent="."]
 target_position = Vector3(-2, 0, 0)
+
+[node name="JumpBufferTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="PlayerRot" type="Node3D" parent="."]
+
+[node name="PlayerHead" type="Node3D" parent="PlayerRot"]
+
+[node name="Camera3D" type="Camera3D" parent="PlayerRot/PlayerHead"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.432839, 0)
+current = true
