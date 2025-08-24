@@ -25,7 +25,7 @@ config/size/viewport_width=800
 
 [display]
 
-window/size/mode=2
+window/subwindows/embed_subwindows=false
 
 [editor_plugins]
 
@@ -76,8 +76,10 @@ noclip={
 
 [physics]
 
+3d/run_on_separate_thread=true
 3d/physics_engine="Jolt Physics"
 
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
+anti_aliasing/quality/use_taa=true

@@ -4,6 +4,7 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/label.hpp>
 
 using namespace godot;
 
@@ -21,6 +22,9 @@ namespace godot {
 
     void _ready() override;
     void _process(double delta) override;
+  
+  private:
+    Label* m_FPSLabel = nullptr;
   
   };
 

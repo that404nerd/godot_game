@@ -36,7 +36,7 @@ public:
     void _handle_crouch(double delta);
     bool _noclip(double delta);
 
-    float get_move_speed() { return Input::get_singleton()->is_action_pressed("sprint") ? Globals::SprintSpeed : Globals::WalkSpeed; }
+    float get_move_speed() { return Input::get_singleton()->is_action_pressed("crouch") ? Globals::CrouchSpeed : Globals::SprintSpeed; }
 
     void headbob_effect(double delta);
 
@@ -71,12 +71,15 @@ protected:
     float m_HeadBobTime = 0.0f;
     bool m_IsNoClip = false;
 
+    int m_CurrentJumps;
+
     // Ground physics variables  
     float m_GroundAccel = 14.0f;
     float m_GroundDecel = 10.0f;
     float m_GroundFriction = 6.0f; 
 
     // Movement states
+    bool m_IsFalling = false;
     bool m_IsCrouching = false;
     bool m_IsSliding = false;
     bool m_IsMoving = false;
