@@ -1,0 +1,203 @@
+[gd_scene load_steps=7 format=3 uid="uid://dscvjpepl0ukv"]
+
+[ext_resource type="PackedScene" uid="uid://2c0bf6m5ugct" path="res://scenes/player.tscn" id="1_o5qli"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_ig7tw"]
+sky_material = SubResource("ProceduralSkyMaterial_0wfyh")
+
+[sub_resource type="Environment" id="Environment_sugp2"]
+background_mode = 2
+sky = SubResource("Sky_ig7tw")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_o5qli"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0wfyh"]
+
+[node name="Game" type="Game"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_sugp2")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.766044, 0.55667, -0.321394, 0, 0.5, 0.866025, 0.642788, -0.663414, 0.383022, 7.6, 11.31, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("1_o5qli")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.30679, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(118.717, 0, 0, 0, 0.271216, 0, 0, 0, 121.413, -13.3584, 1.00031, 0.462364)
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(129.789, 0, 0, 0, -8.74228e-09, -39.6671, 0, 0.2, -1.7339e-06, -6, 20.0003, -57.3858)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(129.789, 0, 0, 0, -8.74228e-09, -39.1186, 0, 0.2, -1.70993e-06, -6, 20.1923, 58.8584)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D3"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D3/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+transform = Transform3D(-5.10593e-06, 0.2, -1.7145e-06, 0, -8.74228e-09, -39.2232, -116.81, -8.74228e-09, -6.44056e-14, 44.6361, 20.0003, 0.462364)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D4"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D4/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
+transform = Transform3D(-5.10593e-06, 0.2, -1.68901e-06, 0, -8.74228e-09, -38.64, -116.81, -8.74228e-09, -6.34479e-14, -70.9042, 20.4055, 0.462364)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D5"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D5/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="."]
+transform = Transform3D(129.965, 0, 0, 0, 0.2, 0, 0, 0, 117.196, -6, 39.5846, 126.176)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D6"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D6/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="LevelSkeleton" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -53.0374, 2.49796, 31.2298)
+use_collision = true
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.4333, 5.47458, 58.3366)
+polygon = PackedVector2Array(-13.1276, -5.5934, 0, 1, 39.7269, 0.638943, 40.6959, -5.49808)
+depth = 24.08
+smooth_faces = true
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="LevelSkeleton/CSGPolygon3D"]
+transform = Transform3D(3.36578, 0, 0, 0, -8.74228e-09, -5.68758, 0, 0.2, -2.48612e-07, 27.4164, 3.54492, -23.9342)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D3"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D3/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="LevelSkeleton/CSGPolygon3D"]
+transform = Transform3D(3.36578, 0, 0, 0, -8.74228e-09, -5.68758, 0, 0.2, -2.48612e-07, 30.954, 3.54492, -23.9342)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D4"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D4/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="LevelSkeleton/CSGPolygon3D"]
+transform = Transform3D(3.36578, 0, 0, 0, -8.74228e-09, -5.68758, 0, 0.2, -2.48612e-07, 34.3994, 3.54492, -23.9342)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D5"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D5/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="LevelSkeleton/CSGPolygon3D"]
+transform = Transform3D(3.36578, 0, 0, 0, -8.74228e-09, -5.68758, 0, 0.2, -2.48612e-07, 37.9257, 3.54492, -23.9342)
+gi_mode = 2
+mesh = SubResource("BoxMesh_o5qli")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D6"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D6/StaticBody3D"]
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 16.7598, 14.4374, 6.86957, 45.5248)
+size = Vector3(14.4536, 11.5203, 1.34933)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 16.7598, 14.4374, 6.86957, 28.0134)
+size = Vector3(14.4536, 11.5203, 0.744492)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 16.7598, 14.4374, 4.14792, 18.5007)
+size = Vector3(14.4536, 6.07697, 0.39373)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 16.7598, 14.4374, 4.14792, 15.9538)
+size = Vector3(14.4536, 6.07697, 0.697654)
+
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="LevelSkeleton"]
+transform = Transform3D(-0.0127467, 0, 12.2581, 0, 6.15817, 0, -8.59187, 0, -0.0181858, 14.3225, 1.08251, 3.1472)
+mode = 1
+spin_degrees = 360.0
+spin_sides = 5
+smooth_faces = true
+
+[node name="CSGPolygon3D4" type="CSGPolygon3D" parent="LevelSkeleton"]
+transform = Transform3D(4.1581, 0, 9.74369, 0, 6.15817, 0, -7.59146, 0, 5.33694, 19.5819, 1.08251, -7.54539)
+polygon = PackedVector2Array(0.16661, 0.2298, 0, 1, 1, 1, 0.62113, -0.417322)
+mode = 1
+spin_degrees = 360.0
+spin_sides = 3
+smooth_faces = true
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1.75079, 0, 0, 0, 0.155988, 0, 0, 0, 27.575, -21.5657, 13.8516, 9.20648)
+size = Vector3(14.4536, 6.07697, 0.697654)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-0.0347345, -0.360932, 0, 0.719724, -0.0174189, 0, 0, 0, 8.75549, -10.0209, 7.25432, 8.35546)
+size = Vector3(16.9122, 2.44754, 1.5031)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-0.0347345, -0.360932, 0, 0.719724, -0.0174189, 0, 0, 0, 8.75549, -32.6046, 7.25432, 8.35546)
+size = Vector3(16.9122, 2.44754, 1.5031)
+
+[node name="TextDebugLayer" type="CanvasLayer" parent="."]
+
+[node name="FPSLabel" type="Label" parent="TextDebugLayer"]
+offset_right = 277.0
+offset_bottom = 81.0

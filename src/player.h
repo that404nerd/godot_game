@@ -12,6 +12,7 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/marker3d.hpp>
 
 #include "globals.h"
 
@@ -46,7 +47,9 @@ public:
 
 protected:
     Node3D* m_PlayerHead = nullptr;
-    Node3D* m_PlayerRotNode = nullptr;
+    Node3D* m_CameraControllerNode = nullptr;
+    Marker3D* m_CameraAnchor = nullptr;
+
     Timer* m_JumpBufferTimer = nullptr;
 
     // Get Collision shapes

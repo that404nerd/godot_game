@@ -4,6 +4,7 @@
 
 #include "game.h"
 #include "player.h"
+#include "camera_controller.h"
 
 using namespace godot;
 

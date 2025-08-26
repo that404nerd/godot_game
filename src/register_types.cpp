@@ -13,6 +13,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 
 	GDREGISTER_RUNTIME_CLASS(Game);
 	GDREGISTER_RUNTIME_CLASS(Player);
+  GDREGISTER_RUNTIME_CLASS(CameraController);
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {

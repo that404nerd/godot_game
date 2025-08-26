@@ -18,9 +18,11 @@ void Player::_ready()
     
     m_PlayerVel = get_velocity();
     
-    m_PlayerHead = get_node<Node3D>(NodePath("PlayerRot/PlayerHead"));
-    m_PlayerRotNode = get_node<Node3D>(NodePath("PlayerRot"));
-    m_PlayerCamera = get_node<Camera3D>(NodePath("PlayerRot/PlayerHead/Camera3D"));
+    m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
+    m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
+    m_PlayerCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D"));
+
+    m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor"));
 
     m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
     
@@ -33,7 +35,6 @@ void Player::_ready()
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
-
     // Set the event to an mouse input event
     Ref<InputEventMouseMotion> mouse_event = event;
     if(event->is_class("InputEventMouseMotion")) {
@@ -111,7 +112,7 @@ void Player::_handle_ground_physics(double delta)
         m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, 0.0f, (float)delta * 5.0f);
     }
         
-    m_PlayerRotNode->set_rotation(m_PlayerTiltVector);
+    m_CameraControllerNode->set_rotation(m_PlayerTiltVector);
 
     
     headbob_effect(delta);

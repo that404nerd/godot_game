@@ -1,11 +1,12 @@
-CMakeLists.txt.user
+# Dotfiles
 .vscode/settings.json
 .cache
-build/FPSProject-build
 .godot
-lib/
-cmake/
-compile_commands.json
-icons/
-FPSProject.gdextension
-FPSProject.gdextension.uid
+
+# folders (except build.sh)
+build/
+
+# Files
+build/**/*.cmake
+build/**/*.txt
+build/**/*.txt.user
