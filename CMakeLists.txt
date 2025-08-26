@@ -143,5 +143,5 @@ set_target_properties( godot-cpp
 
 target_link_libraries( ${PROJECT_NAME}
     PRIVATE
-        godot-cpp
+    godot-cpp
 )

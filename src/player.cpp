@@ -28,24 +28,6 @@ void Player::_ready()
     
     m_StandingCollisionShape = get_node<CollisionShape3D>(NodePath("StandingCollisionShape"));
     
-    m_RaycastUp = get_node<RayCast3D>(NodePath("RayCastUp"));
-    m_RaycastLeft = get_node<RayCast3D>(NodePath("RayCastLeft"));
-    m_RaycastRight = get_node<RayCast3D>(NodePath("RayCastRight"));
-}
-
-void Player::_unhandled_input(const Ref<InputEvent>& event)
-{
-    // Set the event to an mouse input event
-    Ref<InputEventMouseMotion> mouse_event = event;
-    if(event->is_class("InputEventMouseMotion")) {
-        rotate_y(-mouse_event->get_relative().x * Globals::MouseSensitivity); // Set the yaw (turns the player left or right)
-        m_PlayerHead->rotate_x(-mouse_event->get_relative().y * Globals::MouseSensitivity); // Set the pitch to the camera (up or down)
-
-        // Clamp the pitch so that we dont look straight up
-        Vector3 rot = m_PlayerHead->get_rotation();
-        rot.x = Math::clamp(rot.x, Math::deg_to_rad(-90.0f), Math::deg_to_rad(90.0f));
-        m_PlayerHead->set_rotation(rot);
-    }
 }
 
 bool Player::_noclip(double delta) 

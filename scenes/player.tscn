@@ -13,21 +13,11 @@ shape = SubResource("CapsuleShape3D_u8vuu")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_3vyb7")
 
-[node name="RayCastUp" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.012084)
-target_position = Vector3(0, 2, 0)
-
-[node name="RayCastRight" type="RayCast3D" parent="."]
-target_position = Vector3(2, 0, 0)
-
-[node name="RayCastLeft" type="RayCast3D" parent="."]
-target_position = Vector3(-2, 0, 0)
-
 [node name="JumpBufferTimer" type="Timer" parent="."]
 wait_time = 0.2
 one_shot = true
 
-[node name="CameraController" type="Node3D" parent="."]
+[node name="CameraController" type="CameraController" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="PlayerHead" type="Node3D" parent="CameraController"]

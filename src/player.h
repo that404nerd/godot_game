@@ -7,7 +7,6 @@
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
-#include <godot_cpp/classes/ray_cast3d.hpp>
 #include <godot_cpp/classes/timer.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
@@ -30,8 +29,6 @@ public:
     void _ready() override;
     void _physics_process(double delta) override;
 
-    void _unhandled_input(const Ref<InputEvent>& event) override;
-
     void _handle_ground_physics(double delta);
     void _handle_air_physics(double delta);
     void _handle_crouch(double delta);
@@ -42,6 +39,8 @@ public:
     void headbob_effect(double delta);
 
     static void _bind_methods();
+
+    Marker3D* GetCameraAnchor() { return m_CameraAnchor; }
 
     ~Player();
 
@@ -54,10 +53,6 @@ protected:
 
     // Get Collision shapes
     CollisionShape3D* m_StandingCollisionShape = nullptr;
-
-    RayCast3D* m_RaycastUp = nullptr;
-    RayCast3D* m_RaycastLeft = nullptr;
-    RayCast3D* m_RaycastRight = nullptr;
 
     Camera3D* m_PlayerCamera = nullptr;
 

@@ -11,9 +11,11 @@ void initialize_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-	GDREGISTER_RUNTIME_CLASS(Game);
-	GDREGISTER_RUNTIME_CLASS(Player);
-  GDREGISTER_RUNTIME_CLASS(CameraController);
+  // game still runs just prevents error spam
+  if (!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game);
+  if (!ClassDB::class_exists("Player")) GDREGISTER_RUNTIME_CLASS(Player);
+  if (!ClassDB::class_exists("CameraController")) GDREGISTER_RUNTIME_CLASS(CameraController);
+
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {
