@@ -94,7 +94,7 @@ void Player::_handle_ground_physics(double delta)
         m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, 0.0f, (float)delta * 5.0f);
     }
         
-    m_CameraControllerNode->set_rotation(m_PlayerTiltVector);
+    m_PlayerHead->set_rotation(m_PlayerTiltVector);
 
     
     headbob_effect(delta);

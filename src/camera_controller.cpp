@@ -21,9 +21,9 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 
 void CameraController::_bind_methods() {}
 
-void CameraController::_process(double delta) 
+void CameraController::_physics_process(double delta) 
 {
-    m_InputRotation.x = Math::clamp(m_InputRotation.x + m_MouseInput.y, Math::deg_to_rad(-89.0f), Math::deg_to_rad(89.0f));
+    m_InputRotation.x = Math::clamp(m_InputRotation.x + m_MouseInput.y, Math::deg_to_rad(-90.0f), Math::deg_to_rad(90.0f));
     m_InputRotation.y += m_MouseInput.x;
 
     Transform3D pitchTransform = m_PlayerController->GetCameraAnchor()->get_transform();

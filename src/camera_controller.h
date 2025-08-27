@@ -25,7 +25,7 @@ namespace godot {
     void _unhandled_input(const Ref<InputEvent>& event) override;
 
     void _ready() override;
-    void _process(double delta) override;
+    void _physics_process(double delta) override;
   
   private:
     Player* m_PlayerController = nullptr;

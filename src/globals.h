@@ -23,7 +23,7 @@ namespace Globals {
     inline float MouseSensitivity = 0.004f;
 
     inline const float MAX_JUMP_BUFFER_TIME = 0.2f;
-    inline const float HEADBOB_MOVE_AMOUNT = 0.03f;
+    inline const float HEADBOB_MOVE_AMOUNT = 0.05f;
     inline const float HEADBOB_FREQUENCY = 1.2f;
     inline const float DOWN_GRAVITY = 10.0f;
     inline const int MAX_JUMPS = 1;

@@ -19,6 +19,7 @@ one_shot = true
 
 [node name="CameraController" type="CameraController" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+top_level = true
 
 [node name="PlayerHead" type="Node3D" parent="CameraController"]
 
