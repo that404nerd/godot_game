@@ -4,6 +4,8 @@
 
 ### Open the project using the project.godot file in the root directory of the project
 
+- Debugging works normally. Just use lldb extension to debug.
+
 ### Build & Install
 
 ```bash
@@ -14,7 +16,6 @@ cmake -B FPSProject-build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=FPSPro
 cmake --build FPSProject-build -j8
 cmake --install FPSProject-build
 ```
-
 
 - To recompile any code changes from the src folder just run the following commands (inside the root directory of the project):
 ```bash

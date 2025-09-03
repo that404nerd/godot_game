@@ -1,9 +1,5 @@
 #include "player.h"
 
-/*
-    TODO: Have a seperate gravity when falling
-*/
-
 Player::Player()
 {
 }
@@ -14,20 +10,22 @@ void Player::_bind_methods()
 
 void Player::_ready()
 {
-    Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
-    
     m_PlayerVel = get_velocity();
     
-    m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
     m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
+    
+    m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
     m_PlayerCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D"));
-
-    m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor"));
+    m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
 
     m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
     
     m_StandingCollisionShape = get_node<CollisionShape3D>(NodePath("StandingCollisionShape"));
-    
+}
+
+void Player::_unhandled_input(const Ref<InputEvent>& event)
+{
+    Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
 }
 
 bool Player::_noclip(double delta) 
@@ -39,7 +37,6 @@ bool Player::_noclip(double delta)
     }
 
     m_StandingCollisionShape->set_disabled(true);
-    // m_CrouchingCollisionShape->set_disabled(true);
 
     float noclip_speed = Globals::SprintSpeed * 3.0f;
 
@@ -68,17 +65,17 @@ void Player::headbob_effect(double delta)
 void Player::_handle_ground_physics(double delta) 
 {
     float currentSpeedInWishDir = m_PlayerVel.dot(m_WishDir);
-    float addSpeed = get_move_speed() - currentSpeedInWishDir;
+    float addSpeed = get_player_move_speed() - currentSpeedInWishDir;
 
     if(addSpeed > 0.0f) {
-        float accel = m_GroundAccel * get_move_speed() * delta;
+        float accel = Globals::GroundAccel * get_player_move_speed() * delta;
         accel = Math::min(accel, addSpeed);
         m_PlayerVel += accel * m_WishDir;
     }
 
     // Friciton code
-    float control = Math::max(m_PlayerVel.length(), m_GroundDecel); // Dont let speed to drop to zero instead to ground decl when stopping
-    float drop = control * m_GroundFriction * delta; // how much velocity should be dropped due to friction
+    float control = Math::max(m_PlayerVel.length(), Globals::GroundDecel); // Dont let speed to drop to zero instead to ground decl when stopping
+    float drop = control * Globals::GroundFriction * delta; // how much velocity should be dropped due to friction
     float newSpeed = Math::max(m_PlayerVel.length() - drop, 0.0f); // New speed has to be subtracted from the current velocity due to friction
 
     if(m_PlayerVel.length() > 0.0f) {
@@ -96,7 +93,6 @@ void Player::_handle_ground_physics(double delta)
         
     m_PlayerHead->set_rotation(m_PlayerTiltVector);
 
-    
     headbob_effect(delta);
     set_velocity(m_PlayerVel);
     
@@ -104,24 +100,24 @@ void Player::_handle_ground_physics(double delta)
 
 // TODO: Do crouch logic
 void Player::_handle_crouch(double delta) {
-    // if(Input::get_singleton()->is_action_just_pressed("crouch")) {
-    //     m_IsCrouching = true;
-    // } else if(m_IsCrouching && test_move(get_transform(), Vector3(0.0f, 2.0f, 0.0f))) {
+// if(Input::get_singleton()->is_action_just_pressed("crouch")) {
+//     m_IsCrouching = true;
+// } else if(m_IsCrouching && test_move(get_transform(), Vector3(0.0f, 2.0f, 0.0f))) {
     //     m_IsCrouching = false;
     // }
-
+    
     // Vector3 crouchPosition;
     // crouchPosition.y = Math::move_toward(m_PlayerHead->get_position().y, m_IsCrouching ? -5.0f : 0.0f, (float)delta * 5.0f);
     // m_PlayerHead->set_position(crouchPosition);
 }
-
+    
 void Player::_handle_air_physics(double delta) {
     
     float gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
     if(!is_on_floor()) {
         m_PlayerVel.y -= gravity * delta;
-    } 
-
+    }
+        
     // Air strafing
     float currentSpeed = m_PlayerVel.dot(m_WishDir);
     float addSpeed = Globals::MaxAirMoveSpeed - currentSpeed; // how much speed we can add to the player before exceeding max move speed in air
@@ -137,7 +133,6 @@ void Player::_handle_air_physics(double delta) {
         playerHorizVel = playerHorizVel.normalized() * Globals::MaxAirMoveSpeed;
     }
     
-    
     // Set final velocity
     m_PlayerVel.x = playerHorizVel.x;
     m_PlayerVel.y = playerHorizVel.y;
@@ -150,49 +145,43 @@ void Player::_physics_process(double delta)
     m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
     
     /*
-    global_transform - position/rotation/scale of the player relative to the world
-    Basis - rotation & scale (no translation) of the player
-    Everything that rotates the player (mouse look, aim, head tilt, body rotation) modifies the basis.
-    basis.xform(vector) - convert the local direction to world spaced direction
-    Ignore the y-coordinate since that affects gravity
+        global_transform - position/rotation/scale of the player relative to the world
+        Basis - rotation & scale (no translation) of the player
+        Everything that rotates the player (mouse look, aim, head tilt, body rotation) modifies the basis.
+        basis.xform(vector) - convert the local direction to world spaced direction
+        Ignore the y-coordinate since that affects gravity
     */
-   m_WishDir = this->get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
-   m_CamWishDir = m_PlayerCamera->get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
-   
-   // Set the jump state
-   if(Input::get_singleton()->is_action_just_pressed("jump")) {
+    m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
+    m_CamWishDir = m_PlayerCamera->get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
+
+    if(Input::get_singleton()->is_action_just_pressed("jump")) {
        m_JumpBufferTimer->start();
     } else if(Input::get_singleton()->is_action_just_released("jump")) {
         m_IsFalling = true;
     }
-    
-    _handle_crouch(delta);
-    
+
     if(m_IsFalling) {
         m_PlayerVel.y -= Globals::DOWN_GRAVITY * delta;
     }
 
-    if(m_CurrentJumps > 0 && m_JumpBufferTimer->get_time_left() > 0.0f) {
-        m_CurrentJumps--;
-        m_PlayerVel.y = Globals::JumpSpeed;
-        m_JumpBufferTimer->stop();
-    } 
-    
-    if(!_noclip(delta)) {
-        if(is_on_floor()) {
-            m_CurrentJumps = Globals::MAX_JUMPS; 
-            _handle_ground_physics(delta);
-            m_IsFalling = false;
-        } else {
-            _handle_air_physics(delta);
-        }
+    if(is_on_floor()) {
+
+        if(m_JumpBufferTimer->get_time_left() > 0.0f) {
+            m_PlayerVel.y = Globals::JumpSpeed;
+            m_JumpBufferTimer->stop();
+        } 
+
+        _handle_ground_physics(delta);
+
+    } else {
         
-        move_and_slide();
+        _handle_air_physics(delta);
     }
+    
+    move_and_slide();
 }
 
 
 Player::~Player()
 {
-    
 }

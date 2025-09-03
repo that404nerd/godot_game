@@ -8,7 +8,7 @@
       "program": "/usr/bin/godot",
       "args": [
         "--path",
-        "/home/revanth/Dev/Godot/godot_game"
+        "${workspaceFolder}"
       ],
       "cwd": "${workspaceFolder}",
       "stopOnEntry": false,

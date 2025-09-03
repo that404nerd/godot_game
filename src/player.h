@@ -28,13 +28,14 @@ public:
 
     void _ready() override;
     void _physics_process(double delta) override;
+    void _unhandled_input(const Ref<InputEvent>& event) override;
 
     void _handle_ground_physics(double delta);
     void _handle_air_physics(double delta);
     void _handle_crouch(double delta);
     bool _noclip(double delta);
 
-    float get_move_speed() { return Input::get_singleton()->is_action_pressed("crouch") ? Globals::CrouchSpeed : Globals::SprintSpeed; }
+    float get_player_move_speed() { return Input::get_singleton()->is_action_pressed("crouch") ? Globals::CrouchSpeed : Globals::SprintSpeed; }
 
     void headbob_effect(double delta);
 
@@ -68,8 +69,6 @@ protected:
 
     float m_HeadBobTime = 0.0f;
     bool m_IsNoClip = false;
-
-    int m_CurrentJumps;
 
     // Ground physics variables  
     float m_GroundAccel = 14.0f;

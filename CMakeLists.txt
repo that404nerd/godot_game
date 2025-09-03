@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Unlicense
 
 cmake_minimum_required( VERSION 3.26 )
+cmake_policy(SET CMP0177 NEW)
 
 message( STATUS "Using CMake ${CMAKE_VERSION}" )
 
@@ -8,7 +9,7 @@ message( STATUS "Using CMake ${CMAKE_VERSION}" )
 file( TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH )
 
 if ( EXISTS "${LOC_PATH}" )
-    message( FATAL_ERROR "You cannot build in the source directory. Please use a build subdirectory." )
+	message( FATAL_ERROR "You cannot build in the source directory. Please use a build subdirectory." )
 endif()
 
 # Add paths to modules
@@ -23,30 +24,30 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 # Build universal lib on macOS
 # Note that CMAKE_OSX_ARCHITECTURES must be set before project().
 if ( APPLE )
-    set( CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "" )
+	set( CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "" )
 endif()
 
 # Main project information
 project( FPSProject
-    LANGUAGES
-        CXX
-    VERSION
-        1.0.0
+	LANGUAGES
+		CXX
+	VERSION
+		1.0.0
 )
 
 # Create our library
 add_library( ${PROJECT_NAME} SHARED )
 
 target_compile_features( ${PROJECT_NAME}
-    PRIVATE
-        cxx_std_17
+	PRIVATE
+		cxx_std_17
 )
 
 # LIB_ARCH is the architecture being built. It is set to the build system's architecture.
 # For macOS, we build a universal library (both arm64 and x86_64).
 set( LIB_ARCH ${CMAKE_SYSTEM_PROCESSOR} )
 if ( APPLE )
-    set( LIB_ARCH "universal" )
+	set( LIB_ARCH "universal" )
 endif()
 
 # LIB_DIR is where the actual library ends up. This is used in both the build directory and the
@@ -60,31 +61,31 @@ message( STATUS "Building ${PROJECT_NAME} for ${LIB_ARCH} on ${CMAKE_SYSTEM_NAME
 set( BUILD_OUTPUT_DIR "${PROJECT_BINARY_DIR}/${PROJECT_NAME}/" )
 
 set_target_properties( ${PROJECT_NAME}
-    PROPERTIES
-        CXX_VISIBILITY_PRESET hidden
-        VISIBILITY_INLINES_HIDDEN true
-        RUNTIME_OUTPUT_DIRECTORY "${BUILD_OUTPUT_DIR}/${LIB_DIR}"
-        LIBRARY_OUTPUT_DIRECTORY "${BUILD_OUTPUT_DIR}/${LIB_DIR}"
+	PROPERTIES
+		CXX_VISIBILITY_PRESET hidden
+		VISIBILITY_INLINES_HIDDEN true
+		RUNTIME_OUTPUT_DIRECTORY "${BUILD_OUTPUT_DIR}/${LIB_DIR}"
+		LIBRARY_OUTPUT_DIRECTORY "${BUILD_OUTPUT_DIR}/${LIB_DIR}"
 )
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    string(REPLACE "-fno-gnu-unique" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    string(REPLACE "-fno-gnu-unique" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+	string(REPLACE "-fno-gnu-unique" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	string(REPLACE "-fno-gnu-unique" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
 if( NOT DEFINED CMAKE_DEBUG_POSTFIX )
-    set_target_properties( ${PROJECT_NAME}
-        PROPERTIES
-            DEBUG_POSTFIX "-d"
-    )
+	set_target_properties( ${PROJECT_NAME}
+		PROPERTIES
+			DEBUG_POSTFIX "-d"
+	)
 endif()
 
 # Copy over additional files from the support_files directory
 add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${CMAKE_SOURCE_DIR}/support_files"
-            ${BUILD_OUTPUT_DIR}
+	TARGET ${PROJECT_NAME} POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+			"${CMAKE_SOURCE_DIR}/support_files"
+			${BUILD_OUTPUT_DIR}
 )
 
 # Warnings
@@ -101,16 +102,16 @@ set( INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/" )
 message( STATUS "Install directory: ${INSTALL_DIR}")
 
 install( TARGETS ${PROJECT_NAME}
-    LIBRARY
-        DESTINATION ${INSTALL_DIR}/${LIB_DIR}
-    RUNTIME
-        DESTINATION ${INSTALL_DIR}/${LIB_DIR}
+	LIBRARY
+		DESTINATION ${INSTALL_DIR}/${LIB_DIR}
+	RUNTIME
+		DESTINATION ${INSTALL_DIR}/${LIB_DIR}
 )
 
 # Copy over support files
 install( DIRECTORY "${CMAKE_SOURCE_DIR}/support_files/"
-    DESTINATION ${INSTALL_DIR}
-    PATTERN ".*" EXCLUDE
+	DESTINATION ${INSTALL_DIR}
+	PATTERN ".*" EXCLUDE
 )
 
 add_subdirectory( templates )
@@ -126,10 +127,10 @@ include( ClangFormat )
 # godot-cpp
 # From here: https://github.com/godotengine/godot-cpp
 if ( NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/extern/godot-cpp/Makefile" )
-    message(
-        FATAL_ERROR
-            "[${PROJECT_NAME}] The godot-cpp submodule was not downloaded. Please update submodules: git submodule update --init --recursive."
-    )
+	message(
+		FATAL_ERROR
+			"[${PROJECT_NAME}] The godot-cpp submodule was not downloaded. Please update submodules: git submodule update --init --recursive."
+	)
 endif()
 
 set( GODOT_CPP_SYSTEM_HEADERS ON CACHE BOOL "" FORCE )
@@ -137,11 +138,11 @@ set( GODOT_CPP_SYSTEM_HEADERS ON CACHE BOOL "" FORCE )
 add_subdirectory( extern/godot-cpp )
 
 set_target_properties( godot-cpp
-    PROPERTIES
-        CXX_VISIBILITY_PRESET hidden    # visibility needs to be the same as the main library
+	PROPERTIES
+		CXX_VISIBILITY_PRESET hidden    # visibility needs to be the same as the main library
 )
 
 target_link_libraries( ${PROJECT_NAME}
-    PRIVATE
-    godot-cpp
+	PRIVATE
+	godot-cpp
 )

@@ -6,6 +6,7 @@
 rings = 7
 
 [node name="Player" type="Player"]
+slide_on_ceiling = false
 
 [node name="StandingCollisionShape" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_u8vuu")
@@ -25,6 +26,7 @@ top_level = true
 
 [node name="Camera3D" type="Camera3D" parent="CameraController/PlayerHead"]
 current = true
+fov = 85.0
 
 [node name="CameraControllerAnchor" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

@@ -47,9 +47,7 @@ target_compile_options( ${PROJECT_NAME}
             -Wnon-virtual-dtor
             -Wnull-dereference
             -Woverloaded-virtual
-            -Wpedantic -Wno-error=pedantic
             -Wshadow
-            -Wunused
             -Wwrite-strings
 
             # Disable warnings which bleed through from godot-cpp's macros.
@@ -82,7 +80,6 @@ function( set_warn_everything )
             $<$<OR:${compiler_is_clang},${compiler_is_gnu}>:
                 -Weverything
                 -Wno-c++98-compat
-                -Wno-c++98-compat-pedantic
                 -Wno-padded
             >
     )

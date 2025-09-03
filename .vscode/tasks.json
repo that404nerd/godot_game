@@ -4,10 +4,28 @@
     {
       "label": "build_module",
       "type": "shell",
-      "command": "scons platform=linux target=template_debug tools=yes",
+      "command": "cmake --build ${workspaceFolder}/build/FPSProject-build --config Debug -j8",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": {
         "kind": "build",
         "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "install_module",
+      "type": "shell",
+      "command": "cmake --install ${workspaceFolder}/build/FPSProject-build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
       },
       "problemMatcher": []
     }
