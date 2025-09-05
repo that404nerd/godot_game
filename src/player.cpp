@@ -17,7 +17,9 @@ void Player::_ready()
     m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
     m_PlayerCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D"));
     m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
-
+    
+    m_CurrentPlayerState = memnew(PlayerSprintState);
+    
     m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
     
     m_StandingCollisionShape = get_node<CollisionShape3D>(NodePath("StandingCollisionShape"));
@@ -26,91 +28,18 @@ void Player::_ready()
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
     Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
+
+    PlayerState* newState = m_CurrentPlayerState->_handle_input(event, *this);
+
+    if(newState == nullptr || newState == m_CurrentPlayerState) return;
+
+    // Actual transition
+    memdelete(m_CurrentPlayerState);
+    m_CurrentPlayerState = newState;
+    m_CurrentPlayerState->_enter(*this);
+
 }
 
-bool Player::_noclip(double delta) 
-{
-    if(Input::get_singleton()->is_action_pressed("noclip") && OS::get_singleton()->has_feature("debug")) {
-        m_IsNoClip = !m_IsNoClip;
-    } else {
-        return false;
-    }
-
-    m_StandingCollisionShape->set_disabled(true);
-
-    float noclip_speed = Globals::SprintSpeed * 3.0f;
-
-    m_PlayerVel = m_CamWishDir * noclip_speed;
-    global_translate(m_PlayerVel * delta);
-    set_velocity(m_PlayerVel);
-
-    return true;
-}
-
-// Depends on the horizontal velocity
-void Player::headbob_effect(double delta)
-{
-    Vector3 playerVelHeadbob = Vector3(m_PlayerVel.x, 0.0f, m_PlayerVel.z); // Use this vector so that y-vel (gravity) doesn't affect the headbob
-    m_HeadBobTime += playerVelHeadbob.length() * delta;
-
-    Transform3D headbobTransform = m_PlayerHead->get_transform(); // get the player's transform
-    headbobTransform.origin = Vector3( // like a sine wave
-        Math::cos(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * Globals::HEADBOB_MOVE_AMOUNT,
-        Math::sin(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * Globals::HEADBOB_MOVE_AMOUNT,
-        0.0f
-    );
-    m_PlayerHead->set_transform(headbobTransform);
-}
-
-void Player::_handle_ground_physics(double delta) 
-{
-    float currentSpeedInWishDir = m_PlayerVel.dot(m_WishDir);
-    float addSpeed = get_player_move_speed() - currentSpeedInWishDir;
-
-    if(addSpeed > 0.0f) {
-        float accel = Globals::GroundAccel * get_player_move_speed() * delta;
-        accel = Math::min(accel, addSpeed);
-        m_PlayerVel += accel * m_WishDir;
-    }
-
-    // Friciton code
-    float control = Math::max(m_PlayerVel.length(), Globals::GroundDecel); // Dont let speed to drop to zero instead to ground decl when stopping
-    float drop = control * Globals::GroundFriction * delta; // how much velocity should be dropped due to friction
-    float newSpeed = Math::max(m_PlayerVel.length() - drop, 0.0f); // New speed has to be subtracted from the current velocity due to friction
-
-    if(m_PlayerVel.length() > 0.0f) {
-        newSpeed /= m_PlayerVel.length();
-    }
-    
-    m_PlayerVel *= newSpeed;
-
-    if (!Math::is_equal_approx(m_InputDir.x, 0.0f) && is_on_floor()) {
-        float targetTilt = (m_InputDir.x > 0 ? -Globals::SideTiltAngle : Globals::SideTiltAngle);
-        m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, Math::deg_to_rad(targetTilt), (float)delta * 5.0f);
-    } else {
-        m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, 0.0f, (float)delta * 5.0f);
-    }
-        
-    m_PlayerHead->set_rotation(m_PlayerTiltVector);
-
-    headbob_effect(delta);
-    set_velocity(m_PlayerVel);
-    
-}
-
-// TODO: Do crouch logic
-void Player::_handle_crouch(double delta) {
-// if(Input::get_singleton()->is_action_just_pressed("crouch")) {
-//     m_IsCrouching = true;
-// } else if(m_IsCrouching && test_move(get_transform(), Vector3(0.0f, 2.0f, 0.0f))) {
-    //     m_IsCrouching = false;
-    // }
-    
-    // Vector3 crouchPosition;
-    // crouchPosition.y = Math::move_toward(m_PlayerHead->get_position().y, m_IsCrouching ? -5.0f : 0.0f, (float)delta * 5.0f);
-    // m_PlayerHead->set_position(crouchPosition);
-}
-    
 void Player::_handle_air_physics(double delta) {
     
     float gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
@@ -152,7 +81,6 @@ void Player::_physics_process(double delta)
         Ignore the y-coordinate since that affects gravity
     */
     m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
-    m_CamWishDir = m_PlayerCamera->get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
 
     if(Input::get_singleton()->is_action_just_pressed("jump")) {
        m_JumpBufferTimer->start();
@@ -164,6 +92,8 @@ void Player::_physics_process(double delta)
         m_PlayerVel.y -= Globals::DOWN_GRAVITY * delta;
     }
 
+    // print_line("Current Movement State: ", get_current_movement_state());
+
     if(is_on_floor()) {
 
         if(m_JumpBufferTimer->get_time_left() > 0.0f) {
@@ -171,7 +101,7 @@ void Player::_physics_process(double delta)
             m_JumpBufferTimer->stop();
         } 
 
-        _handle_ground_physics(delta);
+        m_CurrentPlayerState->_update(delta, *this);
 
     } else {
         
