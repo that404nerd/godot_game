@@ -15,6 +15,7 @@
 #include "globals.h"
 #include "player_state.h"
 #include "player_sprint_state.h"
+#include "player_jump_state.h"
 
 using namespace godot;
 
@@ -29,8 +30,6 @@ public:
     void _physics_process(double delta) override;
     void _unhandled_input(const Ref<InputEvent>& event) override;
     
-    void _handle_air_physics(double delta);
-    
     static void _bind_methods();
     
     ~Player();
@@ -38,6 +37,7 @@ public:
 public:
     Marker3D* get_camera_anchor() { return m_CameraAnchor; }
     Node3D* get_player_head() { return m_PlayerHead; }
+    Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
 
     inline PlayerState* get_current_movement_state() { return m_CurrentPlayerState; }
     
@@ -45,6 +45,7 @@ public:
 
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
+
 
 protected:
     Node3D* m_PlayerHead = nullptr;
@@ -63,12 +64,6 @@ protected:
     Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 m_PlayerVel = Vector3(0.0f, 0.0f, 0.0f);
-
-    Vector2 m_JumpVector;
-
-    // TEMPO
-    bool m_IsJumping = false;
-    bool m_IsFalling = false;
 
     PlayerState* m_CurrentPlayerState = nullptr;
 };

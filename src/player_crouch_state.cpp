@@ -11,14 +11,9 @@ void PlayerCrouchState::_enter(Player& player)
 
 PlayerState* PlayerCrouchState::_handle_input(const Ref<InputEvent>& event, Player& player)
 {
-    // if(Input::get_singleton()->is_action_just_released("crouch")) {
-    //     return memnew(PlayerSprintState);
-    // }
+    if(Input::get_singleton()->is_action_just_released("crouch")) {
+        return memnew(PlayerSprintState);
+    }
 
    return nullptr;
-}
-
-void PlayerCrouchState::_update(double delta, Player& player)
-{
-
 }
