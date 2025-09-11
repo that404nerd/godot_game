@@ -24,6 +24,4 @@ void PlayerState::_update(double delta, Player& player)
         _handle_air_physics(delta, player);
     }
     
-
-    // print_line("State is: ", get_state_name());
 }

@@ -4,14 +4,16 @@
 #include "player_crouch_state.h"
 #include "player_jump_state.h"
 
+#include "player_state_manager.h"
+
 void PlayerSprintState::_enter(Player& player)
 {
+    FStateManager::GetStateManagerInstance().add_player_state(this);
 }
 
 PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Player& player)
 {
-
-    print_line("Jump buffer timer left: ", player.get_jump_buffer_timer()->get_time_left());
+    // print_line("Jump buffer timer left: ", player.get_jump_buffer_timer()->get_time_left());
 
     if(Input::get_singleton()->is_action_just_pressed("crouch")) {
         return memnew(PlayerCrouchState);

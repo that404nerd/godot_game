@@ -20,22 +20,15 @@ void Player::_ready()
 
     m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
     
-    m_CurrentPlayerState = memnew(PlayerSprintState);
     m_StandingCollisionShape = get_node<CollisionShape3D>(NodePath("StandingCollisionShape"));
+
+    FStateManager::GetStateManagerInstance()._initialize_manager();
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
     Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
-
-    PlayerState* newState = m_CurrentPlayerState->_handle_input(event, *this);
-    if(newState == nullptr || newState == m_CurrentPlayerState) return;
-
-    // Actual transition
-    memdelete(m_CurrentPlayerState);
-    m_CurrentPlayerState = newState;
-
-    m_CurrentPlayerState->_enter(*this); // Call when transitioning from one state to another (will not call the default state)
+    FStateManager::GetStateManagerInstance().toggle_states(event, *this);
 }
 
 void Player::_physics_process(double delta) 
@@ -54,8 +47,9 @@ void Player::_physics_process(double delta)
     // if(m_IsFalling) {
     //     m_PlayerVel.y -= Globals::DOWN_GRAVITY * delta;
     // }
+    FStateManager::GetStateManagerInstance().print_player_states();
+    FStateManager::GetStateManagerInstance()._update(delta, *this);
     
-    m_CurrentPlayerState->_update(delta, *this);
     move_and_slide();
 }
 

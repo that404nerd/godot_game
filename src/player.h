@@ -17,6 +17,8 @@
 #include "player_sprint_state.h"
 #include "player_jump_state.h"
 
+#include "player_state_manager.h"
+
 using namespace godot;
 
 class Player : public CharacterBody3D {
@@ -39,8 +41,6 @@ public:
     Node3D* get_player_head() { return m_PlayerHead; }
     Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
 
-    inline PlayerState* get_current_movement_state() { return m_CurrentPlayerState; }
-    
     float get_player_move_speed() { return Input::get_singleton()->is_action_pressed("crouch") ? Globals::CrouchSpeed : Globals::SprintSpeed; }
 
     Vector3 get_wish_dir() { return m_WishDir; }
@@ -64,6 +64,4 @@ protected:
     Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 m_PlayerVel = Vector3(0.0f, 0.0f, 0.0f);
-
-    PlayerState* m_CurrentPlayerState = nullptr;
 };

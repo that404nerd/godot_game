@@ -3,16 +3,18 @@
 #include "player_sprint_state.h"
 #include "player_jump_state.h"
 
-// TODO: Implement a sub-state that is falling
+// TODO: Implement a sub-state like falling
 
 void PlayerJumpState::_enter(Player& player)
 {
+    FStateManager::GetStateManagerInstance().add_player_state(this);
 }
 
 PlayerState* PlayerJumpState::_handle_input(const Ref<InputEvent>& event, Player& player)
 {
     // This transition kicked my ass...
     if(player.is_on_floor()) {
+        FStateManager::GetStateManagerInstance().delete_player_state("Jump");
         return memnew(PlayerSprintState);
     }
     return nullptr;
