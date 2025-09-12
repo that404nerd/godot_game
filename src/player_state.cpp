@@ -11,8 +11,8 @@ void PlayerState::_update(double delta, Player& player)
     float gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
     if(!player.is_on_floor()) {
        m_PlayerVel.y -= gravity * delta;
-       player.set_velocity(m_PlayerVel);
     }
+    player.set_velocity(m_PlayerVel);
     
     
     if (player.is_on_floor())

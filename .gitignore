@@ -3,10 +3,5 @@
 .cache
 .godot
 
-# folders (except build.sh)
+# folders
 build/
-
-# Files
-build/**/*.cmake
-build/**/*.txt
-build/**/*.txt.user

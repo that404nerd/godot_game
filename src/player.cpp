@@ -22,7 +22,7 @@ void Player::_ready()
     
     m_StandingCollisionShape = get_node<CollisionShape3D>(NodePath("StandingCollisionShape"));
 
-    FStateManager::GetStateManagerInstance()._initialize_manager();
+    FStateManager::GetStateManagerInstance()._initialize_manager(*this);
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
@@ -47,8 +47,8 @@ void Player::_physics_process(double delta)
     // if(m_IsFalling) {
     //     m_PlayerVel.y -= Globals::DOWN_GRAVITY * delta;
     // }
-    FStateManager::GetStateManagerInstance().print_player_states();
     FStateManager::GetStateManagerInstance()._update(delta, *this);
+    FStateManager::GetStateManagerInstance().print_player_states();
     
     move_and_slide();
 }

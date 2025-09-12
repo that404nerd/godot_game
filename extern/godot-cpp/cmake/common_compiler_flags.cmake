@@ -149,7 +149,7 @@ function(common_compiler_flags)
                 $<${LT_V11}:-Wno-type-limits>
 
                 # False positives in our error macros, see GH-58747.
-                $<${GE_V12}:-Wno-return-type>
+                # $<${GE_V12}:-Wno-return-type>
             >
     )
 

@@ -9,6 +9,7 @@
 void PlayerSprintState::_enter(Player& player)
 {
     FStateManager::GetStateManagerInstance().add_player_state(this);
+    set_state_over(false);
 }
 
 PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Player& player)
@@ -17,9 +18,10 @@ PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Play
 
     if(Input::get_singleton()->is_action_just_pressed("crouch")) {
         return memnew(PlayerCrouchState);
+        set_state_over(true);
     } else if(Input::get_singleton()->is_action_just_pressed("jump")) {
-        player.get_jump_buffer_timer()->start();
         return memnew(PlayerJumpState);
+        set_state_over(true);
     }
 
     return nullptr;
@@ -74,4 +76,9 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
     
     headbob_effect(delta, player);
     player.set_velocity(m_PlayerVel);
+}
+
+void PlayerSprintState::_handle_air_physics(double delta, Player& player)
+{
+
 }

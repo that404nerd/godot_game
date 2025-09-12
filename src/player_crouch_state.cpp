@@ -17,3 +17,12 @@ PlayerState* PlayerCrouchState::_handle_input(const Ref<InputEvent>& event, Play
 
    return nullptr;
 }
+
+void PlayerCrouchState::_handle_ground_physics(double delta, Player& player)
+{
+}
+
+void PlayerCrouchState::_handle_air_physics(double delta, Player& player)
+{
+
+}

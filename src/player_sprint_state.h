@@ -2,8 +2,6 @@
 
 #include <godot_cpp/classes/input.hpp>
 
-class Player;
-
 using namespace godot;
 
 // This class will handle both the sprint and the idle states (for now maybe...)
@@ -14,9 +12,10 @@ public:
 
     void _enter(Player& player) override;
     PlayerState* _handle_input(const Ref<InputEvent>& event, Player& player) override;
+    PlayerState* _physics_update(double delta, Player& player) override { return nullptr; };
 
     void _handle_ground_physics(double delta, Player& player) override;
-    void _handle_air_physics(double delta, Player& player) override {};
+    void _handle_air_physics(double delta, Player& player) override;
     void headbob_effect(double delta, Player& player);
 
     virtual ~PlayerSprintState() {};

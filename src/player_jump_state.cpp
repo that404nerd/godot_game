@@ -3,31 +3,38 @@
 #include "player_sprint_state.h"
 #include "player_jump_state.h"
 
-// TODO: Implement a sub-state like falling
-
 void PlayerJumpState::_enter(Player& player)
 {
+    m_IsJumpRequested = true;
+    m_IsJumpOver = false;
     FStateManager::GetStateManagerInstance().add_player_state(this);
 }
 
 PlayerState* PlayerJumpState::_handle_input(const Ref<InputEvent>& event, Player& player)
 {
-    // This transition kicked my ass...
-    if(player.is_on_floor()) {
-        FStateManager::GetStateManagerInstance().delete_player_state("Jump");
+    return nullptr;
+}
+
+PlayerState* PlayerJumpState::_physics_update(double delta, Player& player)
+{
+    if(player.is_on_floor() && m_IsJumpOver) {
         return memnew(PlayerSprintState);
     }
-    return nullptr;
 
+    return nullptr;
 }
+
 
 void PlayerJumpState::_handle_ground_physics(double delta, Player& player)
 {
     m_PlayerVel = player.get_velocity();
 
-    if(player.get_jump_buffer_timer()->get_time_left() > 0.0f) {
+    if(player.is_on_floor() && m_IsJumpRequested) {
         m_PlayerVel.y = Globals::JumpSpeed;
-        player.get_jump_buffer_timer()->stop();
+        m_IsJumpRequested = false;
+        m_IsJumpOver = false;
+    } else if(m_PlayerVel.y > 0.0f) {
+        m_IsJumpOver = true;
     }
    
     player.set_velocity(m_PlayerVel);
@@ -56,4 +63,5 @@ void PlayerJumpState::_handle_air_physics(double delta, Player& player)
     m_PlayerVel.z = playerHorizVel.z;
     
     player.set_velocity(m_PlayerVel);
+
 }
