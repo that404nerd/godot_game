@@ -7,6 +7,7 @@ void PlayerJumpState::_enter(Player& player)
 {
     m_IsJumpRequested = true;
     m_IsJumpOver = false;
+
     FStateManager::GetStateManagerInstance().add_player_state(this);
 }
 
@@ -36,7 +37,7 @@ void PlayerJumpState::_handle_ground_physics(double delta, Player& player)
     } else if(m_PlayerVel.y > 0.0f) {
         m_IsJumpOver = true;
     }
-   
+
     player.set_velocity(m_PlayerVel);
 }
 

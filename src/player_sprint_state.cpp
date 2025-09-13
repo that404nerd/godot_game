@@ -9,19 +9,14 @@
 void PlayerSprintState::_enter(Player& player)
 {
     FStateManager::GetStateManagerInstance().add_player_state(this);
-    set_state_over(false);
 }
 
 PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Player& player)
 {
-    // print_line("Jump buffer timer left: ", player.get_jump_buffer_timer()->get_time_left());
-
     if(Input::get_singleton()->is_action_just_pressed("crouch")) {
         return memnew(PlayerCrouchState);
-        set_state_over(true);
     } else if(Input::get_singleton()->is_action_just_pressed("jump")) {
         return memnew(PlayerJumpState);
-        set_state_over(true);
     }
 
     return nullptr;
@@ -44,7 +39,7 @@ void PlayerSprintState::headbob_effect(double delta, Player& player)
 void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
 {
     m_PlayerVel = player.get_velocity();
-
+    
     float currentSpeedInWishDir = m_PlayerVel.dot(m_WishDir);
     float addSpeed = m_MoveSpeed - currentSpeedInWishDir;
     
@@ -65,6 +60,12 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
     
     m_PlayerVel *= newSpeed;
     
+    // TODO: Move into a sub-state
+    if(Input::get_singleton()->is_action_just_pressed("dash")) {
+        m_PlayerVel.x = Math::lerp(m_PlayerVel.x, m_PlayerVel.x * Globals::DashSpeed, (float)delta * 5.0f);
+        m_PlayerVel.z = Math::lerp(m_PlayerVel.z, m_PlayerVel.z * Globals::DashSpeed, (float)delta * 5.0f);
+    }
+
     if (!Math::is_equal_approx(m_InputDir.x, 0.0f) && player.is_on_floor()) {
         float targetTilt = (m_InputDir.x > 0 ? -Globals::SideTiltAngle : Globals::SideTiltAngle);
         m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, Math::deg_to_rad(targetTilt), (float)delta * 5.0f);
@@ -73,7 +74,7 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
     }
         
     player.get_player_head()->set_rotation(m_PlayerTiltVector);
-    
+
     headbob_effect(delta, player);
     player.set_velocity(m_PlayerVel);
 }

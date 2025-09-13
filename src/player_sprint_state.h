@@ -16,6 +16,7 @@ public:
 
     void _handle_ground_physics(double delta, Player& player) override;
     void _handle_air_physics(double delta, Player& player) override;
+
     void headbob_effect(double delta, Player& player);
 
     virtual ~PlayerSprintState() {};

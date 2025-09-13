@@ -1,11 +1,13 @@
 #pragma once
 
-/* The manager is a singleton to allow only a single instance of it in the game */
+/* The manager is a singleton to allow only a single instance of it in the whole game */
 
 #include <godot_cpp/godot.hpp>
 
 #include "player_state.h"
 #include "player.h"
+
+// TODO: Access the previous state in some way
 
 class FStateManager {
 public:
@@ -23,7 +25,8 @@ public:
         m_CurrentPlayerState->_enter(player); // Call the default state's enter function
     }
 
-    void toggle_states(const Ref<InputEvent>& event, Player& player)
+    // This toggles states based on the input
+    void toggle_states(const Ref<InputEvent>& event, double delta, Player& player)
     {
         PlayerState* newState = m_CurrentPlayerState->_handle_input(event, player);
 
@@ -33,31 +36,32 @@ public:
         memdelete(m_CurrentPlayerState);
 
         m_CurrentPlayerState = newState;
+
         m_CurrentPlayerState->_enter(player);
+        m_CurrentPlayerState->_update(delta, player); // This calls the default update from the actual state class, yea the delta here is weird but it's required for the transition
     }
 
-    void _update(double delta, Player& player)
+    // This will handle the physics related transitions
+    void _physics_update(double delta, Player& player)
     {
-        m_CurrentPlayerState->_update(delta, player);
-
         PlayerState* newState = m_CurrentPlayerState->_physics_update(delta, player);
-
+    
         if(newState != nullptr)
         {
             delete_player_state(m_CurrentPlayerState->get_state_name());
             memdelete(m_CurrentPlayerState);
-
+    
             m_CurrentPlayerState = newState;
             m_CurrentPlayerState->_enter(player);
         }
-
+        
         if (m_CurrentPlayerState != nullptr) {
             m_CurrentPlayerState->_update(delta, player);
         }
 
+        // print_player_states();
     }
-
-
+    
     void add_player_state(PlayerState* playerState)
     {
         if(playerState) {
@@ -65,6 +69,8 @@ public:
         }
     }
     
+    
+private:
     void delete_player_state(const std::string& stateName)
     {
         for (auto it = m_PlayerStates.begin(); it != m_PlayerStates.end();)
@@ -84,7 +90,6 @@ public:
 
     }
 
-private:
     FStateManager() {};
 
 private:
