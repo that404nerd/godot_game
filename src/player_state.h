@@ -22,7 +22,6 @@ public:
 
     void _update(double delta, Player& player);
     
-
 public:
     std::string get_state_name() { return m_StateID; }
 
