@@ -16,6 +16,8 @@ void PlayerState::_update(double delta, Player& player)
     if(static_cast<int>(m_CurrentSubState) & static_cast<int>(SubStates::Falling)) {
         m_PlayerVel.y -= Globals::DOWN_GRAVITY * delta;
     }
+
+    print_line("Player y-vel: ", m_PlayerVel.y);
     
     player.set_velocity(m_PlayerVel);
 

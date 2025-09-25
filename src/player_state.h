@@ -25,11 +25,10 @@ class PlayerState {
 public:
     // All the other states (sub-states)
     enum class SubStates {
+        NONE = 0,
         Idle = BIT(0),
         Falling = BIT(1),
         Dash = BIT(2),
-
-        NONE = -1
     };
 
     PlayerState(const std::string& stateName) : m_StateName(stateName) {};

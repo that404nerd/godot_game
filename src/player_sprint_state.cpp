@@ -18,7 +18,7 @@ PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Play
         return memnew(PlayerCrouchState);
     } else if(Input::get_singleton()->is_action_just_pressed("jump")) {
         // queue a jump request because input function runs only during inputs (lol)
-         if(get_current_substate() == SubStates::Falling) {
+        if(static_cast<int>(get_current_substate()) & static_cast<int>(SubStates::Falling)) {
             m_JumpRequested = true;
         } else {
             return memnew(PlayerJumpState);

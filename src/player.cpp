@@ -18,6 +18,8 @@ void Player::_ready()
     m_PlayerCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D"));
     m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
 
+    m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
+
     m_StandingCollisionShape = get_node<CollisionShape3D>(NodePath("StandingCollisionShape"));
 
     FStateManager::GetStateManagerInstance()._initialize_manager(*this);

@@ -7,7 +7,6 @@ void PlayerJumpState::_enter(Player& player)
 {
     m_IsJumpRequested = true;
     m_IsJumpOver = false;
-    m_JumpBufferTimer = 0.2f;
 
     FStateManager::GetStateManagerInstance().add_player_state(this);
 }
@@ -26,22 +25,22 @@ PlayerState* PlayerJumpState::_physics_update(double delta, Player& player)
 void PlayerJumpState::_handle_ground_physics(double delta, Player& player)
 {
     m_PlayerVel = player.get_velocity();
-    
-    if(m_JumpBufferTimer > 0.0f) {
+
+    player.get_jump_buffer_timer()->start();
+
+    if(m_IsJumpRequested && player.get_jump_buffer_timer()->get_time_left() > 0.0f) {
         m_PlayerVel.y = Globals::JumpSpeed;
         m_IsJumpRequested = false;
-        m_JumpBufferTimer -= delta;
+        player.get_jump_buffer_timer()->stop();
     } else {
         m_IsJumpOver = true;
     }
-    
+
+    // Only mark jump over after player starts descending
     if(m_IsJumpOver) {
         m_CurrentSubState = SubStates::Falling;
-        m_JumpBufferTimer = 0.0f;
-    } else {
-        m_CurrentSubState = SubStates::NONE;
     }
-    
+
     player.set_velocity(m_PlayerVel);
 }
 
@@ -63,8 +62,6 @@ void PlayerJumpState::_handle_air_physics(double delta, Player& player)
         playerHorizVel = playerHorizVel.normalized() * Globals::MaxAirMoveSpeed;
     }
 
-    print_line("Jump buffer timer: ", m_JumpBufferTimer);
-    
     // if(Input::get_singleton()->is_action_just_pressed("dash")) {
     //     m_CurrentSubState = SubStates::Dash;
     //     m_PlayerVel.x = Math::lerp(m_PlayerVel.x, m_PlayerVel.x * Globals::AirDashSpeed, (float)delta * 5.0f);

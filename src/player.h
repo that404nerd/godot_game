@@ -38,6 +38,7 @@ public:
 public:
     Marker3D* get_camera_anchor() { return m_CameraAnchor; }
     Node3D* get_player_head() { return m_PlayerHead; }
+    Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
 
     float get_player_move_speed() { return Input::get_singleton()->is_action_pressed("crouch") ? Globals::CrouchSpeed : Globals::SprintSpeed; }
 
@@ -49,6 +50,8 @@ protected:
     Node3D* m_PlayerHead = nullptr;
     Node3D* m_CameraControllerNode = nullptr;
     Marker3D* m_CameraAnchor = nullptr;
+
+    Timer* m_JumpBufferTimer = nullptr;
 
     // Get Collision shapes
     CollisionShape3D* m_StandingCollisionShape = nullptr;
