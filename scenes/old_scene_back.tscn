@@ -1,0 +1,253 @@
+[gd_scene load_steps=7 format=3 uid="uid://b7q40nkdb1pyv"]
+
+[ext_resource type="Material" uid="uid://cf4n6tm87a4jw" path="res://assets/materials/ground.tres" id="1_1yp0k"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_53d2d"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r1jo7"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1yp0k"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_0wfyh"]
+sky_material = SubResource("ProceduralSkyMaterial_1yp0k")
+
+[sub_resource type="Environment" id="Environment_53d2d"]
+background_mode = 1
+sky = SubResource("Sky_0wfyh")
+tonemap_mode = 4
+volumetric_fog_density = 0.0336
+
+[node name="Node3D" type="Node3D"]
+
+[node name="LevelSkeleton" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="PlatformFences" type="Node3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.65897, -0.198819, 0.526411)
+
+[node name="Fence1" type="MeshInstance3D" parent="LevelSkeleton/PlatformFences"]
+transform = Transform3D(3.33872, 0, 0, 0, -5.79303e-09, -5.64518, 0, 0.198392, -3.69391e-07, -5.23729, 7.9514, 34.6704)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/PlatformFences/Fence1"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/PlatformFences/Fence1/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="Fence2" type="MeshInstance3D" parent="LevelSkeleton/PlatformFences"]
+transform = Transform3D(3.33872, 0, 0, 0, -5.79303e-09, -5.64518, 0, 0.198392, -3.69391e-07, -1.72812, 7.9514, 34.6704)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/PlatformFences/Fence2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/PlatformFences/Fence2/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="Fence3" type="MeshInstance3D" parent="LevelSkeleton/PlatformFences"]
+transform = Transform3D(3.33872, 0, 0, 0, -5.79303e-09, -5.64518, 0, 0.198392, -3.69391e-07, 1.68958, 7.9514, 34.6704)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/PlatformFences/Fence3"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/PlatformFences/Fence3/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="Fence4" type="MeshInstance3D" parent="LevelSkeleton/PlatformFences"]
+transform = Transform3D(3.33872, 0, 0, 0, -5.79303e-09, -5.64518, 0, 0.198392, -3.69391e-07, 5.18753, 7.9514, 34.6704)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/PlatformFences/Fence4"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/PlatformFences/Fence4/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="ArenaWalls" type="Node3D" parent="LevelSkeleton"]
+
+[node name="BottomPlatform" type="MeshInstance3D" parent="LevelSkeleton/ArenaWalls"]
+transform = Transform3D(93.6888, 0, 0, 0, 0.271216, 0, 0, 0, 121.413, -24.3265, 2.73073, -0.391268)
+material_override = ExtResource("1_1yp0k")
+mesh = SubResource("BoxMesh_53d2d")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/ArenaWalls/BottomPlatform"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/ArenaWalls/BottomPlatform/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="LeftWall" type="MeshInstance3D" parent="LevelSkeleton/ArenaWalls"]
+transform = Transform3D(95.6319, 0, 0, 0, -8.74228e-09, -30.817, 0, 0.2, -1.34705e-06, -24.3346, 16.2036, -57.3858)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../../../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/ArenaWalls/LeftWall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/ArenaWalls/LeftWall/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="RightWall" type="MeshInstance3D" parent="LevelSkeleton/ArenaWalls"]
+transform = Transform3D(94.7984, 0, 0, 0, -8.74228e-09, -32.1255, 0, 0.2, -1.40425e-06, -24.6448, 15.8322, 58.8584)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../../../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/ArenaWalls/RightWall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/ArenaWalls/RightWall/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="FrontWall" type="MeshInstance3D" parent="LevelSkeleton/ArenaWalls"]
+transform = Transform3D(-5.10593e-06, 0.2, -1.33131e-06, 0, -8.74228e-09, -30.4569, -116.81, -8.74228e-09, -5.00111e-14, 21.8901, 16.1048, 0.462364)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../../../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/ArenaWalls/FrontWall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/ArenaWalls/FrontWall/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="BackWall" type="MeshInstance3D" parent="LevelSkeleton/ArenaWalls"]
+transform = Transform3D(-5.10593e-06, 0.2, -1.34421e-06, 0, -8.74228e-09, -30.7519, -116.81, -8.74228e-09, -5.04954e-14, -70.9042, 16.5207, 0.462364)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../../../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/ArenaWalls/BackWall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/ArenaWalls/BackWall/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="TopWall" type="MeshInstance3D" parent="LevelSkeleton/ArenaWalls"]
+transform = Transform3D(94.6889, 0, 0, 0, 0.2, 0, 0, 0, 117.196, -23.9499, 31.4128, -0.0743256)
+gi_mode = 2
+mesh = SubResource("BoxMesh_53d2d")
+skeleton = NodePath("../../../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/ArenaWalls/TopWall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/ArenaWalls/TopWall/StaticBody3D"]
+shape = SubResource("BoxShape3D_r1jo7")
+debug_fill = false
+
+[node name="StairwayPlatform" type="CSGPolygon3D" parent="LevelSkeleton"]
+transform = Transform3D(0.964808, 0, 0, 0, 0.662645, 0, 0, 0, 0.991961, -31.8668, 4.39623, 58.7554)
+polygon = PackedVector2Array(-11.8684, -5.26779, 0, 1, 40.1891, 0.808559, 40.6959, -5.49808)
+depth = 24.08
+
+[node name="StairwayUpperPlatform" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 0.721797, 0, 0, 0, 12.3146, 14.2643, 6.47442, 44.7397)
+size = Vector3(15.2413, 15.2025, 2.26946)
+
+[node name="StairwayUpperPlatform2" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 0.721797, 0, 0, 0, 12.3146, 14.2643, 3.06624, 4.80107)
+size = Vector3(15.2413, 5.8649, 4.2268)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -64.1378, 21.1547, 9.36612)
+size = Vector3(11, 21, 14)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -63.9106, 20.9852, -16.7495)
+size = Vector3(11, 21, 14)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.3323, 13.396, -4.78232)
+size = Vector3(49.1417, 0.89856, 19.5657)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.4377, 13.3938, -17.3167)
+size = Vector3(9.1111, 0.921028, 10.176)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 0.936666, -0.350224, 0, 0.350224, 0.936666, -52.0859, 15.6278, -28.2211)
+size = Vector3(7.9902, 0.735054, 12.3256)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.0943, 17.7322, -40.5324)
+size = Vector3(8.02302, 0.809849, 13.2752)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -20.7531, 17.858, -41.8039)
+size = Vector3(10.6669, 0.532456, 54.755)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -63.5424, 24.4493, -51.8658)
+size = Vector3(11, 14.2642, 14.7365)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -63.5424, 9.1725, -51.8658)
+size = Vector3(11, 16.4741, 14.7365)
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 14.2618, 9.52811, -39.2984)
+size = Vector3(36.1348, 17.1626, 15.2398)
+
+[node name="CSGBox3D11" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.5904, 7.40501, -3.62229)
+size = Vector3(9.43014, 12.9114, 17.2456)
+
+[node name="CSGBox3D12" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -11.9633, 17.9006, -35.8243)
+size = Vector3(1.53611, 0.617682, 1.86385)
+
+[node name="CSGBox3D13" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -24.7132, 17.9006, -35.8243)
+size = Vector3(1.53611, 0.617682, 1.86385)
+
+[node name="CSGBox3D14" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -24.7132, 24.7861, -35.7537)
+size = Vector3(1.39501, 13.0889, 1.86385)
+
+[node name="CSGBox3D15" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -11.9938, 24.8815, -35.7537)
+size = Vector3(1.39501, 13.2797, 1.86385)
+
+[node name="CSGBox3D16" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -18.3844, 23.0709, -35.7537)
+size = Vector3(1.39501, 7.06158, 11.0788)
+
+[node name="StairwayUpperPlatform4" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 0.721797, 0, 0, 0, 12.3146, -2.23691, 7.0243, -11.9713)
+size = Vector3(6.91486, 16.6949, 0.412567)
+
+[node name="StairwayUpperPlatform5" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 0.721797, 0, 0, 0, 12.3146, 3.94418, 4.80437, -11.9713)
+size = Vector3(5.43741, 10.5213, 0.412567)
+
+[node name="StairwayUpperPlatform6" type="CSGBox3D" parent="LevelSkeleton"]
+transform = Transform3D(1, 0, 0, 0, 0.721797, 0, 0, 0, 12.3146, -2.23691, 7.011, 2.41271)
+size = Vector3(6.91486, 16.658, 0.412567)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_53d2d")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.5742, 19.3641, 24.1596)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 250.0
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.3109, 25.0541, -29.2907)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 250.0

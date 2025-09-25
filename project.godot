@@ -30,7 +30,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/func_godot/plugin.cfg")
 
 [input]
 
@@ -80,4 +80,6 @@ common/physics_interpolation=true
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=4
+lights_and_shadows/positional_shadow/soft_shadow_filter_quality=4
 anti_aliasing/quality/msaa_3d=3

@@ -9,11 +9,11 @@ class PlayerJumpState : public PlayerState {
 
 public:
 
-    PlayerJumpState() : PlayerState("Jump") {};
+    PlayerJumpState() : PlayerState("Jumping") {}; // This will be the default state std::string
 
     void _enter(Player& player) override;
 
-    PlayerState* _handle_input(const Ref<InputEvent>& event, Player& player) override;
+    PlayerState* _handle_input(const Ref<InputEvent>& event, Player& player) { return nullptr; };
     PlayerState* _physics_update(double delta, Player& player) override;
 
     void _handle_ground_physics(double delta, Player& player) override;
@@ -22,4 +22,6 @@ public:
 private:
     bool m_IsJumpRequested;
     bool m_IsJumpOver;
+
+    float m_JumpBufferTimer;
 };

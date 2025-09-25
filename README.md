@@ -4,7 +4,7 @@
 
 ### Open the project using the project.godot file in the root directory of the project
 
-- Debugging works normally. Just use lldb extension to debug.
+- F5 to debug in VSCode.
 
 ### Build & Install
 
@@ -18,6 +18,15 @@ cmake --install FPSProject-build
 ```
 
 - To recompile any code changes from the src folder just run the following commands (inside the root directory of the project):
+
 ```bash
+sh build.sh
+```
+
+- Incase if you want to recompile your entire project maybe due to the addition of new files or some other reason (inside the root directory of the project):
+
+```bash
+sh recompile.sh
+# This will not build the project, to build it:
 sh build.sh
 ```

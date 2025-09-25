@@ -88,25 +88,3 @@ endfunction()
 if ( NOT MSVC AND ${PROJECT_NAME_UPPERCASE}_WARN_EVERYTHING )
     set_warn_everything()
 endif()
-
-# Treat warnings as errors
-function( set_warning_as_error )
-    message( STATUS "[${PROJECT_NAME}] Treating warnings as errors")
-
-    if ( CMAKE_VERSION VERSION_GREATER_EQUAL "3.24" )
-        set_target_properties( ${PROJECT_NAME}
-            PROPERTIES
-                COMPILE_WARNING_AS_ERROR ON
-        )
-    else()
-        target_compile_options( ${PROJECT_NAME}
-            PRIVATE
-            $<${compiler_is_msvc}:/WX>
-            $<$<OR:${compiler_is_clang},${compiler_is_gnu}>:-Werror>
-        )
-    endif()
-endfunction()
-
-if ( ${PROJECT_NAME_UPPERCASE}_WARNING_AS_ERROR )
-    set_warning_as_error()
-endif()

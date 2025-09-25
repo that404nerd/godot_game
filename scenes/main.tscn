@@ -1,203 +1,88 @@
-[gd_scene load_steps=7 format=3 uid="uid://dscvjpepl0ukv"]
+[gd_scene load_steps=13 format=4 uid="uid://dscvjpepl0ukv"]
 
 [ext_resource type="PackedScene" uid="uid://2c0bf6m5ugct" path="res://scenes/player.tscn" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="3_tbgi4"]
+[ext_resource type="Resource" uid="uid://bkhxcqsquw1yg" path="res://addons/func_godot/func_godot_default_map_settings.tres" id="4_tefeu"]
+[ext_resource type="Texture2D" uid="uid://cyg2snr1w5xw5" path="res://addons/func_godot/textures/default_texture.png" id="5_o6xl0"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jyhfs"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
 ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
 
-[sub_resource type="Sky" id="Sky_ig7tw"]
-sky_material = SubResource("ProceduralSkyMaterial_0wfyh")
+[sub_resource type="Sky" id="Sky_tbgi4"]
+sky_material = SubResource("ProceduralSkyMaterial_jyhfs")
 
-[sub_resource type="Environment" id="Environment_sugp2"]
+[sub_resource type="Environment" id="Environment_tefeu"]
 background_mode = 2
-sky = SubResource("Sky_ig7tw")
+sky = SubResource("Sky_tbgi4")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="BoxMesh" id="BoxMesh_o5qli"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jyhfs"]
+albedo_texture = ExtResource("5_o6xl0")
+metallic_specular = 0.0
+texture_filter = 2
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_0wfyh"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_tbgi4"]
+_surfaces = [{
+"aabb": AABB(-8.25, -0.5, -5.25, 24.75, 7.5, 32.25),
+"attribute_data": PackedByteArray("bgCYv/j/e8AA/gvAQPkEQcDLPz74/3vAMPo/PpTye8BA+QvAQPoEQUDof72A/Yc/UP3/vvcxaj8A7CfAW5ICQaT9J8DdogJBsP/DQNqiBEEAAMRAAACAPgIAxED093++APcnwAAAgD7TAdC/AgCEwCX/40ADAIDAAADkQP//f8AAAMRA//8DQf//J8AAAAJBBgAowP7/AUGg/ifAAPkBQQAA5EAAAIDAHPd/vv//g8AABoC+APiDwJL//74wAGA/AADEQAAABEFE9+NAAACAPsD9z78AAIA+MA6AviTvf74BAORAAACAPgD+40AAAIA+rQKAvtP6f74f83++AACAvgAA5EAAAIC+AACAwAAAgL4AAARBAACAvgAABEEAAIA+AACAwAAAgD4AADDA/v8/P///L8CA/4fA9P9/voD/h8ABAIC+AABAPxQAgL4AAFxBCACAvgAAwEABADDAAADAQAIAMMAAAFxBAgBwwAAAXEH7/58/AABYQf7/nz+o/7dAAgBwwKj/v0ACAHDAAABcQQIAcMCo/79A/v+fP6j/t0D7/58/AABYQQIAMMAAAFhBAQAwwAAAuEAIAIC+AAC4QBMAgL4AAFhBAQCAvgAAQD/0/3++AACIwP//L8AAAIjAAAAwwP7/Pz/SekHAJY4gP4N6QcAkjiA/gndBwBGPID/UUmg+GhCEQNRSaD4dEoRA1CJoPgIShEDTekHAZCUoQN5SaD4UjmA/1FJoPq4QhECmeEHAvY4gPyWZWMBi0j5ATLIJvrxoj0DOsQm+vmiPQCWZWMA2aMdAqixOPgMA8EA6K04+AwDwQDUdQ8AEAOhAsixOPgQAoEDrAIC+AAD4QAsAgL4AAPhACACAvvj/r0ABAGDA+P+vQAEAYMAKALBA/P8/PwAA+ED+/7dAAQDwQFIAgEB1AKBAAN5/QKACoED8/z8/AwCwQP//t0ABAOhAigBAP///90D6/z8/AAD4QPj//z4AALBAAAAgQAAAqECbA4C+AAD4QIH/X8BUALBAAQBgwFUAsEABAGDAAAD4QJHgRsD+dVE/kuBGwPcsukCe0RE+9yy6QAAAYMADAKA/CQCAvgEAyEAhAIC+BACgPw=="),
+"format": 34359742487,
+"index_count": 162,
+"index_data": PackedByteArray("AAABAAIAAwAEAAUABgAHAAgABgAIAAkACgALAAwADQAOAA8ADQAPABAADQAQABEADQARABIADQASABMAFAAVABYAFAAWABcAFAAXABgAGQAaABsAHAAdAB4AHAAeAB8AHAAfACAAIQAiACMAIQAjACQAJQAmACcAJQAnACgAKQAqACsAKQArACwALQAuAC8ALQAvADAAMQAyADMAMQAzADQANQA2ADcANQA3ADgAOQA6ADsAOQA7ADwAPQA+AD8APQA/AEAAPQBAAEEAPQBBAEIAPQBCAEMARABFAEYARwBIAEkARwBJAEoASwBMAE0ASwBNAE4ATwBQAFEATwBRAFIATwBSAFMAVABVAFYAVABWAFcAVABXAFgAWQBaAFsAWQBbAFwAWQBcAF0AXgBfAGAAXgBgAGEAYgBjAGQAZQBmAGcA"),
+"material": SubResource("StandardMaterial3D_jyhfs"),
+"name": "__TB_empty",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 104,
+"vertex_data": PackedByteArray("/P8DwQAAAL9uAFDAQPmBQQAAAL8A/qfA/P8DwUDu/z4gGgC/SvkDwQAAAD/oAgC/QPqBQQDo/75A+afAAPvfPwAAAD8I/X+/QATgPwEAAD9Q/X+/gO+BQQC2/74A7KfAAgCCQUj9/76k/afA//+DQQAAAD+w/0NBAQCEQQAAAL8AAERBAQCEQfT3/z4CAERBCQCCQQAAAL8A96fAAgAEwQAAAL/TAVDAAwAAwQAAAL8l/2NB////wAAAAL8AAGRB//+DQQAAAL8AAERBAACCQQAAAL///6fA/v+BQQAAAL8GAKjAAPmBQQAAAL+g/qfAAAAAwQAAAD8AAGRB//8DwQAAAD8c9/++APgDwQAAAD8ABgC/MADgPwAAAD+S/3+/AACEQQAAAD8AAERBJgAAwQAAAL9E92NBBAAEwQAAAL/A/U/ABAAEwSTv/z4wDgC/////wAAAAL8BAGRBCAAAwQAAAL8A/mNB//8DwdP6/z6tAgC//f8DwQAAAD8f8/++/v//wAAAAD8AAGRBAAAAwQAAAD8AAGRBAACEQQAAAD8AAERBAACEQQAAAL8AAERBAAAAwQAAAL8AAGRBAAAAQAAAsED+/y9BAP//wAAAsED4/zdBAP//wAAAAD/4/zdBAAAAQAAAAD/+/y9BAAAAwQAAAD8AANhBAAAAwQAAAD8AADhBAAAAwQAAsEAAADhBAAAAwQAAsEAAANhBAAAAwQAAAD8AANhBAAAAQAAAAD8AANRBAAAAQAAAAD+o/y9BAAAAwQAAAD+o/zdBAAAAwQAAsEAAANhBAAAAwQAAsECo/zdBAAAAQAAAsECo/y9BAAAAQAAAsEAAANRBAAAAQAAAsEAAANRBAAAAQAAAsEAAADBBAAAAQAAAAD8AADBBAAAAQAAAAD8AANRBAAAAQAAAAD8EANRBAAAAwQAAAD8EANhBAAAAwQAAsEAEANhBAAAAQAAAsEAEANRBGADAPwAA4EAaADBBFwDAP7H/30AZADBBBAHAP7D830AOADBBWP4HQQAAAD9PACBBWwAIQQAAAD8JACBBQAAIQQAYAD8QACBB4QGwQAAA4EDy/ydBAgAAQAAAAD8dADBB7P4HQQAAAD9HACBBsADAP9T930AdADBB7ACwQAAA4EDc/ydBAAAIQQAQAD/w/x9BAgAIQcEPAD/w/x9Bev8/QQAA4EBC/2dBz/8/QQAAAD8DAHBB0P8/QbgAAD8DAHBB0P8/QQAA4EAEAGhB0P8HQQAAAD8EACBBAQAAQOAAAD8AAHhBBQAAQAAAAD8AAHhBBQAAQAAAAD/4/y9BCgDAPwAA4ED4/y9BCgDAPwAA4EAKADBBAQAAQAAAAD8AAHhB//8/QQAAAD8AAHBBUgAIQQAAAD91ACBBAO8HQQAAAD+gAiBBAAAAQAAAAD8DADBBAABAQQAA4EAAAGhBSAAAQAAA4ED//3dBAAAAQAAA4EAAAHhBAADAPwAA4EAAADBBAQCwQAAA4EAAAChB3P//P5ADAD8AAHhBJgDAP4D/30BUADBBJwDAPwAA4EBVADBB3P//PwAA4EAAAHhBXAcAQAAA4EDp/3dBDgBAQQAA4EAWAGhBDgBAQaASAD8AAHBBBAAAQAAA4EAAAHhBAQBAQQAAAD8AAHBBBAAAQCAAAD8AAHhB3VtE/f9//7/dW0T9/3//v91bRP3/f/+/n2KY/v9//7+fYpj+/3//v59imP7/f/+/q4z/+f9//7+rjP/5/3//v6uM//n/f/+/q4z/+f9//7///82B/3//P///zYH/f/8////Ngf9//z//fwAA/3//P/9/AAD/f/8//38AAP9//z//fwAA/3//P/9/AAD/f/8//38AAP9//z//fwAA/3//P/9/////f/+//3////9//7//f////3//v/9/////f/+//3////9//7+CBjl7/3//v4IGOXv/f/+/ggY5e/9//78iAv9//3//vyIC/3//f/+/IgL/f/9//78iAv9//3//vyIC/3//f/+/qIn/f////7+oif9/////v6iJ/3////+/qIn/f////78AAOb5lPxKvgAA5vmU/Eq+AADm+ZT8Sr4AAOb5lPxKvgAA/3//f7VBAAD/f/9/tUEAAP9//3+1QQAA/3//f7VB/38AAJR8/7//fwAAlHz/v/9/AACUfP+//38AAJR8/7//f///lHz/P/9///+UfP8//3///5R8/z//f///lHz/P////3//f0m+////f/9/Sb7///9//39Jvv///3//f0m+F4b/f5T8tEEXhv9/lPy0QReG/3+U/LRBF4b/f5T8tEEmAgPym/xFviYCA/Kb/EW+JgID8pv8Rb4mAgPym/xFviYCA/Kb/EW+JgID8pv8Rb4mAgPym/xFvkwB5BCS/E++TAHkEJL8T75MAeQQkvxPvp7oI9g6/Rq+nugj2Dr9Gr6e6CPYOv0avp7oI9g6/Rq+EPz7SNN/mL4Q/PtI03+YvhD8+0jTf5i+EPz7SNN/mL4kCdp2QoCyQSQJ2nZCgLJBJAnadkKAskEkCdp2QoCyQSQJ2nZCgLJB/38AAJR8/7//fwAAlHz/v/9/AACUfP+//38AAJR8/7//fwAAlHz/v/9///+UfP8//3///5R8/z//f///lHz/P/9///+UfP8//3///5R8/z/MDP9//n+yQcwM/3/+f7JBzAz/f/5/skHMDP9//n+yQd+KXYhZ/LBB34pdiFn8sEHfil2IWfywQReG/3+U/LRBF4b/f5T8tEEXhv9/lPy0QQ==")
+}]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_tefeu"]
+points = PackedVector3Array(-8, -0.499994, 14.25, -8, 0.5, 14.25, -8, -0.5, 14.25, -8, -0.5, 14.25, 16.5, 0.5, 12.25, 16.5, 0.5, 12.25, 16.5, -0.5, 12.25, 16.5, 0.5, 12.25, -8, -0.5, 14.25, -8.25, 0.5, -0.499998, -8.25, 0.5, -0.5, -8.25, 0.5, -0.5, -8.25, -0.5, -3.25, 1.75, 0.5, -1, -8.24999, 0.5, -0.5, 16.25, -0.5, -5.25, 16.25, -0.5, -5.25, 16.25, -0.5, -5.25, 16.25, -0.5, -5.25, 16.25, -0.5, -5.25, 16.25, -0.5, -5.25, 16.25, -0.5, -5.25, 16.25, -0.499999, -5.24999)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_o6xl0"]
+points = PackedVector3Array(2, 5.5, 26.5, 2, 0.5, 26.5, -8, 5.5, 27, -8, 0.5, 27, 2, 5.5, 11, 2, 0.5, 11, -8, 5.5, 11.5, -8, 0.5, 11.5)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_tipki"]
+points = PackedVector3Array(2.00001, 7, 15.5, 2, 7, 15.5, 2, 0.5, 15.5, 2, 0.5, 15.5, 2, 0.5, 15.5, 2, 7, 15.5, 12, 7, 14.5, 12, 0.5, 15, 12, 7, 14.5, 1.5, 7, 11, 1.5, 7, 11, 1.5, 7, 11, 2, 0.5, 15.5, 1.5, 7, 11, 5.5, 7, 10.5, 2, 0.5, 11, 8.5, 0.5, 10, 8.5, 0.5, 10, 8.5, 0.5, 10)
 
 [node name="Game" type="Game"]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_sugp2")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.766044, 0.55667, -0.321394, 0, 0.5, 0.866025, 0.642788, -0.663414, 0.383022, 7.6, 11.31, 0)
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tefeu")
+
 [node name="Player" parent="." instance=ExtResource("1_o5qli")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.30679, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(118.717, 0, 0, 0, 0.271216, 0, 0, 0, 121.413, -13.3584, 1.00031, 0.462364)
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(129.789, 0, 0, 0, -8.74228e-09, -39.6671, 0, 0.2, -1.7339e-06, -6, 20.0003, -57.3858)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D2"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(129.789, 0, 0, 0, -8.74228e-09, -39.1186, 0, 0.2, -1.70993e-06, -6, 20.1923, 58.8584)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D3"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D3/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
-transform = Transform3D(-5.10593e-06, 0.2, -1.7145e-06, 0, -8.74228e-09, -39.2232, -116.81, -8.74228e-09, -6.44056e-14, 44.6361, 20.0003, 0.462364)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D4"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D4/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
-transform = Transform3D(-5.10593e-06, 0.2, -1.68901e-06, 0, -8.74228e-09, -38.64, -116.81, -8.74228e-09, -6.34479e-14, -70.9042, 20.4055, 0.462364)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D5"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D5/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="MeshInstance3D6" type="MeshInstance3D" parent="."]
-transform = Transform3D(129.965, 0, 0, 0, 0.2, 0, 0, 0, 117.196, -6, 39.5846, 126.176)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D6"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D6/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="LevelSkeleton" type="CSGCombiner3D" parent="."]
-use_collision = true
-
-[node name="CSGBox3D" type="CSGBox3D" parent="LevelSkeleton"]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -53.0374, 2.49796, 31.2298)
-use_collision = true
-
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="LevelSkeleton"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.4333, 5.47458, 58.3366)
-polygon = PackedVector2Array(-13.1276, -5.5934, 0, 1, 39.7269, 0.638943, 40.6959, -5.49808)
-depth = 24.08
-smooth_faces = true
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="LevelSkeleton/CSGPolygon3D"]
-transform = Transform3D(3.36578, 0, 0, 0, -8.74228e-09, -5.68758, 0, 0.2, -2.48612e-07, 27.4164, 3.54492, -23.9342)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D3"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D3/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="LevelSkeleton/CSGPolygon3D"]
-transform = Transform3D(3.36578, 0, 0, 0, -8.74228e-09, -5.68758, 0, 0.2, -2.48612e-07, 30.954, 3.54492, -23.9342)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D4"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D4/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="LevelSkeleton/CSGPolygon3D"]
-transform = Transform3D(3.36578, 0, 0, 0, -8.74228e-09, -5.68758, 0, 0.2, -2.48612e-07, 34.3994, 3.54492, -23.9342)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D5"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D5/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="MeshInstance3D6" type="MeshInstance3D" parent="LevelSkeleton/CSGPolygon3D"]
-transform = Transform3D(3.36578, 0, 0, 0, -8.74228e-09, -5.68758, 0, 0.2, -2.48612e-07, 37.9257, 3.54492, -23.9342)
-gi_mode = 2
-mesh = SubResource("BoxMesh_o5qli")
-skeleton = NodePath("../..")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D6"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelSkeleton/CSGPolygon3D/MeshInstance3D6/StaticBody3D"]
-shape = SubResource("BoxShape3D_0wfyh")
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="LevelSkeleton"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 16.7598, 14.4374, 6.86957, 45.5248)
-size = Vector3(14.4536, 11.5203, 1.34933)
-
-[node name="CSGBox3D3" type="CSGBox3D" parent="LevelSkeleton"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 16.7598, 14.4374, 6.86957, 28.0134)
-size = Vector3(14.4536, 11.5203, 0.744492)
-
-[node name="CSGBox3D4" type="CSGBox3D" parent="LevelSkeleton"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 16.7598, 14.4374, 4.14792, 18.5007)
-size = Vector3(14.4536, 6.07697, 0.39373)
-
-[node name="CSGBox3D5" type="CSGBox3D" parent="LevelSkeleton"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 16.7598, 14.4374, 4.14792, 15.9538)
-size = Vector3(14.4536, 6.07697, 0.697654)
-
-[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="LevelSkeleton"]
-transform = Transform3D(-0.0127467, 0, 12.2581, 0, 6.15817, 0, -8.59187, 0, -0.0181858, 14.3225, 1.08251, 3.1472)
-mode = 1
-spin_degrees = 360.0
-spin_sides = 5
-smooth_faces = true
-
-[node name="CSGPolygon3D4" type="CSGPolygon3D" parent="LevelSkeleton"]
-transform = Transform3D(4.1581, 0, 9.74369, 0, 6.15817, 0, -7.59146, 0, 5.33694, 19.5819, 1.08251, -7.54539)
-polygon = PackedVector2Array(0.16661, 0.2298, 0, 1, 1, 1, 0.62113, -0.417322)
-mode = 1
-spin_degrees = 360.0
-spin_sides = 3
-smooth_faces = true
-
-[node name="CSGBox3D6" type="CSGBox3D" parent="LevelSkeleton"]
-transform = Transform3D(1.75079, 0, 0, 0, 0.155988, 0, 0, 0, 27.575, -21.5657, 13.8516, 9.20648)
-size = Vector3(14.4536, 6.07697, 0.697654)
-
-[node name="CSGBox3D7" type="CSGBox3D" parent="LevelSkeleton"]
-transform = Transform3D(-0.0347345, -0.360932, 0, 0.719724, -0.0174189, 0, 0, 0, 8.75549, -10.0209, 7.25432, 8.35546)
-size = Vector3(16.9122, 2.44754, 1.5031)
-
-[node name="CSGBox3D8" type="CSGBox3D" parent="LevelSkeleton"]
-transform = Transform3D(-0.0347345, -0.360932, 0, 0.719724, -0.0174189, 0, 0, 0, 8.75549, -32.6046, 7.25432, 8.35546)
-size = Vector3(16.9122, 2.44754, 1.5031)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.551823, 4.68776, 0.808163)
 
 [node name="TextDebugLayer" type="CanvasLayer" parent="."]
 
 [node name="FPSLabel" type="Label" parent="TextDebugLayer"]
 offset_right = 277.0
 offset_bottom = 81.0
+
+[node name="FuncGodotMap" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.53867, 0)
+script = ExtResource("3_tbgi4")
+local_map_file = "uid://7ithmi2yjk0u"
+map_settings = ExtResource("4_tefeu")
+metadata/_custom_type_script = "uid://cwu5cf7a0awcd"
+
+[node name="entity_0_worldspawn" type="StaticBody3D" parent="FuncGodotMap"]
+collision_mask = 0
+
+[node name="entity_0_mesh_instance" type="MeshInstance3D" parent="FuncGodotMap/entity_0_worldspawn"]
+mesh = SubResource("ArrayMesh_tbgi4")
+
+[node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn"]
+shape = SubResource("ConvexPolygonShape3D_tefeu")
+
+[node name="entity_0_brush_1_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn"]
+shape = SubResource("ConvexPolygonShape3D_o6xl0")
+
+[node name="entity_0_brush_2_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn"]
+shape = SubResource("ConvexPolygonShape3D_tipki")

@@ -12,9 +12,13 @@ void PlayerState::_update(double delta, Player& player)
     if(!player.is_on_floor()) {
        m_PlayerVel.y -= gravity * delta;
     }
+
+    if(static_cast<int>(m_CurrentSubState) & static_cast<int>(SubStates::Falling)) {
+        m_PlayerVel.y -= Globals::DOWN_GRAVITY * delta;
+    }
+    
     player.set_velocity(m_PlayerVel);
-    
-    
+
     if (player.is_on_floor())
     {
         _handle_ground_physics(delta, player);

@@ -9,6 +9,7 @@ namespace Globals {
     inline const float SprintSpeed = 15.0f;
     
     inline const float DashSpeed = 35.0f;
+    inline const float AirDashSpeed = 50.0f;
     inline const float SideTiltAngle = 5.0f;
     // inline float SlideJumpAngle = 40.0f;
     // inline float SlideSpeed = 10.0f;
@@ -22,7 +23,7 @@ namespace Globals {
     inline const float MAX_JUMP_BUFFER_TIME = 0.2f;
     inline const float HEADBOB_MOVE_AMOUNT = 0.05f;
     inline const float HEADBOB_FREQUENCY = 1.2f;
-    inline const float DOWN_GRAVITY = 18.0f;
+    inline const float DOWN_GRAVITY = 15.0f;
 
     // Friction & Bhop variables 
     inline const float GroundAccel = 14.0f;

@@ -7,8 +7,6 @@
 #include "player_state.h"
 #include "player.h"
 
-// TODO: Access the previous state in some way
-
 class FStateManager {
 public:
 
@@ -25,32 +23,46 @@ public:
         m_CurrentPlayerState->_enter(player); // Call the default state's enter function
     }
 
-    // This toggles states based on the input
-    void toggle_states(const Ref<InputEvent>& event, double delta, Player& player)
+    // Handles manual and automatic transition of states
+    void transition_states(Player& player, double delta, const Ref<InputEvent>& event = nullptr, PlayerState* playerState = nullptr, bool isTransition = false)
     {
-        PlayerState* newState = m_CurrentPlayerState->_handle_input(event, player);
+        // Store old state temporarily
+        PlayerState* oldState = m_CurrentPlayerState;
 
-        if(newState == nullptr) return;
+        if(isTransition) {
+            // Manual transition: force new state
+            m_CurrentPlayerState = playerState;
+            m_CurrentPlayerState->_enter(player);
 
-        delete_player_state(m_CurrentPlayerState->get_state_name());
-        memdelete(m_CurrentPlayerState);
+            m_CurrentPlayerState->_handle_ground_physics(delta, player);
+        } else {
+            // Automatic transition: let current state handle input
+            PlayerState* newState = m_CurrentPlayerState->_handle_input(event, player);
+            if(newState == nullptr) return; // No transition
 
-        m_CurrentPlayerState = newState;
+            m_CurrentPlayerState = newState;
+            m_CurrentPlayerState->_enter(player);
+            m_CurrentPlayerState->_update(delta, player);
+        }
 
-        m_CurrentPlayerState->_enter(player);
-        m_CurrentPlayerState->_update(delta, player); // This calls the default update from the actual state class, yea the delta here is weird but it's required for the transition
+        // Delete the old state
+        if(oldState) {
+            delete_player_state(oldState->get_state_name());
+            memdelete(oldState);
+        }
     }
+
 
     // This will handle the physics related transitions
     void _physics_update(double delta, Player& player)
     {
         PlayerState* newState = m_CurrentPlayerState->_physics_update(delta, player);
-    
+        
         if(newState != nullptr)
         {
             delete_player_state(m_CurrentPlayerState->get_state_name());
             memdelete(m_CurrentPlayerState);
-    
+            
             m_CurrentPlayerState = newState;
             m_CurrentPlayerState->_enter(player);
         }
@@ -58,8 +70,14 @@ public:
         if (m_CurrentPlayerState != nullptr) {
             m_CurrentPlayerState->_update(delta, player);
         }
-
-        // print_player_states();
+        
+        
+        if(static_cast<int>(m_CurrentPlayerState->get_current_substate()) != -1)
+            print_line("Current substate: ", static_cast<uint32_t>(m_CurrentPlayerState->get_current_substate()));
+        else
+            print_line("Current substate is null");
+        
+        print_player_states();
     }
     
     void add_player_state(PlayerState* playerState)
@@ -69,8 +87,15 @@ public:
         }
     }
     
+    PlayerState* get_prev_state()
+    {
+        return nullptr;
+    }
+    
     
 private:
+
+
     void delete_player_state(const std::string& stateName)
     {
         for (auto it = m_PlayerStates.begin(); it != m_PlayerStates.end();)
@@ -86,6 +111,7 @@ private:
     {
         for(auto& state : m_PlayerStates) {
             print_line("Current player State is: ", state.first.c_str());
+
         }  
 
     }
