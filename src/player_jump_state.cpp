@@ -9,10 +9,13 @@ void PlayerJumpState::_enter(Player& player)
     m_IsJumpOver = false;
 
     FStateManager::GetStateManagerInstance().add_player_state(this);
+
+    m_PlayerVel = player.get_velocity();
 }
 
 PlayerState* PlayerJumpState::_physics_update(double delta, Player& player)
 {
+    
     // The condition checks if the player is on the floor and that the jump is over, for which we use m_IsJumpOver as a way to keep track of it.
     if(player.is_on_floor() && m_IsJumpOver) { 
         return memnew(PlayerSprintState);
@@ -24,30 +27,18 @@ PlayerState* PlayerJumpState::_physics_update(double delta, Player& player)
 
 void PlayerJumpState::_handle_ground_physics(double delta, Player& player)
 {
-    m_PlayerVel = player.get_velocity();
-
     player.get_jump_buffer_timer()->start();
-
-    if(m_IsJumpRequested && player.get_jump_buffer_timer()->get_time_left() > 0.0f) {
-        m_PlayerVel.y = Globals::JumpSpeed;
+    if(player.get_jump_buffer_timer()->get_time_left() > 0.0f) {
+        
+        m_PlayerVel.y = Globals::JUMP_VELOCITY;
         m_IsJumpRequested = false;
-        player.get_jump_buffer_timer()->stop();
-    } else {
-        m_IsJumpOver = true;
-    }
-
-    // Only mark jump over after player starts descending
-    if(m_IsJumpOver) {
-        m_CurrentSubState = SubStates::Falling;
-    }
+    }  
 
     player.set_velocity(m_PlayerVel);
 }
 
 void PlayerJumpState::_handle_air_physics(double delta, Player& player)
 {
-    m_PlayerVel = player.get_velocity();
-    
     // Air strafing
     float currentSpeed = m_PlayerVel.dot(m_WishDir);
     float addSpeed = Globals::MaxAirMoveSpeed - currentSpeed; // how much speed we can add to the player before exceeding max move speed in air
@@ -62,17 +53,13 @@ void PlayerJumpState::_handle_air_physics(double delta, Player& player)
         playerHorizVel = playerHorizVel.normalized() * Globals::MaxAirMoveSpeed;
     }
 
-    // if(Input::get_singleton()->is_action_just_pressed("dash")) {
-    //     m_CurrentSubState = SubStates::Dash;
-    //     m_PlayerVel.x = Math::lerp(m_PlayerVel.x, m_PlayerVel.x * Globals::AirDashSpeed, (float)delta * 5.0f);
-    //     m_PlayerVel.z = Math::lerp(m_PlayerVel.z, m_PlayerVel.z * Globals::AirDashSpeed, (float)delta * 5.0f);
-    // } else {
-    //     m_CurrentSubState &= ~SubStates::Dash; // Look into this later...
-    // }
-    
+    if(m_PlayerVel.y <= 0.0f) {
+        m_CurrentSubState = SubStates::Falling;
+        m_IsJumpOver = true;
+    }
+
     // Set final velocity
     m_PlayerVel.x = playerHorizVel.x;
     m_PlayerVel.z = playerHorizVel.z;
     player.set_velocity(m_PlayerVel);
-
 }

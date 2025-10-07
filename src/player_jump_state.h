@@ -22,5 +22,4 @@ public:
 private:
     bool m_IsJumpRequested;
     bool m_IsJumpOver;
-
 };

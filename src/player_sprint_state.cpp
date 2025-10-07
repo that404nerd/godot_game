@@ -10,6 +10,9 @@ void PlayerSprintState::_enter(Player& player)
 {
     m_JumpRequested = false;
     FStateManager::GetStateManagerInstance().add_player_state(this);
+
+    // Store the new velocity here so that the prev velocity gets carried over unlike previously where the damn velocity was (0, 0, 0) in _handle_ground_physics()
+    m_PlayerVel = player.get_velocity();
 }
 
 PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Player& player)
@@ -17,8 +20,8 @@ PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Play
     if(Input::get_singleton()->is_action_just_pressed("crouch")) {
         return memnew(PlayerCrouchState);
     } else if(Input::get_singleton()->is_action_just_pressed("jump")) {
-        // queue a jump request because input function runs only during inputs (lol)
-        if(static_cast<int>(get_current_substate()) & static_cast<int>(SubStates::Falling)) {
+        // queue a jump request because input function runs only during inputs lol
+        if(get_current_substate() == SubStates::Falling) {
             m_JumpRequested = true;
         } else {
             return memnew(PlayerJumpState);
@@ -30,7 +33,7 @@ PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Play
 
 void PlayerSprintState::headbob_effect(double delta, Player& player)
 {
-    Vector3 playerVelHeadbob = Vector3(m_PlayerVel.x, 0.0f, m_PlayerVel.z); // Use this vector so that y-vel (gravity) doesn't affect the headbob
+    Vector3 playerVelHeadbob = Vector3(m_PlayerVel.x, 0.0f, m_PlayerVel.z); // Use this vector so that gravity doesn't affect the headbob
     m_HeadBobTime += playerVelHeadbob.length() * delta;
     
     Transform3D headbobTransform = player.get_player_head()->get_transform(); // get the player's transform
@@ -44,8 +47,6 @@ void PlayerSprintState::headbob_effect(double delta, Player& player)
 
 void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
 {
-    m_PlayerVel = player.get_velocity();
-    
     float currentSpeedInWishDir = m_PlayerVel.dot(m_WishDir);
     float addSpeed = m_MoveSpeed - currentSpeedInWishDir;
     
@@ -54,7 +55,7 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
         accel = Math::min(accel, addSpeed);
         m_PlayerVel += accel * m_WishDir;
     } 
-    
+
     // Friciton code
     float control = Math::max(m_PlayerVel.length(), Globals::GroundDecel); // Dont let speed to drop to zero instead to ground decl when stopping
     float drop = control * Globals::GroundFriction * delta; // how much velocity should be dropped due to friction
@@ -63,7 +64,7 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
     if(m_PlayerVel.length() > 0.0f) {
         newSpeed /= m_PlayerVel.length();
     }
-    
+
     m_PlayerVel *= newSpeed;
 
     if(m_PlayerVel.length() == 0) {
@@ -84,7 +85,7 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
     }
     
     player.get_player_head()->set_rotation(m_PlayerTiltVector);
-    
+
     headbob_effect(delta, player);
     player.set_velocity(m_PlayerVel);
 }
@@ -92,17 +93,11 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
 void PlayerSprintState::_handle_air_physics(double delta, Player& player)
 {
     m_PlayerVel = player.get_velocity();
-
+    
     if(m_PlayerVel.y < 0.0f && !player.is_on_floor()) {
         m_CurrentSubState = SubStates::Falling;
     } else {
         m_CurrentSubState = SubStates::NONE;
-    }
-
-    if((get_current_substate() == SubStates::Falling && m_JumpRequested)) {
-        m_JumpRequested = false;
-        // Manually transition to the jump state
-        FStateManager::GetStateManagerInstance().transition_states(player, delta, nullptr, memnew(PlayerJumpState), true);
     }
 
     if(get_current_substate() == SubStates::Falling) {
@@ -125,5 +120,6 @@ void PlayerSprintState::_handle_air_physics(double delta, Player& player)
         m_PlayerVel.z = playerHorizVel.z;
         player.set_velocity(m_PlayerVel);
     }
+
 
 }

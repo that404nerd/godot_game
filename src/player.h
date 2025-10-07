@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/timer.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/marker3d.hpp>
@@ -50,7 +51,7 @@ protected:
     Node3D* m_PlayerHead = nullptr;
     Node3D* m_CameraControllerNode = nullptr;
     Marker3D* m_CameraAnchor = nullptr;
-
+    Label* m_SpeedLabel = nullptr;
     Timer* m_JumpBufferTimer = nullptr;
 
     // Get Collision shapes

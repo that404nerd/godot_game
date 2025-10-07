@@ -4,18 +4,14 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 
+#include "globals.h"
+
 /*
     Basically there are 2 sets of states in the entire game. States like sprint, jump, crouch. You get it, the base states.
-    What about idle, sliding, dashing etc...? These are stored as bits in this class and for now (as of writing this) it's gonna be managed using a set and get functions.
-
-    * Adding a state: |=
-    * Removing a state: &= ~
-    * Overwriting / replacing entirely: =
+    What about idle, sliding, dashing etc...? These are stored as enums in this class and for now (as of writing this) it's gonna be managed using a set and get functions.
 
     21-09-2025: Base states/Parent states work fine. Need to get sub-states working.
 */
-
-#define BIT(x) 1 << x
 
 class Player;
 
@@ -25,10 +21,11 @@ class PlayerState {
 public:
     // All the other states (sub-states)
     enum class SubStates {
-        NONE = 0,
-        Idle = BIT(0),
-        Falling = BIT(1),
-        Dash = BIT(2),
+        Idle = 1,
+        Falling = 2,
+        Dash = 3,
+
+        NONE = 0
     };
 
     PlayerState(const std::string& stateName) : m_StateName(stateName) {};
@@ -46,6 +43,7 @@ public:
     
 public:
     std::string get_state_name() { return m_StateName; }
+    float get_gravity() { return m_PlayerVel.y > 0.0f ? Globals::JUMP_GRAVITY : Globals::FALL_GRAVITY; }
     SubStates get_current_substate() { return m_CurrentSubState; }
 
 private:
@@ -60,25 +58,3 @@ private:
     SubStates m_CurrentSubState;
 
 };
-
-inline PlayerState::SubStates operator|(PlayerState::SubStates a, PlayerState::SubStates b) {
-    return static_cast<PlayerState::SubStates>(static_cast<int>(a) | static_cast<int>(b));
-}
-
-inline PlayerState::SubStates operator&(PlayerState::SubStates a, PlayerState::SubStates b) {
-    return static_cast<PlayerState::SubStates>(static_cast<int>(a) & static_cast<int>(b));
-}
-
-inline PlayerState::SubStates operator~(PlayerState::SubStates a) {
-    return static_cast<PlayerState::SubStates>(~static_cast<int>(a));
-}
-
-inline PlayerState::SubStates& operator&=(PlayerState::SubStates& a, PlayerState::SubStates b) {
-    a = a & b;
-    return a;
-}
-
-inline PlayerState::SubStates& operator|=(PlayerState::SubStates& a, PlayerState::SubStates b) {
-    a = a | b;
-    return a;
-}

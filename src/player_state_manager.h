@@ -1,6 +1,8 @@
 #pragma once
 
-/* The manager is a singleton to allow only a single instance of it in the whole game */
+/* The manager is a singleton to allow only a single instance of it in the whole game
+   IMPORTANT: DO NOT set the m_PlayerVel in each function and instead set it in the _enter function instead to not fuck up the velocity when transitioning between states
+*/
 
 #include <godot_cpp/godot.hpp>
 
@@ -87,6 +89,7 @@ public:
         }
     }
     
+    // TODO: Return the prev-state (Base, Sub-States)
     PlayerState* get_prev_state()
     {
         return nullptr;
