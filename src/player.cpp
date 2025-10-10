@@ -19,7 +19,6 @@ void Player::_ready()
     m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
 
     m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
-    m_SpeedLabel = get_node<Label>("TextDebugLayer/SpeedLabel");
     m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
     m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
 
@@ -35,7 +34,6 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
 void Player::_physics_process(double delta) 
 {
     m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
-    m_SpeedLabel->set_text("Speed: " + String::num(get_velocity().length(), 2) + " m/s");
 
     /*
         global_transform - position/rotation/scale of the player relative to the world

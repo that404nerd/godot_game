@@ -21,7 +21,8 @@ public:
 
 private:
     Vector3 m_PlayerTiltVector;
-    float m_HeadBobTime = 0.0f;
     Vector3 m_PlayerVel;
+
+    float m_HeadBobTime = 0.0f;
     bool m_JumpRequested;
 };

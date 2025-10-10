@@ -25,7 +25,7 @@ public:
         m_CurrentPlayerState->_enter(player); // Call the default state's enter function
     }
 
-    // Handles manual and automatic transition of states
+    // Handles manual and automatic transition of states (Do not call the _update function here. The _physics_update takes care of it!)
     void transition_states(Player& player, double delta, const Ref<InputEvent>& event = nullptr, PlayerState* playerState = nullptr, bool isTransition = false)
     {
         // Store old state temporarily
@@ -35,16 +35,12 @@ public:
             // Manual transition: force new state
             m_CurrentPlayerState = playerState;
             m_CurrentPlayerState->_enter(player);
-
-            m_CurrentPlayerState->_handle_ground_physics(delta, player);
         } else {
-            // Automatic transition: let current state handle input
             PlayerState* newState = m_CurrentPlayerState->_handle_input(event, player);
-            if(newState == nullptr) return; // No transition
+            if(newState == nullptr) return;
 
             m_CurrentPlayerState = newState;
             m_CurrentPlayerState->_enter(player);
-            m_CurrentPlayerState->_update(delta, player);
         }
 
         // Delete the old state
@@ -55,7 +51,7 @@ public:
     }
 
 
-    // This will handle the physics related transitions
+    // This will handle the physics related transitions (Not for transitioning!!!!!)
     void _physics_update(double delta, Player& player)
     {
         PlayerState* newState = m_CurrentPlayerState->_physics_update(delta, player);
@@ -78,8 +74,16 @@ public:
         //     print_line("Current substate: ", static_cast<uint32_t>(m_CurrentPlayerState->get_current_substate()));
         // else
         //     print_line("Current substate is null");
+    }
+
+    std::string get_current_player_state()
+    {
+        std::string stateName;
+        for(auto& state : m_PlayerStates) {
+            stateName = state.first;
+        }
         
-        print_player_states();
+        return stateName;
     }
     
     void add_player_state(PlayerState* playerState)
@@ -110,15 +114,6 @@ private:
         }
     }
     
-    void print_player_states()
-    {
-        for(auto& state : m_PlayerStates) {
-            print_line("Current player State is: ", state.first.c_str());
-
-        }  
-
-    }
-
     FStateManager() {};
 
 private:

@@ -11,7 +11,7 @@
     What about idle, sliding, dashing etc...? These are stored as enums in this class and for now (as of writing this) it's gonna be managed using a set and get functions.
 
     21-09-2025: Base states/Parent states work fine. Need to get sub-states working.
-    7-10-2025: Sub-States but are kinda shit
+    7-10-2025: Sub-States implemented but are kinda shit
 */
 
 class Player;
@@ -44,8 +44,8 @@ public:
     
 public:
     std::string get_state_name() { return m_StateName; }
-    float get_gravity() { return m_PlayerVel.y > 0.0f ? Globals::JUMP_GRAVITY : Globals::FALL_GRAVITY; }
     SubStates get_current_substate() { return m_CurrentSubState; }
+    float get_gravity() { return m_PlayerVel.y > 0.0f ? Globals::JUMP_GRAVITY : Globals::FALL_GRAVITY; }
 
 private:
     std::string m_StateName;
@@ -56,5 +56,4 @@ protected:
     Vector2 m_InputDir;
     
     SubStates m_CurrentSubState;
-
 };

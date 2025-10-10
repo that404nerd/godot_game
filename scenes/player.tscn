@@ -39,11 +39,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 [node name="JumpBufferTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
-
-[node name="TextDebugLayer" type="Node" parent="."]
-
-[node name="SpeedLabel" type="Label" parent="TextDebugLayer"]
-offset_left = -2.0
-offset_top = 20.0
-offset_right = 249.0
-offset_bottom = 79.0

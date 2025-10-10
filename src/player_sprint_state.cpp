@@ -10,7 +10,7 @@ void PlayerSprintState::_enter(Player& player)
 {
     m_JumpRequested = false;
     FStateManager::GetStateManagerInstance().add_player_state(this);
-
+    
     // Store the new velocity here so that the prev velocity gets carried over unlike previously where the damn velocity was (0, 0, 0) in _handle_ground_physics()
     m_PlayerVel = player.get_velocity();
 }

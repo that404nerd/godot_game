@@ -27,7 +27,7 @@ PlayerState* PlayerCrouchState::_handle_input(const Ref<InputEvent>& event, Play
     if(Input::get_singleton()->is_action_just_pressed("jump")) {
         return memnew(PlayerJumpState);
     }
-    
+
     return nullptr;
 }
 

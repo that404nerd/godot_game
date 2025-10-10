@@ -44,7 +44,6 @@ public:
 
     CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
     CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
-   
 
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
@@ -54,7 +53,6 @@ protected:
     Node3D* m_PlayerHead = nullptr;
     Node3D* m_CameraControllerNode = nullptr;
     Marker3D* m_CameraAnchor = nullptr;
-    Label* m_SpeedLabel = nullptr;
     Timer* m_JumpBufferTimer = nullptr;
 
     // Get Collision shapes

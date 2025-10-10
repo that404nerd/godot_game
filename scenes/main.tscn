@@ -268,8 +268,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.5039, 16.7003, -13.956)
 
 [node name="TextDebugLayer" type="CanvasLayer" parent="."]
 
-[node name="FPSLabel" type="Label" parent="TextDebugLayer"]
-offset_right = 277.0
+[node name="DebugInfoLayer" type="Label" parent="TextDebugLayer"]
+offset_left = 5.0
+offset_right = 282.0
 offset_bottom = 81.0
 
 [node name="FuncGodotMap" type="Node3D" parent="."]

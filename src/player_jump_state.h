@@ -20,6 +20,5 @@ public:
     void _handle_air_physics(double delta, Player& player) override;
 
 private:
-    bool m_IsJumpRequested;
     bool m_IsJumpOver;
 };

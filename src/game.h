@@ -6,6 +6,8 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/label.hpp>
 
+#include "player_state_manager.h"
+
 using namespace godot;
 
 namespace godot {
@@ -22,7 +24,7 @@ namespace godot {
 
     void _ready() override;
     void _process(double delta) override;
-  
+
   private:
     Label* m_FPSLabel = nullptr;
   

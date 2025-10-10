@@ -5,17 +5,14 @@
 
 void PlayerJumpState::_enter(Player& player)
 {
-    m_IsJumpRequested = true;
-    m_IsJumpOver = false;
-
     FStateManager::GetStateManagerInstance().add_player_state(this);
 
+    m_IsJumpOver = false;
     m_PlayerVel = player.get_velocity();
 }
 
 PlayerState* PlayerJumpState::_physics_update(double delta, Player& player)
 {
-    
     // The condition checks if the player is on the floor and that the jump is over, for which we use m_IsJumpOver as a way to keep track of it.
     if(player.is_on_floor() && m_IsJumpOver) { 
         return memnew(PlayerSprintState);
@@ -24,16 +21,14 @@ PlayerState* PlayerJumpState::_physics_update(double delta, Player& player)
     return nullptr;
 }
 
-
 void PlayerJumpState::_handle_ground_physics(double delta, Player& player)
 {
-    player.get_jump_buffer_timer()->start();
-    if(player.get_jump_buffer_timer()->get_time_left() > 0.0f) {
-        
+    // player.get_jump_buffer_timer()->start();
+    
+    if(player.is_on_floor()) {
         m_PlayerVel.y = Globals::JUMP_VELOCITY;
-        m_IsJumpRequested = false;
     }  
-
+    
     player.set_velocity(m_PlayerVel);
 }
 
@@ -51,6 +46,11 @@ void PlayerJumpState::_handle_air_physics(double delta, Player& player)
     Vector3 playerHorizVel = Vector3(m_PlayerVel.x, 0.0f, m_PlayerVel.z); // The horizontal velocity of the player
     if(playerHorizVel.length() > Globals::MaxAirMoveSpeed) { // Check if we are exceeding the max move speed in air
         playerHorizVel = playerHorizVel.normalized() * Globals::MaxAirMoveSpeed;
+    }
+    
+    // Allow for another jump mid-air
+    if(Input::get_singleton()->is_action_just_pressed("jump")) {
+        m_PlayerVel.y = Globals::JUMP_VELOCITY;
     }
 
     if(m_PlayerVel.y <= 0.0f) {
