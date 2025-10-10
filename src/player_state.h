@@ -11,6 +11,7 @@
     What about idle, sliding, dashing etc...? These are stored as enums in this class and for now (as of writing this) it's gonna be managed using a set and get functions.
 
     21-09-2025: Base states/Parent states work fine. Need to get sub-states working.
+    7-10-2025: Sub-States but are kinda shit
 */
 
 class Player;
@@ -19,7 +20,7 @@ using namespace godot;
 
 class PlayerState {
 public:
-    // All the other states (sub-states)
+    // All the other states (sub-states). TODO: Rework the entire sub-states into some struct or smtg
     enum class SubStates {
         Idle = 1,
         Falling = 2,
@@ -49,12 +50,11 @@ public:
 private:
     std::string m_StateName;
     
-    protected:
+protected:
     Vector3 m_WishDir;
     Vector3 m_PlayerVel;
     Vector2 m_InputDir;
     
-    float m_MoveSpeed;
     SubStates m_CurrentSubState;
 
 };

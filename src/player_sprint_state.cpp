@@ -48,10 +48,10 @@ void PlayerSprintState::headbob_effect(double delta, Player& player)
 void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
 {
     float currentSpeedInWishDir = m_PlayerVel.dot(m_WishDir);
-    float addSpeed = m_MoveSpeed - currentSpeedInWishDir;
+    float addSpeed = Globals::SprintSpeed - currentSpeedInWishDir;
     
     if(addSpeed > 0.0f) {
-        float accel = Globals::GroundAccel * m_MoveSpeed * delta;
+        float accel = Globals::GroundAccel * Globals::SprintSpeed * delta;
         accel = Math::min(accel, addSpeed);
         m_PlayerVel += accel * m_WishDir;
     } 
@@ -71,17 +71,17 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
         m_CurrentSubState = SubStates::Idle;
     } else if(Input::get_singleton()->is_action_just_pressed("dash")) {
         m_CurrentSubState = SubStates::Dash;
-        m_PlayerVel.x = Math::lerp(m_PlayerVel.x, m_PlayerVel.x * Globals::DashSpeed, (float)delta * 5.0f);
-        m_PlayerVel.z = Math::lerp(m_PlayerVel.z, m_PlayerVel.z * Globals::DashSpeed, (float)delta * 5.0f);
+        m_PlayerVel.x = Math::lerp(m_PlayerVel.x, m_PlayerVel.x * Globals::DashSpeed, (float)delta * Globals::LERP_CONSTANT);
+        m_PlayerVel.z = Math::lerp(m_PlayerVel.z, m_PlayerVel.z * Globals::DashSpeed, (float)delta * Globals::LERP_CONSTANT);
     } else {
         m_CurrentSubState = SubStates::NONE;
     }
 
     if (!Math::is_equal_approx(m_InputDir.x, 0.0f) && player.is_on_floor()) {
         float targetTilt = (m_InputDir.x > 0 ? -Globals::SideTiltAngle : Globals::SideTiltAngle);
-        m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, Math::deg_to_rad(targetTilt), (float)delta * 5.0f);
+        m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, Math::deg_to_rad(targetTilt), (float)delta * Globals::LERP_CONSTANT);
     } else {
-        m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, 0.0f, (float)delta * 5.0f);
+        m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, 0.0f, (float)delta * Globals::LERP_CONSTANT);
     }
     
     player.get_player_head()->set_rotation(m_PlayerTiltVector);

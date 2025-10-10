@@ -6,6 +6,7 @@
 - Fix Jump transition to Sprint state where friction isn't applied [x]
 
 - Jump buffer []
+- Rewrite sub-states as structs rather than enums []
 - Fix a bug where jump logs are triggered twice (probably setting the state twice somewhere) []
 - Fix sudden snap to the original position when jumped during a side sprint []
 - Tracking previous states (Base-states/Sub-States) [] (FUTURE....)

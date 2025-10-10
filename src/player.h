@@ -11,6 +11,7 @@
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/marker3d.hpp>
+#include <godot_cpp/classes/capsule_shape3d.hpp>
 
 #include "globals.h"
 #include "player_state.h"
@@ -41,7 +42,9 @@ public:
     Node3D* get_player_head() { return m_PlayerHead; }
     Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
 
-    float get_player_move_speed() { return Input::get_singleton()->is_action_pressed("crouch") ? Globals::CrouchSpeed : Globals::SprintSpeed; }
+    CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
+    CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
+   
 
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
@@ -55,7 +58,8 @@ protected:
     Timer* m_JumpBufferTimer = nullptr;
 
     // Get Collision shapes
-    CollisionShape3D* m_StandingCollisionShape = nullptr;
+    CollisionShape3D* m_StandingPlayerCollider = nullptr;
+    CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
     Camera3D* m_PlayerCamera = nullptr;
 

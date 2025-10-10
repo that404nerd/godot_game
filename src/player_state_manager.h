@@ -74,10 +74,10 @@ public:
         }
         
         
-        if(static_cast<int>(m_CurrentPlayerState->get_current_substate()) != 0)
-            print_line("Current substate: ", static_cast<uint32_t>(m_CurrentPlayerState->get_current_substate()));
-        else
-            print_line("Current substate is null");
+        // if(static_cast<int>(m_CurrentPlayerState->get_current_substate()) != 0)
+        //     print_line("Current substate: ", static_cast<uint32_t>(m_CurrentPlayerState->get_current_substate()));
+        // else
+        //     print_line("Current substate is null");
         
         print_player_states();
     }

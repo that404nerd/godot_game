@@ -9,7 +9,7 @@ class PlayerJumpState : public PlayerState {
 
 public:
 
-    PlayerJumpState() : PlayerState("Jumping") {}; // This will be the default state std::string
+    PlayerJumpState() : PlayerState("Jumping") {};
 
     void _enter(Player& player) override;
 
