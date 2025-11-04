@@ -27,8 +27,8 @@ namespace Globals {
 
     inline const float MouseSensitivity = 0.004f;
 
-    inline const float HEADBOB_MOVE_AMOUNT = 0.05f;
-    inline const float HEADBOB_FREQUENCY = 1.2f;
+    inline const float HEADBOB_MOVE_AMOUNT = 0.08f;
+    inline const float HEADBOB_FREQUENCY = 1.0f;
 
     // Friction & Bhop variables 
     inline const float GroundAccel = 15.0f;

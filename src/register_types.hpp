@@ -5,6 +5,8 @@
 #include "game.h"
 #include "camera_controller.h"
 #include "player.h"
+#include "weapon.h"
+#include "weapon_manager.h"
 
 using namespace godot;
 

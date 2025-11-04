@@ -11,12 +11,14 @@ void initialize_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-  // game still runs just prevents error spam
-  if (!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game);
+  // game still runs just prevents error spam 
+  if (!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game); 
   if (!ClassDB::class_exists("Player")) GDREGISTER_RUNTIME_CLASS(Player);
-  if (!ClassDB::class_exists("CameraController")) GDREGISTER_RUNTIME_CLASS(CameraController);
-
+  if (!ClassDB::class_exists("CameraController")) GDREGISTER_RUNTIME_CLASS(CameraController); 
+  if (!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
+  if (!ClassDB::class_exists("WeaponManager")) GDREGISTER_CLASS(WeaponManager);
 }
+
 
 void uninitialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {

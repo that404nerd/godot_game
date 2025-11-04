@@ -8,6 +8,7 @@
 - Double Jump [x]
 
 - Jump buffer []
+- Infinite jump bug lol []
 - Fix sudden snap to the original position when jumped during a side sprint []
 - Rewrite sub-states as structs rather than enums []
 - Tracking previous states (Base-states/Sub-States) []
