@@ -20,7 +20,6 @@ public:
     virtual ~PlayerSprintState() {};
 
 private:
-    Vector3 m_PlayerTiltVector;
     Vector3 m_PlayerVel;
 
     float m_HeadBobTime = 0.0f;

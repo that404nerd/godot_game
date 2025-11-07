@@ -5,8 +5,6 @@
 
 [resource]
 script = ExtResource("1_m4ng3")
-target_map_editor = 1
 fgd_name = "FPSProject"
 base_fgd_files = Array[Resource]([ExtResource("1_sf4fc")])
-entity_definitions = Array[Resource]([])
 metadata/_custom_type_script = "uid://drlmgulwbjwqu"

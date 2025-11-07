@@ -77,15 +77,6 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
         m_CurrentSubState = SubStates::NONE;
     }
 
-    if (!Math::is_equal_approx(m_InputDir.x, 0.0f) && player.is_on_floor()) {
-        float targetTilt = (m_InputDir.x > 0 ? -Globals::SideTiltAngle : Globals::SideTiltAngle);
-        m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, Math::deg_to_rad(targetTilt), (float)delta * Globals::LERP_CONSTANT);
-    } else {
-        m_PlayerTiltVector.z = Math::lerp(m_PlayerTiltVector.z, 0.0f, (float)delta * Globals::LERP_CONSTANT);
-    }
-    
-    player.get_player_head()->set_rotation(m_PlayerTiltVector);
-
     headbob_effect(delta, player);
     player.set_velocity(m_PlayerVel);
 }
