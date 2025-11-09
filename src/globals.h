@@ -5,6 +5,7 @@
 namespace Globals {
 
     inline const float CrouchSpeed = 3.0f;
+    inline const float WalkSpeed = 7.0f;
     inline const float SprintSpeed = 10.0f;
 
     inline const float CROUCH_TRANSLATE = 0.5f;
@@ -33,5 +34,5 @@ namespace Globals {
     // Friction & Bhop variables 
     inline const float GroundAccel = 15.0f;
     inline const float GroundDecel = 10.0f;
-    inline const float GroundFriction = 6.0f;
+    inline const float GroundFriction = 8.0f;
 };

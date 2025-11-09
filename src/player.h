@@ -45,6 +45,15 @@ public:
     CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
     CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
 
+    float get_move_speed() { 
+        float speed;
+        if(Input::get_singleton()->is_action_pressed("sprint")) {
+            speed = Globals::SprintSpeed;
+        } else { speed = Globals::WalkSpeed; }
+
+        return speed;
+    }
+
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
 

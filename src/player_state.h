@@ -24,7 +24,6 @@ public:
     enum class SubStates {
         Idle = 1,
         Falling = 2,
-        Dash = 3,
 
         NONE = 0
     };

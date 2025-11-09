@@ -48,10 +48,10 @@ void PlayerSprintState::headbob_effect(double delta, Player& player)
 void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
 {
     float currentSpeedInWishDir = m_PlayerVel.dot(m_WishDir);
-    float addSpeed = Globals::SprintSpeed - currentSpeedInWishDir;
+    float addSpeed = player.get_move_speed() - currentSpeedInWishDir;
     
     if(addSpeed > 0.0f) {
-        float accel = Globals::GroundAccel * Globals::SprintSpeed * delta;
+        float accel = Globals::GroundAccel * player.get_move_speed() * delta;
         accel = Math::min(accel, addSpeed);
         m_PlayerVel += accel * m_WishDir;
     } 
@@ -69,10 +69,6 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
 
     if(m_PlayerVel.length() == 0) {
         m_CurrentSubState = SubStates::Idle;
-    } else if(Input::get_singleton()->is_action_just_pressed("dash")) {
-        m_CurrentSubState = SubStates::Dash;
-        m_PlayerVel.x = Math::lerp(m_PlayerVel.x, m_PlayerVel.x * Globals::DashSpeed, (float)delta * Globals::LERP_CONSTANT);
-        m_PlayerVel.z = Math::lerp(m_PlayerVel.z, m_PlayerVel.z * Globals::DashSpeed, (float)delta * Globals::LERP_CONSTANT);
     } else {
         m_CurrentSubState = SubStates::NONE;
     }

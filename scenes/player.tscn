@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=4 uid="uid://2c0bf6m5ugct"]
+[gd_scene load_steps=23 format=4 uid="uid://2c0bf6m5ugct"]
 
 [ext_resource type="Weapon" uid="uid://btefo0rdfld50" path="res://assets/meshes/weapons/pistol/pistol_mk.tres" id="1_dqkch"]
 [ext_resource type="Texture2D" uid="uid://bpke2l204rvc4" path="res://assets/meshes/weapons/pistol/pistol_mk_Makarov_Base_Color.png" id="1_qhqgy"]
@@ -287,8 +287,6 @@ _data = {
 &"pistol_mk_equip": SubResource("Animation_qhqgy")
 }
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_dqkch"]
-
 [node name="Player" type="Player"]
 velocity = Vector3(0, -531.3061, 0)
 
@@ -308,7 +306,7 @@ top_level = true
 [node name="PlayerHead" type="Node3D" parent="CameraController"]
 
 [node name="Camera3D" type="Camera3D" parent="CameraController/PlayerHead"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32561982, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 current = true
 fov = 80.0
 
@@ -359,7 +357,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 [node name="JumpBufferTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0064021, 0)
-mesh = SubResource("CapsuleMesh_dqkch")

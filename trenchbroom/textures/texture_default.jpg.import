@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://i0cbfbga2022"
-path="res://.godot/imported/grid.jpg-daa31c2222ab0edcddbea583622117bf.ctex"
+uid="uid://dmadtvqwdvl71"
+path="res://.godot/imported/texture_default.jpg-6485cb3536c2c00c2401a4f554b18cf7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://trenchbroom/textures/grid.jpg"
-dest_files=["res://.godot/imported/grid.jpg-daa31c2222ab0edcddbea583622117bf.ctex"]
+source_file="res://trenchbroom/textures/texture_default.jpg"
+dest_files=["res://.godot/imported/texture_default.jpg-6485cb3536c2c00c2401a4f554b18cf7.ctex"]
 
 [params]
 
