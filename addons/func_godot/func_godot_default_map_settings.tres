@@ -7,5 +7,6 @@
 
 [resource]
 script = ExtResource("1_dlf23")
+use_groups_hierarchy = true
 base_texture_dir = "res://assets/textures"
 default_material = ExtResource("1_576s4")
