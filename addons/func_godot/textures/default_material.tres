@@ -1,4 +1,4 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://c6ooruq3d60k5"]
 
 [resource]
-roughness = 0.0
+diffuse_mode = 2

@@ -97,14 +97,7 @@ void PlayerSprintState::_handle_air_physics(double delta, Player& player)
             m_PlayerVel += m_WishDir * (accel * delta); // v = u + a * t
         }
         
-        Vector3 playerHorizVel = Vector3(m_PlayerVel.x, 0.0f, m_PlayerVel.z); // The horizontal velocity of the player
-        if(playerHorizVel.length() > Globals::MaxAirMoveSpeed) { // Check if we are exceeding the max move speed in air
-            playerHorizVel = playerHorizVel.normalized() * Globals::MaxAirMoveSpeed;
-        }
-
         // Set final velocity
-        m_PlayerVel.x = playerHorizVel.x;
-        m_PlayerVel.z = playerHorizVel.z;
         player.set_velocity(m_PlayerVel);
     }
 

@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="FuncGodotFGDModelPointClass" load_steps=3 format=3 uid="uid://cdogmsn3fnifs"]
-
-[ext_resource type="Script" uid="uid://ldfqjtq0br35" path="res://addons/func_godot/src/fgd/func_godot_fgd_model_point_class.gd" id="1_2ylff"]
-[ext_resource type="PackedScene" uid="uid://cbilfcrqy0a1d" path="res://trenchbroom/models/donut.glb" id="1_6jufw"]
-
-[resource]
-script = ExtResource("1_2ylff")
-scene_file = ExtResource("1_6jufw")
-metadata/_custom_type_script = "uid://ldfqjtq0br35"

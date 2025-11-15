@@ -38,6 +38,7 @@ public:
     ~Player();
     
 public:
+
     Marker3D* get_camera_anchor() { return m_CameraAnchor; }
     Node3D* get_player_head() { return m_PlayerHead; }
     Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
@@ -57,6 +58,8 @@ public:
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
 
+    float get_player_vel_len() { return m_PlayerVel.length(); }
+
 
 protected:
     Node3D* m_PlayerHead = nullptr;
@@ -69,6 +72,7 @@ protected:
     CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
     Camera3D* m_PlayerCamera = nullptr;
+    Label* m_VelLabel = nullptr;
 
     // Player vectors & Input vectors
     Vector2 m_InputDir = Vector2(0.0f, 0.0f);

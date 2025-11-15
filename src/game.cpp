@@ -16,7 +16,6 @@ void Game::_process(double delta)
 
     String fps_text = "FPS: " + String::num(Engine::get_singleton()->get_frames_per_second());
     String state_text = "Current State: " + String(FStateManager::GetStateManagerInstance().get_current_player_state().c_str());
-    
     m_FPSLabel->set_text(fps_text + "\n" + state_text);
 }
 

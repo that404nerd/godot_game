@@ -13,6 +13,7 @@ void Player::_ready()
     m_PlayerVel = get_velocity();
     
     m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
+    m_VelLabel = get_node<Label>(NodePath("TextDebugLayer/VelInfoLabel"));
     
     m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
     m_PlayerCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D"));
@@ -45,6 +46,8 @@ void Player::_physics_process(double delta)
     m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
    
     FStateManager::GetStateManagerInstance()._physics_update(delta, *this);
+    String vel_text = "Velocity: " + String::num(get_velocity().length(), 2);
+    m_VelLabel->set_text(vel_text);
     
     move_and_slide();
 }

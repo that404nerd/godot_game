@@ -308,7 +308,7 @@ top_level = true
 [node name="Camera3D" type="Camera3D" parent="CameraController/PlayerHead"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 current = true
-fov = 80.0
+fov = 100.0
 
 [node name="WeaponManager" type="WeaponManager" parent="CameraController/PlayerHead/Camera3D"]
 weapon_list = [ExtResource("1_dqkch")]
@@ -357,3 +357,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 [node name="JumpBufferTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
+
+[node name="TextDebugLayer" type="CanvasLayer" parent="."]
+
+[node name="VelInfoLabel" type="Label" parent="TextDebugLayer"]
+offset_left = 6.0
+offset_top = 57.0
+offset_right = 92.0
+offset_bottom = 84.0
