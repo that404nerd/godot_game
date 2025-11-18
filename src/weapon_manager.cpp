@@ -18,7 +18,7 @@ void WeaponManager::set_weapon_list(const Array& weaponList) { m_WeaponList = we
 
 void WeaponManager::_ready()
 {
-    m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("WeaponAnimPlayer"));
+    // m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("WeaponAnimPlayer"));
     init();
 }
 
