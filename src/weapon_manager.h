@@ -33,6 +33,7 @@ private:
     AnimationPlayer* m_WeaponAnimPlayer = nullptr;
 
     Ref<Weapon> m_CurrentWeapon;
+    Node3D* m_WeaponSocket = nullptr;
 
     Array m_WeaponList; // This is the list that will be populated with data in the editor
     Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 

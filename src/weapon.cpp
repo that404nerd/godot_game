@@ -1,4 +1,11 @@
 #include "weapon.h"
+#include "godot_cpp/classes/animation_player.hpp"
+
+/*
+    We create a weapon scene (for eg a pistol with anims, etc etc) and then we have a resource with packed scene,
+    anim names which we fill up. Now in the Weapon Manager. We create a weapon node which is initialised inside the manager node. Now that Node3D
+    contains animplayer and other stuff too. So we use the anim names from our res and load em.
+*/
 
 using namespace godot;
 

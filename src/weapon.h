@@ -3,6 +3,7 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/node3d.hpp>
 
 using namespace godot;
 
@@ -20,7 +21,7 @@ public:
 
     String get_equip_anim_name();
     void set_equip_anim_name(String equipAnimName);
-    
+
     Ref<PackedScene> get_weapon_model();
     void set_weapon_model(const Ref<PackedScene>& weaponModel);
 
@@ -33,5 +34,6 @@ private:
     String m_EquipAnimName;
 
     int m_AmmoCount;
+
     Ref<PackedScene> m_WeaponModel;
 };

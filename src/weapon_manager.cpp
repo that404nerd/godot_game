@@ -1,4 +1,7 @@
 #include "weapon_manager.h"
+#include "godot_cpp/classes/node3d.hpp"
+#include "godot_cpp/variant/node_path.hpp"
+#include "godot_cpp/variant/transform3d.hpp"
 
 WeaponManager::WeaponManager()
 {
@@ -19,16 +22,22 @@ void WeaponManager::set_weapon_list(const Array& weaponList) { m_WeaponList = we
 void WeaponManager::_ready()
 {
     // m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("WeaponAnimPlayer"));
+    m_WeaponSocket = get_node<Node3D>(NodePath("../CameraController/PlayerHead/Camera3D/WeaponSocket"));
     init();
 }
 
 void WeaponManager::init()
 {
     m_CurrentWeapon = m_WeaponList[0];
-    if (m_CurrentWeapon.is_valid())
-        m_WeaponAnimPlayer->queue(m_CurrentWeapon->get_equip_anim_name()); 
-    else
-        print_error("Current Weapon is null");
+
+    // The weapon socket is already positioned manually in the editor.
+    Node3D* weapon_node = Object::cast_to<Node3D>(m_CurrentWeapon->get_weapon_model()->instantiate());
+    m_WeaponSocket->add_child(weapon_node);
+
+    // if (m_CurrentWeapon.is_valid())
+    //     // m_WeaponAnimPlayer->queue(m_CurrentWeapon->get_equip_anim_name()); 
+    // else
+    //     print_error("Current Weapon is null");
 }
 
 WeaponManager::~WeaponManager()
