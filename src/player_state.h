@@ -30,6 +30,7 @@ public:
 
     PlayerState(const std::string& stateName) : m_StateName(stateName) {};
 
+
     virtual void _enter(Player& player) = 0;
 
     virtual PlayerState* _handle_input(const Ref<InputEvent>& event, Player& player) = 0; // This will handle the key/input based transitions
