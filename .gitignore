@@ -3,6 +3,13 @@
 .cache
 .godot
 
+# Normal files
+compile_commands.json
+assets/**/*.import
+assets/meshes/*.png
+assets/meshes/*.import
+
 # folders
 build/
 trenchbroom/maps/autosave
+assets/blender_saves
