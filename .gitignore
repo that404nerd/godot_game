@@ -7,7 +7,7 @@
 compile_commands.json
 assets/**/*.import
 assets/meshes/**/*.png
-assets/meshes/**/*.impor
+assets/meshes/**/*.import
 
 # folders
 build/
