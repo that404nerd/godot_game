@@ -15,8 +15,8 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if (!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game); 
   if (!ClassDB::class_exists("Player")) GDREGISTER_RUNTIME_CLASS(Player);
   if (!ClassDB::class_exists("CameraController")) GDREGISTER_RUNTIME_CLASS(CameraController); 
-  if (!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
   if (!ClassDB::class_exists("WeaponManager")) GDREGISTER_CLASS(WeaponManager);
+  if (!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
 }
 
 

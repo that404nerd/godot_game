@@ -1,9 +1,7 @@
 #include "weapon_manager.h"
-#include "godot_cpp/classes/node3d.hpp"
-#include "godot_cpp/variant/node_path.hpp"
-#include "godot_cpp/variant/transform3d.hpp"
+#include "godot_cpp/core/math.hpp"
 
-WeaponManager::WeaponManager()
+WeaponManager::WeaponManager() : m_WeaponAnimPlayer(nullptr), m_CurrentWeapon(nullptr), m_WeaponSocket(nullptr), m_WeaponNode(nullptr), m_MouseMovement(Vector2())
 {
 
 }
@@ -21,23 +19,54 @@ void WeaponManager::set_weapon_list(const Array& weaponList) { m_WeaponList = we
 
 void WeaponManager::_ready()
 {
-    // m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("WeaponAnimPlayer"));
     m_WeaponSocket = get_node<Node3D>(NodePath("../CameraController/PlayerHead/Camera3D/WeaponSocket"));
+    
     init();
+}
+
+void WeaponManager::_input(const Ref<InputEvent>& event)
+{
+    Ref<InputEventMouseMotion> mouse_event = event;
+    if(event->is_class("InputEventMouseMotion")) {
+        m_MouseMovement = mouse_event->get_relative();
+    }
 }
 
 void WeaponManager::init()
 {
     m_CurrentWeapon = m_WeaponList[0];
-
+    
     // The weapon socket is already positioned manually in the editor.
-    Node3D* weapon_node = Object::cast_to<Node3D>(m_CurrentWeapon->get_weapon_model()->instantiate());
-    m_WeaponSocket->add_child(weapon_node);
+    m_WeaponNode = Object::cast_to<Node3D>(m_CurrentWeapon->get_weapon_model()->instantiate());
+    m_WeaponSocket->add_child(m_WeaponNode);
+    m_WeaponAnimPlayer = m_WeaponNode->get_node<AnimationPlayer>(NodePath("WeaponAnimPlayer"));
+    
+    if(m_WeaponAnimPlayer) {
+        m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
+    } 
+}
 
-    // if (m_CurrentWeapon.is_valid())
-    //     // m_WeaponAnimPlayer->queue(m_CurrentWeapon->get_equip_anim_name()); 
-    // else
-    //     print_error("Current Weapon is null");
+void WeaponManager::_physics_process(double delta)
+{
+    m_Position = m_CurrentWeapon->get_position();
+    m_Rotation = m_CurrentWeapon->get_rotation();
+    _weapon_sway(delta);
+}
+
+void WeaponManager::_weapon_sway(double delta)
+{
+    m_MouseMovement = m_MouseMovement.clamp(Vector2(-20.0f, -20.0f), Vector2(20.0f, 20.0f));
+    Vector3 weaponPos = m_WeaponNode->get_position();
+    Vector3 weaponRot = m_WeaponNode->get_rotation();
+    
+    weaponPos.x = Math::lerp(weaponPos.x, m_Position.x - (m_MouseMovement.x * m_CurrentWeapon->get_swayWeaponPosMult()) * (float)delta, m_CurrentWeapon->get_swayWeaponPosLerp());
+    weaponPos.y = Math::lerp(weaponPos.y, m_Position.y+ (m_MouseMovement.y * m_CurrentWeapon->get_swayWeaponPosMult()) * (float)delta, m_CurrentWeapon->get_swayWeaponPosLerp());
+    
+    weaponRot.x = Math::lerp(weaponRot.x, m_Rotation.x - (m_MouseMovement.y * Math::deg_to_rad(m_CurrentWeapon->get_swayWeaponRotMult())) * (float)delta, m_CurrentWeapon->get_swayWeaponRotLerp());
+    weaponRot.y = Math::lerp(weaponRot.y, m_Rotation.y + (m_MouseMovement.x * Math::deg_to_rad(m_CurrentWeapon->get_swayWeaponRotMult())) * (float)delta, m_CurrentWeapon->get_swayWeaponRotLerp());
+
+    m_WeaponNode->set_position(weaponPos);
+    m_WeaponNode->set_rotation(weaponRot);
 }
 
 WeaponManager::~WeaponManager()

@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 
+#include <string>
 #include "globals.h"
 
 /*

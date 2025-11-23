@@ -28,7 +28,6 @@ void Player::_ready()
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
-    Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
     FStateManager::GetStateManagerInstance().transition_states(*this, get_physics_process_delta_time(), event);
 }
 

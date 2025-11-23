@@ -1,5 +1,4 @@
 #include "weapon.h"
-#include "godot_cpp/classes/animation_player.hpp"
 
 /*
     We create a weapon scene (for eg a pistol with anims, etc etc) and then we have a resource with packed scene,
@@ -9,37 +8,34 @@
 
 using namespace godot;
 
-Weapon::Weapon() :  m_WeaponName(""), m_EquipAnimName(""), m_AmmoCount(0), m_WeaponModel(nullptr) {}
+Weapon::Weapon()
+{
+
+}
 
 void Weapon::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("set_ammo_count", "ammoCount"), &Weapon::set_ammo_count);
-    ClassDB::bind_method(D_METHOD("get_ammo_count"), &Weapon::get_ammo_count);
-    
-    ClassDB::bind_method(D_METHOD("set_weapon_name", "weaponName"), &Weapon::set_weapon_name);
-    ClassDB::bind_method(D_METHOD("get_weapon_name"), &Weapon::get_weapon_name);
 
-    ClassDB::bind_method(D_METHOD("set_equip_anim_name", "equipAnimName"), &Weapon::set_equip_anim_name);
-    ClassDB::bind_method(D_METHOD("get_equip_anim_name"), &Weapon::get_equip_anim_name);
-    
-    ClassDB::bind_method(D_METHOD("set_weapon_model", "weaponModel"), &Weapon::set_weapon_model);
+    GD_BIND_PROPERTY(Weapon, swayMin, Variant::VECTOR2);
+    GD_BIND_PROPERTY(Weapon, swayMax, Variant::VECTOR2);
+    GD_BIND_PROPERTY(Weapon, position, Variant::VECTOR2);
+    GD_BIND_PROPERTY(Weapon, rotation, Variant::VECTOR2);
+
+    GD_BIND_PROPERTY(Weapon, swayWeaponPosMult, Variant::FLOAT);
+    GD_BIND_PROPERTY(Weapon, swayWeaponRotMult, Variant::FLOAT);
+    GD_BIND_PROPERTY(Weapon, swayWeaponPosLerp, Variant::FLOAT);
+    GD_BIND_PROPERTY(Weapon, swayWeaponRotLerp, Variant::FLOAT);
+
+    GD_BIND_PROPERTY(Weapon, ammoCount, Variant::INT);
+    GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
+    GD_BIND_PROPERTY(Weapon, weaponEquipAnimName, Variant::STRING);
+    GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);
+
     ClassDB::bind_method(D_METHOD("get_weapon_model"), &Weapon::get_weapon_model);
-    
-    ADD_PROPERTY(PropertyInfo(Variant::INT, "ammo"), "set_ammo_count", "get_ammo_count");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "weapon_name"), "set_weapon_name", "get_weapon_name");
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "weapon_equip_anim_name"), "set_equip_anim_name", "get_equip_anim_name");
+    ClassDB::bind_method(D_METHOD("set_weapon_model", "weaponModel"), &Weapon::set_weapon_model);
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "weapon_model", PROPERTY_HINT_RESOURCE_TYPE, "PackedScene"), "set_weapon_model", "get_weapon_model");
 }
 
 // Setters/Getters
-
-int Weapon::get_ammo_count() { return m_AmmoCount; }
-void Weapon::set_ammo_count(const int ammoCount) { m_AmmoCount = ammoCount; }
-
-String Weapon::get_weapon_name() { return m_WeaponName; }
-void Weapon::set_weapon_name(const String weaponName) { m_WeaponName = weaponName; }
-
-String Weapon::get_equip_anim_name() { return m_EquipAnimName; }
-void Weapon::set_equip_anim_name(const String equipAnimName) { m_EquipAnimName = equipAnimName; }
 
 Ref<PackedScene> Weapon::get_weapon_model() { return m_WeaponModel; }
 void Weapon::set_weapon_model(const Ref<PackedScene>& weaponModel) { m_WeaponModel = weaponModel; }

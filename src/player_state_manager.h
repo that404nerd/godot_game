@@ -6,6 +6,7 @@
 
 #include <godot_cpp/godot.hpp>
 
+#include <unordered_map>
 #include "player_state.h"
 #include "player.h"
 
