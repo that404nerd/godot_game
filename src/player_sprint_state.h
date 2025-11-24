@@ -2,6 +2,8 @@
 
 #include <godot_cpp/classes/input.hpp>
 
+#include "player_state.h"
+
 using namespace godot;
 
 class PlayerSprintState : public PlayerState {

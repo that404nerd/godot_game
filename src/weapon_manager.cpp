@@ -1,7 +1,8 @@
 #include "weapon_manager.h"
-#include "godot_cpp/core/math.hpp"
 
-WeaponManager::WeaponManager() : m_WeaponAnimPlayer(nullptr), m_CurrentWeapon(nullptr), m_WeaponSocket(nullptr), m_WeaponNode(nullptr), m_MouseMovement(Vector2())
+WeaponManager::WeaponManager() : m_WeaponAnimPlayer(nullptr), m_CurrentWeapon(nullptr), m_WeaponSocket(nullptr), m_WeaponNode(nullptr),
+                                m_MouseMovement(Vector2()), m_NoiseTexture(nullptr),
+                                m_RandSwayX(0.0f), m_RandSwayY(0.0f), m_RandSwayAmt(0.0f), m_IdleSwayRotStr(0.0f), m_IdleSwayAdj(0.0f), m_Time(0.0f)
 {
 
 }
@@ -11,16 +12,25 @@ void WeaponManager::_bind_methods()
     ClassDB::bind_method(D_METHOD("set_weapon_list", "weaponList"), &WeaponManager::set_weapon_list);
     ClassDB::bind_method(D_METHOD("get_weapon_list"), &WeaponManager::get_weapon_list);
 
+    ClassDB::bind_method(D_METHOD("set_noise_texture", "noiseTexture"), &WeaponManager::set_noise_texture);
+    ClassDB::bind_method(D_METHOD("get_noise_texture"), &WeaponManager::get_noise_texture);
+
     ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "weapon_list"), "set_weapon_list", "get_weapon_list");
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "noise_texture", PROPERTY_HINT_RESOURCE_TYPE, "NoiseTexture2D"), "set_noise_texture", "get_noise_texture");
+
+    GD_BIND_PROPERTY(WeaponManager, sway_speed, Variant::FLOAT);
 }
 
 Array WeaponManager::get_weapon_list() { return m_WeaponList; }
 void WeaponManager::set_weapon_list(const Array& weaponList) { m_WeaponList = weaponList; }
 
+NoiseTexture2D* WeaponManager::get_noise_texture() { return m_NoiseTexture; }
+void WeaponManager::set_noise_texture(NoiseTexture2D* noiseTexture) { m_NoiseTexture = noiseTexture; }
+
 void WeaponManager::_ready()
 {
     m_WeaponSocket = get_node<Node3D>(NodePath("../CameraController/PlayerHead/Camera3D/WeaponSocket"));
-    
+
     init();
 }
 
@@ -48,28 +58,65 @@ void WeaponManager::init()
 
 void WeaponManager::_physics_process(double delta)
 {
-    m_Position = m_CurrentWeapon->get_position();
-    m_Rotation = m_CurrentWeapon->get_rotation();
+    if(m_CurrentWeapon.is_valid()) {
+        m_Position = m_CurrentWeapon->get_position();
+        m_Rotation = m_CurrentWeapon->get_rotation();
+        m_Scale = m_CurrentWeapon->get_scale();
+        m_RandSwayAmt = m_CurrentWeapon->get_randomSwayAmt();
+        m_IdleSwayAdj = m_CurrentWeapon->get_idleSwayAdjustment();
+        m_IdleSwayRotStr = m_CurrentWeapon->get_idleSwayRotationStrength();
+    }
+
     _weapon_sway(delta);
 }
 
 void WeaponManager::_weapon_sway(double delta)
 {
+    // Some random math ig
+    float get_sway_noise_amt = sway_speed_value;
+    float final_sway_noise_amt = get_sway_noise_amt * m_IdleSwayAdj;
+
+    m_Time += delta * (get_sway_speed() + final_sway_noise_amt);
+    m_RandSwayX = sin(m_Time * 1.5f + final_sway_noise_amt) / m_RandSwayAmt;
+    m_RandSwayY = sin(m_Time - final_sway_noise_amt) / m_RandSwayAmt;
+
     m_MouseMovement = m_MouseMovement.clamp(Vector2(-20.0f, -20.0f), Vector2(20.0f, 20.0f));
+
     Vector3 weaponPos = m_WeaponNode->get_position();
     Vector3 weaponRot = m_WeaponNode->get_rotation();
     
-    weaponPos.x = Math::lerp(weaponPos.x, m_Position.x - (m_MouseMovement.x * m_CurrentWeapon->get_swayWeaponPosMult()) * (float)delta, m_CurrentWeapon->get_swayWeaponPosLerp());
-    weaponPos.y = Math::lerp(weaponPos.y, m_Position.y+ (m_MouseMovement.y * m_CurrentWeapon->get_swayWeaponPosMult()) * (float)delta, m_CurrentWeapon->get_swayWeaponPosLerp());
-    
-    weaponRot.x = Math::lerp(weaponRot.x, m_Rotation.x - (m_MouseMovement.y * Math::deg_to_rad(m_CurrentWeapon->get_swayWeaponRotMult())) * (float)delta, m_CurrentWeapon->get_swayWeaponRotLerp());
-    weaponRot.y = Math::lerp(weaponRot.y, m_Rotation.y + (m_MouseMovement.x * Math::deg_to_rad(m_CurrentWeapon->get_swayWeaponRotMult())) * (float)delta, m_CurrentWeapon->get_swayWeaponRotLerp());
+    ///////////// Set weapon position //////////////
+    weaponPos.x = Math::lerp(weaponPos.x, 
+                            m_Position.x - (m_MouseMovement.x * m_CurrentWeapon->get_swayWeaponPosMult() + m_RandSwayX) * (float)delta, 
+                            m_CurrentWeapon->get_swayWeaponPosLerp());
+    weaponPos.y = Math::lerp(weaponPos.y, 
+                            m_Position.y + (m_MouseMovement.y * m_CurrentWeapon->get_swayWeaponPosMult() + m_RandSwayY) * (float)delta, 
+                            m_CurrentWeapon->get_swayWeaponPosLerp());
+        
+    ///////////// Set weapon rotation ////////////////
+    weaponRot.x = Math::lerp(weaponRot.x, 
+                            m_Rotation.x - ( m_MouseMovement.y * Math::deg_to_rad(m_CurrentWeapon->get_swayWeaponRotMult()) + (m_RandSwayX * Math::deg_to_rad(m_IdleSwayRotStr)) ) * (float)delta, 
+                            m_CurrentWeapon->get_swayWeaponRotLerp());
 
+    weaponRot.y = Math::lerp(weaponRot.y, 
+                            m_Rotation.y + ( m_MouseMovement.x * Math::deg_to_rad(m_CurrentWeapon->get_swayWeaponRotMult()) + (m_RandSwayY * Math::deg_to_rad(m_IdleSwayRotStr)) ) * (float)delta, 
+                            m_CurrentWeapon->get_swayWeaponRotLerp());
+    
     m_WeaponNode->set_position(weaponPos);
     m_WeaponNode->set_rotation(weaponRot);
 }
 
+float WeaponManager::get_sway_noise()
+{
+    Vector3 player_pos = Vector3(0.0f, 0.0f, 0.0f);
+
+    player_pos = Player::GetPlayerInst().get_global_position();
+    print_line(player_pos);
+
+    float noiseLocation = m_NoiseTexture->get_noise()->get_noise_2d(player_pos.x, player_pos.y);
+    return noiseLocation;
+}
+
 WeaponManager::~WeaponManager()
 {
-
 }

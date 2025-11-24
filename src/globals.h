@@ -6,7 +6,9 @@
     TODO: I will probably move most of the variables to the player class
 */
 
-// credit to Withaust for macro (defining each one by default is a pain in the ass)
+/* Credit to Withaust for macro (defining each one by default is a pain in the ass)
+   The getter, setter functions will not match the conventions I'm using for other functions
+*/
 #define _CONCAT(x, y) #x "" #y
 #define _TOKEN_PASTE(x, y) x##y
 #define _CAT(x, y) _TOKEN_PASTE(x, y)

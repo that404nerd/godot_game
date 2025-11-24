@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://2c0bf6m5ugct"]
+[gd_scene load_steps=6 format=3 uid="uid://2c0bf6m5ugct"]
 
 [ext_resource type="Weapon" uid="uid://dcb4s66cfx5yg" path="res://assets/meshes/weapons/glock/glock_weapon.tres" id="1_3vyb7"]
 
@@ -9,6 +9,12 @@ height = 3.0
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 radius = 0.6
 height = 2.2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3vyb7"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_g2els"]
+noise = SubResource("FastNoiseLite_3vyb7")
+seamless = true
 
 [node name="Player" type="Player"]
 velocity = Vector3(0, -531.3061, 0)
@@ -22,8 +28,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6054255, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
 
-[node name="WeaponManager" type="WeaponManager" parent="."]
+[node name="s" type="WeaponManager" parent="."]
 weapon_list = [ExtResource("1_3vyb7")]
+noise_texture = SubResource("NoiseTexture2D_g2els")
+sway_speed = 0.1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9000001, 0)
 
 [node name="CameraController" type="CameraController" parent="."]
