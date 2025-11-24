@@ -27,30 +27,26 @@ class Player : public CharacterBody3D {
     GDCLASS(Player, CharacterBody3D);
 
 public:
-
-    static Player& GetPlayerInst() {
-        static Player* player = memnew(Player);
-        return *player;
-    }
-
+    Player();
+    
     void _ready() override;
     void _physics_process(double delta) override;
     void _unhandled_input(const Ref<InputEvent>& event) override;
-
+    
     static void _bind_methods();
-        
+    
     ~Player();
-
+    
 public:
 
-Marker3D* get_camera_anchor() { return m_CameraAnchor; }
-Node3D* get_player_head() { return m_PlayerHead; }
-Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
+    Marker3D* get_camera_anchor() { return m_CameraAnchor; }
+    Node3D* get_player_head() { return m_PlayerHead; }
+    Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
 
-CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
-CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
+    CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
+    CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
 
-float get_move_speed() { 
+    float get_move_speed() { 
         float speed;
         if(Input::get_singleton()->is_action_pressed("sprint")) {
             speed = Globals::SprintSpeed;
@@ -58,14 +54,11 @@ float get_move_speed() {
 
         return speed;
     }
-    
+
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
-    
-    float get_player_vel_len() { return m_PlayerVel.length(); }
 
-private:
-    Player();
+    float get_player_vel_len() { return m_PlayerVel.length(); }
 
 protected:
     Node3D* m_PlayerHead = nullptr;

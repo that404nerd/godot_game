@@ -1,7 +1,7 @@
 #include "weapon_manager.h"
 
 WeaponManager::WeaponManager() : m_WeaponAnimPlayer(nullptr), m_CurrentWeapon(nullptr), m_WeaponSocket(nullptr), m_WeaponNode(nullptr),
-                                m_MouseMovement(Vector2()), m_NoiseTexture(nullptr),
+                                m_MouseMovement(Vector2()),
                                 m_RandSwayX(0.0f), m_RandSwayY(0.0f), m_RandSwayAmt(0.0f), m_IdleSwayRotStr(0.0f), m_IdleSwayAdj(0.0f), m_Time(0.0f)
 {
 
@@ -12,20 +12,12 @@ void WeaponManager::_bind_methods()
     ClassDB::bind_method(D_METHOD("set_weapon_list", "weaponList"), &WeaponManager::set_weapon_list);
     ClassDB::bind_method(D_METHOD("get_weapon_list"), &WeaponManager::get_weapon_list);
 
-    ClassDB::bind_method(D_METHOD("set_noise_texture", "noiseTexture"), &WeaponManager::set_noise_texture);
-    ClassDB::bind_method(D_METHOD("get_noise_texture"), &WeaponManager::get_noise_texture);
-
     ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "weapon_list"), "set_weapon_list", "get_weapon_list");
-    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "noise_texture", PROPERTY_HINT_RESOURCE_TYPE, "NoiseTexture2D"), "set_noise_texture", "get_noise_texture");
-
     GD_BIND_PROPERTY(WeaponManager, sway_speed, Variant::FLOAT);
 }
 
 Array WeaponManager::get_weapon_list() { return m_WeaponList; }
 void WeaponManager::set_weapon_list(const Array& weaponList) { m_WeaponList = weaponList; }
-
-NoiseTexture2D* WeaponManager::get_noise_texture() { return m_NoiseTexture; }
-void WeaponManager::set_noise_texture(NoiseTexture2D* noiseTexture) { m_NoiseTexture = noiseTexture; }
 
 void WeaponManager::_ready()
 {
@@ -72,15 +64,15 @@ void WeaponManager::_physics_process(double delta)
 
 void WeaponManager::_weapon_sway(double delta)
 {
-    // Some random math ig
-    float get_sway_noise_amt = sway_speed_value;
-    float final_sway_noise_amt = get_sway_noise_amt * m_IdleSwayAdj;
+    // Some random math for sway during the idle state
+    float get_sway_amt = get_sway_speed();
+    float final_sway_amt = get_sway_amt * m_IdleSwayAdj;
 
-    m_Time += delta * (get_sway_speed() + final_sway_noise_amt);
-    m_RandSwayX = sin(m_Time * 1.5f + final_sway_noise_amt) / m_RandSwayAmt;
-    m_RandSwayY = sin(m_Time - final_sway_noise_amt) / m_RandSwayAmt;
+    m_Time += delta * (get_sway_speed() + final_sway_amt);
+    m_RandSwayX = sin(m_Time * 1.5f + final_sway_amt) / m_RandSwayAmt;
+    m_RandSwayY = sin(m_Time - final_sway_amt) / m_RandSwayAmt;
 
-    m_MouseMovement = m_MouseMovement.clamp(Vector2(-20.0f, -20.0f), Vector2(20.0f, 20.0f));
+    m_MouseMovement = m_MouseMovement.clamp(m_CurrentWeapon->get_swayMin(), m_CurrentWeapon->get_swayMax());
 
     Vector3 weaponPos = m_WeaponNode->get_position();
     Vector3 weaponRot = m_WeaponNode->get_rotation();
@@ -104,17 +96,6 @@ void WeaponManager::_weapon_sway(double delta)
     
     m_WeaponNode->set_position(weaponPos);
     m_WeaponNode->set_rotation(weaponRot);
-}
-
-float WeaponManager::get_sway_noise()
-{
-    Vector3 player_pos = Vector3(0.0f, 0.0f, 0.0f);
-
-    player_pos = Player::GetPlayerInst().get_global_position();
-    print_line(player_pos);
-
-    float noiseLocation = m_NoiseTexture->get_noise()->get_noise_2d(player_pos.x, player_pos.y);
-    return noiseLocation;
 }
 
 WeaponManager::~WeaponManager()

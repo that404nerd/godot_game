@@ -8,9 +8,7 @@
 #include <godot_cpp/classes/random_number_generator.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
-#include <godot_cpp/classes/noise_texture2d.hpp>
 #include <godot_cpp/classes/character_body3d.hpp>
-#include <godot_cpp/classes/noise.hpp>
 #include <godot_cpp/classes/engine.hpp>
 
 #include "globals.h"
@@ -34,16 +32,12 @@ public:
     void _physics_process(double delta) override;
 
     void _weapon_sway(double delta);
-    float get_sway_noise();
 
     ~WeaponManager();
 
 public:
     Array get_weapon_list();
     void set_weapon_list(const Array& weaponlist);
-
-    NoiseTexture2D* get_noise_texture();
-    void set_noise_texture(NoiseTexture2D* noiseTexture);
 
 protected:
     static void _bind_methods();
@@ -60,8 +54,6 @@ private:
 
     Array m_WeaponList; // This is the list that will be populated with data in the editor
     Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 
-
-    NoiseTexture2D* m_NoiseTexture;
 
     GD_DEFINE_PROPERTY(float, sway_speed, 0.0f);
     float m_RandSwayX, m_RandSwayY;
