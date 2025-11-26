@@ -7,8 +7,5 @@
 - Fix Jump transition to Sprint state where friction isn't applied [x]
 - Double Jump [x]
 
-- Jump buffer []
-- Infinite jump bug lol []
-- Fix sudden snap to the original position when jumped during a side sprint []
-- Rewrite sub-states as structs rather than enums []
-- Tracking previous states (Base-states/Sub-States) []
+26th Nov, 2025:
+- Rewrite of the entire movement system using godot signals (Everything is becoming too verbose and unstable) [] 

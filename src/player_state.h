@@ -29,6 +29,13 @@ public:
         NONE = 0
     };
 
+    struct SubState {
+        std::string SubStateName;
+
+        void entered();
+        void exit();
+    };
+
     PlayerState(const std::string& stateName) : m_StateName(stateName) {};
 
 
@@ -58,3 +65,4 @@ protected:
     
     SubStates m_CurrentSubState;
 };
+

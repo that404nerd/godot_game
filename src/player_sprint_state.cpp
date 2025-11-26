@@ -38,8 +38,8 @@ void PlayerSprintState::headbob_effect(double delta, Player& player)
     
     Transform3D headbobTransform = player.get_player_head()->get_transform(); // get the player's transform
     headbobTransform.origin = Vector3( // like a sine wave
-        Math::cos(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * Globals::HEADBOB_MOVE_AMOUNT,
-        Math::sin(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * Globals::HEADBOB_MOVE_AMOUNT,
+        Math::cos(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * 0.06f,
+        Math::sin(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * 0.09f,
         0.0f
     );
     player.get_player_head()->set_transform(headbobTransform);

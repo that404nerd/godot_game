@@ -64,12 +64,12 @@ void WeaponManager::_physics_process(double delta)
 
 void WeaponManager::_weapon_sway(double delta)
 {
-    // Some random math for sway during the idle state
-    float get_sway_amt = get_sway_speed();
-    float final_sway_amt = get_sway_amt * m_IdleSwayAdj;
+    // Some math for sway during the idle state
+    float get_sway_amt = get_sway_speed(); // Sway speed is set in the editor
+    float final_sway_amt = get_sway_amt * m_IdleSwayAdj; // Adjust the final sway amount by a idle sway adjustement multiplier
 
     m_Time += delta * (get_sway_speed() + final_sway_amt);
-    m_RandSwayX = sin(m_Time * 1.5f + final_sway_amt) / m_RandSwayAmt;
+    m_RandSwayX = sin(m_Time * 1.5f + final_sway_amt) / m_RandSwayAmt; // Make this faster so that it feels natural i guess
     m_RandSwayY = sin(m_Time - final_sway_amt) / m_RandSwayAmt;
 
     m_MouseMovement = m_MouseMovement.clamp(m_CurrentWeapon->get_swayMin(), m_CurrentWeapon->get_swayMax());

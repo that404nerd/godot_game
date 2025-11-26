@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player()
+Player::Player() : m_IsPressed(false)
 {
 }
 
@@ -29,6 +29,10 @@ void Player::_ready()
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
     FStateManager::GetStateManagerInstance().transition_states(*this, get_physics_process_delta_time(), event);
+
+    if (event->is_action_pressed("toggle_sprint")) {
+        m_IsPressed = !m_IsPressed;
+    }
 }
 
 void Player::_physics_process(double delta) 

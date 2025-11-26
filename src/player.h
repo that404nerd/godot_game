@@ -14,6 +14,7 @@
 #include <godot_cpp/classes/capsule_shape3d.hpp>
 
 #include "globals.h"
+#include "godot_cpp/classes/input_event.hpp"
 #include "player_state.h"
 #include "player_sprint_state.h"
 #include "player_jump_state.h"
@@ -46,14 +47,7 @@ public:
     CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
     CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
 
-    float get_move_speed() { 
-        float speed;
-        if(Input::get_singleton()->is_action_pressed("sprint")) {
-            speed = Globals::SprintSpeed;
-        } else { speed = Globals::WalkSpeed; }
-
-        return speed;
-    }
+    float get_move_speed() { return m_IsPressed ? Globals::WalkSpeed : Globals::SprintSpeed; }
 
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
@@ -78,4 +72,6 @@ protected:
     Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 m_PlayerVel = Vector3(0.0f, 0.0f, 0.0f);
+
+    bool m_IsPressed; // Toggle between sprint and walk states
 };

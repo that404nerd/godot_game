@@ -7,6 +7,10 @@
 #include <godot_cpp/godot.hpp>
 
 #include <unordered_map>
+#include <vector>
+#include <algorithm>
+
+#include "godot_cpp/classes/sub_viewport.hpp"
 #include "player_state.h"
 #include "player.h"
 
@@ -15,8 +19,8 @@ public:
 
     static FStateManager& GetStateManagerInstance()
     {
-        static FStateManager* instance = memnew(FStateManager);
-        return *instance;
+        static FStateManager instance;
+        return instance;
     }
 
     // Function name is misleading but whatever.
@@ -86,12 +90,35 @@ public:
         
         return stateName;
     }
+
+    std::string get_current_player_substate()
+    {
+        std::string stateName;
+        for(auto& state : m_PlayerSubStates) {
+            stateName = state;
+        }
+        
+        return stateName;
+    }
     
     void add_player_state(PlayerState* playerState)
     {
         if(playerState) {
             m_PlayerStates[playerState->get_state_name()] = playerState;
         }
+    }
+
+    void add_player_substate(const std::string& playerSubState)
+    {
+        if (!playerSubState.empty() && std::find(m_PlayerSubStates.begin(), m_PlayerSubStates.end(), playerSubState) == m_PlayerSubStates.end()) 
+        {
+            m_PlayerSubStates.emplace_back(playerSubState);
+        }
+    }
+
+    bool has_player_substate(const std::string& subStateName) const
+    {
+        return std::find(m_PlayerSubStates.begin(), m_PlayerSubStates.end(), subStateName) != m_PlayerSubStates.end();
     }
     
     // TODO: Return the prev-state (Base, Sub-States)
@@ -101,9 +128,20 @@ public:
     }
     
     
+    void delete_player_substate(const std::string& subStateName)
+    {
+        for (auto it = m_PlayerSubStates.begin(); it != m_PlayerSubStates.end();)
+        {
+            if(*it == get_current_player_substate()) {
+                it = m_PlayerSubStates.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
 private:
-
-
+    
+    
     void delete_player_state(const std::string& stateName)
     {
         for (auto it = m_PlayerStates.begin(); it != m_PlayerStates.end();)
@@ -118,7 +156,9 @@ private:
     FStateManager() {};
 
 private:
+    // typeof key, type of the element
     std::unordered_map<std::string, PlayerState*> m_PlayerStates;
+    std::vector<std::string> m_PlayerSubStates;
 
     PlayerState* m_CurrentPlayerState = nullptr;
 };
