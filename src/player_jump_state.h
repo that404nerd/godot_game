@@ -1,27 +1,24 @@
 #pragma once
 
-#include <godot_cpp/godot.hpp>
-#include <godot_cpp/classes/input.hpp>
-
 #include "player_state.h"
-
-using namespace godot;
+#include "player_state_machine.h"
+#include "player.h"
 
 class PlayerJumpState : public PlayerState {
+    GDCLASS(PlayerJumpState, PlayerState);
 
 public:
+    PlayerJumpState() : m_PlayerVel(Vector3(0.0f, 0.0f, 0.0f)), m_PlayerInst(nullptr) {}; 
 
-    PlayerJumpState() : PlayerState("Jumping"), m_IsJumpOver(false), m_IsJumpBuffered(false) {};
+    virtual void _enter() override;
+    virtual void _handle_input(const Ref<InputEvent>& event) override;
+    virtual void _physics_update(double delta) override;
+    virtual void _exit() override; 
 
-    void _enter(Player& player) override;
-
-    PlayerState* _handle_input(const Ref<InputEvent>& event, Player& player) override { return nullptr; };
-    PlayerState* _physics_update(double delta, Player& player) override;
-
-    void _handle_ground_physics(double delta, Player& player) override;
-    void _handle_air_physics(double delta, Player& player) override;
+protected:
+    static void _bind_methods();
 
 private:
-    bool m_IsJumpOver;
-    bool m_IsJumpBuffered;
+    Vector3 m_PlayerVel;
+    Player* m_PlayerInst;
 };

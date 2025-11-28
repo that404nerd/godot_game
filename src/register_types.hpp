@@ -5,6 +5,11 @@
 #include "game.h"
 #include "camera_controller.h"
 #include "player.h"
+#include "player_state.h"
+#include "player_state_machine.h"
+#include "player_idle_state.h"
+#include "player_sprint_state.h"
+#include "player_jump_state.h"
 #include "weapon.h"
 #include "weapon_manager.h"
 

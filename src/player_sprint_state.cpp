@@ -1,59 +1,50 @@
-#include "player.h"
-#include "player_state.h"
 #include "player_sprint_state.h"
-#include "player_crouch_state.h"
-#include "player_jump_state.h"
+#include "player_state_machine.h"
 
-#include "player_state_manager.h"
+void PlayerSprintState::_enter()
+{ 
+    set_player_inst(Object::cast_to<Player>(get_parent()->get_parent()));
+    m_PlayerInst = get_player_inst();
 
-void PlayerSprintState::_enter(Player& player)
-{
-    m_JumpRequested = false;
-    FStateManager::GetStateManagerInstance().add_player_state(this);
-    
-    // Store the new velocity here so that the prev velocity gets carried over unlike previously where the damn velocity was (0, 0, 0) in _handle_ground_physics()
-    m_PlayerVel = player.get_velocity();
+    m_PlayerVel = m_PlayerInst->get_velocity();
 }
 
-PlayerState* PlayerSprintState::_handle_input(const Ref<InputEvent>& event, Player& player)
+void PlayerSprintState::_bind_methods()
 {
-    if(Input::get_singleton()->is_action_just_pressed("crouch")) {
-        return memnew(PlayerCrouchState);
-    } else if(Input::get_singleton()->is_action_just_pressed("jump")) {
-        // queue a jump request because input function runs only during inputs lol
-        if(get_current_substate() == SubStates::Falling) {
-            m_JumpRequested = true;
-        } else {
-            return memnew(PlayerJumpState);
-        }
+
+}
+
+void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
+{
+    if(Input::get_singleton()->is_action_just_pressed("jump") && m_PlayerInst->is_on_floor()) {
+        emit_signal("state_changed", "jump");
     }
-
-    return nullptr;
 }
 
-void PlayerSprintState::headbob_effect(double delta, Player& player)
+void PlayerSprintState::headbob_effect(double delta)
 {
     Vector3 playerVelHeadbob = Vector3(m_PlayerVel.x, 0.0f, m_PlayerVel.z); // Use this vector so that gravity doesn't affect the headbob
     m_HeadBobTime += playerVelHeadbob.length() * delta;
     
-    Transform3D headbobTransform = player.get_player_head()->get_transform(); // get the player's transform
+    Transform3D headbobTransform = m_PlayerInst->get_player_head()->get_transform(); // get the player's transform
     headbobTransform.origin = Vector3( // like a sine wave
         Math::cos(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * 0.06f,
         Math::sin(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * 0.09f,
         0.0f
     );
-    player.get_player_head()->set_transform(headbobTransform);
+    m_PlayerInst->get_player_head()->set_transform(headbobTransform);
 }
 
-void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
+void PlayerSprintState::_physics_update(double delta) 
 {
-    float currentSpeedInWishDir = m_PlayerVel.dot(m_WishDir);
-    float addSpeed = player.get_move_speed() - currentSpeedInWishDir;
+    
+    float currentSpeedInWishDir = m_PlayerInst->get_velocity().dot(m_PlayerInst->get_wish_dir());
+    float addSpeed = m_PlayerInst->get_move_speed() - currentSpeedInWishDir;
     
     if(addSpeed > 0.0f) {
-        float accel = Globals::GroundAccel * player.get_move_speed() * delta;
+        float accel = Globals::GroundAccel * m_PlayerInst->get_move_speed() * delta;
         accel = Math::min(accel, addSpeed);
-        m_PlayerVel += accel * m_WishDir;
+        m_PlayerVel += accel * m_PlayerInst->get_wish_dir();
     } 
 
     // Friciton code
@@ -66,40 +57,14 @@ void PlayerSprintState::_handle_ground_physics(double delta, Player& player)
     }
 
     m_PlayerVel *= newSpeed;
-
-    if(m_PlayerVel.length() == 0) {
-        m_CurrentSubState = SubStates::Idle;
-    } else {
-        m_CurrentSubState = SubStates::NONE;
-    }
-
-    headbob_effect(delta, player);
-    player.set_velocity(m_PlayerVel);
-}
-
-void PlayerSprintState::_handle_air_physics(double delta, Player& player)
-{
-    m_PlayerVel = player.get_velocity();
     
-    if(m_PlayerVel.y < 0.0f && !player.is_on_floor()) {
-        m_CurrentSubState = SubStates::Falling;
-    } else {
-        m_CurrentSubState = SubStates::NONE;
+    headbob_effect(delta);
+    m_PlayerInst->set_velocity(m_PlayerVel);
+
+    if(m_PlayerInst->get_input_dir() == Vector2(0.0f, 0.0f) && m_PlayerVel.length() == 0) {
+        emit_signal("state_changed", "idle");
     }
-
-    if(get_current_substate() == SubStates::Falling) {
-        // Allow air strafing during the fall state
-        float currentSpeed = m_PlayerVel.dot(m_WishDir);
-        float addSpeed = Globals::MaxAirMoveSpeed - currentSpeed; // how much speed we can add to the player before exceeding max move speed in air
-        
-        if (addSpeed > 0.0f) {
-            float accel = Globals::MaxAirAccel * addSpeed;
-            m_PlayerVel += m_WishDir * (accel * delta); // v = u + a * t
-        }
-        
-        // Set final velocity
-        player.set_velocity(m_PlayerVel);
-    }
-
-
 }
+
+
+void PlayerSprintState::_exit() {}

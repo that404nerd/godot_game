@@ -1,4 +1,4 @@
-## FSM based Movement System
+## FSM Movement System
 
 - Sideways movement when falling [x]
 - Add 3 points to the jump arc (Jump, Peak, Landing like a parabola) [x]

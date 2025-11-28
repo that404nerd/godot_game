@@ -12,14 +12,9 @@
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/marker3d.hpp>
 #include <godot_cpp/classes/capsule_shape3d.hpp>
+#include <godot_cpp/classes/input_event.hpp>
 
 #include "globals.h"
-#include "godot_cpp/classes/input_event.hpp"
-#include "player_state.h"
-#include "player_sprint_state.h"
-#include "player_jump_state.h"
-
-#include "player_state_manager.h"
 
 using namespace godot;
 
@@ -33,6 +28,8 @@ public:
     void _ready() override;
     void _physics_process(double delta) override;
     void _unhandled_input(const Ref<InputEvent>& event) override;
+
+    void _update_gravity(double delta);
     
     static void _bind_methods();
     
@@ -52,8 +49,6 @@ public:
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
 
-    float get_player_vel_len() { return m_PlayerVel.length(); }
-
 protected:
     Node3D* m_PlayerHead = nullptr;
     Node3D* m_CameraControllerNode = nullptr;
@@ -65,7 +60,6 @@ protected:
     CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
     Camera3D* m_PlayerCamera = nullptr;
-    Label* m_VelLabel = nullptr;
 
     // Player vectors & Input vectors
     Vector2 m_InputDir = Vector2(0.0f, 0.0f);

@@ -22,13 +22,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6054255, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
 
+[node name="PlayerStateMachine" type="PlayerStateMachine" parent="." node_paths=PackedStringArray("initial_state")]
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="PlayerIdleState" parent="PlayerStateMachine"]
+
+[node name="Sprint" type="PlayerSprintState" parent="PlayerStateMachine"]
+
+[node name="Jump" type="PlayerJumpState" parent="PlayerStateMachine"]
+
 [node name="WeaponManager" type="WeaponManager" parent="."]
 weapon_list = [ExtResource("1_3vyb7")]
 sway_speed = 0.1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9000001, 0)
 
 [node name="CameraController" type="CameraController" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8809.768, 0)
 top_level = true
 
 [node name="PlayerHead" type="Node3D" parent="CameraController"]
@@ -47,11 +56,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 [node name="JumpBufferTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
-
-[node name="TextDebugLayer" type="CanvasLayer" parent="."]
-
-[node name="VelInfoLabel" type="Label" parent="TextDebugLayer"]
-offset_left = 6.0
-offset_top = 57.0
-offset_right = 92.0
-offset_bottom = 84.0
