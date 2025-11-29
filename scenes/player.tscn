@@ -8,7 +8,7 @@ height = 3.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 radius = 0.6
-height = 2.2
+height = 1.6
 
 [node name="Player" type="Player"]
 velocity = Vector3(0, -531.3061, 0)
@@ -16,9 +16,10 @@ velocity = Vector3(0, -531.3061, 0)
 [node name="StandingPlayerCollider" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_u8vuu")
+debug_fill = false
 
 [node name="CrouchingPlayerCollider" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6054255, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3001753, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
 
@@ -30,6 +31,8 @@ initial_state = NodePath("Idle")
 [node name="Sprint" type="PlayerSprintState" parent="PlayerStateMachine"]
 
 [node name="Jump" type="PlayerJumpState" parent="PlayerStateMachine"]
+
+[node name="Crouch" type="PlayerCrouchState" parent="PlayerStateMachine"]
 
 [node name="WeaponManager" type="WeaponManager" parent="."]
 weapon_list = [ExtResource("1_3vyb7")]
@@ -54,5 +57,5 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.22
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="JumpBufferTimer" type="Timer" parent="."]
-wait_time = 0.3
+wait_time = 0.2
 one_shot = true

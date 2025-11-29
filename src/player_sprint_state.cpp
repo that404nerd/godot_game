@@ -16,28 +16,18 @@ void PlayerSprintState::_bind_methods()
 
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
 {
-    if(Input::get_singleton()->is_action_just_pressed("jump") && m_PlayerInst->is_on_floor()) {
+    if(Input::get_singleton()->is_action_just_pressed("jump")) {
         emit_signal("state_changed", "jump");
     }
-}
 
-void PlayerSprintState::headbob_effect(double delta)
-{
-    Vector3 playerVelHeadbob = Vector3(m_PlayerVel.x, 0.0f, m_PlayerVel.z); // Use this vector so that gravity doesn't affect the headbob
-    m_HeadBobTime += playerVelHeadbob.length() * delta;
-    
-    Transform3D headbobTransform = m_PlayerInst->get_player_head()->get_transform(); // get the player's transform
-    headbobTransform.origin = Vector3( // like a sine wave
-        Math::cos(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * 0.06f,
-        Math::sin(m_HeadBobTime * Globals::HEADBOB_FREQUENCY) * 0.09f,
-        0.0f
-    );
-    m_PlayerInst->get_player_head()->set_transform(headbobTransform);
+    if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
+    {
+        emit_signal("state_changed", "crouch");
+    }
 }
 
 void PlayerSprintState::_physics_update(double delta) 
 {
-    
     float currentSpeedInWishDir = m_PlayerInst->get_velocity().dot(m_PlayerInst->get_wish_dir());
     float addSpeed = m_PlayerInst->get_move_speed() - currentSpeedInWishDir;
     
@@ -58,7 +48,6 @@ void PlayerSprintState::_physics_update(double delta)
 
     m_PlayerVel *= newSpeed;
     
-    headbob_effect(delta);
     m_PlayerInst->set_velocity(m_PlayerVel);
 
     if(m_PlayerInst->get_input_dir() == Vector2(0.0f, 0.0f) && m_PlayerVel.length() == 0) {

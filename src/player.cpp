@@ -32,7 +32,7 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
 void Player::_update_gravity(double delta)
 {
     if(!is_on_floor()) {
-        m_PlayerVel.y -= 10.0f * delta;
+        m_PlayerVel.y -= 9.8f * delta;
     }
 
 }

@@ -38,6 +38,7 @@ public:
 public:
 
     Marker3D* get_camera_anchor() { return m_CameraAnchor; }
+    Camera3D* get_player_camera() { return m_PlayerCamera; }
     Node3D* get_player_head() { return m_PlayerHead; }
     Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
 

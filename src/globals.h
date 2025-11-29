@@ -50,8 +50,8 @@ namespace Globals {
     inline const float WalkSpeed = 7.0f;
     inline const float SprintSpeed = 10.0f;
 
-    inline const float CROUCH_TRANSLATE = 0.5f;
-    inline const float LERP_CONSTANT = 5.0f;
+    inline const float CROUCH_TRANSLATE = 0.8f;
+    inline const float LERP_CONSTANT = 3.0f;
     
     inline const float DashSpeed = 35.0f;
     inline const float SideTiltAngle = 5.0f;
@@ -65,13 +65,10 @@ namespace Globals {
     inline const float JUMP_GRAVITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_PEAK * TIME_TO_PEAK) * 1.0f;
     inline const float FALL_GRAVITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_DESCENT * TIME_TO_DESCENT) * 1.0f;
 
-    inline const float MaxAirMoveSpeed = 8.0f; // Max speed the player can move in the air
-    inline const float MaxAirAccel = 8.0f; // Determines how fast the player can change the direction mid-air
+    inline const float MaxAirMoveSpeed = 3.0f; // Max speed the player can move in the air
+    inline const float MaxAirAccel = 3.0f; // Determines how fast the player can change the direction mid-air
 
     inline const float MouseSensitivity = 0.003f;
-
-    inline const float HEADBOB_MOVE_AMOUNT = 0.09f;
-    inline const float HEADBOB_FREQUENCY = 1.1f;
 
     // Friction & Bhop variables 
     inline const float GroundAccel = 15.0f;

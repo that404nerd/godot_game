@@ -126,11 +126,11 @@
 }
 // brush 13
 {
-( -554 1184 0 ) ( -554 -896 0 ) ( -554 -896 -32 ) surfaces/floor/granite_tile_color [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( -896 -8 0 ) ( 944 -8 0 ) ( 944 -8 -32 ) surfaces/floor/granite_tile_color [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -768 1184 0 ) ( -768 -896 0 ) ( -768 -896 -32 ) surfaces/floor/granite_tile_color [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -896 -176 0 ) ( 944 -176 0 ) ( 944 -176 -32 ) surfaces/floor/granite_tile_color [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
 ( 944 -896 -32 ) ( 944 1184 -32 ) ( -896 1184 -32 ) surfaces/floor/granite_tile_color [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
 ( -896 1184 0 ) ( 944 1184 0 ) ( 944 -896 0 ) surfaces/floor/granite_tile_color [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
-( 944 1184 -32 ) ( 944 1184 0 ) ( -896 1184 0 ) surfaces/floor/granite_tile_color [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 944 1456 -32 ) ( 944 1456 0 ) ( -896 1456 0 ) surfaces/floor/granite_tile_color [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
 ( 730 -896 0 ) ( 730 1184 0 ) ( 730 1184 -32 ) surfaces/floor/granite_tile_color [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
 }
 // brush 14

@@ -96,6 +96,7 @@ void WeaponManager::_weapon_sway(double delta)
     
     m_WeaponNode->set_position(weaponPos);
     m_WeaponNode->set_rotation(weaponRot);
+
 }
 
 WeaponManager::~WeaponManager()

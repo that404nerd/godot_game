@@ -44,13 +44,6 @@ shadow_enabled = true
 environment = SubResource("Environment_o6xl0")
 
 [node name="Player" parent="." instance=ExtResource("1_o5qli")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.705757, 1.3338909, -3.162342)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.705757, 1.3502283, -3.162342)
 
-[node name="TextDebugLayer" type="CanvasLayer" parent="."]
-
-[node name="DebugInfoLayer" type="Label" parent="TextDebugLayer"]
-offset_left = 5.0
-offset_right = 282.0
-offset_bottom = 81.0
-
-[node name="level0" parent="." instance=ExtResource("3_sugp2")]
+[node name="Level0" parent="." instance=ExtResource("3_sugp2")]

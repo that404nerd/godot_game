@@ -22,6 +22,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if (!ClassDB::class_exists("PlayerIdleState")) GDREGISTER_CLASS(PlayerIdleState); 
   if (!ClassDB::class_exists("PlayerSprintState")) GDREGISTER_CLASS(PlayerSprintState); 
   if (!ClassDB::class_exists("PlayerJumpState")) GDREGISTER_CLASS(PlayerJumpState); 
+  if (!ClassDB::class_exists("PlayerCrouchState")) GDREGISTER_CLASS(PlayerCrouchState); 
   if (!ClassDB::class_exists("WeaponManager")) GDREGISTER_CLASS(WeaponManager);
   if (!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
 }

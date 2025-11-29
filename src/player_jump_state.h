@@ -15,6 +15,8 @@ public:
     virtual void _physics_update(double delta) override;
     virtual void _exit() override; 
 
+    void apply_jump();
+
 protected:
     static void _bind_methods();
 

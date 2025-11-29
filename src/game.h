@@ -26,9 +26,6 @@ namespace godot {
     void _unhandled_input(const Ref<InputEvent>& event) override;
     void _process(double delta) override;
 
-  private:
-    Label* m_FPSLabel = nullptr;
-  
   };
 
 }
