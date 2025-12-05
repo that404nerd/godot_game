@@ -1,6 +1,4 @@
 #include "player_crouch_state.h"
-#include "godot_cpp/variant/callable.hpp"
-#include "player_state_machine.h"
 
 void PlayerCrouchState::_enter()
 { 
@@ -28,7 +26,7 @@ void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event)
         
         m_CrouchTween = m_PlayerInst->create_tween();
         m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.35f);
-        m_CrouchTween->connect("finished", Callable(this, "_on_crouch_finished")); // NOTE: finished is a pre-defined signal defined in godot
+        m_CrouchTween->connect("finished", Callable(this, "_on_crouch_finished")); // FOR ME: finished is a pre-defined signal defined in godot
     }
 
 }
@@ -40,6 +38,7 @@ void PlayerCrouchState::_on_crouch_finished()
 
 void PlayerCrouchState::_physics_update(double delta) 
 {
+    Vector3 playerVel = m_PlayerInst->get_velocity();
     if(m_CrouchTween == nullptr || !m_CrouchTween->is_valid()) {
         m_CrouchTween = m_PlayerInst->create_tween();
         m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.35f);
@@ -49,8 +48,8 @@ void PlayerCrouchState::_physics_update(double delta)
     m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
     m_PlayerInst->get_player_standing_collider()->set_disabled(true);
     
-    m_PlayerVel = Globals::CrouchSpeed * m_PlayerInst->get_wish_dir();
-    m_PlayerInst->set_velocity(m_PlayerVel);
+    playerVel = Globals::CrouchSpeed * m_PlayerInst->get_wish_dir();
+    m_PlayerInst->set_velocity(playerVel);
 }
 
 

@@ -4,11 +4,11 @@
 #include "player_state_machine.h"
 #include "player.h"
 
-class PlayerSprintState : public PlayerState {
-    GDCLASS(PlayerSprintState, PlayerState);
+class PlayerFallingState : public PlayerState {
+    GDCLASS(PlayerFallingState, PlayerState);
 
 public:
-    PlayerSprintState() {}; 
+    PlayerFallingState() {}; 
 
     virtual void _enter() override;
     virtual void _handle_input(const Ref<InputEvent>& event) override;
@@ -17,7 +17,4 @@ public:
 
 protected:
     static void _bind_methods();
-
-private:
-    Player* m_PlayerInst;
 };

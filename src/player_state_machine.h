@@ -22,6 +22,7 @@ public:
     void _physics_process(double delta) override;
 
     void _change_state(const String& stateName);
+    String get_current_state();
 
     ~PlayerStateMachine();
     

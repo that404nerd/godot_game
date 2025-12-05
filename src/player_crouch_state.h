@@ -12,7 +12,7 @@ class PlayerCrouchState : public PlayerState {
     GDCLASS(PlayerCrouchState, PlayerState);
 
 public:
-    PlayerCrouchState() : m_PlayerVel(Vector3(0.0f, 0.0f, 0.0f)), m_CurrentHeadPosition(Vector3(0.0f, 0.0f, 0.0f)), m_PlayerInst(nullptr), m_CrouchTween(nullptr) {}; 
+    PlayerCrouchState() : m_CurrentHeadPosition(Vector3(0.0f, 0.0f, 0.0f)), m_PlayerInst(nullptr), m_CrouchTween(nullptr) {}; 
 
     virtual void _enter() override;
     virtual void _handle_input(const Ref<InputEvent>& event) override;
@@ -27,7 +27,7 @@ protected:
 private:
     float m_FinalPos;
 
-    Vector3 m_PlayerVel, m_OriginalHeadPosition, m_CurrentHeadPosition;
+    Vector3 m_OriginalHeadPosition, m_CurrentHeadPosition;
     Player* m_PlayerInst;
     Ref<Tween> m_CrouchTween;
 };

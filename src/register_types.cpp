@@ -1,6 +1,5 @@
 #include "register_types.hpp"
 #include "godot_cpp/core/class_db.hpp"
-#include "player_jump_state.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -23,6 +22,8 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if (!ClassDB::class_exists("PlayerSprintState")) GDREGISTER_CLASS(PlayerSprintState); 
   if (!ClassDB::class_exists("PlayerJumpState")) GDREGISTER_CLASS(PlayerJumpState); 
   if (!ClassDB::class_exists("PlayerCrouchState")) GDREGISTER_CLASS(PlayerCrouchState); 
+  if (!ClassDB::class_exists("PlayerDashState")) GDREGISTER_CLASS(PlayerDashState); 
+  // if (!ClassDB::class_exists("PlayerFallingState")) GDREGISTER_CLASS(PlayerFallingState); 
   if (!ClassDB::class_exists("WeaponManager")) GDREGISTER_CLASS(WeaponManager);
   if (!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
 }

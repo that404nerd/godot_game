@@ -12,9 +12,9 @@ void PlayerStateMachine::_bind_methods()
 
 void PlayerStateMachine::_ready()
 {
-    for (auto &child_var : get_children()) {
+    for (auto& child : get_children()) {
 
-        Node *node = Object::cast_to<Node>(child_var);
+        Node *node = Object::cast_to<Node>(child);
         if (!node) continue;
 
         StringName key = node->get_name();
@@ -44,6 +44,7 @@ void PlayerStateMachine::_physics_process(double delta)
 {
     if(m_CurrentState) {
         m_CurrentState->_physics_update(delta);
+        // print_line(get_current_state());
     }
 }
 
@@ -51,11 +52,9 @@ void PlayerStateMachine::_change_state(const String& stateName)
 {
     PlayerState* new_state = m_States.get(stateName.to_lower());
 
-    // if(!new_state) {
-    //     print_error("New state not found!");
-    // } else {
-    //     print_line("New state found!");
-    // }
+    if(!new_state) {
+        print_error("New state not found!");
+    }
 
     if(m_CurrentState) {
         m_CurrentState->_exit();
@@ -63,6 +62,17 @@ void PlayerStateMachine::_change_state(const String& stateName)
 
     new_state->_enter();
     m_CurrentState = new_state;
+}
+
+String PlayerStateMachine::get_current_state()
+{
+    String current_state = "";
+    if(m_CurrentState)
+        current_state = m_CurrentState->get_name();
+    else
+        print_error("State not found!");
+
+    return current_state;
 }
 
 PlayerStateMachine::~PlayerStateMachine() {}

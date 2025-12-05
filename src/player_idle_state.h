@@ -9,7 +9,7 @@ class PlayerIdleState : public PlayerState {
 
 public:
 
-    PlayerIdleState() : m_PlayerVel(Vector3(0.0f, 0.0f, 0.0f)) {};
+    PlayerIdleState() {};
 
     virtual void _enter() override;
     virtual void _handle_input(const Ref<InputEvent>& event) override;
@@ -21,5 +21,4 @@ protected:
 
 private:
     Player* m_PlayerInst;
-    Vector3 m_PlayerVel;
 };

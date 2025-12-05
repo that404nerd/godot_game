@@ -4,11 +4,11 @@
 #include "player_state_machine.h"
 #include "player.h"
 
-class PlayerSprintState : public PlayerState {
-    GDCLASS(PlayerSprintState, PlayerState);
+class PlayerDashState : public PlayerState {
+    GDCLASS(PlayerDashState, PlayerState);
 
 public:
-    PlayerSprintState() {}; 
+    PlayerDashState() : m_PlayerInst(nullptr) {}; 
 
     virtual void _enter() override;
     virtual void _handle_input(const Ref<InputEvent>& event) override;

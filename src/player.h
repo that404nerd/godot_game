@@ -13,6 +13,7 @@
 #include <godot_cpp/classes/marker3d.hpp>
 #include <godot_cpp/classes/capsule_shape3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 
 #include "globals.h"
 
@@ -29,7 +30,6 @@ public:
     void _physics_process(double delta) override;
     void _unhandled_input(const Ref<InputEvent>& event) override;
 
-    void _update_gravity(double delta);
     
     static void _bind_methods();
     
@@ -44,11 +44,13 @@ public:
 
     CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
     CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
-
-    float get_move_speed() { return m_IsPressed ? Globals::WalkSpeed : Globals::SprintSpeed; }
-
+    
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
+
+    void _update_gravity(double delta);
+    void _update_input();
+    void _update_velocity();
 
 protected:
     Node3D* m_PlayerHead = nullptr;
@@ -66,7 +68,6 @@ protected:
     Vector2 m_InputDir = Vector2(0.0f, 0.0f);
     Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
-    Vector3 m_PlayerVel = Vector3(0.0f, 0.0f, 0.0f);
 
-    bool m_IsPressed; // Toggle between sprint and walk states
+    float m_Gravity = 0.0f;
 };

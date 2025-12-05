@@ -42,8 +42,6 @@ public:                                                  \
 
 
 
-
-
 namespace Globals {
 
     inline const float CrouchSpeed = 3.0f;
@@ -58,15 +56,15 @@ namespace Globals {
     // inline float SlideJumpAngle = 40.0f;
     // inline float SlideSpeed = 10.0f;
 
-    inline const float JUMP_HEIGHT = 4.0f;
+    inline const float JUMP_HEIGHT = 6.0f;
     inline const float TIME_TO_PEAK = 3.0f, TIME_TO_DESCENT = 3.0f;
 
     inline const float JUMP_VELOCITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_PEAK) * 1.0f;
     inline const float JUMP_GRAVITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_PEAK * TIME_TO_PEAK) * 1.0f;
     inline const float FALL_GRAVITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_DESCENT * TIME_TO_DESCENT) * 1.0f;
 
-    inline const float MaxAirMoveSpeed = 3.0f; // Max speed the player can move in the air
-    inline const float MaxAirAccel = 3.0f; // Determines how fast the player can change the direction mid-air
+    inline const float MaxAirMoveSpeed = 6.0f; // Max speed the player can move in the air
+    inline const float MaxAirAccel = 7.0f; // Determines how fast the player can change the direction mid-air
 
     inline const float MouseSensitivity = 0.003f;
 
