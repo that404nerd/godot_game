@@ -15,23 +15,33 @@ class PlayerStateMachine : public Node {
     GDCLASS(PlayerStateMachine, Node);
 
 public:
-    PlayerStateMachine();
+    PlayerStateMachine() {};
+
     void _ready() override;
 
     void _unhandled_input(const Ref<InputEvent>& event) override;
     void _physics_process(double delta) override;
 
     void _change_state(const String& stateName);
-    String get_current_state();
+    StringName get_current_state();
+    
+    Player* get_player_inst() const { return m_PlayerInst; }
 
     ~PlayerStateMachine();
     
 protected:
+
     static void _bind_methods();
     
 private:
+    PlayerStateMachine(const PlayerStateMachine&) = delete;
+    PlayerStateMachine(const PlayerStateMachine&&) = delete;
+    
+    
+private:
+    Player* m_PlayerInst = nullptr;
     GD_DEFINE_PROPERTY(PlayerState*, initial_state, nullptr); 
 
-    PlayerState* m_CurrentState;
+    PlayerState* m_CurrentState { nullptr };
     AHashMap<String, PlayerState*> m_States;
 };

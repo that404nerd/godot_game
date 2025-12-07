@@ -21,8 +21,6 @@ public:
 
     void _on_crouch_finished();
 
-    virtual ~PlayerCrouchState() override = default;
-
 protected:
     static void _bind_methods();
 

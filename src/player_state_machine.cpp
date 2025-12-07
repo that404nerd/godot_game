@@ -1,9 +1,5 @@
 #include "player_state_machine.h"
 
-PlayerStateMachine::PlayerStateMachine() : m_CurrentState(nullptr)
-{
-}
-
 void PlayerStateMachine::_bind_methods() 
 {
     GD_BIND_CUSTOM_PROPERTY(PlayerStateMachine, initial_state, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -12,6 +8,12 @@ void PlayerStateMachine::_bind_methods()
 
 void PlayerStateMachine::_ready()
 {
+    if(get_parent()) {
+        m_PlayerInst = Object::cast_to<Player>(get_parent());
+    } else {
+        print_error("parent is null");
+    }
+    
     for (auto& child : get_children()) {
         
         Node *node = Object::cast_to<Node>(child);
@@ -22,7 +24,6 @@ void PlayerStateMachine::_ready()
         if (playerState) {
             playerState->connect("state_changed", Callable(this, "_change_state"));
             m_States[key.to_lower()] = playerState;
-            // print_line(key.to_lower());
         }
     }
 
@@ -64,9 +65,9 @@ void PlayerStateMachine::_change_state(const String& stateName)
     m_CurrentState = new_state;
 }
 
-String PlayerStateMachine::get_current_state()
+StringName PlayerStateMachine::get_current_state()
 {
-    String current_state = "";
+    StringName current_state;
     if(m_CurrentState)
         current_state = m_CurrentState->get_name();
     else

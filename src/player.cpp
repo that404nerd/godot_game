@@ -2,6 +2,7 @@
 
 Player::Player()
 {
+    
 }
 
 void Player::_bind_methods()

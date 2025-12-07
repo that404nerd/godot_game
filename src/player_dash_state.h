@@ -15,8 +15,6 @@ public:
     virtual void _physics_update(double delta) override;
     virtual void _exit() override; 
 
-    virtual ~PlayerDashState() override = default;
-
 protected:
     static void _bind_methods();
 

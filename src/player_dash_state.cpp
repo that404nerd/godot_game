@@ -2,8 +2,8 @@
 
 void PlayerDashState::_enter()
 { 
-    set_player_inst(Object::cast_to<Player>(get_parent()->get_parent()));
-    m_PlayerInst = get_player_inst();
+    auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
+    m_PlayerInst = sm->get_player_inst();
 }
 
 void PlayerDashState::_bind_methods()

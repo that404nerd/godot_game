@@ -2,8 +2,8 @@
 
 void PlayerCrouchState::_enter()
 { 
-    set_player_inst(Object::cast_to<Player>(get_parent()->get_parent()));
-    m_PlayerInst = get_player_inst();
+    auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
+    m_PlayerInst = sm->get_player_inst();
     m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
 
     m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - Globals::CROUCH_TRANSLATE;

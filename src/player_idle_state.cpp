@@ -2,8 +2,8 @@
 
 void PlayerIdleState::_enter()
 { 
-    set_player_inst(Object::cast_to<Player>(get_parent()->get_parent()));
-    m_PlayerInst = get_player_inst();
+    auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
+    m_PlayerInst = sm->get_player_inst();
 }
 
 void PlayerIdleState::_bind_methods()
@@ -26,10 +26,13 @@ void PlayerIdleState::_handle_input(const Ref<InputEvent>& event)
 
 void PlayerIdleState::_physics_update(double delta) 
 {
+    if (!m_PlayerInst) {
+        return;
+    }
     m_PlayerInst->_update_gravity(delta);
     m_PlayerInst->_update_input();    
     
-    if(get_player_inst()->get_input_dir() != Vector2(0.0f, 0.0f) && get_player_inst()->is_on_floor()) {
+    if(m_PlayerInst->get_input_dir() != Vector2(0.0f, 0.0f) && m_PlayerInst->is_on_floor()) {
         emit_signal("state_changed", "sprint");
     }
     m_PlayerInst->_update_velocity();

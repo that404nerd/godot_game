@@ -2,7 +2,8 @@
 
 void PlayerJumpState::_enter()
 { 
-    m_PlayerInst = Object::cast_to<Player>(get_parent()->get_parent());
+    auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
+    m_PlayerInst = sm->get_player_inst();
     m_CurrentJumps = MAX_JUMPS;
 
 }
