@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://dscvjpepl0ukv"]
+
+[ext_resource type="PackedScene" uid="uid://2c0bf6m5ugct" path="res://scenes/player.tscn" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://cnxdomimh38wt" path="res://scenes/level0.tscn" id="3_sugp2"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
+sky_top_color = Color(0.17254902, 0.21960784, 0.21568628, 1)
+sky_horizon_color = Color(0.1254902, 0.16078432, 0.16078432, 1)
+sky_curve = 14.055217
+ground_bottom_color = Color(0.1254902, 0.16078432, 0.16078432, 1)
+ground_horizon_color = Color(0.1254902, 0.16078432, 0.16078432, 1)
+ground_curve = 3.8802392
+energy_multiplier = 2.3
+
+[sub_resource type="Sky" id="Sky_tipki"]
+sky_material = SubResource("ProceduralSkyMaterial_0wfyh")
+
+[sub_resource type="Environment" id="Environment_o6xl0"]
+background_mode = 2
+sky = SubResource("Sky_tipki")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 4
+ssr_enabled = true
+sdfgi_use_occlusion = true
+glow_enabled = true
+glow_levels/2 = 0.8
+glow_levels/3 = 0.6
+glow_levels/4 = 1.35
+glow_normalized = true
+glow_blend_mode = 1
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.02
+
+[node name="Game" type="Game"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_color = Color(0.30980393, 0.3764706, 0.34117648, 1)
+light_energy = 0.9
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_o6xl0")
+
+[node name="Player" parent="." instance=ExtResource("1_o5qli")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.705757, 1.3502283, -3.162342)
+
+[node name="Level0" parent="." instance=ExtResource("3_sugp2")]

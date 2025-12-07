@@ -1,0 +1,65 @@
+[gd_scene load_steps=4 format=3 uid="uid://2c0bf6m5ugct"]
+
+[ext_resource type="Weapon" uid="uid://dcb4s66cfx5yg" path="res://assets/meshes/weapons/glock/glock_weapon.tres" id="1_3vyb7"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8vuu"]
+radius = 0.6
+height = 3.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
+radius = 0.6
+height = 1.6
+
+[node name="Player" type="Player"]
+velocity = Vector3(0, -531.3061, 0)
+
+[node name="StandingPlayerCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_u8vuu")
+debug_fill = false
+
+[node name="CrouchingPlayerCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3001753, 0)
+shape = SubResource("CapsuleShape3D_3vyb7")
+disabled = true
+
+[node name="PlayerStateMachine" type="PlayerStateMachine" parent="." node_paths=PackedStringArray("initial_state")]
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="PlayerIdleState" parent="PlayerStateMachine"]
+
+[node name="Sprint" type="PlayerSprintState" parent="PlayerStateMachine"]
+
+[node name="Crouch" type="PlayerCrouchState" parent="PlayerStateMachine"]
+
+[node name="Jump" type="PlayerJumpState" parent="PlayerStateMachine"]
+
+[node name="Dash" type="PlayerDashState" parent="PlayerStateMachine"]
+
+[node name="Falling" type="PlayerFallingState" parent="PlayerStateMachine"]
+
+[node name="WeaponManager" type="WeaponManager" parent="."]
+weapon_list = [ExtResource("1_3vyb7")]
+sway_speed = 0.1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9000001, 0)
+
+[node name="CameraController" type="CameraController" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8809.768, 0)
+top_level = true
+
+[node name="PlayerHead" type="Node3D" parent="CameraController"]
+
+[node name="Camera3D" type="Camera3D" parent="CameraController/PlayerHead"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+current = true
+fov = 70.0
+
+[node name="WeaponSocket" type="Node3D" parent="CameraController/PlayerHead/Camera3D"]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.22, -0.196, -0.304)
+
+[node name="CameraControllerAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="JumpBufferTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
