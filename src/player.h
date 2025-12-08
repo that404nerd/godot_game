@@ -47,6 +47,7 @@ public:
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
 
+    void _update_gravity(double delta);
     void _update_input();
     void _update_velocity();
 

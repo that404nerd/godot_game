@@ -30,18 +30,12 @@ public:
     ~PlayerStateMachine();
     
 protected:
-
     static void _bind_methods();
     
 private:
-    PlayerStateMachine(const PlayerStateMachine&) = delete;
-    PlayerStateMachine(const PlayerStateMachine&&) = delete;
-    
-    
-private:
-    Player* m_PlayerInst = nullptr;
     GD_DEFINE_PROPERTY(PlayerState*, initial_state, nullptr); 
 
+    Player* m_PlayerInst { nullptr };
     PlayerState* m_CurrentState { nullptr };
     AHashMap<String, PlayerState*> m_States;
 };

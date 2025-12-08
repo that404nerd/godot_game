@@ -19,7 +19,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   
   if (!ClassDB::class_exists("PlayerState")) GDREGISTER_ABSTRACT_CLASS(PlayerState); 
   
-  if (!ClassDB::class_exists("PlayerStateMachine")) GDREGISTER_CLASS(PlayerStateMachine); 
+  if (!ClassDB::class_exists("PlayerStateMachine")) GDREGISTER_RUNTIME_CLASS(PlayerStateMachine); // RUNTIME for other states to be valid
   if (!ClassDB::class_exists("PlayerIdleState")) GDREGISTER_CLASS(PlayerIdleState); 
   if (!ClassDB::class_exists("PlayerSprintState")) GDREGISTER_CLASS(PlayerSprintState); 
   if (!ClassDB::class_exists("PlayerJumpState")) GDREGISTER_CLASS(PlayerJumpState); 

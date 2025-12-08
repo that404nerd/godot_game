@@ -30,11 +30,11 @@ void PlayerSprintState::_handle_input(const Ref<InputEvent>& event)
 
 void PlayerSprintState::_physics_update(double delta) 
 {
-    Vector3 playerVel = m_PlayerInst->get_velocity();
-    
+    m_PlayerInst->_update_gravity(delta); 
     m_PlayerInst->_update_input();    
     m_PlayerInst->_update_velocity();
     
+    Vector3 playerVel = m_PlayerInst->get_velocity();
     float currentSpeedInWishDir = m_PlayerInst->get_velocity().dot(m_PlayerInst->get_wish_dir());
     float addSpeed = Globals::SprintSpeed - currentSpeedInWishDir;
     

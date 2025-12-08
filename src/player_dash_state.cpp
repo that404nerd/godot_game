@@ -16,6 +16,7 @@ void PlayerDashState::_handle_input(const Ref<InputEvent>& event)
 
 void PlayerDashState::_physics_update(double delta) 
 {
+    m_PlayerInst->_update_gravity(delta);
     m_PlayerInst->_update_input();    
     m_PlayerInst->_update_velocity();
 

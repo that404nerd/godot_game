@@ -6,7 +6,6 @@ void PlayerCrouchState::_enter()
     m_PlayerInst = sm->get_player_inst();
 
     m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
-
     m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - Globals::CROUCH_TRANSLATE;
 }
 
@@ -39,6 +38,7 @@ void PlayerCrouchState::_on_crouch_finished()
 
 void PlayerCrouchState::_physics_update(double delta) 
 {
+    m_PlayerInst->_update_gravity(delta);
     m_PlayerInst->_update_input();    
     m_PlayerInst->_update_velocity();
 

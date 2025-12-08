@@ -9,7 +9,6 @@ void PlayerJumpState::_enter()
     playerVel.y = Globals::JUMP_VELOCITY;
     m_PlayerInst->set_velocity(playerVel);
 
-    // m_CurrentJumps = MAX_JUMPS;
 
 }
 
@@ -24,16 +23,13 @@ void PlayerJumpState::_handle_input(const Ref<InputEvent>& event)
 
 void PlayerJumpState::_physics_update(double delta) 
 {
+    m_PlayerInst->_update_gravity(delta);
+    m_PlayerInst->_update_input();
+    m_PlayerInst->_update_velocity(); 
+    
     Vector3 playerVel = m_PlayerInst->get_velocity();
 
     playerVel.y -= 10.0f * delta;
-    m_PlayerInst->_update_input();
-    m_PlayerInst->_update_velocity(); 
-
-    // if (Input::get_singleton()->is_action_just_pressed("jump") && m_CurrentJumps > 0) {
-    //     playerVel.y = Globals::JUMP_VELOCITY;
-    //     m_CurrentJumps--;
-    // }
 
     m_PlayerInst->set_velocity(playerVel);
     
