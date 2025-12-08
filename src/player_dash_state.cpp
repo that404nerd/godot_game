@@ -16,8 +16,8 @@ void PlayerDashState::_handle_input(const Ref<InputEvent>& event)
 
 void PlayerDashState::_physics_update(double delta) 
 {
-    m_PlayerInst->_update_gravity(delta);
     m_PlayerInst->_update_input();    
+    m_PlayerInst->_update_velocity();
 
     Vector3 playerVel = m_PlayerInst->get_velocity();
     
@@ -28,7 +28,6 @@ void PlayerDashState::_physics_update(double delta)
     playerVel.z = horizVel.z;
 
     m_PlayerInst->set_velocity(playerVel);
-    m_PlayerInst->_update_velocity();
 
     if(m_PlayerInst->is_on_floor())
         emit_signal("state_changed", "sprint");

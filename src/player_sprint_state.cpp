@@ -32,8 +32,8 @@ void PlayerSprintState::_physics_update(double delta)
 {
     Vector3 playerVel = m_PlayerInst->get_velocity();
     
-    m_PlayerInst->_update_gravity(delta);
     m_PlayerInst->_update_input();    
+    m_PlayerInst->_update_velocity();
     
     float currentSpeedInWishDir = m_PlayerInst->get_velocity().dot(m_PlayerInst->get_wish_dir());
     float addSpeed = Globals::SprintSpeed - currentSpeedInWishDir;
@@ -56,10 +56,13 @@ void PlayerSprintState::_physics_update(double delta)
     playerVel *= newSpeed;
 
     m_PlayerInst->set_velocity(playerVel);
-    m_PlayerInst->_update_velocity();
     
     if(m_PlayerInst->get_input_dir() == Vector2(0.0f, 0.0f) && m_PlayerInst->is_on_floor()) {
         emit_signal("state_changed", "idle");
+    }
+
+    if(playerVel.y < 1.0f && !m_PlayerInst->is_on_floor()) {
+        emit_signal("state_changed", "fall");
     }
 
 }

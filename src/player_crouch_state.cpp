@@ -4,6 +4,7 @@ void PlayerCrouchState::_enter()
 { 
     auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
     m_PlayerInst = sm->get_player_inst();
+
     m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
 
     m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - Globals::CROUCH_TRANSLATE;
@@ -38,8 +39,9 @@ void PlayerCrouchState::_on_crouch_finished()
 
 void PlayerCrouchState::_physics_update(double delta) 
 {
-    m_PlayerInst->_update_gravity(delta);
     m_PlayerInst->_update_input();    
+    m_PlayerInst->_update_velocity();
+
     Vector3 playerVel = m_PlayerInst->get_velocity();
     if(m_CrouchTween == nullptr || !m_CrouchTween->is_valid()) {
         m_CrouchTween = m_PlayerInst->create_tween();
@@ -52,7 +54,6 @@ void PlayerCrouchState::_physics_update(double delta)
     
     playerVel = Globals::CrouchSpeed * m_PlayerInst->get_wish_dir();
     m_PlayerInst->set_velocity(playerVel);
-    m_PlayerInst->_update_velocity();
 }
 
 

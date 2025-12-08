@@ -29,13 +29,6 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
     
 }
 
-void Player::_update_gravity(double delta)
-{
-    Vector3 playerVel = get_velocity();
-    playerVel.y -= m_Gravity * delta;
-    set_velocity(playerVel);
-}
-
 void Player::_update_input() 
 {
     Vector3 playerVel = get_velocity();

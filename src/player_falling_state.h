@@ -8,7 +8,7 @@ class PlayerFallingState : public PlayerState {
     GDCLASS(PlayerFallingState, PlayerState);
 
 public:
-    PlayerFallingState() {}; 
+    PlayerFallingState() : m_IsJumpPressed(false) {}; 
 
     virtual void _enter() override;
     virtual void _handle_input(const Ref<InputEvent>& event) override;
@@ -20,4 +20,5 @@ protected:
 
 private:
     Player* m_PlayerInst;
+    bool m_IsJumpPressed;
 };

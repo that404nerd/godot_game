@@ -20,7 +20,4 @@ protected:
 
 private:
     Player* m_PlayerInst;
-
-    const int MAX_JUMPS { 2 };
-    int m_CurrentJumps;
 };

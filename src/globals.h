@@ -56,7 +56,7 @@ namespace Globals {
     // inline float SlideJumpAngle = 40.0f;
     // inline float SlideSpeed = 10.0f;
 
-    inline const float JUMP_HEIGHT = 6.0f;
+    inline const float JUMP_HEIGHT = 7.0f;
     inline const float TIME_TO_PEAK = 3.0f, TIME_TO_DESCENT = 3.0f;
 
     inline const float JUMP_VELOCITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_PEAK) * 1.0f;

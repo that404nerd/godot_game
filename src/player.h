@@ -30,7 +30,6 @@ public:
     void _physics_process(double delta) override;
     void _unhandled_input(const Ref<InputEvent>& event) override;
 
-    
     static void _bind_methods();
     
     ~Player();
@@ -48,7 +47,6 @@ public:
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
 
-    void _update_gravity(double delta);
     void _update_input();
     void _update_velocity();
 
