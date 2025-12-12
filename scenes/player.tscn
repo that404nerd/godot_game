@@ -56,7 +56,6 @@ top_level = true
 [node name="Camera3D" type="Camera3D" parent="CameraController/PlayerHead"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 current = true
-fov = 70.0
 
 [node name="WeaponSocket" type="Node3D" parent="CameraController/PlayerHead/Camera3D"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.22, -0.196, -0.304)
