@@ -10,9 +10,9 @@
 #include "player_idle_state.h"
 #include "player_sprint_state.h"
 #include "player_jump_state.h"
-#include "player_crouch_state.h"
 #include "player_dash_state.h"
 #include "player_falling_state.h"
+#include "player_crouch_state.h"
 #include "weapon.h"
 #include "weapon_manager.h"
 

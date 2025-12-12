@@ -26,6 +26,7 @@ public:
     StringName get_current_state();
     
     Player* get_player_inst() const { return m_PlayerInst; }
+    StringName get_prev_state();
 
     ~PlayerStateMachine();
     
@@ -37,5 +38,6 @@ private:
 
     Player* m_PlayerInst { nullptr };
     PlayerState* m_CurrentState { nullptr };
+    PlayerState* m_PrevState { nullptr };
     AHashMap<String, PlayerState*> m_States;
 };

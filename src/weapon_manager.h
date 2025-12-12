@@ -17,9 +17,9 @@
 
 using namespace godot;
 
-class WeaponManager : public Node3D {
+class WeaponManager : public Node {
 
-    GDCLASS(WeaponManager, Node3D)
+    GDCLASS(WeaponManager, Node)
 
 public:
     WeaponManager();

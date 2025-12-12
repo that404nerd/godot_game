@@ -6,7 +6,9 @@
 - Fix a bug where jump logs are triggered twice (probably setting the state twice somewhere) [x]
 - Fix Jump transition to Sprint state where friction isn't applied [x]
 - Double Jump [x]
-
-26th Nov, 2025:
 - Rewrite of the entire movement system using godot signals (Everything is becoming too verbose and unstable) [x] 
+
+- Animations for different states []
+
+
 

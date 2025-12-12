@@ -2,38 +2,45 @@
 
 void PlayerCrouchState::_enter()
 { 
-    auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
-    m_PlayerInst = sm->get_player_inst();
+    m_StateMachineInst = Object::cast_to<PlayerStateMachine>(get_parent());
+    m_PlayerInst = m_StateMachineInst->get_player_inst();
 
     m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
     m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - Globals::CROUCH_TRANSLATE;
+
+    m_SlideVector = m_PlayerInst->get_wish_dir();
+    m_SlideTimer = 2.0f;
 }
 
 void PlayerCrouchState::_bind_methods()
 {
-    ClassDB::bind_method(D_METHOD("_on_crouch_finished"), &PlayerCrouchState::_on_crouch_finished); 
 }
 
 void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event) 
 {
     if (Input::get_singleton()->is_action_just_pressed("crouch")) {
-        m_PlayerInst->get_player_crouching_collider()->set_disabled(true);
-        m_PlayerInst->get_player_standing_collider()->set_disabled(false);
-
-        if(m_CrouchTween != nullptr) {
-            m_CrouchTween->kill();
-        }
-        
-        m_CrouchTween = m_PlayerInst->create_tween();
-        m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.35f);
-        m_CrouchTween->connect("finished", Callable(this, "_on_crouch_finished")); // FOR ME: finished is a pre-defined signal defined in godot
+        _on_crouch_finished();
+        emit_signal("state_changed", "idle");
     }
-
+    
+    if(Input::get_singleton()->is_action_just_pressed("jump"))
+    {
+        _on_crouch_finished();
+        emit_signal("state_changed", "jump");
+    }
 }
 
 void PlayerCrouchState::_on_crouch_finished()
 {
-    emit_signal("state_changed", "idle");
+    m_PlayerInst->get_player_crouching_collider()->set_disabled(true);
+    m_PlayerInst->get_player_standing_collider()->set_disabled(false);
+    
+    if(m_CrouchTween != nullptr) {
+        m_CrouchTween->kill();
+    }
+    
+    m_CrouchTween = m_PlayerInst->create_tween();
+    m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.2f);
 }
 
 void PlayerCrouchState::_physics_update(double delta) 
@@ -41,11 +48,13 @@ void PlayerCrouchState::_physics_update(double delta)
     m_PlayerInst->_update_gravity(delta);
     m_PlayerInst->_update_input();    
     m_PlayerInst->_update_velocity();
-
+    
     Vector3 playerVel = m_PlayerInst->get_velocity();
+    Vector3 horizVel = Vector3(playerVel.x, 0.0f, playerVel.z);
+    
     if(m_CrouchTween == nullptr || !m_CrouchTween->is_valid()) {
         m_CrouchTween = m_PlayerInst->create_tween();
-        m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.35f);
+        m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.2f);
     }
     
     // Set collider states
@@ -54,10 +63,25 @@ void PlayerCrouchState::_physics_update(double delta)
     
     playerVel = Globals::CrouchSpeed * m_PlayerInst->get_wish_dir();
     m_PlayerInst->set_velocity(playerVel);
+    
+    if(m_StateMachineInst->get_prev_state() == StringName("Sprint"))
+    {
+        m_SlideTimer -= delta;
+        
+        horizVel.x = m_SlideVector.x * 5.0f * m_SlideTimer;
+        horizVel.z = m_SlideVector.z * 5.0f * m_SlideTimer;
+        
+        playerVel = Vector3(horizVel.x, playerVel.y, horizVel.z);
+        m_PlayerInst->set_velocity(playerVel);
+        
+        if(m_SlideTimer <= 0.0f) {
+            _on_crouch_finished();
+            emit_signal("state_changed", "idle");
+        }
+    }
 }
 
 
 void PlayerCrouchState::_exit() 
 {
-
 }

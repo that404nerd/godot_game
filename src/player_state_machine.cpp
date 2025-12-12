@@ -45,6 +45,7 @@ void PlayerStateMachine::_physics_process(double delta)
 {
     if(m_CurrentState) {
         m_CurrentState->_physics_update(delta);
+        print_line("Current state: ", get_current_state());
     }
 }
 
@@ -61,6 +62,7 @@ void PlayerStateMachine::_change_state(const String& stateName)
     }
 
     new_state->_enter();
+    m_PrevState = m_CurrentState;
     m_CurrentState = new_state;
 }
 
@@ -73,6 +75,18 @@ StringName PlayerStateMachine::get_current_state()
         print_error("State not found!");
 
     return current_state;
+}
+
+StringName PlayerStateMachine::get_prev_state()
+{
+    StringName prev_state_name;
+    if(m_PrevState == nullptr) {
+        print_error("Prev state doesn't exist!");
+    } else {
+        prev_state_name = m_PrevState->get_name();
+    }
+
+    return prev_state_name;
 }
 
 PlayerStateMachine::~PlayerStateMachine() {}
