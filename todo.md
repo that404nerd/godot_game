@@ -9,6 +9,7 @@
 - Rewrite of the entire movement system using godot signals (Everything is becoming too verbose and unstable) [x] 
 
 - Animations for different states []
+- Fix spamming the crouch key during slide state (causes the collision shape to glitch into the floor)
 
 
 

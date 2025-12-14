@@ -1,5 +1,4 @@
 #include "player_crouch_state.h"
-#include "godot_cpp/core/math.hpp"
 
 void PlayerCrouchState::_enter()
 { 
@@ -60,7 +59,6 @@ void PlayerCrouchState::_physics_update(double delta)
     m_PlayerInst->_update_input();    
     m_PlayerInst->_update_velocity();
 
-    
     Vector3 playerVel = m_PlayerInst->get_velocity();
     Vector3 horizVel = Vector3(playerVel.x, 0.0f, playerVel.z);
     

@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bk5oo263y3u7w"
+uid="uid://ce0qp3mcvq0cr"
 path="res://.godot/imported/skip.png-d741e3eb75a5e289907774cb73d93931.ctex"
 metadata={
 "vram_texture": false
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/skip.png-d741e3eb75a5e289907774cb73d93931.cte
 
 [params]
 
-compress/mode=3
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

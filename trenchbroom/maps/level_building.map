@@ -193,33 +193,6 @@
 }
 // brush 19
 {
-( 520 38 256 ) ( 520 31 258 ) ( 520 29 252 ) texture_default [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( 520 31 258 ) ( 538 31 258 ) ( 538 29 252 ) texture_default [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( 538 29 252 ) ( 538 37 250 ) ( 520 37 250 ) texture_default [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
-( 520 38 256 ) ( 538 38 256 ) ( 538 31 258 ) texture_default [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
-( 538 37 250 ) ( 538 38 256 ) ( 520 38 256 ) texture_default [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( 538 31 258 ) ( 538 38 256 ) ( 538 37 250 ) texture_default [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
-}
-// brush 20
-{
-( -358 41 288 ) ( -358 34 290 ) ( -358 32 284 ) texture_default [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( -358 34 290 ) ( -340 34 290 ) ( -340 32 284 ) texture_default [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( -340 32 284 ) ( -340 40 282 ) ( -358 40 282 ) texture_default [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
-( -340 34 290 ) ( -358 34 290 ) ( -358 41 288 ) texture_default [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
-( -340 40 282 ) ( -340 41 288 ) ( -358 41 288 ) texture_default [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( -340 34 290 ) ( -340 41 288 ) ( -340 40 282 ) texture_default [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
-}
-// brush 21
-{
-( -544 1152 328 ) ( -544 1136 328 ) ( -544 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
-( -544 1136 328 ) ( 704 1136 328 ) ( 704 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( 704 1136 0 ) ( 704 1152 0 ) ( -544 1152 0 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
-( -544 1152 328 ) ( 704 1152 328 ) ( 704 1136 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
-( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
-( 32 1136 176 ) ( 32 1264 64 ) ( 32 1136 64 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
-}
-// brush 22
-{
 ( 144 1136 176 ) ( 144 1136 80 ) ( 144 1264 80 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
 ( -544 1136 328 ) ( 704 1136 328 ) ( 704 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
 ( 704 1136 0 ) ( 704 1152 0 ) ( -544 1152 0 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
@@ -227,23 +200,68 @@
 ( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
 ( 704 1136 328 ) ( 704 1152 328 ) ( 704 1152 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
 }
+// brush 20
+{
+( -544 1152 328 ) ( -544 1136 328 ) ( -544 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -544 1136 328 ) ( 704 1136 328 ) ( 704 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 704 1136 0 ) ( 704 1152 0 ) ( -544 1152 0 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( -544 1152 328 ) ( 704 1152 328 ) ( 704 1136 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -384 1136 160 ) ( -384 1264 104 ) ( -384 1136 104 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+}
+// brush 21
+{
+( -128 1136 168 ) ( -128 1136 96 ) ( -128 1264 96 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -544 1136 328 ) ( 704 1136 328 ) ( 704 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 704 1136 0 ) ( 704 1152 0 ) ( -544 1152 0 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( -544 1152 328 ) ( 704 1152 328 ) ( 704 1136 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( 48 1136 176 ) ( 48 1264 64 ) ( 48 1136 64 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+}
+// brush 22
+{
+( -384 1136 160 ) ( -384 1136 104 ) ( -384 1264 104 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -544 1136 328 ) ( 704 1136 328 ) ( 704 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 704 1136 0 ) ( 704 1152 0 ) ( -544 1152 0 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( -376 1136 64 ) ( -144 1264 64 ) ( -144 1136 64 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -128 1136 168 ) ( -128 1264 96 ) ( -128 1136 96 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+}
 // brush 23
 {
-( 32 1136 176 ) ( 32 1136 64 ) ( 32 1264 64 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -384 1136 160 ) ( -384 1136 104 ) ( -384 1264 104 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
 ( -544 1136 328 ) ( 704 1136 328 ) ( 704 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
-( 32 1136 176 ) ( 128 1136 176 ) ( 128 1264 176 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( -384 1136 152 ) ( -136 1136 152 ) ( -136 1264 152 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( -544 1152 328 ) ( 704 1152 328 ) ( 704 1136 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -128 1136 168 ) ( -128 1264 96 ) ( -128 1136 96 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+}
+// brush 24
+{
+( 48 1136 176 ) ( 48 1136 64 ) ( 48 1264 64 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -544 1136 328 ) ( 704 1136 328 ) ( 704 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 32 1136 128 ) ( 128 1136 128 ) ( 128 1264 128 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
 ( -544 1152 328 ) ( 704 1152 328 ) ( 704 1136 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
 ( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
 ( 144 1136 176 ) ( 144 1264 80 ) ( 144 1136 80 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
 }
-// brush 24
+// brush 25
 {
-( 32 1136 176 ) ( 32 1136 64 ) ( 32 1264 64 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( 48 1136 176 ) ( 48 1136 64 ) ( 48 1264 64 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
 ( -544 1144 328 ) ( 704 1144 328 ) ( 704 1144 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
 ( 704 1136 0 ) ( 704 1152 0 ) ( -544 1152 0 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
-( 32 1136 176 ) ( 128 1264 176 ) ( 128 1136 176 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 32 1136 128 ) ( 128 1264 128 ) ( 128 1136 128 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
 ( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
 ( 144 1136 176 ) ( 144 1264 80 ) ( 144 1136 80 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+}
+// brush 26
+{
+( -384 1136 160 ) ( -384 1136 104 ) ( -384 1264 104 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 -1 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -544 1136 328 ) ( 704 1136 328 ) ( 704 1136 0 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -376 1136 64 ) ( -144 1136 64 ) ( -144 1264 64 ) surfaces/walls/blue_metal_plate_diff_2k [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( -384 1136 152 ) ( -136 1264 152 ) ( -136 1136 152 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 704 1152 0 ) ( 704 1152 328 ) ( -544 1152 328 ) surfaces/walls/blue_metal_plate_diff_2k [ 1 0 0 0 ] [ 0 0 -1 0 ] 270 1 1
+( -128 1136 168 ) ( -128 1264 96 ) ( -128 1136 96 ) surfaces/walls/blue_metal_plate_diff_2k [ 0 1 0 0 ] [ 0 0 -1 0 ] 270 1 1
 }
 }
 // entity 1
