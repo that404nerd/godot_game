@@ -15,6 +15,8 @@
 #include "weapon.h"
 #include "player.h"
 
+#include "player_state_machine.h"
+
 using namespace godot;
 
 class WeaponManager : public Node {
@@ -25,7 +27,7 @@ public:
     WeaponManager();
 
     void _ready() override;
-    void init();
+    void _init_weapon();
 
     void _input(const Ref<InputEvent>& event) override;
 
@@ -41,22 +43,25 @@ public:
 
 protected:
     static void _bind_methods();
+
 private:
-    AnimationPlayer* m_WeaponAnimPlayer;
+    AnimationPlayer* m_WeaponAnimPlayer { nullptr };
 
-    Ref<Weapon> m_CurrentWeapon;
-    Node3D* m_WeaponSocket;
-    Node3D* m_WeaponNode;
+    Ref<Weapon> m_CurrentWeapon { nullptr };
+    Node3D* m_WeaponSocket { nullptr };
+    Node3D* m_WeaponNode { nullptr }; // Weapon node is the actual weapon itself positioned in the weapon socket
 
-    Vector2 m_MouseMovement;
-    Vector3 m_Position, m_Rotation, m_Scale;
-    Vector2 m_SwayRandAmt;
+    Vector2 m_MouseMovement { Vector2(0.0f, 0.0f) };
+    Vector3 m_Position { Vector3(0.0f, 0.0f, 0.0f) }, m_Rotation { Vector3(0.0f, 0.0f, 0.0f) }, m_Scale { Vector3(0.0f, 0.0f, 0.0f) };
+    Vector2 m_SwayRandAmt { Vector2(0.0f, 0.0f) };
 
     Array m_WeaponList; // This is the list that will be populated with data in the editor
     Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 
 
+    Player* m_PlayerInst { nullptr };
+
     GD_DEFINE_PROPERTY(float, sway_speed, 0.0f);
-    float m_RandSwayX, m_RandSwayY;
-    float m_RandSwayAmt, m_IdleSwayRotStr, m_IdleSwayAdj;
-    float m_Time; 
+    float m_RandSwayX { 0.0f }, m_RandSwayY { 0.0f };
+    float m_RandSwayAmt { 0.0f }, m_IdleSwayRotStr { 0.0f }, m_IdleSwayAdj { 0.0f };
+    float m_Time { 0.0f }; 
 };

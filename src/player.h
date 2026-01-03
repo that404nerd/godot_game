@@ -16,6 +16,7 @@
 #include <godot_cpp/classes/project_settings.hpp>
 
 #include "globals.h"
+#include "godot_cpp/classes/animation_player.hpp"
 
 using namespace godot;
 
@@ -43,6 +44,8 @@ public:
 
     CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
     CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
+
+    AnimationPlayer* get_anim_player() { return m_AnimPlayer; }
     
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
@@ -62,6 +65,7 @@ protected:
     CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
     Camera3D* m_PlayerCamera = nullptr;
+    AnimationPlayer* m_AnimPlayer = nullptr;
 
     // Player vectors & Input vectors
     Vector2 m_InputDir = Vector2(0.0f, 0.0f);

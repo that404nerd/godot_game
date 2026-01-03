@@ -29,8 +29,7 @@ private:
 
     Vector3 m_OriginalHeadPosition, m_CurrentHeadPosition, m_SlideVector;
     Player* m_PlayerInst;
-    Ref<Tween> m_CrouchTween, m_SlideTween;
+    Ref<Tween> m_CrouchTween;
 
     PlayerStateMachine* m_StateMachineInst;
-    Camera3D* m_PlayerCamInst;
 };

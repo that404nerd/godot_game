@@ -1,4 +1,7 @@
 #include "player.h"
+#include "godot_cpp/classes/animation_player.hpp"
+#include "godot_cpp/classes/node.hpp"
+#include "godot_cpp/variant/node_path.hpp"
 
 Player::Player()
 {
@@ -20,6 +23,8 @@ void Player::_ready()
     m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
     m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
     m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
+
+    m_AnimPlayer = get_node<AnimationPlayer>(NodePath("PlayerAnim"));
 
     m_Gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
 }

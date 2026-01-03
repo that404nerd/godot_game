@@ -7,9 +7,11 @@
 - Fix Jump transition to Sprint state where friction isn't applied [x]
 - Double Jump [x]
 - Rewrite of the entire movement system using godot signals (Everything is becoming too verbose and unstable) [x] 
+- Fix spamming the crouch key during slide state (causes the collision shape to glitch into the floor) [x]
 
+- Do a physics query for collision during slide to cancel slide animation []
+- ObjectDB and resource leak fix []
 - Animations for different states []
-- Fix spamming the crouch key during slide state (causes the collision shape to glitch into the floor)
 
 
 

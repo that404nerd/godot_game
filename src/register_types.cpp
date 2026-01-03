@@ -25,9 +25,10 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if (!ClassDB::class_exists("PlayerJumpState")) GDREGISTER_CLASS(PlayerJumpState); 
   if (!ClassDB::class_exists("PlayerCrouchState")) GDREGISTER_CLASS(PlayerCrouchState); 
   if (!ClassDB::class_exists("PlayerDashState")) GDREGISTER_CLASS(PlayerDashState); 
+  if (!ClassDB::class_exists("PlayerSlideState")) GDREGISTER_CLASS(PlayerSlideState); 
   if (!ClassDB::class_exists("PlayerFallingState")) GDREGISTER_CLASS(PlayerFallingState); 
 
-  if (!ClassDB::class_exists("WeaponManager")) GDREGISTER_CLASS(WeaponManager);
+  if (!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager); // RUNTIME probably because the weapon anim is played in the editor (idk)
   if (!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
 }
 
