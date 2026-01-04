@@ -2,6 +2,7 @@
 
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/property_tweener.hpp>
+#include <godot_cpp/classes/physics_server3d.hpp>
 
 #include "player_state.h"
 #include "player_state_machine.h"

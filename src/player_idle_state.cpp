@@ -14,12 +14,12 @@ void PlayerIdleState::_bind_methods()
 void PlayerIdleState::_handle_input(const Ref<InputEvent>& event) 
 {
     if(Input::get_singleton()->is_action_just_pressed("jump") && m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", "jump");
+        emit_signal("state_changed", "Jump");
     }
     
     if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
     {
-        emit_signal("state_changed", "crouch");
+        emit_signal("state_changed", "Crouch");
     }
 
 }
@@ -31,13 +31,13 @@ void PlayerIdleState::_physics_update(double delta)
     m_PlayerInst->_update_velocity();
     
     if(m_PlayerInst->get_input_dir() != Vector2(0.0f, 0.0f) && m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", "sprint");
+        emit_signal("state_changed", "Sprint");
     }
 
     Vector3 playerVel = m_PlayerInst->get_velocity();
 
     if(playerVel.y < 1.0f && !m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", "fall");
+        emit_signal("state_changed", "Fall");
     }
 }
 

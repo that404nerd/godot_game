@@ -23,7 +23,7 @@ void PlayerStateMachine::_ready()
         
         if (playerState) {
             playerState->connect("state_changed", Callable(this, "_change_state"));
-            m_States[key.to_lower()] = playerState;
+            m_States[key] = playerState;
         }
     }
 
@@ -51,7 +51,7 @@ void PlayerStateMachine::_physics_process(double delta)
 
 void PlayerStateMachine::_change_state(const String& stateName)
 {
-    PlayerState* new_state = m_States.get(stateName.to_lower());
+    PlayerState* new_state = m_States.get(stateName);
 
     if(!new_state) {
         print_error("New state not found!");

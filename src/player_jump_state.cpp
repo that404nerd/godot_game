@@ -34,11 +34,11 @@ void PlayerJumpState::_physics_update(double delta)
     m_PlayerInst->set_velocity(playerVel);
     
     if(playerVel.y < 2.0f && !m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", "fall");
+        emit_signal("state_changed", "Fall");
     }
     
     if (m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", "idle");
+        emit_signal("state_changed", "Idle");
     }
 }
 

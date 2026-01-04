@@ -1,7 +1,4 @@
 #include "player.h"
-#include "godot_cpp/classes/animation_player.hpp"
-#include "godot_cpp/classes/node.hpp"
-#include "godot_cpp/variant/node_path.hpp"
 
 Player::Player()
 {

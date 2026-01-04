@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cnxdomimh38wt"]
 
-[ext_resource type="PackedScene" uid="uid://uovrmjl7bkr1" path="res://subway/subway.tscn" id="1_4exd7"]
+[ext_resource type="PackedScene" uid="uid://uovrmjl7bkr1" path="res://assets/subway/subway.tscn" id="1_4exd7"]
 [ext_resource type="PackedScene" uid="uid://2c0bf6m5ugct" path="res://scenes/player.tscn" id="6_kb41c"]
 
 [node name="Level0" type="Node3D"]

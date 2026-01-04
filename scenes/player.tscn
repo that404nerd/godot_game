@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://2c0bf6m5ugct"]
+[gd_scene load_steps=5 format=3 uid="uid://2c0bf6m5ugct"]
 
 [ext_resource type="Weapon" uid="uid://dcb4s66cfx5yg" path="res://assets/meshes/weapons/glock/glock_weapon.tres" id="1_3vyb7"]
 
@@ -11,10 +11,6 @@ radius = 0.6
 height = 1.6
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_g2els"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_3vyb7"]
-radius = 0.6
-height = 3.0
 
 [node name="Player" type="Player"]
 velocity = Vector3(0, -531.3061, 0)
@@ -57,13 +53,12 @@ weapon_list = [ExtResource("1_3vyb7")]
 sway_speed = 0.1
 
 [node name="CameraController" type="CameraController" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7731655, -0.35690385)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -0.4)
 top_level = true
 
 [node name="PlayerHead" type="Node3D" parent="CameraController"]
 
 [node name="Camera3D" type="Camera3D" parent="CameraController/PlayerHead"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.019540006, 0)
 current = true
 
 [node name="WeaponSocket" type="Node3D" parent="CameraController/PlayerHead/Camera3D"]
@@ -75,8 +70,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 [node name="JumpBufferTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-visible = false
-mesh = SubResource("CapsuleMesh_3vyb7")

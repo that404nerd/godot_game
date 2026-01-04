@@ -15,15 +15,15 @@ void PlayerCrouchState::_bind_methods()
 
 void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event) 
 {
-    if (Input::get_singleton()->is_action_just_pressed("crouch")) {
+    if (Input::get_singleton()->is_action_just_pressed("crouch") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) {
         _on_crouch_finished();
-        emit_signal("state_changed", "idle");
+        emit_signal("state_changed", "Idle");
     }
     
-    if(Input::get_singleton()->is_action_just_pressed("jump"))
+    if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f)))
     {
         _on_crouch_finished();
-        emit_signal("state_changed", "jump");
+        emit_signal("state_changed", "Jump");
     }
 }
 
@@ -37,7 +37,6 @@ void PlayerCrouchState::_on_crouch_finished()
     }
 
     m_CrouchTween = m_PlayerInst->create_tween();
-
     m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.2f);
 }
 
@@ -48,7 +47,8 @@ void PlayerCrouchState::_physics_update(double delta)
     m_PlayerInst->_update_velocity();
 
     Vector3 playerVel = m_PlayerInst->get_velocity();
-    
+
+
     if(m_CrouchTween == nullptr || !m_CrouchTween->is_valid()) {
         m_CrouchTween = m_PlayerInst->create_tween();
         m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.2f);
@@ -57,13 +57,13 @@ void PlayerCrouchState::_physics_update(double delta)
     // Set collider states
     m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
     m_PlayerInst->get_player_standing_collider()->set_disabled(true);
-    
+
     playerVel = Globals::CrouchSpeed * m_PlayerInst->get_wish_dir();
     m_PlayerInst->set_velocity(playerVel);
     
     if(m_StateMachineInst->get_prev_state() == StringName("Sprint"))
     {
-        emit_signal("state_changed", "slide");
+        emit_signal("state_changed", "Slide");
     }
 
 }

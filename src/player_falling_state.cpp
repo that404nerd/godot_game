@@ -1,9 +1,10 @@
 #include "player_falling_state.h"
+#include "godot_cpp/core/math.hpp"
 
 void PlayerFallingState::_enter()
 { 
-    auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
-    m_PlayerInst = sm->get_player_inst();
+    m_StateMachine = Object::cast_to<PlayerStateMachine>(get_parent());
+    m_PlayerInst = m_StateMachine->get_player_inst();
 }
 
 void PlayerFallingState::_bind_methods()
@@ -13,7 +14,6 @@ void PlayerFallingState::_bind_methods()
 
 void PlayerFallingState::_handle_input(const Ref<InputEvent>& event) 
 {
-
 }
 
 void PlayerFallingState::_physics_update(double delta) 
@@ -37,13 +37,13 @@ void PlayerFallingState::_physics_update(double delta)
         playerVel.x += wish.x * Globals::MaxAirAccel * addSpeed * delta;
         playerVel.z += wish.z * Globals::MaxAirAccel * addSpeed * delta;
     }
-    
+
     m_PlayerInst->set_velocity(playerVel);
     
     if(m_PlayerInst->is_on_floor())
     {
         m_IsJumpPressed = false;
-        emit_signal("state_changed", "idle");
+        emit_signal("state_changed", "Idle");
     }
 }
 

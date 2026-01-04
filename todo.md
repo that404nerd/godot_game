@@ -8,10 +8,12 @@
 - Double Jump [x]
 - Rewrite of the entire movement system using godot signals (Everything is becoming too verbose and unstable) [x] 
 - Fix spamming the crouch key during slide state (causes the collision shape to glitch into the floor) [x]
+- Fix un-crouching when there's an object above the player [x]
 
+## Still Left Todo
+- Transition to idle state when sliding into a world objects []
+- Have a function for setting state strings in emit_signal() to avoid naming issues []
+- Allow sliding when crouch is toggled during falling state []
 - Do a physics query for collision during slide to cancel slide animation []
 - ObjectDB and resource leak fix []
 - Animations for different states []
-
-
-

@@ -14,6 +14,9 @@
 #include <godot_cpp/classes/capsule_shape3d.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/animation_player.hpp>
+#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/variant/node_path.hpp>
 
 #include "globals.h"
 #include "godot_cpp/classes/animation_player.hpp"

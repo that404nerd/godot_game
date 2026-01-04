@@ -20,5 +20,6 @@ protected:
 
 private:
     Player* m_PlayerInst;
+    PlayerStateMachine* m_StateMachine;
     bool m_IsJumpPressed;
 };

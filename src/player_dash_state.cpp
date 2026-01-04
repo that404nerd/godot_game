@@ -23,7 +23,7 @@ void PlayerDashState::_physics_update(double delta)
     Vector3 playerVel = m_PlayerInst->get_velocity();
     
     Vector3 horizVel = Vector3(playerVel.x, 0.0f, playerVel.z);
-    horizVel *= 3.0f; // Dash multiplier
+    horizVel *= 3.0f; // Dash multiplier and not even capping the final velocity but it's fun
 
     playerVel.x = horizVel.x;
     playerVel.z = horizVel.z;
@@ -31,7 +31,7 @@ void PlayerDashState::_physics_update(double delta)
     m_PlayerInst->set_velocity(playerVel);
 
     if(m_PlayerInst->is_on_floor())
-        emit_signal("state_changed", "sprint");
+        emit_signal("state_changed", "Sprint");
 
 }
 
