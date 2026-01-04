@@ -14,6 +14,5 @@
 - Transition to idle state when sliding into a world objects []
 - Have a function for setting state strings in emit_signal() to avoid naming issues []
 - Allow sliding when crouch is toggled during falling state []
-- Do a physics query for collision during slide to cancel slide animation []
 - ObjectDB and resource leak fix []
 - Animations for different states []
