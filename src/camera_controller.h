@@ -28,7 +28,7 @@ namespace godot {
     void _physics_process(double delta) override;
   
   private:
-    Player* m_PlayerController = nullptr;
+    Player* m_PlayerInst = nullptr;
 
     Vector2 m_MouseInput;
     Vector3 m_InputRotation;

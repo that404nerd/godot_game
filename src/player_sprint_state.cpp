@@ -15,17 +15,17 @@ void PlayerSprintState::_bind_methods()
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
 {
     if(Input::get_singleton()->is_action_just_pressed("jump")) {
-        emit_signal("state_changed", "Jump");
+        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::JUMP));
     }
     
     if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
     {
-        emit_signal("state_changed", "Crouch");
+        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::CROUCH));
     }
     
     if(Input::get_singleton()->is_action_just_pressed("dash"))
     {
-        emit_signal("state_changed", "Dash");
+        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::DASH));
     } 
 }
 
@@ -53,17 +53,17 @@ void PlayerSprintState::_physics_update(double delta)
     
     Vector3 playerVel = m_PlayerInst->get_velocity();
     float currentSpeedInWishDir = m_PlayerInst->get_velocity().dot(m_PlayerInst->get_wish_dir());
-    float addSpeed = Globals::SprintSpeed - currentSpeedInWishDir;
+    float addSpeed = m_PlayerInst->get_sprint_speed() - currentSpeedInWishDir;
     
     if(addSpeed > 0.0f) {
-        float accel = Globals::GroundAccel * Globals::SprintSpeed * delta;
+        float accel = m_PlayerInst->get_ground_accel() * m_PlayerInst->get_sprint_speed() * delta;
         accel = Math::min(accel, addSpeed);
         playerVel += accel * m_PlayerInst->get_wish_dir();
     } 
     
     // Friciton code
-    float control = Math::max(playerVel.length(), Globals::GroundDecel); // Dont let speed to drop to zero instead to ground decl when stopping
-    float drop = control * Globals::GroundFriction * delta; // how much velocity should be dropped due to friction
+    float control = Math::max(playerVel.length(), m_PlayerInst->get_ground_decel()); // Dont let speed to drop to zero instead to ground decl when stopping
+    float drop = control * m_PlayerInst->get_ground_friction() * delta; // how much velocity should be dropped due to friction
     float newSpeed = Math::max(playerVel.length() - drop, 0.0f); // New speed has to be subtracted from the current velocity due to friction
     
     if(playerVel.length() > 0.0f) {
@@ -76,11 +76,11 @@ void PlayerSprintState::_physics_update(double delta)
     m_PlayerInst->set_velocity(playerVel);
     
     if(m_PlayerInst->get_input_dir() == Vector2(0.0f, 0.0f) && m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", "Idle");
+        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::IDLE));
     }
 
     if(playerVel.y < 1.0f && !m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", "Fall");
+        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::FALL));
     }
 
 }

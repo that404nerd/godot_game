@@ -45,7 +45,7 @@ void PlayerStateMachine::_physics_process(double delta)
 {
     if(m_CurrentState) {
         m_CurrentState->_physics_update(delta);
-        print_line("Current state: ", get_current_state());
+        //print_line("Current state: ", get_current_state());
     }
 }
 

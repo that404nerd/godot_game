@@ -1,10 +1,15 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
+#include <godot_cpp/core/print_string.hpp>
+#include <godot_cpp/variant/string_name.hpp>
 
+#include <cassert>
+
+using namespace godot;
 /* 
-    Credit to Withaust for macro (defining each one by default is a pain in the ass)
-    The getter, setter functions will not match the conventions I'm using for other functions
+  Credit to Withaust for macro (defining each one by default is a pain in the ass)
+  The getter, setter functions will not match the conventions I'm using for other functions
 */
 #define _CONCAT(x, y) #x "" #y
 #define _TOKEN_PASTE(x, y) x##y
@@ -40,36 +45,46 @@ public:                                                  \
         ADD_PROPERTY(PropertyInfo(p_type, #p_name, p_property_type), "set_" #p_name, "get_" #p_name);
 
 
+namespace Globals 
+{
+  enum class StateNames {
+    IDLE, SPRINT, CROUCH, JUMP, DASH, FALL, SLIDE, NONE = -1  
+  };
 
+  inline StringName SetCurrentState(StateNames state)
+  {
+    StringName currentState;
+    switch(state)
+    {
+      case StateNames::IDLE:
+        currentState = "Idle";
+        break;
+      case StateNames::SPRINT:
+        currentState = "Sprint";
+        break;
+      case StateNames::JUMP:
+        currentState = "Jump";
+        break;
+      case StateNames::FALL:
+        currentState = "Fall";
+        break;
+      case StateNames::DASH:
+        currentState = "Dash";
+        break;
+      case StateNames::CROUCH:
+        currentState = "Crouch";
+        break;
+      case StateNames::SLIDE:
+        currentState = "Slide";
+        break;
+      default:
+        assert("State Name Invalid!!");
+        break;
+    }
 
-namespace Globals {
+    print_line(currentState);
 
-    inline const float CrouchSpeed = 3.0f;
-    inline const float WalkSpeed = 7.0f;
-    inline const float SprintSpeed = 10.0f;
+    return currentState;
+  }
 
-    inline const float CROUCH_TRANSLATE = 0.8f;
-    inline const float LERP_CONSTANT = 3.0f;
-    
-    inline const float DashSpeed = 35.0f;
-    inline const float SideTiltAngle = 5.0f;
-    // inline float SlideJumpAngle = 40.0f;
-    // inline float SlideSpeed = 10.0f;
-
-    inline const float JUMP_HEIGHT = 7.0f;
-    inline const float TIME_TO_PEAK = 3.0f, TIME_TO_DESCENT = 3.0f;
-
-    inline const float JUMP_VELOCITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_PEAK) * 1.0f;
-    inline const float JUMP_GRAVITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_PEAK * TIME_TO_PEAK) * 1.0f;
-    inline const float FALL_GRAVITY = ((2.0f * JUMP_HEIGHT) / TIME_TO_DESCENT * TIME_TO_DESCENT) * 1.0f;
-
-    inline const float MaxAirMoveSpeed = 6.0f; // Max speed the player can move in the air
-    inline const float MaxAirAccel = 7.0f; // Determines how fast the player can change the direction mid-air
-
-    inline const float MouseSensitivity = 0.003f;
-
-    // Friction & Bhop variables 
-    inline const float GroundAccel = 15.0f;
-    inline const float GroundDecel = 10.0f;
-    inline const float GroundFriction = 8.0f;
 };

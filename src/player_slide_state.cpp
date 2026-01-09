@@ -4,6 +4,7 @@ void PlayerSlideState::_enter()
 { 
     auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
     m_PlayerInst = sm->get_player_inst();
+
     m_SlideVector = m_PlayerInst->get_wish_dir();
 
     m_PlayerCamInst = m_PlayerInst->get_player_camera();
@@ -19,7 +20,7 @@ void PlayerSlideState::_handle_input(const Ref<InputEvent>& event)
 {
     if(Input::get_singleton()->is_action_just_pressed("jump")) {
         _on_slide_finished();
-        emit_signal("state_changed", "Jump");
+        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::JUMP));
     }
 }
 
@@ -59,7 +60,7 @@ void PlayerSlideState::_physics_update(double delta)
     
     if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(m_SlideVector.x, 0.0f, m_SlideVector.z))) {
       _on_slide_finished();
-      emit_signal("state_changed", "Idle");
+      emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::IDLE));
     }
     playerVel = Vector3(horizVel.x, playerVel.y, horizVel.z);
     m_PlayerInst->set_velocity(playerVel);
@@ -71,7 +72,7 @@ void PlayerSlideState::_physics_update(double delta)
     
     if(m_SlideTimer <= 0.0f) {
         _on_slide_finished();
-        emit_signal("state_changed", "Idle");
+        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::IDLE));
     }
 }
 

@@ -7,6 +7,36 @@ Player::Player()
 
 void Player::_bind_methods()
 {
+    ADD_GROUP("Player Speed Settings", "");
+    GD_BIND_PROPERTY(Player, crouch_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, walk_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, sprint_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, dash_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, slide_speed, Variant::FLOAT);
+  
+    ADD_GROUP("Player Jump Settings", "");
+    GD_BIND_PROPERTY(Player, jump_height, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, time_to_peak, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, time_to_descent, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, jump_velocity, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, jump_gravity, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, fall_gravity, Variant::FLOAT);
+  
+    ADD_GROUP("Player Air Strafe Settings", "");
+    GD_BIND_PROPERTY(Player, max_air_move_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, max_air_accel, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, mouse_sensitivity, Variant::FLOAT);
+
+    ADD_GROUP("Player Friction Settings", "");
+    GD_BIND_PROPERTY(Player, ground_accel, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, ground_decel, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, ground_friction, Variant::FLOAT);
+
+    ADD_GROUP("Player Misc Settings", "");
+    GD_BIND_PROPERTY(Player, crouch_translate, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, lerp_constant, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, slide_tilt_angle, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, slide_jump_angle, Variant::FLOAT);
 }
 
 void Player::_ready()

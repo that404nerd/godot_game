@@ -17,9 +17,9 @@
 #include <godot_cpp/classes/animation_player.hpp>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/variant/node_path.hpp>
+#include <godot_cpp/classes/animation_player.hpp>
 
 #include "globals.h"
-#include "godot_cpp/classes/animation_player.hpp"
 
 using namespace godot;
 
@@ -57,7 +57,7 @@ public:
     void _update_input();
     void _update_velocity();
 
-protected:
+private:
     Node3D* m_PlayerHead = nullptr;
     Node3D* m_CameraControllerNode = nullptr;
     Marker3D* m_CameraAnchor = nullptr;
@@ -76,4 +76,33 @@ protected:
     Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
 
     float m_Gravity = 0.0f;
+private:
+    GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
+    GD_DEFINE_PROPERTY(float, walk_speed, 7.0f);
+    GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);
+
+    GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
+    GD_DEFINE_PROPERTY(float, lerp_constant, 3.0f);
+    
+    GD_DEFINE_PROPERTY(float, dash_speed, 35.0f);
+    GD_DEFINE_PROPERTY(float, slide_tilt_angle, 5.0f);
+    GD_DEFINE_PROPERTY(float, slide_jump_angle, 40.0f);
+    GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
+
+    GD_DEFINE_PROPERTY(float, jump_height, 7.0f);
+    GD_DEFINE_PROPERTY(float, time_to_peak, 3.0f);
+    GD_DEFINE_PROPERTY(float, time_to_descent, 3.0f);
+
+    GD_DEFINE_PROPERTY(float, jump_velocity, ((2.0f * jump_height) / time_to_peak) * 1.0f);
+    GD_DEFINE_PROPERTY(float, jump_gravity, ((2.0f * jump_height) / time_to_peak * time_to_peak) * 1.0f);
+    GD_DEFINE_PROPERTY(float, fall_gravity, ((2.0f * jump_height) / time_to_descent * time_to_descent) * 1.0f);
+
+    GD_DEFINE_PROPERTY(float, max_air_move_speed, 6.0f);
+    GD_DEFINE_PROPERTY(float, max_air_accel, 7.0f);
+
+    GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
+
+    GD_DEFINE_PROPERTY(float, ground_accel, 15.0f);
+    GD_DEFINE_PROPERTY(float, ground_decel, 10.0f);
+    GD_DEFINE_PROPERTY(float, ground_friction, 8.0f);
 };
