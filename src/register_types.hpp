@@ -17,6 +17,9 @@
 #include "weapon.h"
 #include "weapon_manager.h"
 
+#include "debug_panel.h"
+#include "weapon_camera.h"
+
 using namespace godot;
 
 void initailize(ModuleInitializationLevel p_level);

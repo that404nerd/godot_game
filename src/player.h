@@ -23,6 +23,7 @@
 #include <godot_cpp/classes/sub_viewport.hpp>
 
 #include "globals.h"
+#include "weapon_camera.h"
 
 using namespace godot;
 
@@ -45,6 +46,7 @@ public:
 
     Marker3D* get_camera_anchor() { return m_CameraAnchor; }
     Camera3D* get_player_camera() { return m_PlayerCamera; }
+
     SubViewport* get_weapon_viewport() { return m_WeaponSubViewport; }
     Node3D* get_player_head() { return m_PlayerHead; }
 
@@ -117,6 +119,7 @@ private:
 
     Camera3D* m_PlayerCamera = nullptr;
     Camera3D* m_WeaponCamera = nullptr;
+
     SubViewport* m_WeaponSubViewport = nullptr;
 
     // Player vectors & Input vectors

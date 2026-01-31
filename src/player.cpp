@@ -40,7 +40,6 @@ void Player::_ready()
     
     m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
     m_PlayerCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D"));
-
     m_WeaponCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport/WeaponCamera"));
 
     m_WeaponSubViewport = get_node<SubViewport>(NodePath("CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport"));

@@ -30,6 +30,9 @@ void initialize_module(ModuleInitializationLevel p_level) {
 
   if (!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager); // RUNTIME probably because the weapon anim is played in the editor (not sure)
   if (!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
+
+  if (!ClassDB::class_exists("DebugPanel")) GDREGISTER_RUNTIME_CLASS(DebugPanel);
+  if (!ClassDB::class_exists("WeaponCamera")) GDREGISTER_RUNTIME_CLASS(WeaponCamera);
 }
 
 

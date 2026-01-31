@@ -15,12 +15,6 @@ void WeaponManager::_ready()
 {
     m_WeaponHoldPoint = get_node<Node3D>(NodePath("../CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport/WeaponCamera/HoldPoint"));
     
-    if (m_WeaponHoldPoint == nullptr) {
-        UtilityFunctions::print("CRASH PREVENTED: m_WeaponHoldPoint is NULL. Check your NodePath!");
-        return; 
-    }
-
-    
     _init_weapon();
 }
 
@@ -34,13 +28,14 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_init_weapon()
 {
-
     print_line(weaponList.size());
 
     m_CurrentWeapon = weaponList[0];
 
     m_WeaponNode = Object::cast_to<Node3D>(m_CurrentWeapon->get_weaponScene()->instantiate());
     m_WeaponHoldPoint->add_child(m_WeaponNode);
+    
+
   //   if(m_WeaponAnimPlayer) {
   //       m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
   //   } else {
