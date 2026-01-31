@@ -9,7 +9,6 @@ void Player::_bind_methods()
 {
     ADD_GROUP("Player Speed Settings", "");
     GD_BIND_PROPERTY(Player, crouch_speed, Variant::FLOAT);
-    GD_BIND_PROPERTY(Player, walk_speed, Variant::FLOAT);
     GD_BIND_PROPERTY(Player, sprint_speed, Variant::FLOAT);
     GD_BIND_PROPERTY(Player, dash_speed, Variant::FLOAT);
     GD_BIND_PROPERTY(Player, slide_speed, Variant::FLOAT);
@@ -18,9 +17,6 @@ void Player::_bind_methods()
     GD_BIND_PROPERTY(Player, jump_height, Variant::FLOAT);
     GD_BIND_PROPERTY(Player, time_to_peak, Variant::FLOAT);
     GD_BIND_PROPERTY(Player, time_to_descent, Variant::FLOAT);
-    GD_BIND_PROPERTY(Player, jump_velocity, Variant::FLOAT);
-    GD_BIND_PROPERTY(Player, jump_gravity, Variant::FLOAT);
-    GD_BIND_PROPERTY(Player, fall_gravity, Variant::FLOAT);
   
     ADD_GROUP("Player Air Strafe Settings", "");
     GD_BIND_PROPERTY(Player, max_air_move_speed, Variant::FLOAT);
@@ -36,7 +32,6 @@ void Player::_bind_methods()
     GD_BIND_PROPERTY(Player, crouch_translate, Variant::FLOAT);
     GD_BIND_PROPERTY(Player, lerp_constant, Variant::FLOAT);
     GD_BIND_PROPERTY(Player, slide_tilt_angle, Variant::FLOAT);
-    GD_BIND_PROPERTY(Player, slide_jump_angle, Variant::FLOAT);
 }
 
 void Player::_ready()
@@ -45,13 +40,19 @@ void Player::_ready()
     
     m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
     m_PlayerCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D"));
+
+    m_WeaponCamera = get_node<Camera3D>(NodePath("CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport/WeaponCamera"));
+
+    m_WeaponSubViewport = get_node<SubViewport>(NodePath("CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport"));
+    m_WeaponSubViewport->set_size(DisplayServer::get_singleton()->window_get_size());
+
     m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
 
-    m_JumpBufferTimer = get_node<Timer>(NodePath("JumpBufferTimer"));
     m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
     m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
 
-    m_AnimPlayer = get_node<AnimationPlayer>(NodePath("PlayerAnim"));
+    m_PlayerMeshInst = get_node<MeshInstance3D>(NodePath("PlayerMesh"));
+    m_PlayerCapsule = Object::cast_to<CapsuleMesh>(m_PlayerMeshInst);
 
     m_Gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
 }
@@ -61,16 +62,10 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
     
 }
 
-void Player::_update_gravity(double delta)
-{
-    Vector3 playerVel = get_velocity();
-    playerVel.y -= m_Gravity * delta;
-    set_velocity(playerVel);
-}
-
 void Player::_update_input() 
 {
     Vector3 playerVel = get_velocity();
+    m_WeaponCamera->set_global_transform(m_PlayerCamera->get_global_transform());
 
     m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
     
@@ -87,13 +82,13 @@ void Player::_update_input()
     {
         if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
         {
-            playerVel.x = Math::lerp(playerVel.x, m_WishDir.x, 0.1f);
-            playerVel.z = Math::lerp(playerVel.z, m_WishDir.z, 0.1f);
+            playerVel.x = Math::lerp(playerVel.x, m_WishDir.x, 0.0f);
+            playerVel.z = Math::lerp(playerVel.z, m_WishDir.z, 0.0f);
         }
         else
         {
-            playerVel.x = Math::lerp(playerVel.x, 0.0f, 0.25f);
-            playerVel.z = Math::lerp(playerVel.z, 0.0f, 0.25f);
+            playerVel.x = Math::lerp(playerVel.x, 0.0f, 0.3f);
+            playerVel.z = Math::lerp(playerVel.z, 0.0f, 0.3f);
         }
     }
 
@@ -107,7 +102,6 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
-    
 }
 
 

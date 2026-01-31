@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDFile" load_steps=3 format=3 uid="uid://c1nw0e2io5c1k"]
+
+[ext_resource type="Resource" uid="uid://crgpdahjaj" path="res://addons/func_godot/fgd/func_godot_fgd.tres" id="1_egxrf"]
+[ext_resource type="Script" uid="uid://drlmgulwbjwqu" path="res://addons/func_godot/src/fgd/func_godot_fgd_file.gd" id="1_y4e8d"]
+
+[resource]
+script = ExtResource("1_y4e8d")
+fgd_name = "FPSProject"
+base_fgd_files = Array[Resource]([ExtResource("1_egxrf")])
+metadata/_custom_type_script = "uid://drlmgulwbjwqu"

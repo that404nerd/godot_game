@@ -11,8 +11,8 @@
 - Fix un-crouching when there's an object above the player [x]
 - Have a function for setting state strings in emit_signal() to avoid naming issues [x]
 
-## Still Left Todo
+## Issues
 - Transition to idle state when sliding into a world objects []
-- Allow sliding when toggled during falling state []
+ Allow sliding when toggled during falling state []
 - ObjectDB and resource leak fix []
 - Animations for different states []

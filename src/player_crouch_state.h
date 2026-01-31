@@ -7,6 +7,8 @@
 #include <godot_cpp/classes/tween.hpp>
 #include <godot_cpp/classes/callback_tweener.hpp>
 #include <godot_cpp/classes/property_tweener.hpp>
+#include <godot_cpp/classes/mesh_instance3d.hpp>
+#include <godot_cpp/classes/capsule_mesh.hpp>
 
 class PlayerCrouchState : public PlayerState {
     GDCLASS(PlayerCrouchState, PlayerState);
@@ -30,6 +32,8 @@ private:
     Vector3 m_OriginalHeadPosition, m_CurrentHeadPosition, m_SlideVector;
     Player* m_PlayerInst;
     Ref<Tween> m_CrouchTween;
+
+    CapsuleMesh* m_CapsuleMesh;
 
     PlayerStateMachine* m_StateMachineInst;
 };

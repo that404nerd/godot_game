@@ -18,6 +18,9 @@
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/variant/node_path.hpp>
 #include <godot_cpp/classes/animation_player.hpp>
+#include <godot_cpp/classes/mesh_instance3d.hpp>
+#include <godot_cpp/classes/capsule_mesh.hpp>
+#include <godot_cpp/classes/sub_viewport.hpp>
 
 #include "globals.h"
 
@@ -42,33 +45,79 @@ public:
 
     Marker3D* get_camera_anchor() { return m_CameraAnchor; }
     Camera3D* get_player_camera() { return m_PlayerCamera; }
+    SubViewport* get_weapon_viewport() { return m_WeaponSubViewport; }
     Node3D* get_player_head() { return m_PlayerHead; }
-    Timer* get_jump_buffer_timer() { return m_JumpBufferTimer; }
 
     CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
     CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
 
-    AnimationPlayer* get_anim_player() { return m_AnimPlayer; }
-    
+    MeshInstance3D* get_player_mesh() { return m_PlayerMeshInst; }
+    CapsuleMesh* get_player_capsule() { return m_PlayerCapsule; }
+
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
 
-    void _update_gravity(double delta);
+    float get_jump_velocity() { return m_JumpVelocity; }
+    float get_jump_gravity() { return m_JumpGravity; }
+    float get_fall_gravity() { return m_FallGravity; }
+
     void _update_input();
     void _update_velocity();
+
+public:
+    enum class StateNames {
+      IDLE, SPRINT, CROUCH, JUMP, DASH, FALL, SLIDE
+    };
+
+    inline StringName SetCurrentState(StateNames state)
+    {
+      StringName currentState;
+      switch(state)
+      {
+        case StateNames::IDLE:
+          currentState = "Idle";
+          break;
+        case StateNames::SPRINT:
+          currentState = "Sprint";
+          break;
+        case StateNames::JUMP:
+          currentState = "Jump";
+          break;
+        case StateNames::FALL:
+          currentState = "Fall";
+          break;
+        case StateNames::DASH:
+          currentState = "Dash";
+          break;
+        case StateNames::CROUCH:
+          currentState = "Crouch";
+          break;
+        case StateNames::SLIDE:
+          currentState = "Slide";
+          break;
+      }
+
+      print_line(currentState);
+
+      return currentState;
+    }
+
 
 private:
     Node3D* m_PlayerHead = nullptr;
     Node3D* m_CameraControllerNode = nullptr;
     Marker3D* m_CameraAnchor = nullptr;
-    Timer* m_JumpBufferTimer = nullptr;
 
     // Get Collision shapes
     CollisionShape3D* m_StandingPlayerCollider = nullptr;
     CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
+    MeshInstance3D* m_PlayerMeshInst = nullptr;
+    CapsuleMesh* m_PlayerCapsule = nullptr;
+
     Camera3D* m_PlayerCamera = nullptr;
-    AnimationPlayer* m_AnimPlayer = nullptr;
+    Camera3D* m_WeaponCamera = nullptr;
+    SubViewport* m_WeaponSubViewport = nullptr;
 
     // Player vectors & Input vectors
     Vector2 m_InputDir = Vector2(0.0f, 0.0f);
@@ -78,7 +127,6 @@ private:
     float m_Gravity = 0.0f;
 private:
     GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
-    GD_DEFINE_PROPERTY(float, walk_speed, 7.0f);
     GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);
 
     GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
@@ -86,16 +134,15 @@ private:
     
     GD_DEFINE_PROPERTY(float, dash_speed, 35.0f);
     GD_DEFINE_PROPERTY(float, slide_tilt_angle, 5.0f);
-    GD_DEFINE_PROPERTY(float, slide_jump_angle, 40.0f);
     GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
 
     GD_DEFINE_PROPERTY(float, jump_height, 7.0f);
     GD_DEFINE_PROPERTY(float, time_to_peak, 3.0f);
     GD_DEFINE_PROPERTY(float, time_to_descent, 3.0f);
 
-    GD_DEFINE_PROPERTY(float, jump_velocity, ((2.0f * jump_height) / time_to_peak) * 1.0f);
-    GD_DEFINE_PROPERTY(float, jump_gravity, ((2.0f * jump_height) / time_to_peak * time_to_peak) * 1.0f);
-    GD_DEFINE_PROPERTY(float, fall_gravity, ((2.0f * jump_height) / time_to_descent * time_to_descent) * 1.0f);
+    float m_JumpVelocity = ((2.0f * jump_height) / time_to_peak) * 1.0f;
+    float m_JumpGravity = ((2.0f * jump_height) / time_to_peak * time_to_peak) * 1.0f;
+    float m_FallGravity = ((2.0f * jump_height) / time_to_descent * time_to_descent) * 1.0f;
 
     GD_DEFINE_PROPERTY(float, max_air_move_speed, 6.0f);
     GD_DEFINE_PROPERTY(float, max_air_accel, 7.0f);

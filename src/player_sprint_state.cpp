@@ -15,17 +15,17 @@ void PlayerSprintState::_bind_methods()
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
 {
     if(Input::get_singleton()->is_action_just_pressed("jump")) {
-        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::JUMP));
+        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::JUMP));
     }
     
     if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
     {
-        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::CROUCH));
+        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::CROUCH));
     }
     
     if(Input::get_singleton()->is_action_just_pressed("dash"))
     {
-        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::DASH));
+        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::DASH));
     } 
 }
 
@@ -37,8 +37,8 @@ void PlayerSprintState::headbob_effect(double delta)
     
     Transform3D headbobTransform = m_PlayerInst->get_player_head()->get_transform(); // get the player's transform
     headbobTransform.origin = Vector3( // like a sine wave
-        Math::sin(m_HeadBobTime * headbob_move_freq) * headbob_move_amt,
         Math::cos(m_HeadBobTime * headbob_move_freq) * headbob_move_amt,
+        Math::sin(m_HeadBobTime * headbob_move_freq) * headbob_move_amt,
         0.0f
     );
     m_PlayerInst->get_player_head()->set_transform(headbobTransform);
@@ -46,7 +46,6 @@ void PlayerSprintState::headbob_effect(double delta)
 
 void PlayerSprintState::_physics_update(double delta) 
 {
-    m_PlayerInst->_update_gravity(delta); 
     m_PlayerInst->_update_input();    
     m_PlayerInst->_update_velocity();
     
@@ -72,15 +71,14 @@ void PlayerSprintState::_physics_update(double delta)
     
     playerVel *= newSpeed;
     
-    headbob_effect(delta);
     m_PlayerInst->set_velocity(playerVel);
     
     if(m_PlayerInst->get_input_dir() == Vector2(0.0f, 0.0f) && m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::IDLE));
+        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::IDLE));
     }
 
     if(playerVel.y < 1.0f && !m_PlayerInst->is_on_floor()) {
-        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::FALL));
+        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::FALL));
     }
 
 }

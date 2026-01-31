@@ -21,7 +21,6 @@ void PlayerJumpState::_handle_input(const Ref<InputEvent>& event)
 
 void PlayerJumpState::_physics_update(double delta) 
 {
-  m_PlayerInst->_update_gravity(delta);
   m_PlayerInst->_update_input();
   m_PlayerInst->_update_velocity(); 
   
@@ -32,11 +31,11 @@ void PlayerJumpState::_physics_update(double delta)
   m_PlayerInst->set_velocity(playerVel);
   
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::FALL));
+    emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::FALL));
   }
   
   if (m_PlayerInst->is_on_floor()) {
-      emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::IDLE));
+      emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::IDLE));
   }
 }
 

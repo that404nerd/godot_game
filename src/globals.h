@@ -1,12 +1,7 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
-#include <godot_cpp/core/print_string.hpp>
-#include <godot_cpp/variant/string_name.hpp>
 
-#include <cassert>
-
-using namespace godot;
 /* 
   Credit to Withaust for macro (defining each one by default is a pain in the ass)
   The getter, setter functions will not match the conventions I'm using for other functions
@@ -43,48 +38,3 @@ public:                                                  \
         ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name); \
         ClassDB::bind_method(D_METHOD("set_" #p_name, "p_" #p_name), &p_class::set_##p_name); \
         ADD_PROPERTY(PropertyInfo(p_type, #p_name, p_property_type), "set_" #p_name, "get_" #p_name);
-
-
-namespace Globals 
-{
-  enum class StateNames {
-    IDLE, SPRINT, CROUCH, JUMP, DASH, FALL, SLIDE, NONE = -1  
-  };
-
-  inline StringName SetCurrentState(StateNames state)
-  {
-    StringName currentState;
-    switch(state)
-    {
-      case StateNames::IDLE:
-        currentState = "Idle";
-        break;
-      case StateNames::SPRINT:
-        currentState = "Sprint";
-        break;
-      case StateNames::JUMP:
-        currentState = "Jump";
-        break;
-      case StateNames::FALL:
-        currentState = "Fall";
-        break;
-      case StateNames::DASH:
-        currentState = "Dash";
-        break;
-      case StateNames::CROUCH:
-        currentState = "Crouch";
-        break;
-      case StateNames::SLIDE:
-        currentState = "Slide";
-        break;
-      default:
-        assert("State Name Invalid!!");
-        break;
-    }
-
-    print_line(currentState);
-
-    return currentState;
-  }
-
-};

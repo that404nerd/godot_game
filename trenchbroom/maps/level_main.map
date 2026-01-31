@@ -1,0 +1,19 @@
+// Game: FPSProject
+// Format: Valve
+// entity 0
+{
+"mapversion" "220"
+"wad" ""
+"classname" "worldspawn"
+"_tb_mod" "trenchbroom;assets"
+"_tb_def" "builtin:FPSProject.fgd"
+// brush 0
+{
+( -288 -64 -16 ) ( -288 -63 -16 ) ( -288 -64 -15 ) texture_default [ 0 -1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -64 -176 -16 ) ( -64 -176 -15 ) ( -63 -176 -16 ) texture_default [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( -64 -64 -16 ) ( -63 -64 -16 ) ( -64 -63 -16 ) texture_default [ -1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 64 64 16 ) ( 64 65 16 ) ( 65 64 16 ) texture_default [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1
+( 64 2976 16 ) ( 65 2976 16 ) ( 64 2976 17 ) texture_default [ -1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1
+( 464 64 16 ) ( 464 64 17 ) ( 464 65 16 ) texture_default [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1
+}
+}

@@ -22,7 +22,7 @@ void WeaponManager::_ready()
     m_WeaponSocket = get_node<Node3D>(NodePath("../CameraController/PlayerHead/Camera3D/WeaponSocket"));
     m_PlayerInst = Object::cast_to<Player>(get_parent());
 
-    _init_weapon();
+    // _init_weapon();
 }
 
 void WeaponManager::_input(const Ref<InputEvent>& event)
@@ -59,7 +59,7 @@ void WeaponManager::_physics_process(double delta)
         m_IdleSwayRotStr = m_CurrentWeapon->get_idleSwayRotationStrength();
     }
 
-    _weapon_sway(delta);
+    // _weapon_sway(delta);
 }
 
 void WeaponManager::_weapon_sway(double delta)

@@ -14,13 +14,17 @@ extract_path="res://AmbientCG/Downloads"
 material_file_directory="res://AmbientCG/Materials"
 environment_file_directory="res://AmbientCG/Environments"
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="FPSProject"
 run/main_scene="uid://dscvjpepl0ukv"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 boot_splash/show_image=false
-boot_splash/fullsize=false
+boot_splash/stretch_mode=0
 boot_splash/use_filter=false
 config/size/resizable=true
 config/size/mode=0

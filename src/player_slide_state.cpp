@@ -20,7 +20,7 @@ void PlayerSlideState::_handle_input(const Ref<InputEvent>& event)
 {
     if(Input::get_singleton()->is_action_just_pressed("jump")) {
         _on_slide_finished();
-        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::JUMP));
+        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::JUMP));
     }
 }
 
@@ -46,7 +46,6 @@ void PlayerSlideState::_on_slide_finished()
 
 void PlayerSlideState::_physics_update(double delta) 
 {
-    m_PlayerInst->_update_gravity(delta); 
     m_PlayerInst->_update_input();    
     m_PlayerInst->_update_velocity();
     
@@ -58,9 +57,10 @@ void PlayerSlideState::_physics_update(double delta)
     horizVel.x = m_SlideVector.x * 7.0f * m_SlideTimer;
     horizVel.z = m_SlideVector.z * 7.0f * m_SlideTimer;
     
+    // TODO: This is bad. Anything the player collides with will cancel the slide state. A normal body like a crate, box would make sense
     if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(m_SlideVector.x, 0.0f, m_SlideVector.z))) {
       _on_slide_finished();
-      emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::IDLE));
+      emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::IDLE));
     }
     playerVel = Vector3(horizVel.x, playerVel.y, horizVel.z);
     m_PlayerInst->set_velocity(playerVel);
@@ -72,7 +72,7 @@ void PlayerSlideState::_physics_update(double delta)
     
     if(m_SlideTimer <= 0.0f) {
         _on_slide_finished();
-        emit_signal("state_changed", Globals::SetCurrentState(Globals::StateNames::IDLE));
+        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::IDLE));
     }
 }
 
