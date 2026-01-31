@@ -16,9 +16,6 @@ class Weapon : public Resource {
 public:
     Weapon();
 
-    Ref<PackedScene> get_weapon_model();
-    void set_weapon_model(const Ref<PackedScene>& weaponModel);
-
     ~Weapon();
 protected: 
     static void _bind_methods();
@@ -45,6 +42,5 @@ private:
     GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
 
     GD_DEFINE_PROPERTY(int, ammoCount, 0);
-
-    Ref<PackedScene> m_WeaponModel;
+    GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
 };
