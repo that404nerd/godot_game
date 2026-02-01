@@ -2,7 +2,7 @@
 
 void PlayerJumpState::_enter()
 { 
-  auto sm = Object::cast_to<PlayerStateMachine>(get_parent());
+  auto sm = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = sm->get_player_inst();
 
   Vector3 playerVel = m_PlayerInst->get_velocity();

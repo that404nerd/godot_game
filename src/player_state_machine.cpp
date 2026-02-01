@@ -1,5 +1,10 @@
 #include "player_state_machine.h"
 
+PlayerStateMachine::PlayerStateMachine()
+{
+  GameManager::get_singleton()->set_state_machine_inst(this);
+}
+
 void PlayerStateMachine::_bind_methods() 
 {
     GD_BIND_CUSTOM_PROPERTY(PlayerStateMachine, initial_state, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);

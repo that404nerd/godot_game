@@ -2,7 +2,7 @@
 
 void PlayerDashState::_enter()
 { 
-    m_StateMachine = Object::cast_to<PlayerStateMachine>(get_parent());
+    m_StateMachine = GameManager::get_singleton()->get_player_state_machine();
     m_PlayerInst = m_StateMachine->get_player_inst();
 }
 

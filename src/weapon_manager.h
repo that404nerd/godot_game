@@ -14,7 +14,7 @@
 #include "globals.h"
 #include "weapon.h"
 #include "player.h"
-
+#include "game_manager.h"
 #include "player_state_machine.h"
 
 using namespace godot;
@@ -33,8 +33,6 @@ public:
 
     void _physics_process(double delta) override;
 
-    void _weapon_sway(double delta);
-
     ~WeaponManager();
 
 protected:
@@ -47,20 +45,9 @@ private:
     Node3D* m_WeaponHoldPoint { nullptr };
     Node3D* m_WeaponNode { nullptr }; // Weapon node is the actual weapon itself positioned in the weapon socket
 
-    Vector2 m_MouseMovement { Vector2(0.0f, 0.0f) };
-    Vector3 m_Position { Vector3(0.0f, 0.0f, 0.0f) }, m_Rotation { Vector3(0.0f, 0.0f, 0.0f) }, m_Scale { Vector3(0.0f, 0.0f, 0.0f) };
-    Vector2 m_SwayRandAmt { Vector2(0.0f, 0.0f) };
-
-    float m_RandSwayX { 0.0f }, m_RandSwayY { 0.0f };
-    float m_RandSwayAmt { 0.0f }, m_IdleSwayRotStr { 0.0f }, m_IdleSwayAdj { 0.0f };
-    float m_Time { 0.0f }; 
-
     Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 
-
     Player* m_PlayerInst { nullptr };
 
 private:
-    GD_DEFINE_PROPERTY(float, sway_speed, 0.0f);
     GD_DEFINE_PROPERTY(Array, weaponList, Array());
-
 };

@@ -45,6 +45,7 @@ handle_input_locally = false
 render_target_update_mode = 4
 
 [node name="WeaponCamera" type="WeaponCamera" parent="CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport" unique_id=1913232025]
+sway_mult = 0.001
 cull_mask = 1047554
 current = true
 fov = 40.0
@@ -83,7 +84,6 @@ initial_state = NodePath("Idle")
 [node name="Slide" type="PlayerSlideState" parent="PlayerStateMachine" unique_id=690075269]
 
 [node name="WeaponManager" type="WeaponManager" parent="." unique_id=466649648]
-sway_speed = 0.1
 weaponList = [ExtResource("1_3vyb7"), ExtResource("2_g2els")]
 
 [node name="CameraControllerAnchor" type="Marker3D" parent="." unique_id=1676709481]

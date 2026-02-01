@@ -6,7 +6,7 @@ CameraController::CameraController() {
 void CameraController::_ready()
 {
     // Lifetime managed by godot
-    m_PlayerInst = Object::cast_to<Player>(get_parent());
+    m_PlayerInst = GameManager::get_singleton()->get_player_inst();
 }
 
 void CameraController::_unhandled_input(const Ref<InputEvent>& event)

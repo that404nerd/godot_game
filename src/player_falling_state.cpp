@@ -1,9 +1,9 @@
 #include "player_falling_state.h"
-#include "godot_cpp/core/math.hpp"
+#include <godot_cpp/core/math.hpp>
 
 void PlayerFallingState::_enter()
 { 
-  m_StateMachine = Object::cast_to<PlayerStateMachine>(get_parent());
+  m_StateMachine = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = m_StateMachine->get_player_inst();
 }
 

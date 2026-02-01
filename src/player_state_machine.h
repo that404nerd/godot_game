@@ -7,6 +7,7 @@
 #include <godot_cpp/variant/string.hpp>
 
 #include "player_state.h"
+#include "game_manager.h"
 #include "globals.h"
 
 using namespace godot;
@@ -15,7 +16,7 @@ class PlayerStateMachine : public Node {
     GDCLASS(PlayerStateMachine, Node);
 
 public:
-    PlayerStateMachine() {};
+    PlayerStateMachine();
 
     void _ready() override;
 

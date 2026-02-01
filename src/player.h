@@ -24,6 +24,7 @@
 
 #include "globals.h"
 #include "weapon_camera.h"
+#include "game_manager.h"
 
 using namespace godot;
 

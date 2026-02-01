@@ -1,9 +1,8 @@
 #include "player_crouch_state.h"
-#include "godot_cpp/classes/capsule_shape3d.hpp"
 
 void PlayerCrouchState::_enter()
 { 
-  m_StateMachineInst = Object::cast_to<PlayerStateMachine>(get_parent());
+  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = m_StateMachineInst->get_player_inst();
 
   m_CapsuleMesh = m_PlayerInst->get_player_capsule();

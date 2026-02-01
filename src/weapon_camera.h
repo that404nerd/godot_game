@@ -5,10 +5,12 @@
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/label.hpp>
-#include "godot_cpp/classes/camera3d.hpp"
-#include "godot_cpp/variant/vector2.hpp"
 
-#include "player.h"
+#include "globals.h"
+#include <godot_cpp/classes/camera3d.hpp>
+#include <godot_cpp/variant/vector2.hpp>
+
+class Player;
 
 using namespace godot;
 
@@ -32,7 +34,10 @@ namespace godot {
   private:
     Node3D* m_HoldPointNode = nullptr;
     Vector3 m_HoldPointPos = Vector3(0.0f, 0.0f, 0.0f);
+    
+    Player* m_PlayerInst = nullptr;
+
+    GD_DEFINE_PROPERTY(float, sway_mult, 0.0f); 
   };
 
 }
-

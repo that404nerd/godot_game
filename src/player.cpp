@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-    
+  GameManager::get_singleton()->set_player_inst(this);
 }
 
 void Player::_bind_methods()
@@ -54,6 +54,7 @@ void Player::_ready()
     m_PlayerCapsule = Object::cast_to<CapsuleMesh>(m_PlayerMeshInst);
 
     m_Gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
+
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)

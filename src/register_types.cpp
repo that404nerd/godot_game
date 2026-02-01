@@ -1,5 +1,5 @@
 #include "register_types.hpp"
-#include "godot_cpp/core/class_db.hpp"
+#include <godot_cpp/core/class_db.hpp>
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -7,10 +7,20 @@
 
 using namespace godot;
 
+static GameManager *s_GameManager = nullptr;
+
 void initialize_module(ModuleInitializationLevel p_level) {
+  
+   
+
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+
+  // Singleton stuff (eww this is disgusting)
+  if(!ClassDB::class_exists("GameManager")) GDREGISTER_CLASS(GameManager);
+  s_GameManager = memnew(GameManager);
+  if(!ClassDB::class_exists("GameManager")) Engine::get_singleton()->register_singleton("GameManager", GameManager::get_singleton());
 
   // the game runs, the checks are required prevents error spam (DO NOT CHANGE THE player from GDREGISTER_RUNTIME_CLASS)
   if (!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game); 
@@ -33,13 +43,19 @@ void initialize_module(ModuleInitializationLevel p_level) {
 
   if (!ClassDB::class_exists("DebugPanel")) GDREGISTER_RUNTIME_CLASS(DebugPanel);
   if (!ClassDB::class_exists("WeaponCamera")) GDREGISTER_RUNTIME_CLASS(WeaponCamera);
+
 }
 
 
 void uninitialize_module(ModuleInitializationLevel p_level) {
+  
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+
+  Engine::get_singleton()->unregister_singleton("GameManager");
+  memdelete(s_GameManager);
+  s_GameManager = nullptr;
 }
 
 extern "C" {

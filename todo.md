@@ -10,6 +10,7 @@
 - Fix spamming the crouch key during slide state (causes the collision shape to glitch into the floor) [x]
 - Fix un-crouching when there's an object above the player [x]
 - Have a function for setting state strings in emit_signal() to avoid naming issues [x]
+- Singletons for accessing player and state machine instances [x]
 
 ## Issues
 - Transition to idle state when sliding into a world objects []

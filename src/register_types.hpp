@@ -18,6 +18,7 @@
 #include "weapon_manager.h"
 
 #include "debug_panel.h"
+#include "game_manager.h"
 #include "weapon_camera.h"
 
 using namespace godot;
