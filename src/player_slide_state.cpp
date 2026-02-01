@@ -2,9 +2,7 @@
 
 void PlayerSlideState::_enter()
 { 
-    auto sm = GameManager::get_singleton()->get_player_state_machine();
-    m_PlayerInst = sm->get_player_inst();
-
+    m_PlayerInst = GameManager::get_singleton()->get_player_inst();
     m_SlideVector = m_PlayerInst->get_wish_dir();
 
     m_PlayerCamInst = m_PlayerInst->get_player_camera();
@@ -20,7 +18,7 @@ void PlayerSlideState::_handle_input(const Ref<InputEvent>& event)
 {
     if(Input::get_singleton()->is_action_just_pressed("jump")) {
         _on_slide_finished();
-        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::JUMP));
+        emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::JUMP));
     }
 }
 
@@ -58,10 +56,10 @@ void PlayerSlideState::_physics_update(double delta)
     horizVel.z = m_SlideVector.z * 7.0f * m_SlideTimer;
     
     // TODO: This is bad. Anything the player collides with will cancel the slide state. A normal body like a crate, box would make sense
-    if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(m_SlideVector.x, 0.0f, m_SlideVector.z))) {
-      _on_slide_finished();
-      emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::IDLE));
-    }
+    // if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(m_SlideVector.x, 0.0f, m_SlideVector.z))) {
+    //   _on_slide_finished();
+    //   emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::IDLE));
+    // }
     playerVel = Vector3(horizVel.x, playerVel.y, horizVel.z);
     m_PlayerInst->set_velocity(playerVel);
 
@@ -72,7 +70,7 @@ void PlayerSlideState::_physics_update(double delta)
     
     if(m_SlideTimer <= 0.0f) {
         _on_slide_finished();
-        emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::IDLE));
+        emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::IDLE));
     }
 }
 

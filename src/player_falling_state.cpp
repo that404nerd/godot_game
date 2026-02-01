@@ -1,21 +1,18 @@
 #include "player_falling_state.h"
-#include <godot_cpp/core/math.hpp>
 
 void PlayerFallingState::_enter()
 { 
-  m_StateMachine = GameManager::get_singleton()->get_player_state_machine();
-  m_PlayerInst = m_StateMachine->get_player_inst();
+  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
 }
 
 void PlayerFallingState::_bind_methods()
 {
-
 }
 
 void PlayerFallingState::_handle_input(const Ref<InputEvent>& event) 
 {
   if (!m_IsJumpPressed && Input::get_singleton()->is_action_just_pressed("jump")) {
-    emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::JUMP));
+    emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::JUMP));
     m_IsJumpPressed = true;
   }
 }
@@ -28,7 +25,7 @@ void PlayerFallingState::_physics_update(double delta)
   Vector3 playerVel = m_PlayerInst->get_velocity();
   Vector3 wish = m_PlayerInst->get_wish_dir();
   
-  playerVel.y -= 12.0f * delta; // Special falling velocity
+  playerVel.y -= m_PlayerInst->get_down_gravity() * delta; // Special falling velocity
 
   float currentSpeed = playerVel.dot(Vector3(wish.x, 0, wish.z));
   float addSpeed = m_PlayerInst->get_max_air_move_speed() - currentSpeed;
@@ -47,7 +44,7 @@ void PlayerFallingState::_physics_update(double delta)
   if(m_PlayerInst->is_on_floor())
   {
       m_IsJumpPressed = false;
-      emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::IDLE));
+      emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::IDLE));
   }
 }
 

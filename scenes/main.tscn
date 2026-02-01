@@ -28,4 +28,4 @@ shadow_enabled = true
 [node name="Level0" parent="." unique_id=894963044 instance=ExtResource("1_o5qli")]
 
 [node name="Player" parent="." unique_id=2097740413 instance=ExtResource("2_0wfyh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8341866, 1.268936, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8341866, 30.005865, 0)

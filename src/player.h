@@ -54,15 +54,10 @@ public:
     CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
     CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
 
-    MeshInstance3D* get_player_mesh() { return m_PlayerMeshInst; }
     CapsuleMesh* get_player_capsule() { return m_PlayerCapsule; }
 
     Vector3 get_wish_dir() { return m_WishDir; }
     Vector2 get_input_dir() { return m_InputDir; }
-
-    float get_jump_velocity() { return m_JumpVelocity; }
-    float get_jump_gravity() { return m_JumpGravity; }
-    float get_fall_gravity() { return m_FallGravity; }
 
     void _update_input();
     void _update_velocity();
@@ -72,7 +67,7 @@ public:
       IDLE, SPRINT, CROUCH, JUMP, DASH, FALL, SLIDE
     };
 
-    inline StringName SetCurrentState(StateNames state)
+    inline StringName GetCurrentState(StateNames state)
     {
       StringName currentState;
       switch(state)
@@ -115,7 +110,6 @@ private:
     CollisionShape3D* m_StandingPlayerCollider = nullptr;
     CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
-    MeshInstance3D* m_PlayerMeshInst = nullptr;
     CapsuleMesh* m_PlayerCapsule = nullptr;
 
     Camera3D* m_PlayerCamera = nullptr;
@@ -140,13 +134,8 @@ private:
     GD_DEFINE_PROPERTY(float, slide_tilt_angle, 5.0f);
     GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
 
-    GD_DEFINE_PROPERTY(float, jump_height, 7.0f);
-    GD_DEFINE_PROPERTY(float, time_to_peak, 3.0f);
-    GD_DEFINE_PROPERTY(float, time_to_descent, 3.0f);
-
-    float m_JumpVelocity = ((2.0f * jump_height) / time_to_peak) * 1.0f;
-    float m_JumpGravity = ((2.0f * jump_height) / time_to_peak * time_to_peak) * 1.0f;
-    float m_FallGravity = ((2.0f * jump_height) / time_to_descent * time_to_descent) * 1.0f;
+    GD_DEFINE_PROPERTY(float, jump_height, 10.0f);
+    GD_DEFINE_PROPERTY(float, down_gravity, 15.0f);
 
     GD_DEFINE_PROPERTY(float, max_air_move_speed, 6.0f);
     GD_DEFINE_PROPERTY(float, max_air_accel, 7.0f);

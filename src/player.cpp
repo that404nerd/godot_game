@@ -15,8 +15,7 @@ void Player::_bind_methods()
   
     ADD_GROUP("Player Jump Settings", "");
     GD_BIND_PROPERTY(Player, jump_height, Variant::FLOAT);
-    GD_BIND_PROPERTY(Player, time_to_peak, Variant::FLOAT);
-    GD_BIND_PROPERTY(Player, time_to_descent, Variant::FLOAT);
+    GD_BIND_PROPERTY(Player, down_gravity, Variant::FLOAT);
   
     ADD_GROUP("Player Air Strafe Settings", "");
     GD_BIND_PROPERTY(Player, max_air_move_speed, Variant::FLOAT);
@@ -50,9 +49,6 @@ void Player::_ready()
     m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
     m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
 
-    m_PlayerMeshInst = get_node<MeshInstance3D>(NodePath("PlayerMesh"));
-    m_PlayerCapsule = Object::cast_to<CapsuleMesh>(m_PlayerMeshInst);
-
     m_Gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
 
 }
@@ -80,16 +76,16 @@ void Player::_update_input()
     
     if (is_on_floor())
     {
-        if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
-        {
-            playerVel.x = Math::lerp(playerVel.x, m_WishDir.x, 0.0f);
-            playerVel.z = Math::lerp(playerVel.z, m_WishDir.z, 0.0f);
-        }
-        else
-        {
-            playerVel.x = Math::lerp(playerVel.x, 0.0f, 0.3f);
-            playerVel.z = Math::lerp(playerVel.z, 0.0f, 0.3f);
-        }
+      if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
+      {
+          playerVel.x = Math::lerp(playerVel.x, m_WishDir.x, 0.0f);
+          playerVel.z = Math::lerp(playerVel.z, m_WishDir.z, 0.0f);
+      }
+      else
+      {
+          playerVel.x = Math::lerp(playerVel.x, 0.0f, 0.3f);
+          playerVel.z = Math::lerp(playerVel.z, 0.0f, 0.3f);
+      }
     }
 
     set_velocity(playerVel);

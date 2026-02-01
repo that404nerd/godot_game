@@ -29,7 +29,7 @@ void PlayerDashState::_physics_update(double delta)
   m_PlayerInst->set_velocity(playerVel);
 
   if(m_PlayerInst->is_on_floor())
-      emit_signal("state_changed", m_PlayerInst->SetCurrentState(Player::StateNames::SPRINT));
+      emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::SPRINT));
 
 }
 

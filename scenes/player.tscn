@@ -4,9 +4,6 @@
 [ext_resource type="Weapon" uid="uid://cr8ykcdjrtwee" path="res://assets/meshes/weapons/rifle/rifle_resource.tres" id="2_g2els"]
 [ext_resource type="Theme" uid="uid://bvpaymm40vemo" path="res://assets/ui/debug.tres" id="3_qhqgy"]
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_3vyb7"]
-radius = 0.4
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8vuu"]
 radius = 0.4
 
@@ -18,8 +15,12 @@ height = 1.2
 crouch_speed = 2.0
 sprint_speed = 8.0
 slide_speed = 5.0
-jump_height = 3.0
-crouch_translate = 0.5
+jump_height = 5.5
+max_air_move_speed = 4.0
+max_air_accel = 6.0
+ground_accel = 12.0
+ground_decel = 6.0
+crouch_translate = 0.2
 velocity = Vector3(0, -531.3061, 0)
 
 [node name="CameraController" type="CameraController" parent="." unique_id=459137490]
@@ -52,10 +53,6 @@ fov = 40.0
 near = 0.001
 
 [node name="HoldPoint" type="Node3D" parent="CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport/WeaponCamera" unique_id=537131654]
-
-[node name="PlayerMesh" type="MeshInstance3D" parent="." unique_id=1290815344]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("CapsuleMesh_3vyb7")
 
 [node name="StandingPlayerCollider" type="CollisionShape3D" parent="." unique_id=1268338097]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
