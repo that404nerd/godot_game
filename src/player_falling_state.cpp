@@ -2,6 +2,7 @@
 
 void PlayerFallingState::_enter()
 { 
+  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
 }
 
@@ -12,7 +13,7 @@ void PlayerFallingState::_bind_methods()
 void PlayerFallingState::_handle_input(const Ref<InputEvent>& event) 
 {
   if (!m_IsJumpPressed && Input::get_singleton()->is_action_just_pressed("jump")) {
-    emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::JUMP));
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
     m_IsJumpPressed = true;
   }
 }
@@ -44,7 +45,7 @@ void PlayerFallingState::_physics_update(double delta)
   if(m_PlayerInst->is_on_floor())
   {
       m_IsJumpPressed = false;
-      emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::IDLE));
+      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
   }
 }
 

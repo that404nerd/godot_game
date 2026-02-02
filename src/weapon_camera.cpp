@@ -1,10 +1,10 @@
 #include "weapon_camera.h"
-#include "player.h"
 
 void WeaponCamera::_ready()
 {
   m_HoldPointNode = get_node<Node3D>(NodePath("HoldPoint"));
-
+  
+  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
 }
 
@@ -39,4 +39,5 @@ void WeaponCamera::sway_weapon(Vector2 weapon_sway_amt)
   m_HoldPointPos.x -= weapon_sway_amt.x * sway_mult;
   m_HoldPointPos.y += weapon_sway_amt.y * sway_mult;
   m_HoldPointNode->set_position(m_HoldPointPos);
+
 }

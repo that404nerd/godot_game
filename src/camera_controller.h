@@ -33,7 +33,6 @@ namespace godot {
 
     Vector2 m_MouseInput;
     Vector3 m_InputRotation;
-
   };
 
 }

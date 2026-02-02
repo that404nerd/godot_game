@@ -32,6 +32,7 @@ public:
     void _input(const Ref<InputEvent>& event) override;
 
     void _physics_process(double delta) override;
+    void _weapon_sway(double delta);
 
     ~WeaponManager();
 
@@ -47,7 +48,14 @@ private:
 
     Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 
     Player* m_PlayerInst { nullptr };
+    PlayerStateMachine* m_StateMachineInst { nullptr };
 
 private:
+    float m_HeadbobTime = 0.0f;
+
+    GD_DEFINE_PROPERTY(float, headbob_delta_translate, 20.0f);
+    GD_DEFINE_PROPERTY(float, headbob_amp, 0.04f);
+    GD_DEFINE_PROPERTY(float, headbob_freq, 2.0f);
+
     GD_DEFINE_PROPERTY(Array, weaponList, Array());
 };

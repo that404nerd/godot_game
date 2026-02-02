@@ -20,5 +20,5 @@ protected:
 
 private:
     Player* m_PlayerInst;
-    PlayerStateMachine* m_StateMachine;
+    PlayerStateMachine* m_StateMachineInst;
 };

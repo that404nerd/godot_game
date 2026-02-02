@@ -1,5 +1,6 @@
 ## FSM Movement System
 
+## DONE:
 - Sideways movement when falling [x]
 - Add 3 points to the jump arc (Jump, Peak, Landing like a parabola) [x]
 - Fix a bug where jumping during the falling state doesn't trigger the falling state after the jump [x]
@@ -14,6 +15,6 @@
 
 ## Issues
 - Transition to idle state when sliding into a world objects []
- Allow sliding when toggled during falling state []
+- Allow sliding when toggled during falling state []
 - ObjectDB and resource leak fix []
 - Animations for different states []

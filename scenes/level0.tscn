@@ -2,21 +2,91 @@
 
 [ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="2_qsrgx"]
 [ext_resource type="Resource" uid="uid://bmr8r3dexg0iq" path="res://trenchbroom/fpsproject_map_settings.tres" id="3_2h6oo"]
-[ext_resource type="Texture2D" uid="uid://cyg2snr1w5xw5" path="res://addons/func_godot/textures/default_texture.png" id="3_qsrgx"]
+[ext_resource type="Texture2D" uid="uid://d3u4ab5fyivaq" path="res://assets/textures/grid.jpg" id="3_qsrgx"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qsrgx"]
-albedo_texture = ExtResource("3_qsrgx")
-metallic_specular = 0.0
-texture_filter = 2
+[sub_resource type="Shader" id="Shader_cwof1"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.1.dev4's StandardMaterial3D.
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_2h6oo"]
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+varying vec3 uv1_triplanar_pos;
+uniform float uv1_blend_sharpness;
+varying vec3 uv1_power_normal;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	TANGENT = vec3(0.0,0.0,-1.0) * abs(NORMAL.x);
+	TANGENT+= vec3(1.0,0.0,0.0) * abs(NORMAL.y);
+	TANGENT+= vec3(1.0,0.0,0.0) * abs(NORMAL.z);
+	TANGENT = normalize(TANGENT);
+	BINORMAL = vec3(0.0,1.0,0.0) * abs(NORMAL.x);
+	BINORMAL+= vec3(0.0,0.0,-1.0) * abs(NORMAL.y);
+	BINORMAL+= vec3(0.0,1.0,0.0) * abs(NORMAL.z);
+	BINORMAL = normalize(BINORMAL);
+	uv1_power_normal=pow(abs(NORMAL),vec3(uv1_blend_sharpness));
+	uv1_triplanar_pos = VERTEX * uv1_scale + uv1_offset;
+	uv1_power_normal/=dot(uv1_power_normal,vec3(1.0));
+	uv1_triplanar_pos *= vec3(1.0,-1.0, 1.0);
+}
+
+vec4 triplanar_texture(sampler2D p_sampler,vec3 p_weights,vec3 p_triplanar_pos) {
+	vec4 samp=vec4(0.0);
+	samp+= texture(p_sampler,p_triplanar_pos.xy) * p_weights.z;
+	samp+= texture(p_sampler,p_triplanar_pos.xz) * p_weights.y;
+	samp+= texture(p_sampler,p_triplanar_pos.zy * vec2(-1.0,1.0)) * p_weights.x;
+	return samp;
+}
+
+void fragment() {
+	vec4 albedo_tex = triplanar_texture(texture_albedo,uv1_power_normal,uv1_triplanar_pos);
+	ALBEDO = (albedo.rgb * albedo_tex.r) + albedo_tex.g + albedo_tex.b;
+	float metallic_tex = dot(triplanar_texture(texture_metallic,uv1_power_normal,uv1_triplanar_pos),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(triplanar_texture(texture_roughness,uv1_power_normal,uv1_triplanar_pos),roughness_texture_channel);
+	ROUGHNESS = (1.0 - albedo_tex.g) * roughness;
+	SPECULAR = specular;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2h6oo"]
+render_priority = 0
+shader = SubResource("Shader_cwof1")
+shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/texture_albedo = ExtResource("3_qsrgx")
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 0.5
+shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
+shader_parameter/texture_roughness = ExtResource("3_qsrgx")
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_blend_sharpness = 1.0
+shader_parameter/uv1_scale = Vector3(0.5, 0.5, 0.5)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_x1x1l"]
 _surfaces = [{
 "aabb": AABB(-34.5, 24, -44, 82, 6.5, 86),
 "attribute_data": PackedByteArray("AAC+wQAARMEAAIpBAABEwQAAikEAAEDBAAC+wQAAQMEAAKhBAABAwQAAsMEAAEDBAACwwQAARMEAAKhBAABEwQAAqMEAAIpBAACowQAAvsEAALBBAAC+wQAAsEEAAIpBAACoQQAAikEAALDBAACKQQAAsMEAAL7BAACoQQAAvsEAAKjBAABEwQAAsEEAAETBAACwQQAAQMEAAKjBAABAwQAAvkEAAEDBAACKwQAAQMEAAIrBAABEwQAAvkEAAETBAADgQAAAZMEAABBBAABkwQAAEEEAAETBAADgQAAARMEAAABAAABEwQAAAAAAAETBAAAAAAAAZMEAAABAAABkwQAAAMAAABBBAAAAwAAA4EAAAAAAAADgQAAAAAAAABBBAAAAQAAAEEEAAAAAAAAQQQAAAAAAAOBAAAAAQAAA4EAAAADAAABkwQAAAAAAAGTBAAAAAAAARMEAAADAAABEwQAA4MAAAETBAAAQwQAARMEAABDBAABkwQAA4MAAAGTBAADgQAAAVMEAABBBAABUwQAAEEEAAETBAADgQAAARMEAAMC/AABEwQAAYMAAAETBAABgwAAAVMEAAMC/AABUwQAAwD8AABBBAADAPwAA4EAAAGBAAADgQAAAYEAAABBBAADAvwAAEEEAAGDAAAAQQQAAYMAAAOBAAADAvwAA4EAAAMA/AABUwQAAYEAAAFTBAABgQAAARMEAAMA/AABEwQAA4MAAAETBAAAQwQAARMEAABDBAABUwQAA4MAAAFTBAADgQAAAdMEAABBBAAB0wQAAEEEAAETBAADgQAAARMEAAKBAAABEwQAAQEAAAETBAABAQAAAdMEAAKBAAAB0wQAAoMAAABBBAACgwAAA4EAAAEDAAADgQAAAQMAAABBBAACgQAAAEEEAAEBAAAAQQQAAQEAAAOBAAACgQAAA4EAAAKDAAAB0wQAAQMAAAHTBAABAwAAARMEAAKDAAABEwQAA4MAAAETBAAAQwQAARMEAABDBAAB0wQAA4MAAAHTBAADgvwAAXsEAAKhAAABewQAAqEAAAE7BAADgvwAATsEAAEBAAABOwQAAwL8AAE7BAADAvwAAXsEAAEBAAABewQAAQMAAAKhAAABAwAAA4L8AAMA/AADgvwAAwD8AAKhAAABAQAAAqEAAAMC/AACoQAAAwL8AAOC/AABAQAAA4L8AAEDAAABewQAAwD8AAF7BAADAPwAATsEAAEDAAABOwQAA4D8AAE7BAACowAAATsEAAKjAAABewQAA4D8AAF7BAADgQAAATsEAABBBAABOwQAAEEEAAETBAADgQAAARMEAAIDAAABEwQAAwMAAAETBAADAwAAATsEAAIDAAABOwQAAgEAAABBBAACAQAAA4EAAAMBAAADgQAAAwEAAABBBAACAwAAAEEEAAMDAAAAQQQAAwMAAAOBAAACAwAAA4EAAAIBAAABOwQAAwEAAAE7BAADAQAAARMEAAIBAAABEwQAA4MAAAETBAAAQwQAARMEAABDBAABOwQAA4MAAAE7B"),
 "format": 34359742487,
 "index_count": 216,
 "index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcAGAAZABoAGAAaABsAHAAdAB4AHAAeAB8AIAAhACIAIAAiACMAJAAlACYAJAAmACcAKAApACoAKAAqACsALAAtAC4ALAAuAC8AMAAxADIAMAAyADMANAA1ADYANAA2ADcAOAA5ADoAOAA6ADsAPAA9AD4APAA+AD8AQABBAEIAQABCAEMARABFAEYARABGAEcASABJAEoASABKAEsATABNAE4ATABOAE8AUABRAFIAUABSAFMAVABVAFYAVABWAFcAWABZAFoAWABaAFsAXABdAF4AXABeAF8AYABhAGIAYABiAGMAZABlAGYAZABmAGcAaABpAGoAaABqAGsAbABtAG4AbABuAG8AcABxAHIAcAByAHMAdAB1AHYAdAB2AHcAeAB5AHoAeAB6AHsAfAB9AH4AfAB+AH8AgACBAIIAgACCAIMAhACFAIYAhACGAIcAiACJAIoAiACKAIsAjACNAI4AjACOAI8A"),
-"material": SubResource("StandardMaterial3D_qsrgx"),
+"material": SubResource("ShaderMaterial_2h6oo"),
 "name": "__TB_empty",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -24,22 +94,22 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AAA+QgAAxEEAADDCAAAKwgAAxEEAADDCAAAKwgAAwEEAADDCAAA+QgAAwEEAADDCAAAKwgAAwEEAAChCAAAKwgAAwEEAADDCAAAKwgAAxEEAADDCAAAKwgAAxEEAAChCAAAKwgAAwEEAAChCAAA+QgAAwEEAAChCAAA+QgAAwEEAADDCAAAKwgAAwEEAADDCAAAKwgAAxEEAAChCAAAKwgAAxEEAADDCAAA+QgAAxEEAADDCAAA+QgAAxEEAAChCAAA+QgAAxEEAAChCAAA+QgAAxEEAADDCAAA+QgAAwEEAADDCAAA+QgAAwEEAAChCAAA+QgAAwEEAAChCAAAKwgAAwEEAAChCAAAKwgAAxEEAAChCAAA+QgAAxEEAAChCAABgwQAA5EEAAAAAAACQwQAA5EEAAAAAAACQwQAAxEEAAAAAAABgwQAAxEEAAAAAAACQwQAAxEEAAIBAAACQwQAAxEEAAAAAAACQwQAA5EEAAAAAAACQwQAA5EEAAIBAAACQwQAAxEEAAIBAAABgwQAAxEEAAIBAAABgwQAAxEEAAAAAAACQwQAAxEEAAAAAAACQwQAA5EEAAIBAAACQwQAA5EEAAAAAAABgwQAA5EEAAAAAAABgwQAA5EEAAIBAAABgwQAA5EEAAIBAAABgwQAA5EEAAAAAAABgwQAAxEEAAAAAAABgwQAAxEEAAIBAAABgwQAAxEEAAIBAAACQwQAAxEEAAIBAAACQwQAA5EEAAIBAAABgwQAA5EEAAIBAAABgwQAA1EEAAODAAACQwQAA1EEAAODAAACQwQAAxEEAAODAAABgwQAAxEEAAODAAACQwQAAxEEAAEDAAACQwQAAxEEAAODAAACQwQAA1EEAAODAAACQwQAA1EEAAEDAAACQwQAAxEEAAEDAAABgwQAAxEEAAEDAAABgwQAAxEEAAODAAACQwQAAxEEAAODAAACQwQAA1EEAAEDAAACQwQAA1EEAAODAAABgwQAA1EEAAODAAABgwQAA1EEAAEDAAABgwQAA1EEAAEDAAABgwQAA1EEAAODAAABgwQAAxEEAAODAAABgwQAAxEEAAEDAAABgwQAAxEEAAEDAAACQwQAAxEEAAEDAAACQwQAA1EEAAEDAAABgwQAA1EEAAEDAAABgwQAA9EEAAMBAAACQwQAA9EEAAMBAAACQwQAAxEEAAMBAAABgwQAAxEEAAMBAAACQwQAAxEEAACBBAACQwQAAxEEAAMBAAACQwQAA9EEAAMBAAACQwQAA9EEAACBBAACQwQAAxEEAACBBAABgwQAAxEEAACBBAABgwQAAxEEAAMBAAACQwQAAxEEAAMBAAACQwQAA9EEAACBBAACQwQAA9EEAAMBAAABgwQAA9EEAAMBAAABgwQAA9EEAACBBAABgwQAA9EEAACBBAABgwQAA9EEAAMBAAABgwQAAxEEAAMBAAABgwQAAxEEAACBBAABgwQAAxEEAACBBAACQwQAAxEEAACBBAACQwQAA9EEAACBBAABgwQAA9EEAACBBAABgQAAA3kEAAEDAAAAowQAA3kEAAEDAAAAowQAAzkEAAEDAAABgQAAAzkEAAEDAAAAowQAAzkEAAMBAAAAowQAAzkEAAEDAAAAowQAA3kEAAEDAAAAowQAA3kEAAMBAAAAowQAAzkEAAMBAAABgQAAAzkEAAMBAAABgQAAAzkEAAEDAAAAowQAAzkEAAEDAAAAowQAA3kEAAMBAAAAowQAA3kEAAEDAAABgQAAA3kEAAEDAAABgQAAA3kEAAMBAAABgQAAA3kEAAMBAAABgQAAA3kEAAEDAAABgQAAAzkEAAEDAAABgQAAAzkEAAMBAAABgQAAAzkEAAMBAAAAowQAAzkEAAMBAAAAowQAA3kEAAMBAAABgQAAA3kEAAMBAAABgwQAAzkEAAEDBAACQwQAAzkEAAEDBAACQwQAAxEEAAEDBAABgwQAAxEEAAEDBAACQwQAAxEEAAADBAACQwQAAxEEAAEDBAACQwQAAzkEAAEDBAACQwQAAzkEAAADBAACQwQAAxEEAAADBAABgwQAAxEEAAADBAABgwQAAxEEAAEDBAACQwQAAxEEAAEDBAACQwQAAzkEAAADBAACQwQAAzkEAAEDBAABgwQAAzkEAAEDBAABgwQAAzkEAAADBAABgwQAAzkEAAADBAABgwQAAzkEAAEDBAABgwQAAxEEAAEDBAABgwQAAxEEAAADBAABgwQAAxEEAAADBAACQwQAAxEEAAADBAACQwQAAzkEAAADBAABgwQAAzkEAAADB/////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+/")
 }]
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_x1x1l"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_gklfi"]
 points = PackedVector3Array(47.5, 24.5, 42, 47.5, 24, 42, -34.5, 24.5, 42, -34.5, 24, 42, 47.5, 24.5, -44, 47.5, 24, -44, -34.5, 24.5, -44, -34.5, 24, -44)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_gklfi"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cm1v6"]
 points = PackedVector3Array(-14, 28.5, 4, -14, 24.5, 4, -18, 28.5, 4, -18, 24.5, 4, -14, 28.5, 0, -14, 24.5, 0, -18, 28.5, 0, -18, 24.5, 0)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cm1v6"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_wrnl3"]
 points = PackedVector3Array(-14, 26.5, -3, -14, 24.5, -3, -18, 26.5, -3, -18, 24.5, -3, -14, 26.5, -7, -14, 24.5, -7, -18, 26.5, -7, -18, 24.5, -7)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_wrnl3"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_tcqsn"]
 points = PackedVector3Array(-14, 30.5, 10, -14, 24.5, 10, -18, 30.5, 10, -18, 24.5, 10, -14, 30.5, 6, -14, 24.5, 6, -18, 30.5, 6, -18, 24.5, 6)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_tcqsn"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6q6d4"]
 points = PackedVector3Array(3.5, 27.75, 6, 3.5, 25.75, 6, -10.5, 27.75, 6, -10.5, 25.75, 6, 3.5, 27.75, -3, 3.5, 25.75, -3, -10.5, 27.75, -3, -10.5, 25.75, -3)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6q6d4"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_l3elg"]
 points = PackedVector3Array(-14, 25.75, -8, -14, 24.5, -8, -18, 25.75, -8, -18, 24.5, -8, -14, 25.75, -12, -14, 24.5, -12, -18, 25.75, -12, -18, 24.5, -12)
 
 [node name="Level0" type="Node3D" unique_id=483194061]
@@ -50,26 +120,26 @@ local_map_file = "uid://ddx728jg315l"
 map_settings = ExtResource("3_2h6oo")
 metadata/_custom_type_script = "uid://cwu5cf7a0awcd"
 
-[node name="entity_0_worldspawn" type="StaticBody3D" parent="FuncGodotMap" unique_id=841639202]
+[node name="entity_0_worldspawn" type="StaticBody3D" parent="FuncGodotMap" unique_id=922906015]
 collision_mask = 0
 
-[node name="entity_0_mesh_instance" type="MeshInstance3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=524476098]
-mesh = SubResource("ArrayMesh_2h6oo")
+[node name="entity_0_mesh_instance" type="MeshInstance3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1192072744]
+mesh = SubResource("ArrayMesh_x1x1l")
 
-[node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=682525248]
-shape = SubResource("ConvexPolygonShape3D_x1x1l")
-
-[node name="entity_0_brush_1_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1325125621]
+[node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1995399929]
 shape = SubResource("ConvexPolygonShape3D_gklfi")
 
-[node name="entity_0_brush_2_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=2000978018]
+[node name="entity_0_brush_1_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1959019133]
 shape = SubResource("ConvexPolygonShape3D_cm1v6")
 
-[node name="entity_0_brush_3_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1022933043]
+[node name="entity_0_brush_2_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1027976417]
 shape = SubResource("ConvexPolygonShape3D_wrnl3")
 
-[node name="entity_0_brush_4_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=575293627]
+[node name="entity_0_brush_3_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=9134890]
 shape = SubResource("ConvexPolygonShape3D_tcqsn")
 
-[node name="entity_0_brush_5_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=642114239]
+[node name="entity_0_brush_4_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=665995379]
 shape = SubResource("ConvexPolygonShape3D_6q6d4")
+
+[node name="entity_0_brush_5_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1391548864]
+shape = SubResource("ConvexPolygonShape3D_l3elg")

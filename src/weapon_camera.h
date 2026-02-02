@@ -7,10 +7,9 @@
 #include <godot_cpp/classes/label.hpp>
 
 #include "globals.h"
-#include <godot_cpp/classes/camera3d.hpp>
-#include <godot_cpp/variant/vector2.hpp>
-
-class Player;
+#include "player_state_machine.h"
+#include "player.h"
+#include "player_state_machine.h"
 
 using namespace godot;
 
@@ -36,6 +35,7 @@ namespace godot {
     Vector3 m_HoldPointPos = Vector3(0.0f, 0.0f, 0.0f);
     
     Player* m_PlayerInst = nullptr;
+    PlayerStateMachine* m_StateMachineInst = nullptr;
 
     GD_DEFINE_PROPERTY(float, sway_mult, 0.0f); 
   };

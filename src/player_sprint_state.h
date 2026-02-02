@@ -24,6 +24,7 @@ protected:
 
 private:
     Player* m_PlayerInst;
+    PlayerStateMachine* m_StateMachineInst;
 
     float m_HeadBobTime;
     GD_DEFINE_PROPERTY(float, headbob_move_freq, 1.2f);

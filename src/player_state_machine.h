@@ -7,6 +7,7 @@
 #include <godot_cpp/variant/string.hpp>
 
 #include "player_state.h"
+#include "player.h"
 #include "game_manager.h"
 #include "globals.h"
 
@@ -30,6 +31,42 @@ public:
     StringName get_prev_state();
 
     ~PlayerStateMachine();
+
+public:
+  enum class StateNames {
+    IDLE, SPRINT, CROUCH, JUMP, DASH, FALL, SLIDE
+  };
+
+  inline StringName GetCurrentState(StateNames state)
+  {
+    StringName currentState;
+    switch(state)
+    {
+      case StateNames::IDLE:
+        currentState = "Idle";
+        break;
+      case StateNames::SPRINT:
+        currentState = "Sprint";
+        break;
+      case StateNames::JUMP:
+        currentState = "Jump";
+        break;
+      case StateNames::FALL:
+        currentState = "Fall";
+        break;
+      case StateNames::DASH:
+        currentState = "Dash";
+        break;
+      case StateNames::CROUCH:
+        currentState = "Crouch";
+        break;
+      case StateNames::SLIDE:
+        currentState = "Slide";
+        break;
+    }
+
+    return currentState;
+  }
     
 protected:
     static void _bind_methods();

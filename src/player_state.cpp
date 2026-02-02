@@ -1,8 +1,7 @@
 #include "player_state.h"
 #include "player_state_machine.h"
-#include "player.h"
 
-PlayerState::PlayerState() : m_PlayerInst(nullptr) {}
+PlayerState::PlayerState() {}
 
 void PlayerState::_bind_methods() 
 {

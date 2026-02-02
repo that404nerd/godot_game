@@ -14,9 +14,9 @@ void PlayerStateMachine::_bind_methods()
 void PlayerStateMachine::_ready()
 {
     if(get_parent()) {
-        m_PlayerInst = Object::cast_to<Player>(get_parent());
+      m_PlayerInst = Object::cast_to<Player>(get_parent());
     } else {
-        print_error("parent is null");
+      print_error("parent is null");
     }
     
     for (auto& child : get_children()) {
@@ -50,7 +50,7 @@ void PlayerStateMachine::_physics_process(double delta)
 {
     if(m_CurrentState) {
         m_CurrentState->_physics_update(delta);
-        //print_line("Current state: ", get_current_state());
+        print_line("Current state: ", get_current_state());
     }
 }
 

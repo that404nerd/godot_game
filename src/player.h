@@ -23,8 +23,9 @@
 #include <godot_cpp/classes/sub_viewport.hpp>
 
 #include "globals.h"
-#include "weapon_camera.h"
 #include "game_manager.h"
+#include "weapon_camera.h"
+
 
 using namespace godot;
 
@@ -61,45 +62,6 @@ public:
 
     void _update_input();
     void _update_velocity();
-
-public:
-    enum class StateNames {
-      IDLE, SPRINT, CROUCH, JUMP, DASH, FALL, SLIDE
-    };
-
-    inline StringName GetCurrentState(StateNames state)
-    {
-      StringName currentState;
-      switch(state)
-      {
-        case StateNames::IDLE:
-          currentState = "Idle";
-          break;
-        case StateNames::SPRINT:
-          currentState = "Sprint";
-          break;
-        case StateNames::JUMP:
-          currentState = "Jump";
-          break;
-        case StateNames::FALL:
-          currentState = "Fall";
-          break;
-        case StateNames::DASH:
-          currentState = "Dash";
-          break;
-        case StateNames::CROUCH:
-          currentState = "Crouch";
-          break;
-        case StateNames::SLIDE:
-          currentState = "Slide";
-          break;
-      }
-
-      print_line(currentState);
-
-      return currentState;
-    }
-
 
 private:
     Node3D* m_PlayerHead = nullptr;

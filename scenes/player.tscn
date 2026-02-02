@@ -12,7 +12,7 @@ radius = 0.4
 height = 1.2
 
 [node name="Player" type="Player" unique_id=377799196]
-crouch_speed = 2.0
+crouch_speed = 4.0
 sprint_speed = 8.0
 slide_speed = 5.0
 jump_height = 5.5
@@ -46,7 +46,7 @@ handle_input_locally = false
 render_target_update_mode = 4
 
 [node name="WeaponCamera" type="WeaponCamera" parent="CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport" unique_id=1913232025]
-sway_mult = 0.001
+sway_mult = 0.003
 cull_mask = 1047554
 current = true
 fov = 40.0
@@ -62,6 +62,9 @@ shape = SubResource("CapsuleShape3D_u8vuu")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
+
+[node name="WeaponManager" type="WeaponManager" parent="." unique_id=466649648]
+weaponList = [ExtResource("1_3vyb7"), ExtResource("2_g2els")]
 
 [node name="PlayerStateMachine" type="PlayerStateMachine" parent="." unique_id=1687258888 node_paths=PackedStringArray("initial_state")]
 initial_state = NodePath("Idle")
@@ -79,9 +82,6 @@ initial_state = NodePath("Idle")
 [node name="Fall" type="PlayerFallingState" parent="PlayerStateMachine" unique_id=2103447984]
 
 [node name="Slide" type="PlayerSlideState" parent="PlayerStateMachine" unique_id=690075269]
-
-[node name="WeaponManager" type="WeaponManager" parent="." unique_id=466649648]
-weaponList = [ExtResource("1_3vyb7"), ExtResource("2_g2els")]
 
 [node name="CameraControllerAnchor" type="Marker3D" parent="." unique_id=1676709481]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

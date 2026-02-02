@@ -2,8 +2,8 @@
 
 void PlayerDashState::_enter()
 { 
-    m_StateMachine = GameManager::get_singleton()->get_player_state_machine();
-    m_PlayerInst = m_StateMachine->get_player_inst();
+    m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
+    m_PlayerInst = GameManager::get_singleton()->get_player_inst();
 }
 
 void PlayerDashState::_bind_methods()
@@ -29,7 +29,7 @@ void PlayerDashState::_physics_update(double delta)
   m_PlayerInst->set_velocity(playerVel);
 
   if(m_PlayerInst->is_on_floor())
-      emit_signal("state_changed", m_PlayerInst->GetCurrentState(Player::StateNames::SPRINT));
+      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SPRINT));
 
 }
 

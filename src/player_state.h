@@ -4,9 +4,6 @@
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 
-#include <godot_cpp/classes/weak_ref.hpp>
-#include "player.h"
-
 class PlayerStateMachine;
 
 using namespace godot;
@@ -27,5 +24,5 @@ protected:
     static void _bind_methods();
 
 private:
-    Player* m_PlayerInst {nullptr};
+    // Player* m_PlayerInst {nullptr};
 };
