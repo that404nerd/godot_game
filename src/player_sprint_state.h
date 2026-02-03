@@ -7,26 +7,29 @@
 #include "globals.h"
 
 class PlayerSprintState : public PlayerState {
-    GDCLASS(PlayerSprintState, PlayerState);
+  GDCLASS(PlayerSprintState, PlayerState);
 
 public:
-    PlayerSprintState() : m_HeadBobTime(0.0f) {}; 
+  PlayerSprintState() {}; 
 
-    virtual void _enter() override;
-    virtual void _handle_input(const Ref<InputEvent>& event) override;
-    virtual void _physics_update(double delta) override;
-    virtual void _exit() override; 
+  virtual void _enter() override;
+  virtual void _handle_input(const Ref<InputEvent>& event) override;
+  virtual void _physics_update(double delta) override;
+  virtual void _exit() override; 
 
-    void headbob_effect(double delta);
+  void _headbob_effect(double delta);
 
 protected:
-    static void _bind_methods();
+  static void _bind_methods();
 
 private:
-    Player* m_PlayerInst;
-    PlayerStateMachine* m_StateMachineInst;
+  Player* m_PlayerInst;
+  PlayerStateMachine* m_StateMachineInst;
 
-    float m_HeadBobTime;
-    GD_DEFINE_PROPERTY(float, headbob_move_freq, 1.2f);
-    GD_DEFINE_PROPERTY(float, headbob_move_amt, 0.07f);
+  float m_HeadbobTime = 0.0f;
+  GD_DEFINE_PROPERTY(float, headbob_delta_translate, 20.0f);
+  GD_DEFINE_PROPERTY(float, headbob_amp, 0.04f);
+  GD_DEFINE_PROPERTY(float, headbob_freq, 2.0f);
+
+
 };

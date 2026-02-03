@@ -1,4 +1,6 @@
 #include "weapon_manager.h"
+#include "globals.h"
+#include "player_state_machine.h"
 
 WeaponManager::WeaponManager()
 {
@@ -9,15 +11,14 @@ void WeaponManager::_bind_methods()
 {
   GD_BIND_PROPERTY(WeaponManager, weaponList, Variant::ARRAY);
 
-  ADD_GROUP("Headbob Properties", "");
-  GD_BIND_PROPERTY(WeaponManager, headbob_amp, Variant::FLOAT);
-  GD_BIND_PROPERTY(WeaponManager, headbob_freq, Variant::FLOAT);
-  GD_BIND_PROPERTY(WeaponManager, headbob_delta_translate, Variant::FLOAT);
+  ADD_GROUP("Weapon Bob Properties", "");
+  GD_BIND_PROPERTY(WeaponManager, weapon_bob_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(WeaponManager, weapon_bob_amp, Variant::FLOAT);
 }
 
 void WeaponManager::_ready()
 {
-  m_WeaponHoldPoint = get_node<Node3D>(NodePath("../CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport/WeaponCamera/HoldPoint"));
+  m_WeaponHoldPoint = get_node<Node3D>(NodePath("%HoldPoint"));
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   _init_weapon();
@@ -42,33 +43,31 @@ void WeaponManager::_init_weapon()
   //   }
 }
 
-void WeaponManager::_weapon_sway(double delta)
+void WeaponManager::_weapon_bob(double delta)
 {
   bool onFloor = m_PlayerInst->is_on_floor(); // so that bobbing doesn't occur during airborne states
 
   float velocity = m_PlayerInst->get_velocity().length();
-  m_HeadbobTime += delta * velocity * onFloor;
+  weapon_bob_time += delta * velocity * onFloor;
 
-  float x_bob = Math::cos(m_HeadbobTime * headbob_freq * 0.5f) * headbob_amp;
-  float y_bob = Math::sin(m_HeadbobTime * headbob_freq) * headbob_amp;
+  float x_bob = Math::cos(weapon_bob_time * weapon_bob_freq * 0.5f) * weapon_bob_amp;
+  float y_bob = Math::sin(weapon_bob_time * weapon_bob_freq) * weapon_bob_amp;
 
-  Vector3 currentPos = m_PlayerInst->get_player_head()->get_position();
+  Vector3 currentPos = m_PlayerInst->get_rig_hold_point()->get_position();
   Vector3 newPos = Vector3(
-    Math::lerp(currentPos.x, x_bob, (float)delta * headbob_delta_translate),
-    Math::lerp(currentPos.y, y_bob, (float)delta * headbob_delta_translate), 
+    Math::lerp(currentPos.x, x_bob, (float)delta),
+    Math::lerp(currentPos.y, y_bob, (float)delta), 
     0.0f
   );
 
-  m_PlayerInst->get_player_head()->set_position(newPos);
+  m_PlayerInst->get_rig_hold_point()->set_position(newPos);
 }
 
 void WeaponManager::_physics_process(double delta)
 {
-  // TODO: Maybe switch to Bits instead of enums
-  if(m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SPRINT) ||
-      m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH)) {
-    _weapon_sway(delta);
-  }
+  if(m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SPRINT)
+    || m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH))
+    _weapon_bob(delta);
 }
 
 WeaponManager::~WeaponManager()

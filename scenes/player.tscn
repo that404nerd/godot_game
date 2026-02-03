@@ -12,7 +12,6 @@ radius = 0.4
 height = 1.2
 
 [node name="Player" type="Player" unique_id=377799196]
-crouch_speed = 4.0
 sprint_speed = 8.0
 slide_speed = 5.0
 jump_height = 5.5
@@ -27,32 +26,37 @@ velocity = Vector3(0, -531.3061, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="PlayerHead" type="Node3D" parent="CameraController" unique_id=1010004094]
+unique_name_in_owner = true
 
-[node name="Camera3D" type="Camera3D" parent="CameraController/PlayerHead" unique_id=27902470]
+[node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead" unique_id=27902470]
+unique_name_in_owner = true
 cull_mask = 1048573
 current = true
 fov = 80.0
 
-[node name="WeaponViewportContainer" type="SubViewportContainer" parent="CameraController/PlayerHead/Camera3D" unique_id=1542625266]
+[node name="WeaponViewportContainer" type="SubViewportContainer" parent="CameraController/PlayerHead/PlayerCamera" unique_id=1542625266]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="WeaponViewport" type="SubViewport" parent="CameraController/PlayerHead/Camera3D/WeaponViewportContainer" unique_id=847616797]
+[node name="WeaponViewport" type="SubViewport" parent="CameraController/PlayerHead/PlayerCamera/WeaponViewportContainer" unique_id=847616797]
+unique_name_in_owner = true
 transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 4
 
-[node name="WeaponCamera" type="WeaponCamera" parent="CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport" unique_id=1913232025]
+[node name="WeaponCamera" type="WeaponCamera" parent="CameraController/PlayerHead/PlayerCamera/WeaponViewportContainer/WeaponViewport" unique_id=1913232025]
 sway_mult = 0.003
+unique_name_in_owner = true
 cull_mask = 1047554
 current = true
 fov = 40.0
 near = 0.001
 
-[node name="HoldPoint" type="Node3D" parent="CameraController/PlayerHead/Camera3D/WeaponViewportContainer/WeaponViewport/WeaponCamera" unique_id=537131654]
+[node name="HoldPoint" type="Node3D" parent="CameraController/PlayerHead/PlayerCamera/WeaponViewportContainer/WeaponViewport/WeaponCamera" unique_id=537131654]
+unique_name_in_owner = true
 
 [node name="StandingPlayerCollider" type="CollisionShape3D" parent="." unique_id=1268338097]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -65,6 +69,7 @@ disabled = true
 
 [node name="WeaponManager" type="WeaponManager" parent="." unique_id=466649648]
 weaponList = [ExtResource("1_3vyb7"), ExtResource("2_g2els")]
+weapon_bob_amp = 0.009
 
 [node name="PlayerStateMachine" type="PlayerStateMachine" parent="." unique_id=1687258888 node_paths=PackedStringArray("initial_state")]
 initial_state = NodePath("Idle")

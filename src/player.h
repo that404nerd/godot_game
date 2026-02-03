@@ -26,85 +26,89 @@
 #include "game_manager.h"
 #include "weapon_camera.h"
 
-
 using namespace godot;
 
 class Player : public CharacterBody3D {
 
-    GDCLASS(Player, CharacterBody3D);
+  GDCLASS(Player, CharacterBody3D);
 
 public:
-    Player();
-    
-    void _ready() override;
-    void _physics_process(double delta) override;
-    void _unhandled_input(const Ref<InputEvent>& event) override;
+  Player();
+  
+  void _ready() override;
+  void _physics_process(double delta) override;
+  void _unhandled_input(const Ref<InputEvent>& event) override;
 
-    static void _bind_methods();
-    
-    ~Player();
-    
+  static void _bind_methods();
+  
+  ~Player();
+  
 public:
 
-    Marker3D* get_camera_anchor() { return m_CameraAnchor; }
-    Camera3D* get_player_camera() { return m_PlayerCamera; }
+  Marker3D* get_camera_anchor() { return m_CameraAnchor; }
+  Camera3D* get_player_camera() { return m_PlayerCamera; }
+  Camera3D* get_weapon_camera() { return m_WeaponCamera; }
 
-    SubViewport* get_weapon_viewport() { return m_WeaponSubViewport; }
-    Node3D* get_player_head() { return m_PlayerHead; }
+  Node3D* get_rig_hold_point() { return m_RigHoldPoint; }
 
-    CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
-    CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
+  SubViewport* get_weapon_viewport() { return m_WeaponSubViewport; }
+  Node3D* get_player_head() { return m_PlayerHead; }
 
-    CapsuleMesh* get_player_capsule() { return m_PlayerCapsule; }
+  CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
+  CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
 
-    Vector3 get_wish_dir() { return m_WishDir; }
-    Vector2 get_input_dir() { return m_InputDir; }
+  CapsuleMesh* get_player_capsule() { return m_PlayerCapsule; }
 
-    void _update_input();
-    void _update_velocity();
+  Vector3 get_wish_dir() { return m_WishDir; }
+  Vector2 get_input_dir() { return m_InputDir; }
+
+  void _update_input();
+  void _update_velocity();
 
 private:
-    Node3D* m_PlayerHead = nullptr;
-    Node3D* m_CameraControllerNode = nullptr;
-    Marker3D* m_CameraAnchor = nullptr;
+  Node3D* m_PlayerHead = nullptr;
+  Node3D* m_CameraControllerNode = nullptr;
+  Marker3D* m_CameraAnchor = nullptr;
 
-    // Get Collision shapes
-    CollisionShape3D* m_StandingPlayerCollider = nullptr;
-    CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
+  // Get Collision shapes
+  CollisionShape3D* m_StandingPlayerCollider = nullptr;
+  CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
-    CapsuleMesh* m_PlayerCapsule = nullptr;
+  CapsuleMesh* m_PlayerCapsule = nullptr;
 
-    Camera3D* m_PlayerCamera = nullptr;
-    Camera3D* m_WeaponCamera = nullptr;
+  Camera3D* m_PlayerCamera = nullptr;
+  Camera3D* m_WeaponCamera = nullptr;
 
-    SubViewport* m_WeaponSubViewport = nullptr;
+  Node3D* m_RigHoldPoint = nullptr;
 
-    // Player vectors & Input vectors
-    Vector2 m_InputDir = Vector2(0.0f, 0.0f);
-    Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
-    Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
+  SubViewport* m_WeaponSubViewport = nullptr;
 
-    float m_Gravity = 0.0f;
+  // Player vectors & Input vectors
+  Vector2 m_InputDir = Vector2(0.0f, 0.0f);
+  Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
+  Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
+
+  float m_Gravity = 0.0f;
 private:
-    GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
-    GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);
+  GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
+  GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);
 
-    GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
-    GD_DEFINE_PROPERTY(float, lerp_constant, 3.0f);
-    
-    GD_DEFINE_PROPERTY(float, dash_speed, 35.0f);
-    GD_DEFINE_PROPERTY(float, slide_tilt_angle, 5.0f);
-    GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
+  GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
+  GD_DEFINE_PROPERTY(float, lerp_constant, 3.0f);
+  
+  GD_DEFINE_PROPERTY(float, dash_speed, 35.0f);
+  GD_DEFINE_PROPERTY(float, slide_tilt_angle, 5.0f);
+  GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
 
-    GD_DEFINE_PROPERTY(float, jump_height, 10.0f);
-    GD_DEFINE_PROPERTY(float, down_gravity, 15.0f);
+  GD_DEFINE_PROPERTY(float, jump_height, 10.0f);
+  GD_DEFINE_PROPERTY(float, down_gravity, 15.0f);
 
-    GD_DEFINE_PROPERTY(float, max_air_move_speed, 6.0f);
-    GD_DEFINE_PROPERTY(float, max_air_accel, 7.0f);
+  GD_DEFINE_PROPERTY(float, max_air_move_speed, 6.0f);
+  GD_DEFINE_PROPERTY(float, max_air_accel, 7.0f);
 
-    GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
+  GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
 
-    GD_DEFINE_PROPERTY(float, ground_accel, 15.0f);
-    GD_DEFINE_PROPERTY(float, ground_decel, 10.0f);
-    GD_DEFINE_PROPERTY(float, ground_friction, 8.0f);
+  GD_DEFINE_PROPERTY(float, ground_accel, 15.0f);
+  GD_DEFINE_PROPERTY(float, ground_decel, 10.0f);
+  GD_DEFINE_PROPERTY(float, ground_friction, 8.0f);
 };
