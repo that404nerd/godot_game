@@ -35,23 +35,22 @@ void Player::_bind_methods()
 
 void Player::_ready()
 {
-    m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
-    
-    m_PlayerHead = get_node<Node3D>(NodePath("%PlayerHead"));
-    m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
-    m_WeaponCamera = get_node<Camera3D>(NodePath("%WeaponCamera"));
-    m_RigHoldPoint = get_node<Node3D>("%HoldPoint");
+  m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
+  
+  m_PlayerHead = get_node<Node3D>(NodePath("%PlayerHead"));
+  m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
+  m_RigHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 
-    m_WeaponSubViewport = get_node<SubViewport>(NodePath("%WeaponViewport"));
-    m_WeaponSubViewport->set_size(DisplayServer::get_singleton()->window_get_size());
+  if (m_RigHoldPoint == nullptr) {
+        print_line("ERROR: Could not find %HoldPoint!");
+    }
 
-    m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
+  m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
 
-    m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
-    m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
+  m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
+  m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
 
-    m_Gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
-
+  m_Gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
@@ -61,7 +60,6 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
 void Player::_update_input() 
 {
   Vector3 playerVel = get_velocity();
-  m_WeaponCamera->set_global_transform(m_PlayerCamera->get_global_transform());
 
   m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
   
@@ -78,13 +76,13 @@ void Player::_update_input()
   {
     if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
     {
-        playerVel.x = Math::lerp(playerVel.x, m_WishDir.x, 0.0f);
-        playerVel.z = Math::lerp(playerVel.z, m_WishDir.z, 0.0f);
+      playerVel.x = Math::lerp(playerVel.x, m_WishDir.x, 0.0f);
+      playerVel.z = Math::lerp(playerVel.z, m_WishDir.z, 0.0f);
     }
     else
     {
-        playerVel.x = Math::lerp(playerVel.x, 0.0f, 0.3f);
-        playerVel.z = Math::lerp(playerVel.z, 0.0f, 0.3f);
+      playerVel.x = Math::lerp(playerVel.x, 0.0f, 0.3f);
+      playerVel.z = Math::lerp(playerVel.z, 0.0f, 0.3f);
     }
   }
 

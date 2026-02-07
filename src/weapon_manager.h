@@ -43,7 +43,6 @@ private:
     AnimationPlayer* m_WeaponAnimPlayer { nullptr };
 
     Ref<Weapon> m_CurrentWeapon { nullptr };
-    Node3D* m_WeaponHoldPoint { nullptr };
     Node3D* m_WeaponNode { nullptr }; // Weapon node is the actual weapon itself positioned in the weapon socket
 
     Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 

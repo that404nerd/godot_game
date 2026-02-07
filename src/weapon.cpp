@@ -22,6 +22,7 @@ void Weapon::_bind_methods() {
     GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);
   
     GD_BIND_CUSTOM_PROPERTY(Weapon, weaponScene, Variant::OBJECT, godot::PROPERTY_HINT_RESOURCE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(Weapon, weaponAnimPlayer, Variant::OBJECT, godot::PROPERTY_HINT_NODE_TYPE);
 }
 
 Weapon::~Weapon() {}

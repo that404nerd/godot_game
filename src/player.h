@@ -24,7 +24,6 @@
 
 #include "globals.h"
 #include "game_manager.h"
-#include "weapon_camera.h"
 
 using namespace godot;
 
@@ -47,11 +46,8 @@ public:
 
   Marker3D* get_camera_anchor() { return m_CameraAnchor; }
   Camera3D* get_player_camera() { return m_PlayerCamera; }
-  Camera3D* get_weapon_camera() { return m_WeaponCamera; }
 
   Node3D* get_rig_hold_point() { return m_RigHoldPoint; }
-
-  SubViewport* get_weapon_viewport() { return m_WeaponSubViewport; }
   Node3D* get_player_head() { return m_PlayerHead; }
 
   CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
@@ -77,11 +73,8 @@ private:
   CapsuleMesh* m_PlayerCapsule = nullptr;
 
   Camera3D* m_PlayerCamera = nullptr;
-  Camera3D* m_WeaponCamera = nullptr;
 
   Node3D* m_RigHoldPoint = nullptr;
-
-  SubViewport* m_WeaponSubViewport = nullptr;
 
   // Player vectors & Input vectors
   Vector2 m_InputDir = Vector2(0.0f, 0.0f);

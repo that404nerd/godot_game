@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/classes/node3d.hpp>
+#include <godot_cpp/classes/animation_player.hpp>
 
 #include "globals.h"
 
@@ -27,5 +28,6 @@ private:
     GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
 
     GD_DEFINE_PROPERTY(int, ammoCount, 0);
+    GD_DEFINE_PROPERTY(AnimationPlayer*, weaponAnimPlayer, nullptr);
     GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
 };

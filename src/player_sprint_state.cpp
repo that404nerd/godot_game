@@ -2,33 +2,35 @@
 
 void PlayerSprintState::_enter()
 { 
-    m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
-    m_PlayerInst = GameManager::get_singleton()->get_player_inst();
+  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
+  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
+  
+  m_HoldPoint = m_PlayerInst->get_rig_hold_point();
 }
 
 void PlayerSprintState::_bind_methods()
 {
-    GD_BIND_PROPERTY(PlayerSprintState, headbob_amp, Variant::FLOAT);
-    GD_BIND_PROPERTY(PlayerSprintState, headbob_freq, Variant::FLOAT);
-    GD_BIND_PROPERTY(PlayerSprintState, headbob_delta_translate, Variant::FLOAT);
+  GD_BIND_PROPERTY(PlayerSprintState, headbob_amp, Variant::FLOAT);
+  GD_BIND_PROPERTY(PlayerSprintState, headbob_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(PlayerSprintState, headbob_delta_translate, Variant::FLOAT);
 
 }
 
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
 {
-    if(Input::get_singleton()->is_action_just_pressed("jump")) {
-        emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
-    }
-    
-    if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
-    {
-        emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
-    }
-    
-    if(Input::get_singleton()->is_action_just_pressed("dash"))
-    {
-        emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::DASH));
-    } 
+  if(Input::get_singleton()->is_action_just_pressed("jump")) {
+      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
+  }
+  
+  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
+  {
+      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
+  }
+  
+  if(Input::get_singleton()->is_action_just_pressed("dash"))
+  {
+      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::DASH));
+  } 
 }
 
 void PlayerSprintState::_headbob_effect(double delta)
@@ -61,12 +63,18 @@ void PlayerSprintState::_physics_update(double delta)
   Vector3 playerVel = m_PlayerInst->get_velocity();
   float currentSpeedInWishDir = m_PlayerInst->get_velocity().dot(m_PlayerInst->get_wish_dir());
   float addSpeed = m_PlayerInst->get_sprint_speed() - currentSpeedInWishDir;
-  
+
+  Vector3 holdPointPos = m_HoldPoint->get_position();
+  holdPointPos.x = Math::lerp(m_HoldPoint->get_position().x, 0.0f, (float)delta * 5.0f);
+  holdPointPos.y = Math::lerp(m_HoldPoint->get_position().y, 0.0f, (float)delta * 5.0f);
+  m_HoldPoint->set_position(holdPointPos);
+ 
   if(addSpeed > 0.0f) {
       float accel = m_PlayerInst->get_ground_accel() * m_PlayerInst->get_sprint_speed() * delta;
       accel = Math::min(accel, addSpeed);
       playerVel += accel * m_PlayerInst->get_wish_dir();
   } 
+
   
   // Friciton code
   float control = Math::max(playerVel.length(), m_PlayerInst->get_ground_decel()); // Dont let speed to drop to zero instead to ground decl when stopping

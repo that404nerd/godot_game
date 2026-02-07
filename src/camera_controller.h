@@ -6,33 +6,34 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 
+#include "globals.h"
 #include "player.h"
-#include "weapon_camera.h"
 
 using namespace godot;
 
-namespace godot {
+class CameraController : public Node3D {
+  GDCLASS(CameraController, Node3D)
 
-  class CameraController : public Node3D {
-    GDCLASS(CameraController, Node3D)
+protected:
+  static void _bind_methods();
 
-  protected:
-    static void _bind_methods();
+public:
+  CameraController();
+  ~CameraController();
 
-  public:
-    CameraController();
-    ~CameraController();
+  void _unhandled_input(const Ref<InputEvent>& event) override;
 
-    void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _weapon_sway(Vector2 sway_vector);
 
-    void _ready() override;
-    void _physics_process(double delta) override;
-  
-  private:
-    Player* m_PlayerInst = nullptr;
+  void _ready() override;
+  void _physics_process(double delta) override;
 
-    Vector2 m_MouseInput;
-    Vector3 m_InputRotation;
-  };
+private:
+  Player* m_PlayerInst = nullptr;
+  Node3D* m_HoldPointNode = nullptr;
 
-}
+  GD_DEFINE_PROPERTY(float, sway_mult, 0.0f);
+
+  Vector2 m_MouseInput;
+  Vector3 m_InputRotation;
+};

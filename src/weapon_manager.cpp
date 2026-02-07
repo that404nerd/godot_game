@@ -1,5 +1,4 @@
 #include "weapon_manager.h"
-#include "globals.h"
 #include "player_state_machine.h"
 
 WeaponManager::WeaponManager()
@@ -18,9 +17,9 @@ void WeaponManager::_bind_methods()
 
 void WeaponManager::_ready()
 {
-  m_WeaponHoldPoint = get_node<Node3D>(NodePath("%HoldPoint"));
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
+
   _init_weapon();
 }
 
@@ -32,15 +31,15 @@ void WeaponManager::_init_weapon()
 {
   m_CurrentWeapon = weaponList[0];
 
-  m_WeaponNode = Object::cast_to<Node3D>(m_CurrentWeapon->get_weaponScene()->instantiate());
-  m_WeaponHoldPoint->add_child(m_WeaponNode);
-    
+  // print_line(m_CurrentWeapon->get_weaponAnimPlayer()->get_animation_list()); 
 
-  //   if(m_WeaponAnimPlayer) {
-  //       m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
-  //   } else {
-  //     print_error("Can't play equip animation!!");
-  //   }
+  // if(m_WeaponAnimPlayer) {
+  //   print_line("Playing anim!");
+  //
+  //   m_WeaponAnimPlayer->play("equip_anim");
+  // } else {
+  //   print_error("Can't play equip animation!!");
+  // }
 }
 
 void WeaponManager::_weapon_bob(double delta)
