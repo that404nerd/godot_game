@@ -11,26 +11,23 @@
 
 using namespace godot;
 
-namespace godot {
+class DebugPanel : public PanelContainer {
+  GD_CLASS(DebugPanel, PanelContainer);
 
-  class DebugPanel : public PanelContainer {
-    GD_CLASS(DebugPanel, PanelContainer);
+protected:
+  static void _bind_methods();
+    
+public:
+  void _ready() override;
 
-  protected:
-    static void _bind_methods();
-      
-  public:
-    void _ready() override;
+  void add_debug_property(const String& title, const String& value);
 
-    void add_debug_property(const String& title, const String& value);
+  void _physics_process(double delta) override;
+  void _input(const Ref<InputEvent>& event) override;
 
-    void _physics_process(double delta) override;
-    void _input(const Ref<InputEvent>& event) override;
-
-    ~DebugPanel();
-  private:
-    Label* m_Property = nullptr;
-    VBoxContainer* m_PropertyContainer = nullptr;
-    String m_FPS = "";
-  };
+  ~DebugPanel();
+private:
+  Label* m_Property = nullptr;
+  VBoxContainer* m_PropertyContainer = nullptr;
+  String m_FPS = "";
 };

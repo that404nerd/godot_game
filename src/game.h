@@ -7,25 +7,21 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/label.hpp>
 
-
 using namespace godot;
 
-namespace godot {
+class Game : public Node3D {
+  GDCLASS(Game, Node3D)
 
-  class Game : public Node3D {
-    GDCLASS(Game, Node3D)
+protected:
+  static void _bind_methods();
 
-  protected:
-    static void _bind_methods();
+public:
+  Game();
+  ~Game();
 
-  public:
-    Game();
-    ~Game();
+  void _ready() override;
+  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _process(double delta) override;
 
-    void _ready() override;
-    void _unhandled_input(const Ref<InputEvent>& event) override;
-    void _process(double delta) override;
+};
 
-  };
-
-}

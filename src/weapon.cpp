@@ -15,14 +15,15 @@ Weapon::Weapon()
 
 void Weapon::_bind_methods() {
 
-    ADD_GROUP("Weapon Properties", "");
-    GD_BIND_PROPERTY(Weapon, ammoCount, Variant::INT);
-    GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
-    GD_BIND_PROPERTY(Weapon, weaponEquipAnimName, Variant::STRING);
-    GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);
-  
-    GD_BIND_CUSTOM_PROPERTY(Weapon, weaponScene, Variant::OBJECT, godot::PROPERTY_HINT_RESOURCE_TYPE);
-    GD_BIND_CUSTOM_PROPERTY(Weapon, weaponAnimPlayer, Variant::OBJECT, godot::PROPERTY_HINT_NODE_TYPE);
+  ADD_GROUP("Weapon Properties", "");
+  GD_BIND_PROPERTY(Weapon, ammoCount, Variant::INT);
+  GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
+  GD_BIND_PROPERTY(Weapon, weaponEquipAnimName, Variant::STRING);
+  GD_BIND_PROPERTY(Weapon, weaponUnequipAnimName, Variant::STRING);
+  GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);
+
+  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponScene, Variant::OBJECT, godot::PROPERTY_HINT_RESOURCE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponAnimPlayer, Variant::OBJECT, godot::PROPERTY_HINT_NODE_TYPE);
 }
 
 Weapon::~Weapon() {}

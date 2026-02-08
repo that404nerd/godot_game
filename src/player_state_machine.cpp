@@ -41,17 +41,17 @@ void PlayerStateMachine::_ready()
 
 void PlayerStateMachine::_unhandled_input(const Ref<InputEvent>& event)
 {
-    if(m_CurrentState) {
-        m_CurrentState->_handle_input(event);
-    }
+  if(m_CurrentState) {
+      m_CurrentState->_handle_input(event);
+  }
 }
 
 void PlayerStateMachine::_physics_process(double delta)
 {
-    if(m_CurrentState) {
-      m_CurrentState->_physics_update(delta);
-      // print_line("Current state: ", get_current_state());
-    }
+  if(m_CurrentState) {
+    m_CurrentState->_physics_update(delta);
+    // print_line("Current state: ", get_current_state());
+  }
 }
 
 void PlayerStateMachine::_change_state(const String& stateName)

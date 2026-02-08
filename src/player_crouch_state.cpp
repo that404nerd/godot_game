@@ -19,14 +19,14 @@ void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event)
 {
   // TODO: Make this work for objects like boxes, crates and stuff
   if (Input::get_singleton()->is_action_just_pressed("crouch") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) {
-      _on_crouch_finished();
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+    _on_crouch_finished();
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
   }
   
   if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) 
   {
-      _on_crouch_finished();
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
+    _on_crouch_finished();
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
   }
 }
 
@@ -35,8 +35,9 @@ void PlayerCrouchState::_on_crouch_finished()
   m_PlayerInst->get_player_crouching_collider()->set_disabled(true);
   m_PlayerInst->get_player_standing_collider()->set_disabled(false);
   
-  if(m_CrouchTween != nullptr) {
-      m_CrouchTween->kill();
+  if(m_CrouchTween != nullptr)
+  {
+    m_CrouchTween->kill();
   }
 
   m_CrouchTween = m_PlayerInst->create_tween();
@@ -51,7 +52,7 @@ void PlayerCrouchState::_physics_update(double delta)
   Vector3 playerVel = m_PlayerInst->get_velocity();
 
   if(m_CrouchTween != nullptr) {
-      m_CrouchTween->kill();
+    m_CrouchTween->kill();
   }
 
   m_CrouchTween = m_PlayerInst->create_tween();
@@ -63,11 +64,12 @@ void PlayerCrouchState::_physics_update(double delta)
   
   playerVel = m_PlayerInst->get_crouch_speed() * m_PlayerInst->get_wish_dir();
   m_PlayerInst->set_velocity(playerVel);
-  
-  if(m_StateMachineInst->get_prev_state() == StringName("Sprint"))
+ 
+  if(playerVel.y < 1.0f && !m_PlayerInst->is_on_floor()) 
   {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SLIDE));
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
   }
+
 }
 
 

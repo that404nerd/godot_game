@@ -1,4 +1,5 @@
 #include "player_sprint_state.h"
+#include "player_state_machine.h"
 
 void PlayerSprintState::_enter()
 { 
@@ -19,18 +20,25 @@ void PlayerSprintState::_bind_methods()
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
 {
   if(Input::get_singleton()->is_action_just_pressed("jump")) {
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
   }
   
   if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
   {
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
   }
   
   if(Input::get_singleton()->is_action_just_pressed("dash"))
   {
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::DASH));
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::DASH));
   } 
+
+  if(m_PlayerInst->get_velocity().length() > (m_PlayerInst->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch"))
+  {
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SLIDE));
+  }
+
+
 }
 
 void PlayerSprintState::_headbob_effect(double delta)
@@ -70,32 +78,32 @@ void PlayerSprintState::_physics_update(double delta)
   m_HoldPoint->set_position(holdPointPos);
  
   if(addSpeed > 0.0f) {
-      float accel = m_PlayerInst->get_ground_accel() * m_PlayerInst->get_sprint_speed() * delta;
-      accel = Math::min(accel, addSpeed);
-      playerVel += accel * m_PlayerInst->get_wish_dir();
+    float accel = m_PlayerInst->get_ground_accel() * m_PlayerInst->get_sprint_speed() * delta;
+    accel = Math::min(accel, addSpeed);
+    playerVel += accel * m_PlayerInst->get_wish_dir();
   } 
 
-  
   // Friciton code
   float control = Math::max(playerVel.length(), m_PlayerInst->get_ground_decel()); // Dont let speed to drop to zero instead to ground decl when stopping
   float drop = control * m_PlayerInst->get_ground_friction() * delta; // how much velocity should be dropped due to friction
   float newSpeed = Math::max(playerVel.length() - drop, 0.0f); // New speed has to be subtracted from the current velocity due to friction
   
   if(playerVel.length() > 0.0f) {
-      newSpeed /= playerVel.length();
+    newSpeed /= playerVel.length();
   }
   
   playerVel *= newSpeed;
+
   _headbob_effect(delta);
   
   m_PlayerInst->set_velocity(playerVel);
   
-  if(m_PlayerInst->get_input_dir() == Vector2(0.0f, 0.0f) && m_PlayerInst->is_on_floor()) {
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+  if(m_PlayerInst->get_velocity().length() < 1.0f && m_PlayerInst->is_on_floor()) {
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
   }
 
   if(playerVel.y < 1.0f && !m_PlayerInst->is_on_floor()) {
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
   }
 
 }

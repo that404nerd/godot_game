@@ -12,9 +12,11 @@
 - Fix un-crouching when there's an object above the player [x]
 - Have a function for setting state strings in emit_signal() to avoid naming issues [x]
 - Singletons for accessing player and state machine instances [x]
+- ObjectDB and resource leak fix [x]
+- Fix head position after sliding [x]
+- Fix incorrect idle check in sprint state [x]
 
 ## Issues
 - Transition to idle state when sliding into a world objects []
-- Allow sliding when toggled during falling state []
-- ObjectDB and resource leak fix []
+- Allow sliding when crouch is toggled during falling state []
 - Animations for different states []

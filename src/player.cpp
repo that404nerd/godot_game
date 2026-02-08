@@ -96,6 +96,7 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
+  print_line(get_velocity().length());
 }
 
 

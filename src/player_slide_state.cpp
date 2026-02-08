@@ -7,6 +7,7 @@ void PlayerSlideState::_enter()
 
   m_PlayerCamInst = m_PlayerInst->get_player_camera();
   m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
+  m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - m_PlayerInst->get_crouch_translate();
   m_SlideTimer = 2.0f;
 }
 
@@ -29,11 +30,36 @@ void PlayerSlideState::_on_slide_finished()
     m_SlideTween->kill();
   }
 
+  if(m_CrouchTween != nullptr)
+  {
+    m_CrouchTween->kill();
+  }
+
+  m_PlayerInst->get_player_crouching_collider()->set_disabled(true);
+  m_PlayerInst->get_player_standing_collider()->set_disabled(false);
+  
+  m_CrouchTween = m_PlayerInst->create_tween();
+  m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.1f);
+
   m_SlideTween = m_PlayerCamInst->create_tween();
   m_SlideTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.1f); // Use this to restore crouch position to original position when cancelling slide
   m_SlideTween->tween_property(m_PlayerCamInst, "rotation:z", 0.0f, 0.1f); // Do this to smoothly reset rotation when cancelling slide
 }
 
+void PlayerSlideState::_crouch_player()
+{
+  if(m_CrouchTween != nullptr) {
+    m_CrouchTween->kill();
+  }
+
+  m_CrouchTween = m_PlayerInst->create_tween();
+  m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.1f);
+
+  // Set collider states
+  m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
+  m_PlayerInst->get_player_standing_collider()->set_disabled(true);
+
+}
 
 void PlayerSlideState::_physics_update(double delta) 
 {
@@ -42,6 +68,8 @@ void PlayerSlideState::_physics_update(double delta)
   
   Vector3 playerVel = m_PlayerInst->get_velocity();
   Vector3 horizVel = Vector3(playerVel.x, 0.0f, playerVel.z);
+
+  _crouch_player();
 
   m_SlideTimer -= delta;
 
