@@ -17,7 +17,7 @@ void PlayerSlideState::_bind_methods()
 
 void PlayerSlideState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(Input::get_singleton()->is_action_just_pressed("jump")) {
+  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) {
     _on_slide_finished();
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
   }
@@ -90,8 +90,14 @@ void PlayerSlideState::_physics_update(double delta)
   }
   
   if(m_SlideTimer <= 0.0f) {
-    _on_slide_finished();
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+    if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f)))
+    {
+      _on_slide_finished();
+      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
+    } else {
+      _on_slide_finished();
+      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+    }
   }
 }
 

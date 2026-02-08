@@ -1,4 +1,6 @@
 #include "weapon_manager.h"
+#include "godot_cpp/classes/physics_direct_space_state3d.hpp"
+#include "godot_cpp/classes/physics_ray_query_parameters3d.hpp"
 #include "player_state_machine.h"
 
 WeaponManager::WeaponManager()
@@ -69,6 +71,23 @@ void WeaponManager::_weapon_bob(double delta)
   m_PlayerInst->get_rig_hold_point()->set_position(newPos);
 }
 
+void WeaponManager::_shoot()
+{
+  PhysicsDirectSpaceState3D* space_state = m_PlayerInst->get_player_camera()->get_world_3d()->get_direct_space_state();
+  Vector3 ray_start = m_PlayerInst->get_player_camera()->get_global_position();
+
+  Basis cam_basis = m_PlayerInst->get_player_camera()->get_global_transform().basis;
+
+  // Pull out the "Forward" direction (Negative Z)
+  Vector3 forward = -cam_basis.get_column(2);
+  Vector3 ray_end = ray_start + forward.normalized() * 1000.0f;
+  Ref<PhysicsRayQueryParameters3D> params = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
+  params->set_collide_with_bodies(true);
+  Dictionary result = space_state->intersect_ray(params);
+
+  print_line(result);
+}
+
 void WeaponManager::_physics_process(double delta)
 {
 
@@ -92,8 +111,11 @@ void WeaponManager::_physics_process(double delta)
     );
 
     m_PlayerInst->get_rig_hold_point()->set_position(newPos);
-
+  
   }
+  
+  if(Input::get_singleton()->is_action_just_pressed("fire"))
+    _shoot();
 }
 
 WeaponManager::~WeaponManager()

@@ -35,7 +35,7 @@ void PlayerIdleState::_physics_update(double delta)
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SPRINT));
   }
 
-  if(playerVel.y < 2.0f && !m_PlayerInst->is_on_floor()) {
+  if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
   }
 }

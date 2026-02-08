@@ -16,7 +16,8 @@
 - Fix head position after sliding [x]
 - Fix incorrect idle check in sprint state [x]
 
-## Issues
+## Issues & TODO
+- Make a direction enum containing FORWARD, BACK, LEFT, RIGHT
 - Transition to idle state when sliding into a world objects []
 - Allow sliding when crouch is toggled during falling state []
 - Animations for different states []

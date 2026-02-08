@@ -12,9 +12,15 @@ void PlayerFallingState::_bind_methods()
 
 void PlayerFallingState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if (!m_IsJumpPressed && Input::get_singleton()->is_action_just_pressed("jump")) {
+  if (!m_IsJumpPressed && Input::get_singleton()->is_action_just_pressed("jump")) 
+  {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
     m_IsJumpPressed = true;
+  }
+
+  if(Input::get_singleton()->is_action_just_pressed("dash"))
+  {
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::DASH));
   }
 }
 
@@ -37,15 +43,10 @@ void PlayerFallingState::_physics_update(double delta)
 
   m_PlayerInst->set_velocity(playerVel);
 
-  // if(Input::get_singleton()->is_action_just_pressed("dash"))
-  // {
-  //   emit_signal("state_changed", "Dash");
-  // }
-  
   if(m_PlayerInst->is_on_floor())
   {
-      m_IsJumpPressed = false;
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+    m_IsJumpPressed = false;
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
   }
 }
 

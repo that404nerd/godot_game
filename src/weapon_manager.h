@@ -10,6 +10,9 @@
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/character_body3d.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/world3d.hpp>
+#include <godot_cpp/classes/physics_direct_space_state3d.hpp>
+#include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
 
 #include "globals.h"
 #include "weapon.h"
@@ -33,6 +36,8 @@ public:
 
   void _physics_process(double delta) override;
   void _weapon_bob(double delta);
+
+  void _shoot();
 
   ~WeaponManager();
 

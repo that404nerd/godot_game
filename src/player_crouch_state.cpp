@@ -65,7 +65,7 @@ void PlayerCrouchState::_physics_update(double delta)
   playerVel = m_PlayerInst->get_crouch_speed() * m_PlayerInst->get_wish_dir();
   m_PlayerInst->set_velocity(playerVel);
  
-  if(playerVel.y < 1.0f && !m_PlayerInst->is_on_floor()) 
+  if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 
   {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
   }

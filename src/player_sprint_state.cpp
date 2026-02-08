@@ -32,8 +32,10 @@ void PlayerSprintState::_handle_input(const Ref<InputEvent>& event)
   {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::DASH));
   } 
-
-  if(m_PlayerInst->get_velocity().length() > (m_PlayerInst->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch"))
+  
+  // TODO: Have a direction enum or smtg like that
+  if(m_PlayerInst->get_velocity().length() > (m_PlayerInst->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch")
+      && m_PlayerInst->get_input_dir() == Vector2(0.0f, -1.0f))
   {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SLIDE));
   }
@@ -102,7 +104,7 @@ void PlayerSprintState::_physics_update(double delta)
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
   }
 
-  if(playerVel.y < 1.0f && !m_PlayerInst->is_on_floor()) {
+  if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
   }
 
