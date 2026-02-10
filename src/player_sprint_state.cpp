@@ -1,4 +1,5 @@
 #include "player_sprint_state.h"
+#include "godot_cpp/core/math.hpp"
 #include "player_state_machine.h"
 
 void PlayerSprintState::_enter()
@@ -97,9 +98,17 @@ void PlayerSprintState::_physics_update(double delta)
   playerVel *= newSpeed;
 
   _headbob_effect(delta);
-  
   m_PlayerInst->set_velocity(playerVel);
+
+  // Side Tilt
+  Vector3 playerRot = m_PlayerInst->get_rotation();
+  if(Math::abs(m_PlayerInst->get_input_dir().x) == 1.0f)
+  {
+    playerRot.z = Math::lerp(playerRot.z, Math::deg_to_rad(20.0f) * m_PlayerInst->get_input_dir().x, (float)delta * 2.0f);
+  }
   
+  m_PlayerInst->set_rotation(playerRot);
+
   if(m_PlayerInst->get_velocity().length() < 1.0f && m_PlayerInst->is_on_floor()) {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
   }
@@ -112,4 +121,11 @@ void PlayerSprintState::_physics_update(double delta)
 
 void PlayerSprintState::_exit() 
 {
+  if(m_SprintRotTween != nullptr)
+  {
+    m_SprintRotTween->kill();
+  }
+
+  m_SprintRotTween = m_PlayerInst->create_tween();
+  m_SprintRotTween->tween_property(m_PlayerInst, "rotation:z", 0.0f, (float)m_PlayerInst->get_physics_process_delta_time() * 3.0f);
 }

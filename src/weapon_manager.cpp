@@ -1,6 +1,5 @@
 #include "weapon_manager.h"
-#include "godot_cpp/classes/physics_direct_space_state3d.hpp"
-#include "godot_cpp/classes/physics_ray_query_parameters3d.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
 #include "player_state_machine.h"
 
 WeaponManager::WeaponManager()
@@ -25,6 +24,7 @@ void WeaponManager::_ready()
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
 
   m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("WeaponAnimPlayer"));
+  m_LoadScene = ResourceLoader::get_singleton()->load("res://assets/decals/bullet_decal.tscn");
 
   _init_weapon();
 }
@@ -73,25 +73,36 @@ void WeaponManager::_weapon_bob(double delta)
 
 void WeaponManager::_shoot()
 {
+  if(m_WeaponAnimPlayer)
+  {
+    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName());
+  }
+
+  // This is a mess!
   PhysicsDirectSpaceState3D* space_state = m_PlayerInst->get_player_camera()->get_world_3d()->get_direct_space_state();
-  Vector3 ray_start = m_PlayerInst->get_player_camera()->get_global_position();
+  Vector2 screen_center = m_PlayerInst->get_player_camera()->get_viewport()->get_visible_rect().get_size() / 2.0f;
 
-  Basis cam_basis = m_PlayerInst->get_player_camera()->get_global_transform().basis;
+  Vector3 ray_start = m_PlayerInst->get_player_camera()->project_ray_origin(screen_center);
+  Vector3 ray_end = ray_start + m_PlayerInst->get_player_camera()->project_ray_normal(screen_center) * 1000.0f;
 
-  // Pull out the "Forward" direction (Negative Z)
-  Vector3 forward = -cam_basis.get_column(2);
-  Vector3 ray_end = ray_start + forward.normalized() * 1000.0f;
-  Ref<PhysicsRayQueryParameters3D> params = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
-  params->set_collide_with_bodies(true);
-  Dictionary result = space_state->intersect_ray(params);
+  Ref<PhysicsRayQueryParameters3D> query = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
+  query->set_collide_with_bodies(true);
+  Dictionary result = space_state->intersect_ray(query);
 
-  print_line(result);
+  if(!result.is_empty())
+  {
+    Node* instance = m_LoadScene->instantiate();
+    Decal* bulletDecal = Object::cast_to<Decal>(instance);
+    get_tree()->get_root()->add_child(bulletDecal);
+    bulletDecal->set_global_position(result["position"]);
+    bulletDecal->look_at(bulletDecal->get_global_transform().origin + result["normal"], Vector3(0.0f, 1.0f, 0.0f));
+    bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+  }
 }
 
 void WeaponManager::_physics_process(double delta)
 {
-
-  // THIS IS PURE ASS. Need a better way to manage states
+  // TODO: THIS IS PURE ASS. Need a better way to manage states
   if(m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SPRINT)
     || m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH))
     _weapon_bob(delta);
@@ -111,11 +122,12 @@ void WeaponManager::_physics_process(double delta)
     );
 
     m_PlayerInst->get_rig_hold_point()->set_position(newPos);
-  
   }
   
   if(Input::get_singleton()->is_action_just_pressed("fire"))
+  {
     _shoot();
+  }
 }
 
 WeaponManager::~WeaponManager()

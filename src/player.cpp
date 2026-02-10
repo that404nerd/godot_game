@@ -72,13 +72,6 @@ void Player::_update_input()
 
   m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
   
-  /*
-    global_transform - position/rotation/scale of the player relative to the world
-    Basis - rotation & scale (no translation) of the player
-    Everything that rotates the player (mouse look, aim, head tilt, body rotation) modifies the basis.
-    basis.xform(vector) - convert the local direction to world spaced direction
-    Ignore the y-coordinate since that affects gravity
-  */
   m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
   
   if (is_on_floor())
@@ -105,11 +98,6 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
-  print_line("Transform (w.r.t to the world): ", get_transform());
-  print_line("Basis (direction facing): ", get_transform().get_basis());
-  print_line("Input Dir: ", get_input_dir());
-  print_line("Wish Dir: ", get_wish_dir());
-  print_line("");
 }
 
 

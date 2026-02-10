@@ -99,6 +99,12 @@ void PlayerSlideState::_physics_update(double delta)
       emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
     }
   }
+
+  if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 
+  {
+    _on_slide_finished();
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
+  }
 }
 
 void PlayerSlideState::_exit() 

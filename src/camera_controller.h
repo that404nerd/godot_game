@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/camera3d.hpp>
 
 #include "globals.h"
+#include "player_state_machine.h"
 #include "player.h"
 
 using namespace godot;
@@ -30,6 +31,8 @@ public:
 
 private:
   Player* m_PlayerInst = nullptr;
+  PlayerStateMachine* m_StateMachine = nullptr;
+
   Node3D* m_HoldPointNode = nullptr;
 
   GD_DEFINE_PROPERTY(float, sway_mult, 0.0f);

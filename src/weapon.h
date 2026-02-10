@@ -26,6 +26,7 @@ private:
   GD_DEFINE_PROPERTY(String, weaponName, "");
   GD_DEFINE_PROPERTY(String, weaponEquipAnimName, "");
   GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
+  GD_DEFINE_PROPERTY(String, weaponReloadAnimName, "");
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
 
   GD_DEFINE_PROPERTY(int, ammoCount, 0);

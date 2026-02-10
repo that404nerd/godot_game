@@ -4,6 +4,9 @@
 #include "player_state_machine.h"
 #include "player.h"
 
+#include <godot_cpp/classes/tween.hpp>
+#include <godot_cpp/classes/property_tweener.hpp>
+
 #include "globals.h"
 
 class PlayerSprintState : public PlayerState {
@@ -27,6 +30,7 @@ private:
   PlayerStateMachine* m_StateMachineInst;
 
   Node3D* m_HoldPoint;
+  Ref<Tween> m_SprintRotTween;
 
   float m_HeadbobTime = 0.0f;
   GD_DEFINE_PROPERTY(float, headbob_delta_translate, 20.0f);

@@ -1,4 +1,5 @@
 #include "camera_controller.h"
+#include "player.h"
 
 CameraController::CameraController() {
 }
@@ -6,6 +7,7 @@ CameraController::CameraController() {
 void CameraController::_ready()
 {
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
+  m_StateMachine = GameManager::get_singleton()->get_player_state_machine();
   m_HoldPointNode = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 }
 
@@ -43,8 +45,15 @@ void CameraController::_physics_process(double delta)
   
 
   // Camera stuff
-  m_InputRotation.x = Math::clamp(m_InputRotation.x + m_MouseInput.y, Math::deg_to_rad(-89.0f), Math::deg_to_rad(89.0f));
-  m_InputRotation.y += m_MouseInput.x;
+  if(m_StateMachine->get_current_state() == m_StateMachine->GetCurrentState(PlayerStateMachine::StateNames::CROUCH) || 
+          m_StateMachine->get_current_state() == m_StateMachine->GetCurrentState(PlayerStateMachine::StateNames::SLIDE))
+  {
+    m_InputRotation.x = Math::clamp(m_InputRotation.x + m_MouseInput.y, Math::deg_to_rad(-60.0f), Math::deg_to_rad(60.0f));
+    m_InputRotation.y += m_MouseInput.x;
+  } else {
+    m_InputRotation.x = Math::clamp(m_InputRotation.x + m_MouseInput.y, Math::deg_to_rad(-89.0f), Math::deg_to_rad(89.0f));
+    m_InputRotation.y += m_MouseInput.x;
+  }
 
   Transform3D pitchTransform = m_PlayerInst->get_camera_anchor()->get_transform();
   pitchTransform.basis = Basis::from_euler(Vector3(m_InputRotation.x, 0.0f, 0.0f));

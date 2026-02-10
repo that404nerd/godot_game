@@ -13,6 +13,11 @@
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d.hpp>
 #include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
+#include <godot_cpp/classes/decal.hpp>
+#include <godot_cpp/classes/resource_preloader.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/classes/window.hpp>
 
 #include "globals.h"
 #include "weapon.h"
@@ -58,6 +63,7 @@ private:
   float m_WeaponBobTime = 0.0f, m_IdleWeaponBobTime = 0.0f; 
 
   bool m_IsEquipped; 
+  Ref<PackedScene> m_LoadScene;
 
   GD_DEFINE_PROPERTY(Array, weaponList, Array());
   GD_DEFINE_PROPERTY(float, weapon_bob_freq, 2.0f);

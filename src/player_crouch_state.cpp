@@ -72,7 +72,6 @@ void PlayerCrouchState::_physics_update(double delta)
 
 }
 
-
 void PlayerCrouchState::_exit() 
 {
 }
