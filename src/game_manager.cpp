@@ -6,7 +6,6 @@ GameManager* GameManager::s_Singleton = nullptr;
 
 GameManager::GameManager()
 {
-  // ERR_FAIL_COND(s_Singleton != nullptr);
   s_Singleton = this;
 }
 
@@ -53,6 +52,5 @@ GameManager* GameManager::get_singleton()
 
 GameManager::~GameManager()
 {
-  // ERR_FAIL_COND(s_Singleton != this);
   s_Singleton = nullptr; 
 }

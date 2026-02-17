@@ -15,10 +15,10 @@
 - ObjectDB and resource leak fix [x]
 - Fix head position after sliding [x]
 - Fix incorrect idle check in sprint state [x]
+- Make the side tilt smoothly lerp back [x]
 
 ## Issues & TODO
 - Make a direction enum containing FORWARD, BACK, LEFT, RIGHT []
-- Make the side tilt smoothly lerp back []
 - Transition to idle state when sliding into a world objects []
 - Allow sliding when crouch is toggled during falling state []
 - Animations for different states []

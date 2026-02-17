@@ -6,6 +6,7 @@
 #include <godot_cpp/templates/a_hash_map.hpp>
 #include <godot_cpp/variant/string.hpp>
 
+#include "global_state_handler.h"
 #include "player_state.h"
 #include "player.h"
 #include "game_manager.h"
@@ -72,6 +73,8 @@ protected:
   static void _bind_methods();
 private:
   GD_DEFINE_PROPERTY(PlayerState*, initial_state, nullptr); 
+
+  GlobalStateHandler* m_GlobalStateHandlerInst = nullptr;
 
   Player* m_PlayerInst { nullptr };
   PlayerState* m_CurrentState { nullptr };

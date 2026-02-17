@@ -1,5 +1,4 @@
 #include "weapon_manager.h"
-#include "godot_cpp/variant/dictionary.hpp"
 #include "player_state_machine.h"
 
 WeaponManager::WeaponManager()
@@ -16,6 +15,8 @@ void WeaponManager::_bind_methods()
   GD_BIND_PROPERTY(WeaponManager, weapon_bob_amp, Variant::FLOAT);
   GD_BIND_PROPERTY(WeaponManager, idle_weapon_bob_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(WeaponManager, idle_weapon_bob_amp, Variant::FLOAT);
+  GD_BIND_PROPERTY(WeaponManager, idle_weapon_bob_decay, Variant::FLOAT);
+  GD_BIND_PROPERTY(WeaponManager, weapon_bob_decay, Variant::FLOAT);
 }
 
 void WeaponManager::_ready()
@@ -63,8 +64,8 @@ void WeaponManager::_weapon_bob(double delta)
 
   Vector3 currentPos = m_PlayerInst->get_rig_hold_point()->get_position();
   Vector3 newPos = Vector3(
-    Math::lerp(currentPos.x, x_bob, (float)delta),
-    Math::lerp(currentPos.y, y_bob, (float)delta), 
+    Utils::exp_decay(currentPos.x, x_bob, weapon_bob_decay, (float)delta),
+    Utils::exp_decay(currentPos.y, y_bob, weapon_bob_decay, (float)delta), 
     0.0f
   );
 
@@ -116,8 +117,8 @@ void WeaponManager::_physics_process(double delta)
 
     Vector3 currentPos = m_PlayerInst->get_rig_hold_point()->get_position();
     Vector3 newPos = Vector3(
-      Math::lerp(currentPos.x, x_bob, (float)delta),
-      Math::lerp(currentPos.y, y_bob, (float)delta), 
+      Utils::exp_decay(currentPos.x, x_bob, idle_weapon_bob_decay, (float)delta),
+      Utils::exp_decay(currentPos.y, y_bob, idle_weapon_bob_decay, (float)delta), 
       0.0f
     );
 

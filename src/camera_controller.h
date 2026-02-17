@@ -26,6 +26,8 @@ public:
 
   void _weapon_sway(Vector2 sway_vector);
 
+  void _switch_camera();
+
   void _ready() override;
   void _physics_process(double delta) override;
 

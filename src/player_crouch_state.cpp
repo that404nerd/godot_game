@@ -5,8 +5,6 @@ void PlayerCrouchState::_enter()
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = m_StateMachineInst->get_player_inst();
 
-  m_CapsuleMesh = m_PlayerInst->get_player_capsule();
-
   m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
   m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - m_PlayerInst->get_crouch_translate();
 }

@@ -21,15 +21,25 @@
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/capsule_mesh.hpp>
 #include <godot_cpp/classes/sub_viewport.hpp>
+#include <godot_cpp/core/math.hpp>
 
 #include "globals.h"
 #include "game_manager.h"
+#include "global_state_handler.h"
+
+#include "dd3d_cpp_api.hpp"
 
 using namespace godot;
 
 class Player : public CharacterBody3D {
 
   GDCLASS(Player, CharacterBody3D);
+
+private:
+  struct PlayerGlobalState {
+    bool CanDash = true;
+    float DashCooldown;
+  };
 
 public:
   Player();
@@ -53,15 +63,17 @@ public:
   CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
   CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
 
-  CapsuleMesh* get_player_capsule() { return m_PlayerCapsule; }
-
   Vector3 get_wish_dir() { return m_WishDir; }
   Vector2 get_input_dir() { return m_InputDir; }
+
+  PlayerGlobalState& get_global_state() { return m_GlobalState; }
 
   void _update_input();
   void _update_velocity();
 
 private:
+  PlayerGlobalState m_GlobalState;
+
   Node3D* m_PlayerHead = nullptr;
   Node3D* m_CameraControllerNode = nullptr;
   Marker3D* m_CameraAnchor = nullptr;
@@ -70,11 +82,13 @@ private:
   CollisionShape3D* m_StandingPlayerCollider = nullptr;
   CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
-  CapsuleMesh* m_PlayerCapsule = nullptr;
+  Timer* m_JumpBufferTimer = nullptr;
 
   Camera3D* m_PlayerCamera = nullptr;
 
   Node3D* m_RigHoldPoint = nullptr;
+
+private:
 
   // Player vectors & Input vectors
   Vector2 m_InputDir = Vector2(0.0f, 0.0f);
@@ -82,14 +96,14 @@ private:
   Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
 
   float m_Gravity = 0.0f;
+
 private:
   GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
-  GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);
+  GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);  
 
   GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
-  GD_DEFINE_PROPERTY(float, lerp_constant, 3.0f);
+  GD_DEFINE_PROPERTY(float, headbob_decay, 2.0f);
   
-  GD_DEFINE_PROPERTY(float, dash_speed, 35.0f);
   GD_DEFINE_PROPERTY(float, slide_tilt_angle, 5.0f);
   GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
 
@@ -100,6 +114,8 @@ private:
   GD_DEFINE_PROPERTY(float, max_air_accel, 7.0f);
 
   GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
+
+  GD_DEFINE_PROPERTY(float, dash_cooldown, 1.0f);
 
   GD_DEFINE_PROPERTY(float, ground_accel, 15.0f);
   GD_DEFINE_PROPERTY(float, ground_decel, 10.0f);

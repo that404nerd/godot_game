@@ -9,6 +9,8 @@
 
 #include "globals.h"
 
+#include "dd3d_cpp_api.hpp"
+
 class PlayerSprintState : public PlayerState {
   GDCLASS(PlayerSprintState, PlayerState);
 
@@ -29,13 +31,9 @@ private:
   Player* m_PlayerInst;
   PlayerStateMachine* m_StateMachineInst;
 
-  Node3D* m_HoldPoint;
-  Ref<Tween> m_SprintRotTween;
-
   float m_HeadbobTime = 0.0f;
+
   GD_DEFINE_PROPERTY(float, headbob_delta_translate, 20.0f);
   GD_DEFINE_PROPERTY(float, headbob_amp, 0.04f);
   GD_DEFINE_PROPERTY(float, headbob_freq, 2.0f);
-
-
 };

@@ -12,6 +12,8 @@
 Player::Player()
 {
   GameManager::get_singleton()->set_player_inst(this);
+  get_global_state().DashCooldown = dash_cooldown;
+
 }
 
 void Player::_bind_methods()
@@ -19,7 +21,6 @@ void Player::_bind_methods()
   ADD_GROUP("Player Speed Settings", "");
   GD_BIND_PROPERTY(Player, crouch_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, sprint_speed, Variant::FLOAT);
-  GD_BIND_PROPERTY(Player, dash_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, slide_speed, Variant::FLOAT);
 
   ADD_GROUP("Player Jump Settings", "");
@@ -37,8 +38,9 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, ground_friction, Variant::FLOAT);
 
   ADD_GROUP("Player Misc Settings", "");
+  GD_BIND_PROPERTY(Player, dash_cooldown, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, crouch_translate, Variant::FLOAT);
-  GD_BIND_PROPERTY(Player, lerp_constant, Variant::FLOAT);
+  GD_BIND_PROPERTY(Player, headbob_decay, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, slide_tilt_angle, Variant::FLOAT);
 }
 
@@ -50,9 +52,7 @@ void Player::_ready()
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_RigHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 
-  if (m_RigHoldPoint == nullptr) {
-        print_line("ERROR: Could not find %HoldPoint!");
-    }
+  m_JumpBufferTimer = get_node<Timer>(NodePath("%JumpBufferTimer"));
 
   m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
 
@@ -60,6 +60,7 @@ void Player::_ready()
   m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
 
   m_Gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
+
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)

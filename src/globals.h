@@ -1,6 +1,9 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
+#include <godot_cpp/core/math.hpp>
+
+using namespace godot;
 
 /* 
   Credit to Withaust for macro (defining each one by default is a pain in the ass)
@@ -38,3 +41,13 @@ public:                                                  \
         ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name); \
         ClassDB::bind_method(D_METHOD("set_" #p_name, "p_" #p_name), &p_class::set_##p_name); \
         ADD_PROPERTY(PropertyInfo(p_type, #p_name, p_property_type), "set_" #p_name, "get_" #p_name);
+
+namespace Utils {
+  
+  // Exponential decay function (From, Lerp is Broken by Freya Holmer)
+  inline float exp_decay(float a, float b, float decay, double dt)
+  {
+    return b + (a - b) * Math::exp(-decay * dt);
+  }
+
+};

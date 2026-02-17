@@ -35,7 +35,7 @@ void PlayerJumpState::_physics_update(double delta)
   }
   
   if (m_PlayerInst->is_on_floor()) {
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
   }
 }
 

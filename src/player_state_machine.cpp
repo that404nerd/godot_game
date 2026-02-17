@@ -3,6 +3,8 @@
 PlayerStateMachine::PlayerStateMachine()
 {
   GameManager::get_singleton()->set_state_machine_inst(this);
+
+  m_GlobalStateHandlerInst = memnew(GlobalStateHandler);
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
 }
 
@@ -36,7 +38,7 @@ void PlayerStateMachine::_ready()
 void PlayerStateMachine::_unhandled_input(const Ref<InputEvent>& event)
 {
   if(m_CurrentState) {
-      m_CurrentState->_handle_input(event);
+    m_CurrentState->_handle_input(event);
   }
 }
 
@@ -44,6 +46,8 @@ void PlayerStateMachine::_physics_process(double delta)
 {
   if(m_CurrentState) {
     m_CurrentState->_physics_update(delta);
+    m_GlobalStateHandlerInst->_physics_process(delta);
+
     // print_line("Current state: ", get_current_state());
   }
 }

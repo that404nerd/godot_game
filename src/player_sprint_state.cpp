@@ -1,13 +1,11 @@
 #include "player_sprint_state.h"
-#include "godot_cpp/core/math.hpp"
 #include "player_state_machine.h"
 
 void PlayerSprintState::_enter()
 { 
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-  
-  m_HoldPoint = m_PlayerInst->get_rig_hold_point();
+
 }
 
 void PlayerSprintState::_bind_methods()
@@ -15,7 +13,6 @@ void PlayerSprintState::_bind_methods()
   GD_BIND_PROPERTY(PlayerSprintState, headbob_amp, Variant::FLOAT);
   GD_BIND_PROPERTY(PlayerSprintState, headbob_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(PlayerSprintState, headbob_delta_translate, Variant::FLOAT);
-
 }
 
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
@@ -29,7 +26,7 @@ void PlayerSprintState::_handle_input(const Ref<InputEvent>& event)
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("dash"))
+  if(Input::get_singleton()->is_action_just_pressed("dash") && m_PlayerInst->get_global_state().CanDash)
   {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::DASH));
   } 
@@ -56,8 +53,8 @@ void PlayerSprintState::_headbob_effect(double delta)
 
   Vector3 currentPos = m_PlayerInst->get_player_head()->get_position();
   Vector3 newPos = Vector3(
-    Math::lerp(currentPos.x, x_bob, (float)delta * headbob_delta_translate),
-    Math::lerp(currentPos.y, y_bob, (float)delta * headbob_delta_translate), 
+    Utils::exp_decay(currentPos.x, x_bob, m_PlayerInst->get_headbob_decay(), (float)delta * headbob_delta_translate),
+    Utils::exp_decay(currentPos.y, y_bob, m_PlayerInst->get_headbob_decay(), (float)delta * headbob_delta_translate), 
     0.0f
   );
 
@@ -70,16 +67,10 @@ void PlayerSprintState::_physics_update(double delta)
   m_PlayerInst->_update_input();    
   m_PlayerInst->_update_velocity();
   
-  
   Vector3 playerVel = m_PlayerInst->get_velocity();
   float currentSpeedInWishDir = m_PlayerInst->get_velocity().dot(m_PlayerInst->get_wish_dir());
   float addSpeed = m_PlayerInst->get_sprint_speed() - currentSpeedInWishDir;
 
-  Vector3 holdPointPos = m_HoldPoint->get_position();
-  holdPointPos.x = Math::lerp(m_HoldPoint->get_position().x, 0.0f, (float)delta * 5.0f);
-  holdPointPos.y = Math::lerp(m_HoldPoint->get_position().y, 0.0f, (float)delta * 5.0f);
-  m_HoldPoint->set_position(holdPointPos);
- 
   if(addSpeed > 0.0f) {
     float accel = m_PlayerInst->get_ground_accel() * m_PlayerInst->get_sprint_speed() * delta;
     accel = Math::min(accel, addSpeed);
@@ -94,20 +85,18 @@ void PlayerSprintState::_physics_update(double delta)
   if(playerVel.length() > 0.0f) {
     newSpeed /= playerVel.length();
   }
-  
+
+  if(m_PlayerInst->get_global_state().DashCooldown <= 0.0f)
+  {
+    m_PlayerInst->get_global_state().CanDash = true;
+    m_PlayerInst->get_global_state().DashCooldown = m_PlayerInst->get_dash_cooldown();
+  }
+
   playerVel *= newSpeed;
 
   _headbob_effect(delta);
   m_PlayerInst->set_velocity(playerVel);
 
-  // Side Tilt
-  Vector3 playerRot = m_PlayerInst->get_rotation();
-  if(Math::abs(m_PlayerInst->get_input_dir().x) == 1.0f)
-  {
-    playerRot.z = Math::lerp(playerRot.z, Math::deg_to_rad(20.0f) * m_PlayerInst->get_input_dir().x, (float)delta * 2.0f);
-  }
-  
-  m_PlayerInst->set_rotation(playerRot);
 
   if(m_PlayerInst->get_velocity().length() < 1.0f && m_PlayerInst->is_on_floor()) {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
@@ -116,16 +105,8 @@ void PlayerSprintState::_physics_update(double delta)
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
   }
-
 }
 
 void PlayerSprintState::_exit() 
 {
-  if(m_SprintRotTween != nullptr)
-  {
-    m_SprintRotTween->kill();
-  }
-
-  m_SprintRotTween = m_PlayerInst->create_tween();
-  m_SprintRotTween->tween_property(m_PlayerInst, "rotation:z", 0.0f, (float)m_PlayerInst->get_physics_process_delta_time() * 3.0f);
 }
