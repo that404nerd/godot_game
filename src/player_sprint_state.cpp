@@ -18,6 +18,7 @@ void PlayerSprintState::_bind_methods()
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
 {
   if(Input::get_singleton()->is_action_just_pressed("jump")) {
+    m_PlayerInst->get_global_state().JumpBufferCooldown = 0.2f;
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
   }
   
@@ -25,11 +26,6 @@ void PlayerSprintState::_handle_input(const Ref<InputEvent>& event)
   {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
   }
-  
-  if(Input::get_singleton()->is_action_just_pressed("dash") && m_PlayerInst->get_global_state().CanDash)
-  {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::DASH));
-  } 
   
   // TODO: Have a direction enum or smtg like that
   if(m_PlayerInst->get_velocity().length() > (m_PlayerInst->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch")
@@ -86,17 +82,14 @@ void PlayerSprintState::_physics_update(double delta)
     newSpeed /= playerVel.length();
   }
 
-  if(m_PlayerInst->get_global_state().DashCooldown <= 0.0f)
-  {
-    m_PlayerInst->get_global_state().CanDash = true;
-    m_PlayerInst->get_global_state().DashCooldown = m_PlayerInst->get_dash_cooldown();
-  }
-
   playerVel *= newSpeed;
 
   _headbob_effect(delta);
   m_PlayerInst->set_velocity(playerVel);
 
+  if (m_PlayerInst->is_on_floor() && m_PlayerInst->get_global_state().JumpBufferCooldown > 0.0f) {
+    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
+  }
 
   if(m_PlayerInst->get_velocity().length() < 1.0f && m_PlayerInst->is_on_floor()) {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));

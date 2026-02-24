@@ -37,8 +37,7 @@ class Player : public CharacterBody3D {
 
 private:
   struct PlayerGlobalState {
-    bool CanDash = true;
-    float DashCooldown;
+    float JumpBufferCooldown;
   };
 
 public:
@@ -82,8 +81,6 @@ private:
   CollisionShape3D* m_StandingPlayerCollider = nullptr;
   CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
-  Timer* m_JumpBufferTimer = nullptr;
-
   Camera3D* m_PlayerCamera = nullptr;
 
   Node3D* m_RigHoldPoint = nullptr;
@@ -98,6 +95,8 @@ private:
   float m_Gravity = 0.0f;
 
 private:
+  GD_DEFINE_PROPERTY(float, max_speed, 20.0f);
+
   GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
   GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);  
 
@@ -110,12 +109,12 @@ private:
   GD_DEFINE_PROPERTY(float, jump_height, 10.0f);
   GD_DEFINE_PROPERTY(float, down_gravity, 15.0f);
 
-  GD_DEFINE_PROPERTY(float, max_air_move_speed, 6.0f);
+  GD_DEFINE_PROPERTY(float, max_air_move_speed, 10.0f);
   GD_DEFINE_PROPERTY(float, max_air_accel, 7.0f);
 
   GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
 
-  GD_DEFINE_PROPERTY(float, dash_cooldown, 1.0f);
+  GD_DEFINE_PROPERTY(float, jump_buffer_cooldown, 0.1f);
 
   GD_DEFINE_PROPERTY(float, ground_accel, 15.0f);
   GD_DEFINE_PROPERTY(float, ground_decel, 10.0f);

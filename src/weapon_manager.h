@@ -76,4 +76,6 @@ private:
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_decay, 2.0f);
   GD_DEFINE_PROPERTY(float, weapon_bob_decay, 1.5f);
 
+  int m_WeaponIndex;
+
 };

@@ -4,6 +4,7 @@ void PlayerFallingState::_enter()
 { 
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
+
 }
 
 void PlayerFallingState::_bind_methods()
@@ -12,12 +13,12 @@ void PlayerFallingState::_bind_methods()
 
 void PlayerFallingState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if (!m_IsJumpPressed && Input::get_singleton()->is_action_just_pressed("jump")) 
-  {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
-    m_IsJumpPressed = true;
-  }
-
+  // if (!m_IsJumpPressed && Input::get_singleton()->is_action_just_pressed("jump")) 
+  // {
+  //   emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
+  //   m_IsJumpPressed = true;
+  // }
+  //
 }
 
 void PlayerFallingState::_physics_update(double delta) 
@@ -26,19 +27,35 @@ void PlayerFallingState::_physics_update(double delta)
   m_PlayerInst->_update_velocity();
 
   Vector3 playerVel = m_PlayerInst->get_velocity();
-  Vector3 wish = m_PlayerInst->get_wish_dir().normalized();
-  
+  Vector3 wishDir = m_PlayerInst->get_wish_dir();
+
+  if(m_PlayerInst->get_global_state().JumpBufferCooldown > 0.0f)
+  { 
+    playerVel.y = m_PlayerInst->get_jump_height();
+    m_PlayerInst->set_velocity(playerVel);
+  }
+
+  print_line(m_PlayerInst->get_global_state().JumpBufferCooldown);
+
   playerVel.y -= m_PlayerInst->get_down_gravity() * delta; // Special falling velocity
 
-  float currentSpeed = playerVel.dot(Vector3(wish.x, 0, wish.z));
+  float currentSpeed = playerVel.dot(wishDir);
   float addSpeed = m_PlayerInst->get_max_air_move_speed() - currentSpeed;
 
-  if (addSpeed > 0.0f) {
-    playerVel.x += wish.x * m_PlayerInst->get_max_air_accel() * addSpeed * delta;
-    playerVel.z += wish.z * m_PlayerInst->get_max_air_accel() * addSpeed * delta;
+  float accel = m_PlayerInst->get_max_air_accel() * delta;
+
+  if(accel > addSpeed)
+    accel = addSpeed;
+  
+  if(addSpeed > 0.0f)
+  {
+    playerVel.x += wishDir.x * accel;
+    playerVel.z += wishDir.z * accel;
   }
 
   m_PlayerInst->set_velocity(playerVel);
+
+
 
   if(m_PlayerInst->is_on_floor())
   {

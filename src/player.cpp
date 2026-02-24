@@ -12,8 +12,6 @@
 Player::Player()
 {
   GameManager::get_singleton()->set_player_inst(this);
-  get_global_state().DashCooldown = dash_cooldown;
-
 }
 
 void Player::_bind_methods()
@@ -22,6 +20,7 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, crouch_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, sprint_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, slide_speed, Variant::FLOAT);
+  GD_BIND_PROPERTY(Player, max_speed, Variant::FLOAT);
 
   ADD_GROUP("Player Jump Settings", "");
   GD_BIND_PROPERTY(Player, jump_height, Variant::FLOAT);
@@ -38,7 +37,7 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, ground_friction, Variant::FLOAT);
 
   ADD_GROUP("Player Misc Settings", "");
-  GD_BIND_PROPERTY(Player, dash_cooldown, Variant::FLOAT);
+  GD_BIND_PROPERTY(Player, jump_buffer_cooldown, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, crouch_translate, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, headbob_decay, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, slide_tilt_angle, Variant::FLOAT);
@@ -51,8 +50,6 @@ void Player::_ready()
   m_PlayerHead = get_node<Node3D>(NodePath("%PlayerHead"));
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_RigHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
-
-  m_JumpBufferTimer = get_node<Timer>(NodePath("%JumpBufferTimer"));
 
   m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
 
@@ -99,6 +96,7 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
+  print_line(get_velocity().length());
 }
 
 

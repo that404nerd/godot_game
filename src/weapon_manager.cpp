@@ -37,6 +37,15 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
     m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
     m_IsEquipped = !m_IsEquipped;
   }
+
+  if(Input::get_singleton()->is_action_just_pressed("first_weapon"))
+  {
+    m_WeaponIndex = 1;
+  }
+  if(Input::get_singleton()->is_action_just_pressed("second_weapon"))
+  {
+    m_WeaponIndex = 2;
+  }
 }
 
 void WeaponManager::_init_weapon()

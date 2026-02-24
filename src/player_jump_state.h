@@ -5,20 +5,22 @@
 #include "player.h"
 
 class PlayerJumpState : public PlayerState {
-    GDCLASS(PlayerJumpState, PlayerState);
+  GDCLASS(PlayerJumpState, PlayerState);
 
 public:
-    PlayerJumpState() : m_PlayerInst(nullptr) {}; 
+  PlayerJumpState() : m_PlayerInst(nullptr) {}; 
 
-    virtual void _enter() override;
-    virtual void _handle_input(const Ref<InputEvent>& event) override;
-    virtual void _physics_update(double delta) override;
-    virtual void _exit() override; 
+  virtual void _enter() override;
+  virtual void _handle_input(const Ref<InputEvent>& event) override;
+  virtual void _physics_update(double delta) override;
+  virtual void _exit() override; 
+
+  void _jump(); 
 
 protected:
-    static void _bind_methods();
+  static void _bind_methods();
 
 private:
-    Player* m_PlayerInst;
-    PlayerStateMachine* m_StateMachineInst;
+  Player* m_PlayerInst;
+  PlayerStateMachine* m_StateMachineInst;
 };

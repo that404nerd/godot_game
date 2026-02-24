@@ -49,6 +49,7 @@ void PlayerStateMachine::_physics_process(double delta)
     m_GlobalStateHandlerInst->_physics_process(delta);
 
     // print_line("Current state: ", get_current_state());
+    // print_line("Velocity is: ", m_PlayerInst->get_velocity().length());
   }
 }
 
