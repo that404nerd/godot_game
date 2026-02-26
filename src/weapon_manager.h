@@ -37,12 +37,18 @@ public:
   void _ready() override;
   void _init_weapon();
 
-  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _input(const Ref<InputEvent>& event) override;
 
   void _physics_process(double delta) override;
   void _weapon_bob(double delta);
-
+  
+  void _equip_weapon();
   void _shoot();
+
+  void _unequip_weapon(const String& nextWeaponName);
+  
+  void _change_weapon(const String& weaponName);
+  void _on_animation_finished(const String& anim_name);
 
   ~WeaponManager();
 
@@ -62,6 +68,8 @@ private:
 private:
   float m_WeaponBobTime = 0.0f, m_IdleWeaponBobTime = 0.0f; 
 
+  String m_NextWeapon;
+
   bool m_IsEquipped; 
   Ref<PackedScene> m_LoadScene;
 
@@ -72,10 +80,9 @@ private:
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_freq, 2.0f);
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_amp, 0.09f);
 
-
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_decay, 2.0f);
   GD_DEFINE_PROPERTY(float, weapon_bob_decay, 1.5f);
 
-  int m_WeaponIndex;
+  int m_WeaponIndex = 0;
 
 };

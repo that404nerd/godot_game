@@ -1,4 +1,5 @@
 #include "camera_controller.h"
+#include "globals.h"
 #include "player.h"
 
 CameraController::CameraController() {
@@ -26,6 +27,7 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 void CameraController::_bind_methods() 
 {
   GD_BIND_PROPERTY(CameraController, sway_mult, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, weapon_sway_reset, Variant::FLOAT);
 }
 
 
@@ -34,14 +36,15 @@ void CameraController::_weapon_sway(Vector2 sway_vector)
   Vector3 m_HoldPointPos = m_HoldPointNode->get_position();
   m_HoldPointPos.x -= sway_vector.x * sway_mult;
   m_HoldPointPos.y += sway_vector.y * sway_mult;
+
   m_HoldPointNode->set_position(m_HoldPointPos);
 }
 
 void CameraController::_physics_process(double delta) 
 {
   Vector3 m_HoldPointPos = m_HoldPointNode->get_position();
-  m_HoldPointPos.x = Math::lerp(m_HoldPointNode->get_position().x, 0.0f, (float)delta * 5.0f);
-  m_HoldPointPos.y = Math::lerp(m_HoldPointNode->get_position().y, 0.0f, (float)delta * 5.0f);
+  m_HoldPointPos.x = Utils::exp_decay(m_HoldPointNode->get_position().x, 0.0f, weapon_sway_reset, (float)delta * 5.0f);
+  m_HoldPointPos.y = Utils::exp_decay(m_HoldPointNode->get_position().y, 0.0f, weapon_sway_reset, (float)delta * 5.0f);
   m_HoldPointNode->set_position(m_HoldPointPos);
   
   

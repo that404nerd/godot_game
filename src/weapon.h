@@ -30,6 +30,5 @@ private:
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
 
   GD_DEFINE_PROPERTY(int, ammoCount, 0);
-  GD_DEFINE_PROPERTY(AnimationPlayer*, weaponAnimPlayer, nullptr);
-  GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
+  GD_DEFINE_PROPERTY(Node3D*, weaponNode, nullptr);
 };

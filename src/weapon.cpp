@@ -1,4 +1,5 @@
 #include "weapon.h"
+#include "godot_cpp/classes/global_constants.hpp"
 
 /*
     We create a weapon scene (for eg a pistol with anims, etc etc) and then we have a resource with packed scene,
@@ -23,8 +24,7 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, weaponReloadAnimName, Variant::STRING);
 
-  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponScene, Variant::OBJECT, godot::PROPERTY_HINT_RESOURCE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponAnimPlayer, Variant::OBJECT, godot::PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponNode, Variant::OBJECT, godot::PROPERTY_HINT_NODE_TYPE);
 }
 
 Weapon::~Weapon() {}

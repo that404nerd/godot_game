@@ -38,6 +38,7 @@ private:
   Node3D* m_HoldPointNode = nullptr;
 
   GD_DEFINE_PROPERTY(float, sway_mult, 0.0f);
+  GD_DEFINE_PROPERTY(float, weapon_sway_reset, 15.0f);
 
   Vector2 m_MouseInput;
   Vector3 m_InputRotation;

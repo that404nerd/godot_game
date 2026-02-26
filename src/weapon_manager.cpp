@@ -17,6 +17,8 @@ void WeaponManager::_bind_methods()
   GD_BIND_PROPERTY(WeaponManager, idle_weapon_bob_amp, Variant::FLOAT);
   GD_BIND_PROPERTY(WeaponManager, idle_weapon_bob_decay, Variant::FLOAT);
   GD_BIND_PROPERTY(WeaponManager, weapon_bob_decay, Variant::FLOAT);
+  
+  ClassDB::bind_method(D_METHOD("_on_animation_finished", "anim_name"), &WeaponManager::_on_animation_finished);
 }
 
 void WeaponManager::_ready()
@@ -27,38 +29,48 @@ void WeaponManager::_ready()
   m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("WeaponAnimPlayer"));
   m_LoadScene = ResourceLoader::get_singleton()->load("res://assets/decals/bullet_decal.tscn");
 
+  m_WeaponAnimPlayer->connect("animation_finished", Callable(this, "_on_animation_finished"));
+
   _init_weapon();
 }
 
-void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
+void WeaponManager::_input(const Ref<InputEvent>& event)
 {
   if(Input::get_singleton()->is_action_just_pressed("unequip_weapon") && m_IsEquipped)
   {
-    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
+    m_WeaponAnimPlayer->queue(m_CurrentWeapon->get_weaponUnequipAnimName());
     m_IsEquipped = !m_IsEquipped;
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("first_weapon"))
+  if(Input::get_singleton()->is_action_just_pressed("fire"))
   {
-    m_WeaponIndex = 1;
+    _shoot();
   }
-  if(Input::get_singleton()->is_action_just_pressed("second_weapon"))
+
+  if(Input::get_singleton()->is_action_just_pressed("next_weapon"))
   {
-    m_WeaponIndex = 2;
+    m_WeaponIndex = Math::max(m_WeaponIndex - 1, 0);
+    m_CurrentWeapon = weaponList[m_WeaponIndex];
+    String nextWeaponName = m_CurrentWeapon->get_name();
+  
+    _unequip_weapon(nextWeaponName);
   }
+
+  if(Input::get_singleton()->is_action_just_pressed("prev_weapon"))
+  {
+    m_WeaponIndex = Math::min(m_WeaponIndex + 1, static_cast<int>(weaponList.size()) - 1);
+    m_CurrentWeapon = weaponList[m_WeaponIndex];
+    String nextWeaponName = m_CurrentWeapon->get_name();
+
+    _unequip_weapon(nextWeaponName);
+  }
+
 }
 
 void WeaponManager::_init_weapon()
 {
-  m_CurrentWeapon = weaponList[0];
-
-  if(m_WeaponAnimPlayer) {
-    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
-    m_IsEquipped = !m_IsEquipped;
-  } else {
-    print_error("Can't play equip animation!!");
-  }
-
+  m_CurrentWeapon = weaponList[m_WeaponIndex];
+  _equip_weapon();
 }
 
 void WeaponManager::_weapon_bob(double delta)
@@ -79,6 +91,16 @@ void WeaponManager::_weapon_bob(double delta)
   );
 
   m_PlayerInst->get_rig_hold_point()->set_position(newPos);
+}
+
+void WeaponManager::_equip_weapon()
+{
+  if(m_WeaponAnimPlayer) {
+    m_WeaponAnimPlayer->queue(m_CurrentWeapon->get_weaponEquipAnimName());
+    m_IsEquipped = !m_IsEquipped;
+  } else {
+    print_error("Can't play equip animation!!");
+  }
 }
 
 void WeaponManager::_shoot()
@@ -110,6 +132,38 @@ void WeaponManager::_shoot()
   }
 }
 
+void WeaponManager::_unequip_weapon(const String& nextWeaponName)
+{
+  if(nextWeaponName != m_CurrentWeapon->get_weaponName())
+  {
+    if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
+    {
+      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
+      m_NextWeapon = nextWeaponName;
+    }
+  }
+}
+
+void WeaponManager::_change_weapon(const String& weaponName)
+{
+  int weapon_index = weaponList.find(weaponName);
+
+  if(weapon_index != -1)
+  {
+    m_CurrentWeapon = weaponList[weapon_index];
+    m_NextWeapon = "";
+    _equip_weapon();
+  }
+}
+
+void WeaponManager::_on_animation_finished(const String& anim_name)
+{
+  if(anim_name == m_CurrentWeapon->get_weaponUnequipAnimName())
+  {
+    _change_weapon(m_NextWeapon);
+  }
+}
+
 void WeaponManager::_physics_process(double delta)
 {
   // TODO: THIS IS PURE ASS. Need a better way to manage states
@@ -133,12 +187,9 @@ void WeaponManager::_physics_process(double delta)
 
     m_PlayerInst->get_rig_hold_point()->set_position(newPos);
   }
+
   
-  if(Input::get_singleton()->is_action_just_pressed("fire"))
-  {
-    _shoot();
-  }
-}
+ }
 
 WeaponManager::~WeaponManager()
 {
