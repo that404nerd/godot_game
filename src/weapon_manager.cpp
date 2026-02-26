@@ -134,6 +134,8 @@ void WeaponManager::_shoot()
 
 void WeaponManager::_unequip_weapon(const String& nextWeaponName)
 {
+  print_line("Next weapon name: ", nextWeaponName);
+
   if(nextWeaponName != m_CurrentWeapon->get_weaponName())
   {
     if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
@@ -148,6 +150,8 @@ void WeaponManager::_change_weapon(const String& weaponName)
 {
   int weapon_index = weaponList.find(weaponName);
 
+  print_line("Weapon Index: ", weapon_index);
+
   if(weapon_index != -1)
   {
     m_CurrentWeapon = weaponList[weapon_index];
@@ -158,6 +162,8 @@ void WeaponManager::_change_weapon(const String& weaponName)
 
 void WeaponManager::_on_animation_finished(const String& anim_name)
 {
+  print_line(anim_name);
+
   if(anim_name == m_CurrentWeapon->get_weaponUnequipAnimName())
   {
     _change_weapon(m_NextWeapon);
