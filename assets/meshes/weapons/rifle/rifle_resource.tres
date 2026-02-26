@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3fb630a86077f98c90af2e9ee134040bfc45b4b90258d2fe3b3ac396a32a6689
-size 146
+[gd_resource type="Weapon" format=3 uid="uid://cr8ykcdjrtwee"]
+
+[resource]
+ammoCount = 20
+weaponName = "AK-47"
+weaponEquipAnimName = "equip_anim"

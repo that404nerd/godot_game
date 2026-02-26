@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:93f544a11dc2785f03c8e80bcf45d84b319dbe19083c2e8030c37dff48ce331d
-size 1003
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://c65pouj3laprm"]
+
+[ext_resource type="Texture2D" uid="uid://c38fct7adladx" path="res://assets/meshes/weapons/pistol/textures/pistol_glock_4K_BaseColor.png" id="1_4g8sn"]
+[ext_resource type="Texture2D" uid="uid://fac6bkag6wir" path="res://assets/meshes/weapons/pistol/textures/pistol_glock_4K_Metallic.png-glock_4K_Roughness.png" id="2_ow1sb"]
+[ext_resource type="Texture2D" uid="uid://be5e888py1k1m" path="res://assets/meshes/weapons/pistol/textures/pistol_glock_4K_Normal.png" id="3_gajfv"]
+[ext_resource type="Texture2D" uid="uid://bw6lh2yrnq64c" path="res://assets/meshes/weapons/pistol/textures/pistol_glock_4K_Roughness.png" id="4_ee2u4"]
+
+[resource]
+albedo_texture = ExtResource("1_4g8sn")
+metallic = 1.0
+metallic_texture = ExtResource("2_ow1sb")
+roughness_texture = ExtResource("4_ee2u4")
+normal_enabled = true
+normal_texture = ExtResource("3_gajfv")
+use_z_clip_scale = true
+z_clip_scale = 0.5
+use_fov_override = true
+fov_override = 50.0

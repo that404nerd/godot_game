@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:946d22d86581599a2178ac2621000b1d7680a7905a90dd61eceed0e74b1bdb01
-size 144
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bwoj5a6qcibki"]
+
+[resource]
+emission_enabled = true
+emission_energy_multiplier = 0.2

@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ea516a4fa5d659c5d3bb6c7cb1fec98018f811807782a740739bbb6589fde163
-size 1195
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://d13u8e1dsd7ii"]
+
+[ext_resource type="Texture2D" uid="uid://dwhlei0mtey7k" path="res://assets/meshes/weapons/shotgun/textures/Shotgun_4k_BaseColor.png" id="1_aid47"]
+[ext_resource type="Texture2D" uid="uid://ddqfhavew84s5" path="res://assets/meshes/weapons/shotgun/textures/Shotgun_4k_Height.png" id="2_n1cid"]
+[ext_resource type="Texture2D" uid="uid://dxn2vinrobsej" path="res://assets/meshes/weapons/shotgun/textures/Shotgun_4k_Metallic.png" id="3_nfeax"]
+[ext_resource type="Texture2D" uid="uid://yoqd23gvg4d6" path="res://assets/meshes/weapons/shotgun/textures/Shotgun_4k_Normal.png" id="4_qhs65"]
+[ext_resource type="Texture2D" uid="uid://bvtg6f15teovl" path="res://assets/meshes/weapons/shotgun/textures/Shotgun_4k_Roughness.png" id="5_t8bp8"]
+
+[resource]
+albedo_texture = ExtResource("1_aid47")
+metallic = 1.0
+metallic_texture = ExtResource("3_nfeax")
+roughness_texture = ExtResource("5_t8bp8")
+normal_enabled = true
+normal_texture = ExtResource("4_qhs65")
+ao_enabled = true
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_n1cid")
+use_z_clip_scale = true
+z_clip_scale = 0.5
+use_fov_override = true
+fov_override = 50.0

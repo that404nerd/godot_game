@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9edec748060b145467d57b493c0e7945496aaa7a5c6b24563f36afcd95e3f6c9
-size 188
+[gd_resource type="NoiseTexture2D" format=3 uid="uid://dtrywi3jcx6ue"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_uga0g"]
+
+[resource]
+noise = SubResource("FastNoiseLite_uga0g")

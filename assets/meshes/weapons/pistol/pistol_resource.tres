@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d8cf0b07f71498f4fde6b1870ba511872469d76a708068d6a7a762b2d5e907c5
-size 692
+[gd_resource type="Weapon" format=3 uid="uid://ct4xiq7b5h3b0"]
+
+[resource]
+ammoCount = 10
+weaponName = "Pistol"
+weaponEquipAnimName = "pistol_equip"
+weaponUnequipAnimName = "pistol_unequip"
+weaponShootingAnimName = "pistol_shoot"
+weaponReloadAnimName = "pistol_reload"

@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:66d9adf1363e3d18fbf857989072e84c0038fa0a9291a5367b9cb3e1badc40cd
-size 633
+[gd_resource type="Theme" format=3 uid="uid://6xkpswwrrfpk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wm4cs"]
+bg_color = Color(0.18000486, 0.1800049, 0.18000478, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[resource]
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_wm4cs")

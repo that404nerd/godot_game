@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f37bddf4ab930d88341d0ef4ae05d44e41dbe500f6e4777c2d69b4eecaebba94
-size 1243
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cmxsigqcm3fs5"]
+
+[ext_resource type="Texture2D" uid="uid://dd25j58n44l5v" path="res://assets/meshes/weapons/rifle/textures/AK-74HP_Material.001_BaseColor.1001.png" id="1_dneyp"]
+[ext_resource type="Texture2D" uid="uid://cj47hkrbapi23" path="res://assets/meshes/weapons/rifle/textures/AK-74HP_Material.001_Height.1001.png" id="2_apru7"]
+[ext_resource type="Texture2D" uid="uid://b784wmg70gj1g" path="res://assets/meshes/weapons/rifle/textures/AK-74HP_Material.001_Metallic.1001.png" id="3_bcf7w"]
+[ext_resource type="Texture2D" uid="uid://b1hbcvlo44j46" path="res://assets/meshes/weapons/rifle/textures/AK-74HP_Material.001_Normal.1001.png" id="4_7kh42"]
+[ext_resource type="Texture2D" uid="uid://cxpxbklmxt5q3" path="res://assets/meshes/weapons/rifle/textures/AK-74HP_Material.001_Roughness.1001.png" id="5_4raqc"]
+
+[resource]
+albedo_texture = ExtResource("1_dneyp")
+metallic = 1.0
+metallic_texture = ExtResource("3_bcf7w")
+roughness_texture = ExtResource("5_4raqc")
+normal_enabled = true
+normal_texture = ExtResource("4_7kh42")
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_apru7")
+use_z_clip_scale = true
+z_clip_scale = 0.5
+use_fov_override = true
+fov_override = 50.0

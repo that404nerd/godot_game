@@ -45,10 +45,10 @@ public:
   void _equip_weapon();
   void _shoot();
 
-  void _unequip_weapon(const String& nextWeaponName);
+  void _unequip_weapon(const StringName& nextWeaponName);
   
-  void _change_weapon(const String& weaponName);
-  void _on_animation_finished(const String& anim_name);
+  void _change_weapon(const StringName& weaponName);
+  void _on_animation_finished(const StringName& anim_name);
 
   ~WeaponManager();
 
@@ -68,8 +68,6 @@ private:
 private:
   float m_WeaponBobTime = 0.0f, m_IdleWeaponBobTime = 0.0f; 
 
-  String m_NextWeapon;
-
   bool m_IsEquipped; 
   Ref<PackedScene> m_LoadScene;
 
@@ -84,5 +82,7 @@ private:
   GD_DEFINE_PROPERTY(float, weapon_bob_decay, 1.5f);
 
   int m_WeaponIndex = 0;
+
+  String m_NextWeaponName;
 
 };

@@ -42,27 +42,28 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
     m_IsEquipped = !m_IsEquipped;
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("fire"))
-  {
-    _shoot();
+  // if(Input::get_singleton()->is_action_just_pressed("fire"))
+  // {
+  //   _shoot();
+  // }
+
+  if(Input::get_singleton()->is_action_just_pressed("next_weapon")) // 2
+  { 
+    // { 0, 1 }
+    m_WeaponIndex = Math::min(m_WeaponIndex + 1, static_cast<int>(weaponList.size()) - 1);
+    Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
+    m_NextWeaponName = weaponTemp->get_weaponName();
+
+    _unequip_weapon(m_NextWeaponName);
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("next_weapon"))
+  if(Input::get_singleton()->is_action_just_pressed("prev_weapon")) // 1
   {
     m_WeaponIndex = Math::max(m_WeaponIndex - 1, 0);
-    m_CurrentWeapon = weaponList[m_WeaponIndex];
-    String nextWeaponName = m_CurrentWeapon->get_name();
-  
-    _unequip_weapon(nextWeaponName);
-  }
+    Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
+    m_NextWeaponName = weaponTemp->get_weaponName();
 
-  if(Input::get_singleton()->is_action_just_pressed("prev_weapon"))
-  {
-    m_WeaponIndex = Math::min(m_WeaponIndex + 1, static_cast<int>(weaponList.size()) - 1);
-    m_CurrentWeapon = weaponList[m_WeaponIndex];
-    String nextWeaponName = m_CurrentWeapon->get_name();
-
-    _unequip_weapon(nextWeaponName);
+    _unequip_weapon(m_NextWeaponName);
   }
 
 }
@@ -95,12 +96,7 @@ void WeaponManager::_weapon_bob(double delta)
 
 void WeaponManager::_equip_weapon()
 {
-  if(m_WeaponAnimPlayer) {
-    m_WeaponAnimPlayer->queue(m_CurrentWeapon->get_weaponEquipAnimName());
-    m_IsEquipped = !m_IsEquipped;
-  } else {
-    print_error("Can't play equip animation!!");
-  }
+  m_WeaponAnimPlayer->queue(m_CurrentWeapon->get_weaponEquipAnimName());
 }
 
 void WeaponManager::_shoot()
@@ -132,41 +128,44 @@ void WeaponManager::_shoot()
   }
 }
 
-void WeaponManager::_unequip_weapon(const String& nextWeaponName)
+void WeaponManager::_unequip_weapon(const StringName& nextWeaponName)
 {
-  print_line("Next weapon name: ", nextWeaponName);
-
   if(nextWeaponName != m_CurrentWeapon->get_weaponName())
   {
     if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
     {
-      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
-      m_NextWeapon = nextWeaponName;
+      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName()); // Plays the unequip animation of the current weapon
+      m_NextWeaponName = nextWeaponName;
     }
   }
 }
 
-void WeaponManager::_change_weapon(const String& weaponName)
+void WeaponManager::_change_weapon(const StringName& weaponName)
 {
-  int weapon_index = weaponList.find(weaponName);
+  int weapon_index = -1;
 
-  print_line("Weapon Index: ", weapon_index);
+  for (int i = 0; i < weaponList.size(); i++) {
+    Ref<Weapon> res = weaponList[i]; 
+    
+    if (res.is_valid() && res->get_weaponName() == weaponName) {
+      weapon_index = i;
+      break;
+    }
+  }
 
   if(weapon_index != -1)
   {
     m_CurrentWeapon = weaponList[weapon_index];
-    m_NextWeapon = "";
+    m_NextWeaponName = "";
     _equip_weapon();
   }
 }
 
-void WeaponManager::_on_animation_finished(const String& anim_name)
+void WeaponManager::_on_animation_finished(const StringName& anim_name)
 {
-  print_line(anim_name);
-
   if(anim_name == m_CurrentWeapon->get_weaponUnequipAnimName())
   {
-    _change_weapon(m_NextWeapon);
+    _change_weapon(m_NextWeaponName);
   }
 }
 

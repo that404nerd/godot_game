@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:49d2df5f64ec95a753157b461fdbadc7bdc9bc84399aaf67139ff55d02ee8c47
-size 286
+[gd_scene format=3 uid="uid://beolpb36xthnb"]
+
+[ext_resource type="Texture2D" uid="uid://cs3rtwcp0wh6f" path="res://assets/decals/bullet_hole.png" id="1_j33g3"]
+
+[node name="Decal" type="Decal" unique_id=1804342508]
+size = Vector3(0.1, 0.1, 0.1)
+texture_albedo = ExtResource("1_j33g3")
