@@ -19,6 +19,9 @@
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/window.hpp>
 
+#include <godot_cpp/classes/input_event_mouse_motion.hpp>
+#include <godot_cpp/classes/input_event.hpp>
+
 #include "globals.h"
 #include "weapon.h"
 #include "player.h"

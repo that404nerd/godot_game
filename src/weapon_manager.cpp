@@ -46,11 +46,14 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
   // {
   //   _shoot();
   // }
+  //
+
 
   if(Input::get_singleton()->is_action_just_pressed("next_weapon")) // 2
   { 
     // { 0, 1 }
-    m_WeaponIndex = Math::min(m_WeaponIndex + 1, static_cast<int>(weaponList.size()) - 1);
+    if(m_WeaponIndex <= 2)
+      m_WeaponIndex = m_WeaponIndex + 1;
     Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
     m_NextWeaponName = weaponTemp->get_weaponName();
 
@@ -59,12 +62,15 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
 
   if(Input::get_singleton()->is_action_just_pressed("prev_weapon")) // 1
   {
-    m_WeaponIndex = Math::max(m_WeaponIndex - 1, 0);
+    if(m_WeaponIndex >= 2)
+      m_WeaponIndex = m_WeaponIndex - 1;
     Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
     m_NextWeaponName = weaponTemp->get_weaponName();
 
     _unequip_weapon(m_NextWeaponName);
   }
+  
+
 
 }
 
