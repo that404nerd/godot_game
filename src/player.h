@@ -63,6 +63,10 @@ public:
   CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
 
   Vector3 get_wish_dir() { return m_WishDir; }
+  Vector3 get_gravity_vec() { return m_GravityVec; }
+  
+  void set_gravity_vec(Vector3 gravity_vec) { m_GravityVec = gravity_vec; }
+
   Vector2 get_input_dir() { return m_InputDir; }
 
   PlayerGlobalState& get_global_state() { return m_GlobalState; }
@@ -92,6 +96,8 @@ private:
   Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
   Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
 
+  Vector3 m_GravityVec = Vector3(0.0f, 0.0f, 0.0f);
+
   float m_Gravity = 0.0f;
 
 private:
@@ -110,7 +116,6 @@ private:
   GD_DEFINE_PROPERTY(float, down_gravity, 15.0f);
 
   GD_DEFINE_PROPERTY(float, max_air_move_speed, 10.0f);
-  GD_DEFINE_PROPERTY(float, max_air_accel, 7.0f);
 
   GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
 

@@ -4,6 +4,9 @@
 #include "player_state_machine.h"
 #include "player.h"
 
+#include "dd3d_cpp_api.hpp"
+#include "godot_cpp/classes/window.hpp"
+
 class PlayerFallingState : public PlayerState {
     GDCLASS(PlayerFallingState, PlayerState);
 

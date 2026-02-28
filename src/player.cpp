@@ -1,4 +1,5 @@
 #include "player.h"
+#include "globals.h"
 
 /*
   transform:  transform.origin = Position (Where you are with respect to the world).
@@ -28,7 +29,6 @@ void Player::_bind_methods()
 
   ADD_GROUP("Player Air Strafe Settings", "");
   GD_BIND_PROPERTY(Player, max_air_move_speed, Variant::FLOAT);
-  GD_BIND_PROPERTY(Player, max_air_accel, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, mouse_sensitivity, Variant::FLOAT);
 
   ADD_GROUP("Player Friction Settings", "");
@@ -76,15 +76,17 @@ void Player::_update_input()
   {
     if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
     {
-      playerVel.x = Math::lerp(playerVel.x, m_WishDir.x, 0.0f);
-      playerVel.z = Math::lerp(playerVel.z, m_WishDir.z, 0.0f);
+      playerVel.x = Utils::exp_decay(playerVel.x, m_WishDir.x, 15.0f, 0.0f);
+      playerVel.z = Utils::exp_decay(playerVel.z, m_WishDir.z, 15.0f, 0.0f);
     }
     else
     {
-      playerVel.x = Math::lerp(playerVel.x, 0.0f, 0.3f);
-      playerVel.z = Math::lerp(playerVel.z, 0.0f, 0.3f);
+      playerVel.x = Utils::exp_decay(playerVel.x, 0.0f, 1.0f, 0.2f);
+      playerVel.z = Utils::exp_decay(playerVel.z, 0.0f, 1.0f, 0.2f);
     }
   }
+
+  playerVel += m_GravityVec;
 
   set_velocity(playerVel);
 }
@@ -96,6 +98,7 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
+  print_line("Gravity Vector: ", m_GravityVec);
 }
 
 

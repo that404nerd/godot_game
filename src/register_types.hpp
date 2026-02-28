@@ -17,7 +17,6 @@
 #include "weapon_manager.h"
 #include "global_state_handler.h"
 
-#include "debug_panel.h"
 #include "game_manager.h"
 
 using namespace godot;

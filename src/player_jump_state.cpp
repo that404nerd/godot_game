@@ -20,7 +20,12 @@ void PlayerJumpState::_handle_input(const Ref<InputEvent>& event)
 void PlayerJumpState::_jump()
 {
   Vector3 playerVel = m_PlayerInst->get_velocity();
+
   playerVel.y = m_PlayerInst->get_jump_height();
+  
+  Vector3 gravity_vec = (m_PlayerInst->get_floor_normal() + Vector3(0.0f, 1.0f, 0.0f)).normalized() * m_PlayerInst->get_jump_height();
+  m_PlayerInst->set_gravity_vec(gravity_vec);
+
   m_PlayerInst->set_velocity(playerVel);
   m_PlayerInst->get_global_state().JumpBufferCooldown = 0.0f;
 }
@@ -42,5 +47,7 @@ void PlayerJumpState::_physics_update(double delta)
 }
 
 
-void PlayerJumpState::_exit() {
+void PlayerJumpState::_exit() 
+{
+  m_PlayerInst->set_gravity_vec(Vector3(0.0f, 0.0f, 0.0f));
 }

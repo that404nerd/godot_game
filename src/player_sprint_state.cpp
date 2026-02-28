@@ -5,7 +5,7 @@ void PlayerSprintState::_enter()
 { 
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-
+  
 }
 
 void PlayerSprintState::_bind_methods()

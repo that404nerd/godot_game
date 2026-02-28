@@ -1,4 +1,5 @@
 #include "player_falling_state.h"
+#include "globals.h"
 
 void PlayerFallingState::_enter()
 { 
@@ -27,28 +28,18 @@ void PlayerFallingState::_physics_update(double delta)
   m_PlayerInst->_update_velocity();
 
   Vector3 playerVel = m_PlayerInst->get_velocity();
-  Vector3 wishDir = m_PlayerInst->get_wish_dir();
+  Vector3 wishDir = m_PlayerInst->get_wish_dir().normalized();
 
-  // if(m_PlayerInst->get_global_state().JumpBufferCooldown > 0.0f)
-  // { 
-  //   playerVel.y = m_PlayerInst->get_jump_height();
-  //   m_PlayerInst->set_velocity(playerVel);
-  // }
-
-  // print_line(m_PlayerInst->get_global_state().JumpBufferCooldown);
-
-  playerVel.y -= m_PlayerInst->get_down_gravity() * delta; // Special falling velocity
-
-  float currentSpeed = playerVel.dot(wishDir);
-  float addSpeed = m_PlayerInst->get_max_air_move_speed() - currentSpeed;
-
-  float accel = m_PlayerInst->get_max_air_accel() * delta;
-
-  if(accel > addSpeed)
-    accel = addSpeed;
+  Vector3 gravity_vec = Vector3(0.0f, -1.0f, 0.0f) * m_PlayerInst->get_down_gravity() * delta;
+  m_PlayerInst->set_gravity_vec(gravity_vec);
   
-  playerVel.x += wishDir.x * accel;
-  playerVel.z += wishDir.z * accel;
+  float targetX = wishDir.x * m_PlayerInst->get_max_air_move_speed();
+  float targetZ = wishDir.z * m_PlayerInst->get_max_air_move_speed();
+
+  if (wishDir.length() > 0.0f) {
+    playerVel.x = Utils::exp_decay(playerVel.x, targetX, 15.0f, delta);
+    playerVel.z = Utils::exp_decay(playerVel.z, targetZ, 15.0f, delta);
+  }
 
   m_PlayerInst->set_velocity(playerVel);
 
@@ -56,10 +47,10 @@ void PlayerFallingState::_physics_update(double delta)
   {
     m_IsJumpPressed = false;
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
-  }
-}
+  }}
 
 
 void PlayerFallingState::_exit() 
 {
+  m_PlayerInst->set_gravity_vec(Vector3(0.0f, 0.0f, 0.0f));
 }
