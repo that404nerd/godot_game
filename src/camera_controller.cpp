@@ -12,7 +12,7 @@ void CameraController::_ready()
   m_HoldPointNode = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 }
 
-void CameraController::_unhandled_input(const Ref<InputEvent>& event)
+void CameraController::_input(const Ref<InputEvent>& event)
 {
   // Set the event to an mouse input event
   Ref<InputEventMouseMotion> mouse_event = event;

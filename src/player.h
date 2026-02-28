@@ -45,7 +45,7 @@ public:
   
   void _ready() override;
   void _physics_process(double delta) override;
-  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _input(const Ref<InputEvent>& event) override;
 
   static void _bind_methods();
   
@@ -101,8 +101,6 @@ private:
   float m_Gravity = 0.0f;
 
 private:
-  GD_DEFINE_PROPERTY(float, max_speed, 20.0f);
-
   GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
   GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);  
 
@@ -121,7 +119,6 @@ private:
 
   GD_DEFINE_PROPERTY(float, jump_buffer_cooldown, 0.1f);
 
-  GD_DEFINE_PROPERTY(float, ground_accel, 15.0f);
-  GD_DEFINE_PROPERTY(float, ground_decel, 10.0f);
-  GD_DEFINE_PROPERTY(float, ground_friction, 8.0f);
+  GD_DEFINE_PROPERTY(float, ground_accel, 0.0f);
+  GD_DEFINE_PROPERTY(float, ground_decel, 0.2f);
 };

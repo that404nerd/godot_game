@@ -20,7 +20,7 @@ public:
   ~Game();
 
   void _ready() override;
-  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _input(const Ref<InputEvent>& event) override;
   void _process(double delta) override;
 
 };

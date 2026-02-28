@@ -21,7 +21,6 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, crouch_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, sprint_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, slide_speed, Variant::FLOAT);
-  GD_BIND_PROPERTY(Player, max_speed, Variant::FLOAT);
 
   ADD_GROUP("Player Jump Settings", "");
   GD_BIND_PROPERTY(Player, jump_height, Variant::FLOAT);
@@ -31,10 +30,9 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, max_air_move_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, mouse_sensitivity, Variant::FLOAT);
 
-  ADD_GROUP("Player Friction Settings", "");
+  ADD_GROUP("Player Acceleration Settings", "");
   GD_BIND_PROPERTY(Player, ground_accel, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, ground_decel, Variant::FLOAT);
-  GD_BIND_PROPERTY(Player, ground_friction, Variant::FLOAT);
 
   ADD_GROUP("Player Misc Settings", "");
   GD_BIND_PROPERTY(Player, jump_buffer_cooldown, Variant::FLOAT);
@@ -60,7 +58,7 @@ void Player::_ready()
 
 }
 
-void Player::_unhandled_input(const Ref<InputEvent>& event)
+void Player::_input(const Ref<InputEvent>& event)
 {
 }
 
@@ -76,13 +74,13 @@ void Player::_update_input()
   {
     if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
     {
-      playerVel.x = Utils::exp_decay(playerVel.x, m_WishDir.x, 15.0f, 0.0f);
-      playerVel.z = Utils::exp_decay(playerVel.z, m_WishDir.z, 15.0f, 0.0f);
+      playerVel.x = Utils::exp_decay(playerVel.x, m_WishDir.x, 15.0f, ground_accel);
+      playerVel.z = Utils::exp_decay(playerVel.z, m_WishDir.z, 15.0f, ground_accel);
     }
     else
     {
-      playerVel.x = Utils::exp_decay(playerVel.x, 0.0f, 1.0f, 0.2f);
-      playerVel.z = Utils::exp_decay(playerVel.z, 0.0f, 1.0f, 0.2f);
+      playerVel.x = Utils::exp_decay(playerVel.x, 0.0f, 1.0f, ground_decel);
+      playerVel.z = Utils::exp_decay(playerVel.z, 0.0f, 1.0f, ground_decel);
     }
   }
 
@@ -98,7 +96,6 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
-  print_line("Gravity Vector: ", m_GravityVec);
 }
 
 

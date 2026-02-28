@@ -4,6 +4,7 @@
 WeaponManager::WeaponManager()
 {
   m_IsEquipped = false;
+  m_IsWeaponSwitched = false;
 }
 
 void WeaponManager::_bind_methods()
@@ -42,26 +43,31 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
     m_IsEquipped = !m_IsEquipped;
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("next_weapon")) // 2
-  { 
-    m_WeaponIndex = Math::min(m_WeaponIndex + 1, static_cast<int>(weaponList.size()) - 1);
-    Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
-    m_NextWeaponName = weaponTemp->get_weaponName();
-
-    _unequip_weapon(m_NextWeaponName);
-  }
-
-  if(Input::get_singleton()->is_action_just_pressed("prev_weapon")) // 1
+  Ref<InputEventMouseButton> mouseButtonEvent = event;
+  if(event->is_class("InputEventMouseButton"))
   {
-    m_WeaponIndex = Math::max(m_WeaponIndex - 1, 0);
-    Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
-    m_NextWeaponName = weaponTemp->get_weaponName();
 
-    _unequip_weapon(m_NextWeaponName);
+    print_line("Weapon switched: ", m_IsWeaponSwitched);
+
+    if(Input::get_singleton()->is_action_pressed("next_weapon") && m_IsWeaponSwitched == false) // 2
+    { 
+      m_WeaponIndex = Math::min(m_WeaponIndex + 1, static_cast<int>(weaponList.size()) - 1);
+      Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
+      m_NextWeaponName = weaponTemp->get_weaponName();
+
+      _unequip_weapon(m_NextWeaponName);
+    }
+
+    if(Input::get_singleton()->is_action_pressed("prev_weapon") && m_IsWeaponSwitched == false) // 1
+    {
+      m_WeaponIndex = Math::max(m_WeaponIndex - 1, 0);
+      Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
+      m_NextWeaponName = weaponTemp->get_weaponName();
+
+      _unequip_weapon(m_NextWeaponName);
+    }
+
   }
-  
-
-
 }
 
 void WeaponManager::_init_weapon()
@@ -93,6 +99,7 @@ void WeaponManager::_weapon_bob(double delta)
 void WeaponManager::_equip_weapon()
 {
   m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
+  m_IsWeaponSwitched = false;
 }
 
 void WeaponManager::_shoot()
@@ -134,6 +141,7 @@ void WeaponManager::_unequip_weapon(const StringName& nextWeaponName)
       m_NextWeaponName = nextWeaponName;
     }
   }
+
 }
 
 void WeaponManager::_change_weapon(const StringName& weaponName)

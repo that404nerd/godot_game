@@ -28,8 +28,7 @@ void PlayerSprintState::_handle_input(const Ref<InputEvent>& event)
   }
   
   // TODO: Have a direction enum or smtg like that
-  if(m_PlayerInst->get_velocity().length() > (m_PlayerInst->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch")
-      && m_PlayerInst->get_input_dir() == Vector2(0.0f, -1.0f))
+  if(m_PlayerInst->get_velocity().length() > (m_PlayerInst->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch"))
   {
     emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SLIDE));
   }
@@ -60,29 +59,11 @@ void PlayerSprintState::_headbob_effect(double delta)
 
 void PlayerSprintState::_physics_update(double delta) 
 {
-  m_PlayerInst->_update_input();    
+  m_PlayerInst->_update_input();
   m_PlayerInst->_update_velocity();
   
   Vector3 playerVel = m_PlayerInst->get_velocity();
-  float currentSpeedInWishDir = m_PlayerInst->get_velocity().dot(m_PlayerInst->get_wish_dir());
-  float addSpeed = m_PlayerInst->get_sprint_speed() - currentSpeedInWishDir;
-
-  if(addSpeed > 0.0f) {
-    float accel = m_PlayerInst->get_ground_accel() * m_PlayerInst->get_sprint_speed() * delta;
-    accel = Math::min(accel, addSpeed);
-    playerVel += accel * m_PlayerInst->get_wish_dir();
-  } 
-
-  // Friciton code
-  float control = Math::max(playerVel.length(), m_PlayerInst->get_ground_decel()); // Dont let speed to drop to zero instead to ground decl when stopping
-  float drop = control * m_PlayerInst->get_ground_friction() * delta; // how much velocity should be dropped due to friction
-  float newSpeed = Math::max(playerVel.length() - drop, 0.0f); // New speed has to be subtracted from the current velocity due to friction
-  
-  if(playerVel.length() > 0.0f) {
-    newSpeed /= playerVel.length();
-  }
-
-  playerVel *= newSpeed;
+  playerVel = Utils::exp_decay(playerVel, m_PlayerInst->get_sprint_speed() * m_PlayerInst->get_wish_dir(), 15.0f, (float)delta);
 
   _headbob_effect(delta);
   m_PlayerInst->set_velocity(playerVel);

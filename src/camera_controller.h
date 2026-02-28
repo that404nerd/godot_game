@@ -22,7 +22,7 @@ public:
   CameraController();
   ~CameraController();
 
-  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _input(const Ref<InputEvent>& event) override;
 
   void _weapon_sway(Vector2 sway_vector);
 

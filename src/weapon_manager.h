@@ -18,9 +18,11 @@
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/window.hpp>
-
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
+#include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/input_event.hpp>
+
+
 
 #include "globals.h"
 #include "weapon.h"
@@ -71,7 +73,7 @@ private:
 private:
   float m_WeaponBobTime = 0.0f, m_IdleWeaponBobTime = 0.0f; 
 
-  bool m_IsEquipped; 
+  bool m_IsEquipped, m_IsWeaponSwitched; 
   Ref<PackedScene> m_LoadScene;
 
   GD_DEFINE_PROPERTY(Array, weaponList, Array());

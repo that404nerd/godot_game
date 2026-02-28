@@ -45,7 +45,8 @@ public:                                                  \
 namespace Utils {
   
   // Exponential decay function
-  inline float exp_decay(float a, float b, float decay, double dt)
+  template <typename T>
+  inline T exp_decay(T a, T b, float decay, double dt)
   {
     return b + (a - b) * Math::exp(-decay * dt);
   }

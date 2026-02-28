@@ -35,7 +35,7 @@ void PlayerStateMachine::_ready()
   }
 }
 
-void PlayerStateMachine::_unhandled_input(const Ref<InputEvent>& event)
+void PlayerStateMachine::_input(const Ref<InputEvent>& event)
 {
   if(m_CurrentState) {
     m_CurrentState->_handle_input(event);
