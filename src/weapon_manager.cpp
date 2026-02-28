@@ -42,18 +42,9 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
     m_IsEquipped = !m_IsEquipped;
   }
 
-  // if(Input::get_singleton()->is_action_just_pressed("fire"))
-  // {
-  //   _shoot();
-  // }
-  //
-
-
   if(Input::get_singleton()->is_action_just_pressed("next_weapon")) // 2
   { 
-    // { 0, 1 }
-    if(m_WeaponIndex <= 2)
-      m_WeaponIndex = m_WeaponIndex + 1;
+    m_WeaponIndex = Math::min(m_WeaponIndex + 1, static_cast<int>(weaponList.size()) - 1);
     Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
     m_NextWeaponName = weaponTemp->get_weaponName();
 
@@ -62,8 +53,7 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
 
   if(Input::get_singleton()->is_action_just_pressed("prev_weapon")) // 1
   {
-    if(m_WeaponIndex >= 2)
-      m_WeaponIndex = m_WeaponIndex - 1;
+    m_WeaponIndex = Math::max(m_WeaponIndex - 1, 0);
     Ref<Weapon> weaponTemp = weaponList[m_WeaponIndex];
     m_NextWeaponName = weaponTemp->get_weaponName();
 
@@ -102,7 +92,7 @@ void WeaponManager::_weapon_bob(double delta)
 
 void WeaponManager::_equip_weapon()
 {
-  m_WeaponAnimPlayer->queue(m_CurrentWeapon->get_weaponEquipAnimName());
+  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
 }
 
 void WeaponManager::_shoot()
@@ -199,7 +189,10 @@ void WeaponManager::_physics_process(double delta)
     m_PlayerInst->get_rig_hold_point()->set_position(newPos);
   }
 
-  
+  if(Input::get_singleton()->is_action_just_pressed("fire"))
+  {
+    _shoot();
+  }  
  }
 
 WeaponManager::~WeaponManager()

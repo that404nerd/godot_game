@@ -44,7 +44,7 @@ public:                                                  \
 
 namespace Utils {
   
-  // Exponential decay function (From, Lerp is Broken by Freya Holmer)
+  // Exponential decay function
   inline float exp_decay(float a, float b, float decay, double dt)
   {
     return b + (a - b) * Math::exp(-decay * dt);
