@@ -6,8 +6,6 @@
 # Normal files
 compile_commands.json
 assets/**/*.import
-assets/meshes/**/*.png
-assets/meshes/**/*.jpg
 assets/meshes/**/*.import
 
 # folders

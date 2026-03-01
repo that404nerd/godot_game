@@ -1,5 +1,4 @@
 #include "camera_controller.h"
-#include "globals.h"
 #include "player.h"
 
 CameraController::CameraController() {
@@ -9,7 +8,6 @@ void CameraController::_ready()
 {
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
   m_StateMachine = GameManager::get_singleton()->get_player_state_machine();
-  m_HoldPointNode = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 }
 
 void CameraController::_input(const Ref<InputEvent>& event)
@@ -19,35 +17,16 @@ void CameraController::_input(const Ref<InputEvent>& event)
   if(event->is_class("InputEventMouseMotion")) {
     m_MouseInput.x += -mouse_event->get_screen_relative().x * m_PlayerInst->get_mouse_sensitivity();
     m_MouseInput.y += -mouse_event->get_screen_relative().y * m_PlayerInst->get_mouse_sensitivity();
-
-    _weapon_sway(m_MouseInput);
   }
 }
 
 void CameraController::_bind_methods() 
 {
-  GD_BIND_PROPERTY(CameraController, sway_mult, Variant::FLOAT);
-  GD_BIND_PROPERTY(CameraController, weapon_sway_reset, Variant::FLOAT);
 }
 
-
-void CameraController::_weapon_sway(Vector2 sway_vector)
-{
-  Vector3 m_HoldPointPos = m_HoldPointNode->get_position();
-  m_HoldPointPos.x -= sway_vector.x * sway_mult;
-  m_HoldPointPos.y += sway_vector.y * sway_mult;
-
-  m_HoldPointNode->set_position(m_HoldPointPos);
-}
 
 void CameraController::_physics_process(double delta) 
 {
-  Vector3 m_HoldPointPos = m_HoldPointNode->get_position();
-  m_HoldPointPos.x = Utils::exp_decay(m_HoldPointNode->get_position().x, 0.0f, weapon_sway_reset, (float)delta * 5.0f);
-  m_HoldPointPos.y = Utils::exp_decay(m_HoldPointNode->get_position().y, 0.0f, weapon_sway_reset, (float)delta * 5.0f);
-  m_HoldPointNode->set_position(m_HoldPointPos);
-  
-  
   // Camera stuff
   if(m_StateMachine->get_current_state() == m_StateMachine->GetCurrentState(PlayerStateMachine::StateNames::CROUCH) || 
           m_StateMachine->get_current_state() == m_StateMachine->GetCurrentState(PlayerStateMachine::StateNames::SLIDE))

@@ -23,7 +23,6 @@
 #include <godot_cpp/classes/input_event.hpp>
 
 
-
 #include "globals.h"
 #include "weapon.h"
 #include "player.h"
@@ -45,49 +44,58 @@ public:
   void _input(const Ref<InputEvent>& event) override;
 
   void _physics_process(double delta) override;
+
+  ~WeaponManager();
+
+private:
+  void _idle_weapon_sway(double delta);
+  void _weapon_sway(Vector2 sway_vector);
+  void _reset_weapon_sway(double delta); 
   void _weapon_bob(double delta);
   
   void _equip_weapon();
+
   void _shoot();
+  void _generate_decal();
 
   void _unequip_weapon(const StringName& nextWeaponName);
   
   void _change_weapon(const StringName& weaponName);
+
+private: // Signal stuff
   void _on_animation_finished(const StringName& anim_name);
 
-  ~WeaponManager();
 
 protected:
   static void _bind_methods();
 
 private:
-  AnimationPlayer* m_WeaponAnimPlayer { nullptr };
+  AnimationPlayer* m_WeaponAnimPlayer = nullptr;
+  PhysicsDirectSpaceState3D* m_SpaceState = nullptr;
 
-  Ref<Weapon> m_CurrentWeapon { nullptr };
-  Node3D* m_WeaponNode { nullptr }; // Weapon node is the actual weapon itself positioned in the weapon socket
+  Ref<Weapon> m_CurrentWeapon = nullptr;
+  Node3D* m_WeaponNode = nullptr; // Weapon node is the actual weapon itself positioned in the weapon socket
 
   Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 
-  Player* m_PlayerInst { nullptr };
-  PlayerStateMachine* m_StateMachineInst { nullptr };
+  Player* m_PlayerInst = nullptr;
+  PlayerStateMachine* m_StateMachineInst = nullptr;
 
-private:
-  float m_WeaponBobTime = 0.0f, m_IdleWeaponBobTime = 0.0f; 
-
-  bool m_IsEquipped, m_IsWeaponSwitched; 
+  Ref<Weapon> m_TempWeapon;
   Ref<PackedScene> m_LoadScene;
 
-  GD_DEFINE_PROPERTY(Array, weaponList, Array());
-  GD_DEFINE_PROPERTY(float, weapon_bob_freq, 2.0f);
-  GD_DEFINE_PROPERTY(float, weapon_bob_amp, 0.09f);
+  Node3D* m_HoldPointNode = nullptr;
+private:
+  float m_WeaponBobTime, m_IdleWeaponBobTime;
+  float m_IdleWeaponBobFreq, m_IdleWeaponBobAmp, m_WeaponBobFreq, m_WeaponBobAmp;
+  float m_WeaponSwayMult, m_WeaponSwayResetValue, m_IdleWeaponBobSmoothVal, m_WeaponBobSmoothVal;
+  float m_GunRange;
+  
+  Vector2 m_MouseInput;
+  Vector2 m_ScreenCenter;
 
-  GD_DEFINE_PROPERTY(float, idle_weapon_bob_freq, 2.0f);
-  GD_DEFINE_PROPERTY(float, idle_weapon_bob_amp, 0.09f);
-
-  GD_DEFINE_PROPERTY(float, idle_weapon_bob_decay, 2.0f);
-  GD_DEFINE_PROPERTY(float, weapon_bob_decay, 1.5f);
-
-  int m_WeaponIndex = 0;
-
+  int m_WeaponIndex;
   String m_NextWeaponName;
 
+private:
+  GD_DEFINE_PROPERTY(Array, weaponList, Array());
 };
