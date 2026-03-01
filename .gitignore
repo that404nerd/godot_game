@@ -6,9 +6,14 @@
 # Normal files
 compile_commands.json
 assets/**/*.import
+assets/meshes/**/*.png
+assets/meshes/**/*.jpg
 assets/meshes/**/*.import
 
 # folders
 build/
 trenchbroom/maps/autosave
 assets/blender_saves
+
+!assets/meshes/**/textures/*.png
+!assets/meshes/**/textures/*.jpg
