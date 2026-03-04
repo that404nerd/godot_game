@@ -37,7 +37,6 @@ class Player : public CharacterBody3D {
 
 private:
   struct PlayerGlobalState {
-    float JumpBufferCooldown;
   };
 
 public:
@@ -53,11 +52,11 @@ public:
   
 public:
 
-  Marker3D* get_camera_anchor() { return m_CameraAnchor; }
   Camera3D* get_player_camera() { return m_PlayerCamera; }
 
   Node3D* get_rig_hold_point() { return m_RigHoldPoint; }
   Node3D* get_player_head() { return m_PlayerHead; }
+  Node3D* get_camera_controller() { return m_CameraControllerNode; }
 
   CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
   CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
@@ -79,7 +78,6 @@ private:
 
   Node3D* m_PlayerHead = nullptr;
   Node3D* m_CameraControllerNode = nullptr;
-  Marker3D* m_CameraAnchor = nullptr;
 
   // Get Collision shapes
   CollisionShape3D* m_StandingPlayerCollider = nullptr;
@@ -88,6 +86,7 @@ private:
   Camera3D* m_PlayerCamera = nullptr;
 
   Node3D* m_RigHoldPoint = nullptr;
+  Node3D* m_CamController = nullptr;
 
 private:
 
@@ -97,8 +96,6 @@ private:
   Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
 
   Vector3 m_GravityVec = Vector3(0.0f, 0.0f, 0.0f);
-
-  float m_Gravity = 0.0f;
 
 private:
   GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
@@ -116,8 +113,6 @@ private:
   GD_DEFINE_PROPERTY(float, max_air_move_speed, 10.0f);
 
   GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
-
-  GD_DEFINE_PROPERTY(float, jump_buffer_cooldown, 0.1f);
 
   GD_DEFINE_PROPERTY(float, ground_accel, 0.0f);
   GD_DEFINE_PROPERTY(float, ground_decel, 0.2f);

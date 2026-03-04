@@ -18,11 +18,6 @@ void GlobalStateHandler::_bind_methods()
 
 void GlobalStateHandler::_physics_process(double delta)
 {
-  if(m_PlayerInst->get_global_state().JumpBufferCooldown > 0.0f)
-  {
-    m_PlayerInst->get_global_state().JumpBufferCooldown -= delta;
-  }
-
 }
 
 GlobalStateHandler::~GlobalStateHandler()

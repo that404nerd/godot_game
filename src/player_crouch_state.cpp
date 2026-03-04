@@ -18,13 +18,13 @@ void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event)
   // TODO: Make this work for objects like boxes, crates and stuff
   if (Input::get_singleton()->is_action_just_pressed("crouch") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) {
     _on_crouch_finished();
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+    emit_signal("state_changed", "Idle");
   }
   
   if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) 
   {
     _on_crouch_finished();
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
+    emit_signal("state_changed", "Jump");
   }
 }
 
@@ -65,7 +65,7 @@ void PlayerCrouchState::_physics_update(double delta)
  
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 
   {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
+    emit_signal("state_changed", "Fall");
   }
 
 }

@@ -19,7 +19,7 @@ void PlayerSlideState::_handle_input(const Ref<InputEvent>& event)
 {
   if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) {
     _on_slide_finished();
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
+    emit_signal("state_changed", "Jump");
   }
 
 }
@@ -80,7 +80,7 @@ void PlayerSlideState::_physics_update(double delta)
   // TODO: This is bad. Anything the player collides with will cancel the slide state. A normal body like a crate, box would make sense
   // if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(m_SlideVector.x, 0.0f, m_SlideVector.z))) {
   //   _on_slide_finished();
-  //   emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+  //   emit_signal("state_changed", "Idle");
   // }
   playerVel = Vector3(horizVel.x, playerVel.y, horizVel.z);
   m_PlayerInst->set_velocity(playerVel);
@@ -94,17 +94,17 @@ void PlayerSlideState::_physics_update(double delta)
     if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f)))
     {
       _on_slide_finished();
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
+      emit_signal("state_changed", "Crouch");
     } else {
       _on_slide_finished();
-      emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+      emit_signal("state_changed", "Idle");
     }
   }
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 
   {
     _on_slide_finished();
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
+    emit_signal("state_changed", "Fall");
   }
 }
 

@@ -27,7 +27,6 @@ void PlayerJumpState::_jump()
   m_PlayerInst->set_gravity_vec(gravity_vec);
 
   m_PlayerInst->set_velocity(playerVel);
-  m_PlayerInst->get_global_state().JumpBufferCooldown = 0.0f;
 }
 
 void PlayerJumpState::_physics_update(double delta) 
@@ -38,11 +37,11 @@ void PlayerJumpState::_physics_update(double delta)
   Vector3 playerVel = m_PlayerInst->get_velocity();
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
+    emit_signal("state_changed", "Fall");
   }
   
   if (m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+    emit_signal("state_changed", "Idle");
   }
 }
 

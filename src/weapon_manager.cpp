@@ -3,7 +3,6 @@
 WeaponManager::WeaponManager()
 {
   m_WeaponIndex = 0;
-  m_MouseInput = Vector2(0.0f, 0.0f);
 }
 
 void WeaponManager::_bind_methods()
@@ -39,7 +38,7 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
 
   for(int i = 0; i < weaponList.size(); i++)
   {
-    String inputAction = "weapon_" + String::num(i + 1, 0); // Need to match the set input action in the engine
+    String inputAction = "weapon_" + String::num(i + 1, 0); // Need to match the set input action in the editor
     if(Input::get_singleton()->is_action_just_pressed(inputAction))
     {
       m_WeaponIndex = i;
@@ -210,11 +209,12 @@ void WeaponManager::_physics_process(double delta)
   _reset_weapon_sway(delta);
 
   // TODO: THIS IS PURE ASS. Need a better way to manage states
-  if(m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SPRINT)
-    || m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH))
+  if(m_StateMachineInst->get_current_state() == StringName("Sprint")
+      || m_StateMachineInst->get_current_state() == StringName("Crouch"))
     _weapon_bob(delta);
 
-  if(m_StateMachineInst->get_current_state() == m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE))
+  // <= 0.1f because I observed sometimes it's not perfectly 0.0f. This should fix it
+  if(m_PlayerInst->get_velocity().length() <= 0.1f)
   {
     _idle_weapon_sway(delta);
   }
@@ -224,7 +224,8 @@ void WeaponManager::_physics_process(double delta)
     _shoot();
   }
 
- }
+  m_MouseInput = Vector2(0.0f, 0.0f);
+}
 
 WeaponManager::~WeaponManager()
 {

@@ -35,7 +35,6 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, ground_decel, Variant::FLOAT);
 
   ADD_GROUP("Player Misc Settings", "");
-  GD_BIND_PROPERTY(Player, jump_buffer_cooldown, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, crouch_translate, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, headbob_decay, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, slide_tilt_angle, Variant::FLOAT);
@@ -45,16 +44,12 @@ void Player::_ready()
 {
   m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
   
-  m_PlayerHead = get_node<Node3D>(NodePath("%PlayerHead"));
+  m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_RigHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 
-  m_CameraAnchor = get_node<Marker3D>(NodePath("CameraControllerAnchor")); 
-
   m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
   m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
-
-  m_Gravity = ProjectSettings::get_singleton()->get_setting("physics/3d/default_gravity");
 
 }
 
@@ -96,6 +91,7 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
+  print_line(m_PlayerHead->get_position().y);
 }
 
 

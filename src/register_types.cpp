@@ -23,23 +23,23 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("GameManager")) Engine::get_singleton()->register_singleton("GameManager", GameManager::get_singleton());
 
   // the game runs, the checks are required prevents error spam (DO NOT CHANGE THE player from GDREGISTER_RUNTIME_CLASS)
-  if (!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game); 
-  if (!ClassDB::class_exists("Player")) GDREGISTER_RUNTIME_CLASS(Player);
-  if (!ClassDB::class_exists("CameraController")) GDREGISTER_RUNTIME_CLASS(CameraController); 
+  if(!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game); 
+  if(!ClassDB::class_exists("Player")) GDREGISTER_RUNTIME_CLASS(Player);
   
-  if (!ClassDB::class_exists("PlayerState")) GDREGISTER_ABSTRACT_CLASS(PlayerState); 
+  if(!ClassDB::class_exists("PlayerState")) GDREGISTER_ABSTRACT_CLASS(PlayerState); 
   
-  if (!ClassDB::class_exists("PlayerStateMachine")) GDREGISTER_RUNTIME_CLASS(PlayerStateMachine); // RUNTIME for other states to be valid
-  if (!ClassDB::class_exists("GlobalStateHandler")) GDREGISTER_RUNTIME_CLASS(GlobalStateHandler); // RUNTIME for other states to be valid
-  if (!ClassDB::class_exists("PlayerIdleState")) GDREGISTER_CLASS(PlayerIdleState); 
-  if (!ClassDB::class_exists("PlayerSprintState")) GDREGISTER_CLASS(PlayerSprintState); 
-  if (!ClassDB::class_exists("PlayerJumpState")) GDREGISTER_CLASS(PlayerJumpState); 
-  if (!ClassDB::class_exists("PlayerCrouchState")) GDREGISTER_CLASS(PlayerCrouchState); 
-  if (!ClassDB::class_exists("PlayerSlideState")) GDREGISTER_CLASS(PlayerSlideState); 
-  if (!ClassDB::class_exists("PlayerFallingState")) GDREGISTER_CLASS(PlayerFallingState); 
+  if(!ClassDB::class_exists("CameraController")) GDREGISTER_RUNTIME_CLASS(CameraController); 
+  if(!ClassDB::class_exists("PlayerStateMachine")) GDREGISTER_RUNTIME_CLASS(PlayerStateMachine); // RUNTIME for other states to be valid
+  if(!ClassDB::class_exists("GlobalStateHandler")) GDREGISTER_RUNTIME_CLASS(GlobalStateHandler); // RUNTIME for other states to be valid
+  if(!ClassDB::class_exists("PlayerIdleState")) GDREGISTER_CLASS(PlayerIdleState); 
+  if(!ClassDB::class_exists("PlayerSprintState")) GDREGISTER_CLASS(PlayerSprintState); 
+  if(!ClassDB::class_exists("PlayerJumpState")) GDREGISTER_CLASS(PlayerJumpState); 
+  if(!ClassDB::class_exists("PlayerCrouchState")) GDREGISTER_CLASS(PlayerCrouchState); 
+  if(!ClassDB::class_exists("PlayerSlideState")) GDREGISTER_CLASS(PlayerSlideState); 
+  if(!ClassDB::class_exists("PlayerFallingState")) GDREGISTER_CLASS(PlayerFallingState); 
 
-  if (!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager); // RUNTIME probably because the weapon anim is played in the editor (not sure)
-  if (!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
+  if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager); // RUNTIME probably because the weapon anim is played in the editor (not sure)
+  if(!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
 
 }
 

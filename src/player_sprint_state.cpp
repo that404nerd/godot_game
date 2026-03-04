@@ -18,19 +18,18 @@ void PlayerSprintState::_bind_methods()
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
 {
   if(Input::get_singleton()->is_action_just_pressed("jump")) {
-    m_PlayerInst->get_global_state().JumpBufferCooldown = 0.2f;
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
+    emit_signal("state_changed", "Jump");
   }
   
   if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
   {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::CROUCH));
+    emit_signal("state_changed", "Crouch");
   }
   
   // TODO: Have a direction enum or smtg like that
   if(m_PlayerInst->get_velocity().length() > (m_PlayerInst->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch"))
   {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::SLIDE));
+    emit_signal("state_changed", "Slide");
   }
 
 
@@ -68,16 +67,12 @@ void PlayerSprintState::_physics_update(double delta)
   _headbob_effect(delta);
   m_PlayerInst->set_velocity(playerVel);
 
-  if (m_PlayerInst->is_on_floor() && m_PlayerInst->get_global_state().JumpBufferCooldown > 0.0f) {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::JUMP));
-  }
-
   if(m_PlayerInst->get_velocity().length() < 1.0f && m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::IDLE));
+    emit_signal("state_changed", "Idle");
   }
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", m_StateMachineInst->GetCurrentState(PlayerStateMachine::StateNames::FALL));
+    emit_signal("state_changed", "Fall");
   }
 }
 

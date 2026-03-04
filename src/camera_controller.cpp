@@ -1,55 +1,71 @@
 #include "camera_controller.h"
+#include "globals.h"
+#include "godot_cpp/core/math.hpp"
 #include "player.h"
+#include "player_state_machine.h"
 
-CameraController::CameraController() {
+CameraController::CameraController() 
+{
 }
 
 void CameraController::_ready()
 {
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-  m_StateMachine = GameManager::get_singleton()->get_player_state_machine();
+  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
+
+  // This is really weird. You can't use the getter function from the player class 
+  // instead you have to use the unique access identifier (if set obv) otherwise it will crash. I have no clue why.
+  m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
+
+  m_OriginalFOV = m_PlayerCamera->get_fov();
+  m_FinalFOV = m_PlayerCamera->get_fov() + 5.0f;
+
 }
 
-void CameraController::_input(const Ref<InputEvent>& event)
+void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 {
   // Set the event to an mouse input event
   Ref<InputEventMouseMotion> mouse_event = event;
   if(event->is_class("InputEventMouseMotion")) {
-    m_MouseInput.x += -mouse_event->get_screen_relative().x * m_PlayerInst->get_mouse_sensitivity();
-    m_MouseInput.y += -mouse_event->get_screen_relative().y * m_PlayerInst->get_mouse_sensitivity();
+
+    m_PlayerInst->rotate_y(-mouse_event->get_relative().x * m_PlayerInst->get_mouse_sensitivity());
+    m_PlayerCamera->rotate_x(-mouse_event->get_relative().y * m_PlayerInst->get_mouse_sensitivity());
+
+    Vector3 camRot = m_PlayerCamera->get_rotation();
+    camRot.x = Math::clamp(camRot.x, Math::deg_to_rad(-89.0f), Math::deg_to_rad(89.0f));
+    m_PlayerCamera->set_rotation(Vector3(camRot.x, camRot.y, 0.0f));
   }
 }
 
 void CameraController::_bind_methods() 
 {
+  GD_BIND_PROPERTY(CameraController, fov_zoom_out_transition_value, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, fov_zoom_in_transition_value, Variant::FLOAT);
 }
 
 
 void CameraController::_physics_process(double delta) 
 {
-  // Camera stuff
-  if(m_StateMachine->get_current_state() == m_StateMachine->GetCurrentState(PlayerStateMachine::StateNames::CROUCH) || 
-          m_StateMachine->get_current_state() == m_StateMachine->GetCurrentState(PlayerStateMachine::StateNames::SLIDE))
+  m_CurrentState = m_StateMachineInst->get_current_state();
+
+  if(m_CurrentState == StringName("Sprint"))
   {
-    m_InputRotation.x = Math::clamp(m_InputRotation.x + m_MouseInput.y, Math::deg_to_rad(-60.0f), Math::deg_to_rad(60.0f));
-    m_InputRotation.y += m_MouseInput.x;
-  } else {
-    m_InputRotation.x = Math::clamp(m_InputRotation.x + m_MouseInput.y, Math::deg_to_rad(-89.0f), Math::deg_to_rad(89.0f));
-    m_InputRotation.y += m_MouseInput.x;
+    m_PlayerCamera->set_fov(Utils::exp_decay(m_OriginalFOV, m_FinalFOV, fov_zoom_out_transition_value, delta));
+  } else if(m_CurrentState == StringName("Idle")) {
+    m_PlayerCamera->set_fov(Utils::exp_decay(m_PlayerCamera->get_fov(), m_OriginalFOV, fov_zoom_in_transition_value, delta));
   }
 
-  m_PlayerInst->set_rotation(Vector3(m_InputRotation));
+  Vector3 camControllerRot = get_rotation();
+  if(Math::abs(m_PlayerInst->get_input_dir().x) == 1.0f)
+  {
+    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(5.0f) * -m_PlayerInst->get_input_dir().x, 10.0f, (float)delta);
+  } else {
+    camControllerRot.z = Utils::exp_decay(camControllerRot.z, 0.0f, 10.0f, (float)delta);
+  }
 
-  Transform3D pitchTransform = m_PlayerInst->get_camera_anchor()->get_transform();
-  pitchTransform.basis = Basis::from_euler(Vector3(m_InputRotation.x, 0.0f, 0.0f));
-  m_PlayerInst->get_camera_anchor()->set_transform(pitchTransform);
+  set_rotation(camControllerRot);
 
-  Transform3D yawTransform = m_PlayerInst->get_global_transform();
-  yawTransform.basis = Basis::from_euler(Vector3(0.0f, m_InputRotation.y, 0.0f));
-  m_PlayerInst->set_transform(yawTransform);
 
-  set_global_transform(m_PlayerInst->get_camera_anchor()->get_global_transform_interpolated());
-  m_MouseInput = Vector2(0.0f, 0.0f);
 }
 
 CameraController::~CameraController() {}

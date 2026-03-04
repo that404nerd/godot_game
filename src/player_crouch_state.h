@@ -11,29 +11,27 @@
 #include <godot_cpp/classes/capsule_mesh.hpp>
 
 class PlayerCrouchState : public PlayerState {
-    GDCLASS(PlayerCrouchState, PlayerState);
+  GDCLASS(PlayerCrouchState, PlayerState);
 
 public:
-    PlayerCrouchState() : m_CurrentHeadPosition(Vector3(0.0f, 0.0f, 0.0f)), m_SlideVector(Vector3(0.0f, 0.0f, 0.0f)), m_PlayerInst(nullptr), m_CrouchTween(nullptr) {}; 
+  PlayerCrouchState() : m_CurrentHeadPosition(Vector3(0.0f, 0.0f, 0.0f)), m_SlideVector(Vector3(0.0f, 0.0f, 0.0f)), m_PlayerInst(nullptr), m_CrouchTween(nullptr) {}; 
 
-    virtual void _enter() override;
-    virtual void _handle_input(const Ref<InputEvent>& event) override;
-    virtual void _physics_update(double delta) override;
-    virtual void _exit() override; 
+  virtual void _enter() override;
+  virtual void _handle_input(const Ref<InputEvent>& event) override;
+  virtual void _physics_update(double delta) override;
+  virtual void _exit() override; 
 
-    void _on_crouch_finished();
+  void _on_crouch_finished();
 
 protected:
-    static void _bind_methods();
+  static void _bind_methods();
 
 private:
-    float m_FinalPos, m_SlideTimer;
+  float m_FinalPos, m_SlideTimer;
 
-    Vector3 m_OriginalHeadPosition, m_CurrentHeadPosition, m_SlideVector;
-    Player* m_PlayerInst;
-    Ref<Tween> m_CrouchTween;
+  Vector3 m_OriginalHeadPosition, m_CurrentHeadPosition, m_SlideVector;
+  Player* m_PlayerInst;
+  Ref<Tween> m_CrouchTween;
 
-    CapsuleMesh* m_CapsuleMesh;
-
-    PlayerStateMachine* m_StateMachineInst;
+  PlayerStateMachine* m_StateMachineInst;
 };
