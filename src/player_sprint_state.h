@@ -31,9 +31,4 @@ private:
   Player* m_PlayerInst;
   PlayerStateMachine* m_StateMachineInst;
 
-  float m_HeadbobTime = 0.0f;
-
-  GD_DEFINE_PROPERTY(float, headbob_delta_translate, 20.0f);
-  GD_DEFINE_PROPERTY(float, headbob_amp, 0.04f);
-  GD_DEFINE_PROPERTY(float, headbob_freq, 2.0f);
 };

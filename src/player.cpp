@@ -36,8 +36,6 @@ void Player::_bind_methods()
 
   ADD_GROUP("Player Misc Settings", "");
   GD_BIND_PROPERTY(Player, crouch_translate, Variant::FLOAT);
-  GD_BIND_PROPERTY(Player, headbob_decay, Variant::FLOAT);
-  GD_BIND_PROPERTY(Player, slide_tilt_angle, Variant::FLOAT);
 }
 
 void Player::_ready()
@@ -91,7 +89,6 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
-  print_line(m_PlayerHead->get_position().y);
 }
 
 

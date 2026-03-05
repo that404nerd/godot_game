@@ -102,9 +102,7 @@ private:
   GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);  
 
   GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
-  GD_DEFINE_PROPERTY(float, headbob_decay, 2.0f);
   
-  GD_DEFINE_PROPERTY(float, slide_tilt_angle, 5.0f);
   GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
 
   GD_DEFINE_PROPERTY(float, jump_height, 10.0f);

@@ -35,6 +35,6 @@ private:
   Vector3 m_SlideVector { Vector3(0.0f, 0.0f, 0.0f) };
 
   PlayerStateMachine* m_StateMachineInst { nullptr };
-  Ref<Tween> m_SlideTween, m_CrouchTween;
+  Ref<Tween> m_CrouchTween;
   Camera3D* m_PlayerCamInst;
 };

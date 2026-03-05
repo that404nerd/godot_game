@@ -205,12 +205,11 @@ void WeaponManager::_physics_process(double delta)
   m_WeaponBobSmoothVal = m_CurrentWeapon->get_weapon_bob_smooth_val();
 
   m_GunRange = m_CurrentWeapon->get_gun_range();
+  m_CurrentStateName = m_StateMachineInst->get_current_state();
 
   _reset_weapon_sway(delta);
 
-  // TODO: THIS IS PURE ASS. Need a better way to manage states
-  if(m_StateMachineInst->get_current_state() == StringName("Sprint")
-      || m_StateMachineInst->get_current_state() == StringName("Crouch"))
+  if(m_CurrentStateName == StringName("Sprint") || m_CurrentStateName == StringName("Crouch"))
     _weapon_bob(delta);
 
   // <= 0.1f because I observed sometimes it's not perfectly 0.0f. This should fix it

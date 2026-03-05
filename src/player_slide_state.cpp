@@ -26,11 +26,6 @@ void PlayerSlideState::_handle_input(const Ref<InputEvent>& event)
 
 void PlayerSlideState::_on_slide_finished()
 {
-  if(m_SlideTween != nullptr)
-  {
-    m_SlideTween->kill();
-  }
-
   if(m_CrouchTween != nullptr)
   {
     m_CrouchTween->kill();
@@ -41,10 +36,6 @@ void PlayerSlideState::_on_slide_finished()
   
   m_CrouchTween = m_PlayerInst->create_tween();
   m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.1f);
-
-  // m_SlideTween = m_PlayerCamInst->create_tween();
-  // m_SlideTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.1f); // Use this to restore crouch position to original position when cancelling slide
-  // m_SlideTween->tween_property(m_PlayerCamInst, "rotation:z", 0.0f, 0.1f); // Do this to smoothly reset rotation when cancelling slide
 }
 
 void PlayerSlideState::_crouch_player()
@@ -85,11 +76,6 @@ void PlayerSlideState::_physics_update(double delta)
   playerVel = Vector3(horizVel.x, playerVel.y, horizVel.z);
   m_PlayerInst->set_velocity(playerVel);
 
-  // if(m_SlideTween == nullptr || !m_SlideTween->is_valid()) {
-  //     m_SlideTween = m_PlayerCamInst->create_tween();
-  //     m_SlideTween->tween_property(m_PlayerCamInst, "rotation:z", Math::deg_to_rad(7.0f), m_SlideTimer);
-  // }
-  //
   if(m_SlideTimer <= 0.0f) {
     if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f)))
     {

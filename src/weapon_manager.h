@@ -96,6 +96,8 @@ private:
   int m_WeaponIndex;
   String m_NextWeaponName;
 
+  StringName m_CurrentStateName;
+
 private:
   GD_DEFINE_PROPERTY(Array, weaponList, Array());
 };

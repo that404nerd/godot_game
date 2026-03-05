@@ -1,8 +1,4 @@
 #include "camera_controller.h"
-#include "globals.h"
-#include "godot_cpp/core/math.hpp"
-#include "player.h"
-#include "player_state_machine.h"
 
 CameraController::CameraController() 
 {
@@ -39,8 +35,51 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 
 void CameraController::_bind_methods() 
 {
+  ADD_GROUP("FOV Settings", "");
   GD_BIND_PROPERTY(CameraController, fov_zoom_out_transition_value, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, fov_zoom_in_transition_value, Variant::FLOAT);
+
+  ADD_GROUP("Side Tilt Settings", "");
+  GD_BIND_PROPERTY(CameraController, side_tilt_angle, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, side_tilt_transition_value, Variant::FLOAT);
+
+  ADD_GROUP("Headbob Settings", "");
+  GD_BIND_PROPERTY(CameraController, sprint_headbob_amp, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, sprint_headbob_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, crouch_headbob_amp, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, crouch_headbob_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, headbob_delta_translate, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, headbob_transition_value, Variant::FLOAT);
+}
+
+// ISSUE: Causes some transform errors!!
+void CameraController::_headbob_effect(double delta)
+{
+  bool onFloor = m_PlayerInst->is_on_floor(); // so that bobbing doesn't occur during airborne states
+
+  float velocity = m_PlayerInst->get_velocity().length();
+  m_HeadbobTime += delta * velocity * onFloor;
+
+  float x_bob = 0.0f, y_bob = 0.0f;
+  
+  if(m_CurrentState == StringName("Sprint"))
+  {
+    x_bob = Math::cos(m_HeadbobTime * sprint_headbob_freq * 0.5f) * sprint_headbob_amp; 
+    y_bob = Math::sin(m_HeadbobTime * sprint_headbob_freq) * sprint_headbob_amp;        
+  }
+  // else if(m_CurrentState == StringName("Crouch")) {
+  //   x_bob = Math::cos(m_HeadbobTime * crouch_headbob_freq * 0.5f) * crouch_headbob_amp; 
+  //   y_bob = Math::sin(m_HeadbobTime * crouch_headbob_freq) * crouch_headbob_amp;        
+  // }
+
+  Vector3 currentPos = m_PlayerInst->get_player_head()->get_position();
+  Vector3 newPos = Vector3(
+    Utils::exp_decay(currentPos.x, x_bob, headbob_transition_value, (float)delta * headbob_delta_translate),
+    Utils::exp_decay(currentPos.y, y_bob, headbob_transition_value, (float)delta * headbob_delta_translate), 
+    0.0f
+  );
+
+  m_PlayerInst->get_player_head()->set_position(newPos);
 }
 
 
@@ -48,23 +87,20 @@ void CameraController::_physics_process(double delta)
 {
   m_CurrentState = m_StateMachineInst->get_current_state();
 
+  Vector3 camControllerRot = get_rotation();
+
   if(m_CurrentState == StringName("Sprint"))
   {
     m_PlayerCamera->set_fov(Utils::exp_decay(m_OriginalFOV, m_FinalFOV, fov_zoom_out_transition_value, delta));
+    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -m_PlayerInst->get_input_dir().x, side_tilt_transition_value, (float)delta);
   } else if(m_CurrentState == StringName("Idle")) {
     m_PlayerCamera->set_fov(Utils::exp_decay(m_PlayerCamera->get_fov(), m_OriginalFOV, fov_zoom_in_transition_value, delta));
+    camControllerRot.z = Utils::exp_decay(camControllerRot.z, 0.0f, side_tilt_transition_value, (float)delta);
   }
-
-  Vector3 camControllerRot = get_rotation();
-  if(Math::abs(m_PlayerInst->get_input_dir().x) == 1.0f)
-  {
-    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(5.0f) * -m_PlayerInst->get_input_dir().x, 10.0f, (float)delta);
-  } else {
-    camControllerRot.z = Utils::exp_decay(camControllerRot.z, 0.0f, 10.0f, (float)delta);
-  }
-
+  
   set_rotation(camControllerRot);
-
+  
+  _headbob_effect(delta);
 
 }
 
