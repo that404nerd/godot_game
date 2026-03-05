@@ -28,7 +28,8 @@ public:
 
   void _ready() override;
   void _physics_process(double delta) override;
-
+  
+  void _tilt_player(double delta);
   void _headbob_effect(double delta);
 
 private:
@@ -37,13 +38,18 @@ private:
 
   Camera3D* m_PlayerCamera = nullptr;
 
-  float m_OriginalFOV, m_FinalFOV;
+  float m_OriginalFOV;
   float m_HeadbobTime;
 
   StringName m_CurrentState;
 
-  GD_DEFINE_PROPERTY(float, fov_zoom_out_transition_value, 20.0f);
-  GD_DEFINE_PROPERTY(float, fov_zoom_in_transition_value, 10.0f);
+  GD_DEFINE_PROPERTY(float, sprint_fov_zoom_out_transition_value, 20.0f);
+  GD_DEFINE_PROPERTY(float, sprint_fov_zoom_in_transition_value, 10.0f);
+  GD_DEFINE_PROPERTY(float, slide_fov_zoom_in_transition_value, 10.0f);
+  GD_DEFINE_PROPERTY(float, sprint_fov, 0.0f);
+  GD_DEFINE_PROPERTY(float, slide_fov, 0.0f);
+  
+  GD_DEFINE_PROPERTY(float, slide_tilt_angle, 2.0f);
   GD_DEFINE_PROPERTY(float, side_tilt_angle, 2.0f);
   GD_DEFINE_PROPERTY(float, side_tilt_transition_value, 15.0f);
 

@@ -12,7 +12,6 @@ void Weapon::_bind_methods() {
   ADD_GROUP("General Weapon Properties", "");
   GD_BIND_PROPERTY(Weapon, ammoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
-  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponNode, Variant::OBJECT, godot::PROPERTY_HINT_NODE_TYPE);
 
   ADD_GROUP("Weapon Animation Names", "");
   GD_BIND_PROPERTY(Weapon, weaponEquipAnimName, Variant::STRING);

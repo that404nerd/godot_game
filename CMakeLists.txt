@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: Unlicense
-
 cmake_minimum_required( VERSION 3.26 )
 cmake_policy(SET CMP0177 NEW)
 

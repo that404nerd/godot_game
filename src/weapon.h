@@ -42,6 +42,4 @@ private:
   GD_DEFINE_PROPERTY(float, weapon_sway_reset, 15.0f);
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_smooth_val, 2.0f);
   GD_DEFINE_PROPERTY(float, weapon_bob_smooth_val, 1.5f);
-
-  GD_DEFINE_PROPERTY(Node3D*, weaponNode, nullptr);
 };

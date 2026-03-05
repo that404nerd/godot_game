@@ -14,8 +14,8 @@ void CameraController::_ready()
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
 
   m_OriginalFOV = m_PlayerCamera->get_fov();
-  m_FinalFOV = m_PlayerCamera->get_fov() + 5.0f;
-
+  sprint_fov = m_PlayerCamera->get_fov() + 10.0f;
+  slide_fov = m_PlayerCamera->get_fov() + 20.0f;
 }
 
 void CameraController::_unhandled_input(const Ref<InputEvent>& event)
@@ -36,10 +36,14 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 void CameraController::_bind_methods() 
 {
   ADD_GROUP("FOV Settings", "");
-  GD_BIND_PROPERTY(CameraController, fov_zoom_out_transition_value, Variant::FLOAT);
-  GD_BIND_PROPERTY(CameraController, fov_zoom_in_transition_value, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, sprint_fov, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, slide_fov, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, slide_fov_zoom_in_transition_value, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, sprint_fov_zoom_out_transition_value, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, sprint_fov_zoom_in_transition_value, Variant::FLOAT);
 
   ADD_GROUP("Side Tilt Settings", "");
+  GD_BIND_PROPERTY(CameraController, slide_tilt_angle, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, side_tilt_angle, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, side_tilt_transition_value, Variant::FLOAT);
 
@@ -52,25 +56,20 @@ void CameraController::_bind_methods()
   GD_BIND_PROPERTY(CameraController, headbob_transition_value, Variant::FLOAT);
 }
 
-// ISSUE: Causes some transform errors!!
 void CameraController::_headbob_effect(double delta)
 {
   bool onFloor = m_PlayerInst->is_on_floor(); // so that bobbing doesn't occur during airborne states
 
-  float velocity = m_PlayerInst->get_velocity().length();
+  float velocity = m_PlayerInst->get_velocity().length(); 
   m_HeadbobTime += delta * velocity * onFloor;
 
-  float x_bob = 0.0f, y_bob = 0.0f;
-  
-  if(m_CurrentState == StringName("Sprint"))
-  {
-    x_bob = Math::cos(m_HeadbobTime * sprint_headbob_freq * 0.5f) * sprint_headbob_amp; 
-    y_bob = Math::sin(m_HeadbobTime * sprint_headbob_freq) * sprint_headbob_amp;        
+  float x_bob = Math::cos(m_HeadbobTime * sprint_headbob_freq * 0.5f) * sprint_headbob_amp; 
+  float y_bob = Math::sin(m_HeadbobTime * sprint_headbob_freq) * sprint_headbob_amp;        
+
+  if(m_CurrentState == StringName("Crouch")) {
+    x_bob = Math::cos(m_HeadbobTime * crouch_headbob_freq * 0.5f) * crouch_headbob_amp; 
+    y_bob = Math::sin(m_HeadbobTime * crouch_headbob_freq) * crouch_headbob_amp;        
   }
-  // else if(m_CurrentState == StringName("Crouch")) {
-  //   x_bob = Math::cos(m_HeadbobTime * crouch_headbob_freq * 0.5f) * crouch_headbob_amp; 
-  //   y_bob = Math::sin(m_HeadbobTime * crouch_headbob_freq) * crouch_headbob_amp;        
-  // }
 
   Vector3 currentPos = m_PlayerInst->get_player_head()->get_position();
   Vector3 newPos = Vector3(
@@ -78,27 +77,46 @@ void CameraController::_headbob_effect(double delta)
     Utils::exp_decay(currentPos.y, y_bob, headbob_transition_value, (float)delta * headbob_delta_translate), 
     0.0f
   );
-
-  m_PlayerInst->get_player_head()->set_position(newPos);
+  
+  // Otherwise don't apply headbob since without this condition it will set invalid transforms
+  if(m_CurrentState == StringName("Sprint") || m_CurrentState == StringName("Crouch"))
+  {
+    m_PlayerInst->get_player_head()->set_position(newPos);
+  }
 }
 
+void CameraController::_tilt_player(double delta)
+{
+  Vector3 camControllerRot = get_rotation();
+  if(m_CurrentState == StringName("Sprint"))
+  {
+    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -m_PlayerInst->get_input_dir().x, side_tilt_transition_value, (float)delta);
+  } else if(m_CurrentState == StringName("Slide"))
+  {
+    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle), side_tilt_transition_value, (float)delta);
+  } else {
+    camControllerRot.z = Utils::exp_decay(camControllerRot.z, 0.0f, side_tilt_transition_value, (float)delta);
+  }
+
+  set_rotation(camControllerRot);
+}
 
 void CameraController::_physics_process(double delta) 
 {
   m_CurrentState = m_StateMachineInst->get_current_state();
 
-  Vector3 camControllerRot = get_rotation();
 
   if(m_CurrentState == StringName("Sprint"))
   {
-    m_PlayerCamera->set_fov(Utils::exp_decay(m_OriginalFOV, m_FinalFOV, fov_zoom_out_transition_value, delta));
-    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -m_PlayerInst->get_input_dir().x, side_tilt_transition_value, (float)delta);
-  } else if(m_CurrentState == StringName("Idle")) {
-    m_PlayerCamera->set_fov(Utils::exp_decay(m_PlayerCamera->get_fov(), m_OriginalFOV, fov_zoom_in_transition_value, delta));
-    camControllerRot.z = Utils::exp_decay(camControllerRot.z, 0.0f, side_tilt_transition_value, (float)delta);
-  }
+    m_PlayerCamera->set_fov(Math::lerp(m_OriginalFOV, sprint_fov, sprint_fov_zoom_out_transition_value * (float)delta));
+  } else if(m_CurrentState == StringName("Slide"))
+  {
+    m_PlayerCamera->set_fov(Math::lerp(m_PlayerCamera->get_fov(), slide_fov, slide_fov_zoom_in_transition_value * (float)delta));
+  } else {
+    m_PlayerCamera->set_fov(Math::lerp(m_PlayerCamera->get_fov(), m_OriginalFOV, sprint_fov_zoom_out_transition_value * (float)delta));
+  } 
   
-  set_rotation(camControllerRot);
+  _tilt_player(delta);
   
   _headbob_effect(delta);
 
