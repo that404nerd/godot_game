@@ -9,8 +9,6 @@ void CameraController::_ready()
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
 
-  // NOTE: This is really weird. You can't use the getter function from the player class 
-  // instead you have to use the unique access identifier (if set in the editor) otherwise it will crash. I have no clue why.
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
 
   m_OriginalFOV = m_PlayerCamera->get_fov();

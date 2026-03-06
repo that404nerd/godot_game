@@ -22,6 +22,7 @@
 #include <godot_cpp/classes/capsule_mesh.hpp>
 #include <godot_cpp/classes/sub_viewport.hpp>
 #include <godot_cpp/core/math.hpp>
+#include <godot_cpp/classes/ray_cast3d.hpp>
 
 #include "globals.h"
 #include "game_manager.h"
@@ -54,9 +55,10 @@ public:
 
   Camera3D* get_player_camera() { return m_PlayerCamera; }
 
-  Node3D* get_rig_hold_point() { return m_RigHoldPoint; }
   Node3D* get_player_head() { return m_PlayerHead; }
   Node3D* get_camera_controller() { return m_CameraControllerNode; }
+
+  RayCast3D* get_collider_raycast() { return m_ColliderRayCast; }
 
   CollisionShape3D* get_player_standing_collider() { return m_StandingPlayerCollider; }
   CollisionShape3D* get_player_crouching_collider() { return m_CrouchingPlayerCollider; }
@@ -83,9 +85,9 @@ private:
   CollisionShape3D* m_StandingPlayerCollider = nullptr;
   CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
 
+  RayCast3D* m_ColliderRayCast = nullptr;
   Camera3D* m_PlayerCamera = nullptr;
 
-  Node3D* m_RigHoldPoint = nullptr;
   Node3D* m_CamController = nullptr;
 
 private:

@@ -1,6 +1,5 @@
 #include "player.h"
-#include "globals.h"
-#include "godot_cpp/core/error_macros.hpp"
+#include "godot_cpp/classes/ray_cast3d.hpp"
 
 /*
   transform:  transform.origin = Position (Where you are with respect to the world).
@@ -45,7 +44,7 @@ void Player::_ready()
   
   m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
-  m_RigHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
+  m_ColliderRayCast = get_node<RayCast3D>(NodePath("PlayerRaycasts/PlayerColliderRay"));
 
   m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
   m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));

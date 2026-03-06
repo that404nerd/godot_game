@@ -28,11 +28,6 @@
 #include "game_manager.h"
 #include "player_state_machine.h"
 
-//  ISSUE: For some reason the weapon manager node's position goes to NaN and just prints errors because of invalid transformations
-// After some testing I found out that doing some kinda keyboard/mouse action somehow triggers it.
-// No clue what it is but ig the fix is to wait until the actual game shows up and then start doing random shit.
-// This is really weird. It could be some initialization issue on the engine side
-
 using namespace godot;
 
 class WeaponManager : public Node {

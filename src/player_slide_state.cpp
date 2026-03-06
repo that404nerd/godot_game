@@ -17,7 +17,7 @@ void PlayerSlideState::_bind_methods()
 
 void PlayerSlideState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) {
+  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->get_collider_raycast()->is_colliding()) {
     _on_slide_finished();
     emit_signal("state_changed", "Jump");
   }
@@ -25,15 +25,15 @@ void PlayerSlideState::_handle_input(const Ref<InputEvent>& event)
 }
 
 void PlayerSlideState::_on_slide_finished()
-{
+{ 
+  m_PlayerInst->get_player_crouching_collider()->set_disabled(true);
+  m_PlayerInst->get_player_standing_collider()->set_disabled(false);
   if(m_CrouchTween != nullptr)
   {
     m_CrouchTween->kill();
   }
 
-  m_PlayerInst->get_player_crouching_collider()->set_disabled(true);
-  m_PlayerInst->get_player_standing_collider()->set_disabled(false);
-  
+
   m_CrouchTween = m_PlayerInst->create_tween();
   m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.1f);
 }
@@ -43,13 +43,12 @@ void PlayerSlideState::_crouch_player()
   if(m_CrouchTween != nullptr) {
     m_CrouchTween->kill();
   }
-
-  m_CrouchTween = m_PlayerInst->create_tween();
-  m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.1f);
-
   // Set collider states
   m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
   m_PlayerInst->get_player_standing_collider()->set_disabled(true);
+
+  m_CrouchTween = m_PlayerInst->create_tween();
+  m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.1f);
 }
 
 void PlayerSlideState::_physics_update(double delta) 
@@ -76,7 +75,7 @@ void PlayerSlideState::_physics_update(double delta)
   m_PlayerInst->set_velocity(playerVel);
 
   if(m_SlideTimer <= 0.0f) {
-    if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f)))
+    if(m_PlayerInst->get_collider_raycast()->is_colliding())
     {
       _on_slide_finished();
       emit_signal("state_changed", "Crouch");

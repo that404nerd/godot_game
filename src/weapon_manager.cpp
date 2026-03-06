@@ -67,14 +67,14 @@ void WeaponManager::_weapon_bob(double delta)
   float x_bob = Math::cos(m_WeaponBobTime * m_WeaponBobFreq * 0.5f) * m_WeaponBobAmp;
   float y_bob = Math::sin(m_WeaponBobTime * m_WeaponBobFreq) * m_WeaponBobAmp;
 
-  Vector3 currentPos = m_PlayerInst->get_rig_hold_point()->get_position();
+  Vector3 currentPos = m_HoldPointNode->get_position();
   Vector3 newPos = Vector3(
     Utils::exp_decay(currentPos.x, x_bob, m_WeaponBobSmoothVal, (float)delta),
     Utils::exp_decay(currentPos.y, y_bob, m_WeaponBobSmoothVal, (float)delta), 
     0.0f
   );
 
-  m_PlayerInst->get_rig_hold_point()->set_position(newPos);
+  m_HoldPointNode->set_position(newPos);
 }
 
 void WeaponManager::_idle_weapon_sway(double delta)
@@ -84,14 +84,14 @@ void WeaponManager::_idle_weapon_sway(double delta)
   float x_bob = Math::cos(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.5f) * m_IdleWeaponBobAmp;
   float y_bob = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq) * m_IdleWeaponBobAmp;
 
-  Vector3 currentPos = m_PlayerInst->get_rig_hold_point()->get_position();
+  Vector3 currentPos = m_HoldPointNode->get_position();
   Vector3 newPos = Vector3(
     Utils::exp_decay(currentPos.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta),
     Utils::exp_decay(currentPos.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta), 
     0.0f
   );
 
-  m_PlayerInst->get_rig_hold_point()->set_position(newPos);
+  m_HoldPointNode->set_position(newPos);
 
 }
 
