@@ -90,11 +90,6 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
-  if(!get_transform().is_finite())
-  {
-    print_error("Transform is fucking infinite. We are fucked!!!");
-    GENERATE_TRAP();
-  }
 }
 
 

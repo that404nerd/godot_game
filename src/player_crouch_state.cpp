@@ -49,18 +49,19 @@ void PlayerCrouchState::_physics_update(double delta)
   m_PlayerInst->_update_velocity();
 
   Vector3 playerVel = m_PlayerInst->get_velocity();
-
-  if(m_CrouchTween != nullptr) {
-    m_CrouchTween->kill();
-  }
-
-  m_CrouchTween = m_PlayerInst->create_tween();
-  m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.1f);
-
-  // Set collider states
-  m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
-  m_PlayerInst->get_player_standing_collider()->set_disabled(true);
   
+  // FIX: Fix transitions between crouch and slide!
+  // if(m_CrouchTween != nullptr) {
+  //   m_CrouchTween->kill();
+  // }
+  //
+  // m_CrouchTween = m_PlayerInst->create_tween();
+  // m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.1f);
+  //
+  // // Set collider states
+  // m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
+  // m_PlayerInst->get_player_standing_collider()->set_disabled(true);
+  //
   playerVel = m_PlayerInst->get_crouch_speed() * m_PlayerInst->get_wish_dir();
   m_PlayerInst->set_velocity(playerVel);
  

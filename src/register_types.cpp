@@ -20,7 +20,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   // Singleton stuff (eww this is disgusting)
   if(!ClassDB::class_exists("GameManager")) GDREGISTER_CLASS(GameManager);
   s_GameManager = memnew(GameManager);
-  if(!ClassDB::class_exists("GameManager")) Engine::get_singleton()->register_singleton("GameManager", GameManager::get_singleton());
+  if(!ClassDB::class_exists("GameManager")) Engine::get_singleton()->register_singleton("GameManager", s_GameManager->get_singleton());
 
   // the game runs, the checks are required prevents error spam (DO NOT CHANGE THE player from GDREGISTER_RUNTIME_CLASS)
   if(!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game); 
@@ -50,7 +50,7 @@ void uninitialize_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-  Engine::get_singleton()->unregister_singleton("GameManager");
+  if(ClassDB::class_exists("GameManager")) Engine::get_singleton()->unregister_singleton("GameManager");
   memdelete(s_GameManager);
   s_GameManager = nullptr;
 }

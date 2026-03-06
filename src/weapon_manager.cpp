@@ -207,7 +207,6 @@ void WeaponManager::_physics_process(double delta)
   m_GunRange = m_CurrentWeapon->get_gun_range();
   m_CurrentStateName = m_StateMachineInst->get_current_state();
 
-  _reset_weapon_sway(delta);
 
   if(m_CurrentStateName == StringName("Sprint") || m_CurrentStateName == StringName("Crouch"))
     _weapon_bob(delta);
@@ -223,6 +222,7 @@ void WeaponManager::_physics_process(double delta)
     _shoot();
   }
 
+  _reset_weapon_sway(delta);
   m_MouseInput = Vector2(0.0f, 0.0f);
 }
 

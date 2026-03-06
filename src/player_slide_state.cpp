@@ -50,7 +50,6 @@ void PlayerSlideState::_crouch_player()
   // Set collider states
   m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
   m_PlayerInst->get_player_standing_collider()->set_disabled(true);
-
 }
 
 void PlayerSlideState::_physics_update(double delta) 

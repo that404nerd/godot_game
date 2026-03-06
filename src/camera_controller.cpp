@@ -9,8 +9,8 @@ void CameraController::_ready()
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
 
-  // This is really weird. You can't use the getter function from the player class 
-  // instead you have to use the unique access identifier (if set obv) otherwise it will crash. I have no clue why.
+  // NOTE: This is really weird. You can't use the getter function from the player class 
+  // instead you have to use the unique access identifier (if set in the editor) otherwise it will crash. I have no clue why.
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
 
   m_OriginalFOV = m_PlayerCamera->get_fov();
@@ -20,7 +20,6 @@ void CameraController::_ready()
 
 void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 {
-  // Set the event to an mouse input event
   Ref<InputEventMouseMotion> mouse_event = event;
   if(event->is_class("InputEventMouseMotion")) {
 
@@ -79,7 +78,7 @@ void CameraController::_headbob_effect(double delta)
   );
   
   // Otherwise don't apply headbob since without this condition it will set invalid transforms
-  if(m_CurrentState == StringName("Sprint") || m_CurrentState == StringName("Crouch"))
+  if(m_CurrentState == StringName("Sprint"))
   {
     m_PlayerInst->get_player_head()->set_position(newPos);
   }
