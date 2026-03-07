@@ -55,6 +55,7 @@ private:
   void _equip_weapon();
 
   void _shoot();
+  void _reload();
   void _generate_decal();
 
   void _unequip_weapon(const StringName& nextWeaponName);
@@ -93,6 +94,7 @@ private:
   Vector2 m_ScreenCenter;
 
   int m_WeaponIndex;
+  int m_WeaponAmmoTotal;
   String m_NextWeaponName;
 
   StringName m_CurrentStateName;

@@ -12,6 +12,8 @@ void Weapon::_bind_methods() {
   ADD_GROUP("General Weapon Properties", "");
   GD_BIND_PROPERTY(Weapon, ammoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
+  GD_BIND_PROPERTY(Weapon, shoot_delay, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, reload_time, Variant::FLOAT);
 
   ADD_GROUP("Weapon Animation Names", "");
   GD_BIND_PROPERTY(Weapon, weaponEquipAnimName, Variant::STRING);

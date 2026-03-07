@@ -49,11 +49,17 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
     }
   }
 
+  if(Input::get_singleton()->is_action_just_pressed("reload_weapon"))
+  {
+    _reload();
+  }
+
 }
 
 void WeaponManager::_init_weapon()
 {
   m_CurrentWeapon = weaponList[m_WeaponIndex];
+  m_WeaponAmmoTotal = m_CurrentWeapon->get_ammoCount();
   _equip_weapon();
 }
 
@@ -148,6 +154,32 @@ void WeaponManager::_shoot()
   }
 
   _generate_decal();
+  m_CurrentWeapon->set_bulletsConsumed(m_CurrentWeapon->get_bulletsConsumed() + 1);
+  m_CurrentWeapon->set_ammoCount(m_CurrentWeapon->get_ammoCount() - 1);
+}
+
+void WeaponManager::_reload()
+{
+  if(m_WeaponAnimPlayer)
+  {
+    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName());
+  }
+ 
+  // INFO: It's 1'o clock and I'm sleep af. Idk if this is correct logic. Check later!!!
+  if(m_CurrentWeapon->get_ammoCount() != m_WeaponAmmoTotal) // If it ain't full
+  {
+    if(m_CurrentWeapon->get_ammoCount() != 0)
+    {
+      float weaponAmmo = m_WeaponAmmoTotal - m_CurrentWeapon->get_bulletsConsumed();
+      m_CurrentWeapon->set_ammoCount(weaponAmmo);
+      print_line("Set ", weaponAmmo, " ammo");
+    } else {
+      m_CurrentWeapon->set_ammoCount(m_WeaponAmmoTotal);
+      print_line("Set complete ", m_WeaponAmmoTotal, "ammo");
+    }
+  }
+  
+  m_CurrentWeapon->set_bulletsConsumed(0);
 }
 
 void WeaponManager::_unequip_weapon(const StringName& nextWeaponName)
@@ -179,6 +211,7 @@ void WeaponManager::_change_weapon(const StringName& weaponName)
   if(weapon_index != -1)
   {
     m_CurrentWeapon = weaponList[weapon_index];
+    m_WeaponAmmoTotal = m_CurrentWeapon->get_ammoCount();
     m_NextWeaponName = "";
     _equip_weapon();
   }
@@ -206,8 +239,7 @@ void WeaponManager::_physics_process(double delta)
 
   m_GunRange = m_CurrentWeapon->get_gun_range();
   m_CurrentStateName = m_StateMachineInst->get_current_state();
-
-
+  
   if(m_CurrentStateName == StringName("Sprint") || m_CurrentStateName == StringName("Crouch"))
     _weapon_bob(delta);
 
@@ -217,7 +249,7 @@ void WeaponManager::_physics_process(double delta)
     _idle_weapon_sway(delta);
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("fire"))
+  if(Input::get_singleton()->is_action_just_pressed("fire") && m_CurrentWeapon->get_ammoCount() > 0)
   {
     _shoot();
   }

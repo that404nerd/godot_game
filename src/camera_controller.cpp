@@ -49,7 +49,6 @@ void CameraController::_bind_methods()
   GD_BIND_PROPERTY(CameraController, sprint_headbob_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, crouch_headbob_amp, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, crouch_headbob_freq, Variant::FLOAT);
-  GD_BIND_PROPERTY(CameraController, headbob_delta_translate, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, headbob_transition_value, Variant::FLOAT);
 }
 
@@ -58,28 +57,24 @@ void CameraController::_headbob_effect(double delta)
   bool onFloor = m_PlayerInst->is_on_floor(); // so that bobbing doesn't occur during airborne states
 
   float velocity = m_PlayerInst->get_velocity().length(); 
-  m_HeadbobTime += delta * velocity * onFloor;
+  m_HeadbobTime += velocity * onFloor * delta;
 
   float x_bob = Math::cos(m_HeadbobTime * sprint_headbob_freq * 0.5f) * sprint_headbob_amp; 
   float y_bob = Math::sin(m_HeadbobTime * sprint_headbob_freq) * sprint_headbob_amp;        
 
-  if(m_CurrentState == StringName("Crouch")) {
+  if(m_CurrentState == StringName("Crouch") && m_PlayerInst->get_velocity().length() > 0.001f) {
     x_bob = Math::cos(m_HeadbobTime * crouch_headbob_freq * 0.5f) * crouch_headbob_amp; 
     y_bob = Math::sin(m_HeadbobTime * crouch_headbob_freq) * crouch_headbob_amp;        
   }
 
   Vector3 currentPos = m_PlayerInst->get_player_head()->get_position();
   Vector3 newPos = Vector3(
-    Utils::exp_decay(currentPos.x, x_bob, headbob_transition_value, (float)delta * headbob_delta_translate),
-    Utils::exp_decay(currentPos.y, y_bob, headbob_transition_value, (float)delta * headbob_delta_translate), 
+    Utils::exp_decay(currentPos.x, x_bob, headbob_transition_value, (float)delta),
+    Utils::exp_decay(currentPos.y, y_bob, headbob_transition_value, (float)delta), 
     0.0f
   );
   
-  // Otherwise don't apply headbob since without this condition it will set invalid transforms
-  if(m_CurrentState == StringName("Sprint"))
-  {
-    m_PlayerInst->get_player_head()->set_position(newPos);
-  }
+  m_PlayerInst->get_player_head()->set_position(newPos);
 }
 
 void CameraController::_tilt_player(double delta)

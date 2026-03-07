@@ -53,8 +53,6 @@ private:
   GD_DEFINE_PROPERTY(float, side_tilt_angle, 2.0f);
   GD_DEFINE_PROPERTY(float, side_tilt_transition_value, 15.0f);
 
-  GD_DEFINE_PROPERTY(float, headbob_delta_translate, 20.0f);
-
   GD_DEFINE_PROPERTY(float, sprint_headbob_amp, 0.04f);
   GD_DEFINE_PROPERTY(float, sprint_headbob_freq, 2.0f);
   GD_DEFINE_PROPERTY(float, headbob_transition_value, 2.0f);
