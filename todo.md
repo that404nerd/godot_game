@@ -17,7 +17,8 @@
 - Make the side tilt smoothly lerp back [x]
 
 ## Issues & TODO
-- Make a direction enum containing FORWARD, BACK, LEFT, RIGHT []
+- Do not modify the weapon resource file instead have a Weapon State that's independent to the player and in the future, the enemies []
+- Weapon State Machine []
 - Transition to idle state when sliding into a world objects []
 - Allow sliding when crouch is toggled during falling state []
 - Animations for different states []

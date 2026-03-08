@@ -28,8 +28,10 @@ private:
   GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
   GD_DEFINE_PROPERTY(String, weaponReloadAnimName, "");
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
+  GD_DEFINE_PROPERTY(int, weaponAnimSpeedMultiplier, 1); // It can't be 0!!
 
-  GD_DEFINE_PROPERTY(int, ammoCount, 0);
+  GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); // Read only
+  GD_DEFINE_PROPERTY(int, currentAmmoCount, 0); // The current weapon's ammo count
   GD_DEFINE_PROPERTY(int, bulletsConsumed, 0);
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
   GD_DEFINE_PROPERTY(float, shoot_delay, 0.0f);

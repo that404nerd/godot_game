@@ -10,7 +10,8 @@ Weapon::Weapon()
 void Weapon::_bind_methods() {
 
   ADD_GROUP("General Weapon Properties", "");
-  GD_BIND_PROPERTY(Weapon, ammoCount, Variant::INT);
+  GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
+  GD_BIND_PROPERTY(Weapon, currentAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, shoot_delay, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, reload_time, Variant::FLOAT);
@@ -20,6 +21,7 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weaponUnequipAnimName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, weaponReloadAnimName, Variant::STRING);
+  GD_BIND_PROPERTY(Weapon, weaponAnimSpeedMultiplier, Variant::INT);
 
   ADD_GROUP("Weapon Bob And Range", "");
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_freq, Variant::FLOAT);

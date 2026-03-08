@@ -1,7 +1,8 @@
 [gd_resource type="Weapon" format=3 uid="uid://g6nbobyu2ifd"]
 
 [resource]
-ammoCount = 16
+totalAmmoCount = 16
+currentAmmoCount = 16
 weaponName = "Shotgun"
 weaponEquipAnimName = "shotgun_equip"
 weaponUnequipAnimName = "shotgun_unequip"

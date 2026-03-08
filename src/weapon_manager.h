@@ -98,6 +98,7 @@ private:
   String m_NextWeaponName;
 
   StringName m_CurrentStateName;
+  bool m_WantsToShoot;
 
 private:
   GD_DEFINE_PROPERTY(Array, weaponList, Array());

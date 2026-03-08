@@ -1,12 +1,14 @@
 [gd_resource type="Weapon" format=3 uid="uid://ct4xiq7b5h3b0"]
 
 [resource]
-ammoCount = 10
+totalAmmoCount = 10
+currentAmmoCount = 10
 weaponName = "Pistol"
 weaponEquipAnimName = "pistol_equip"
 weaponUnequipAnimName = "pistol_unequip"
 weaponShootingAnimName = "pistol_shoot"
 weaponReloadAnimName = "pistol_reload"
+weaponAnimSpeedMultiplier = 3
 idle_weapon_bob_freq = 3.0
 idle_weapon_bob_amp = 0.01
 weapon_bob_freq = 1.5
