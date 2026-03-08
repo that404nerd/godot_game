@@ -5,7 +5,6 @@ void PlayerFallingState::_enter()
 { 
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-
 }
 
 void PlayerFallingState::_bind_methods()
@@ -20,6 +19,10 @@ void PlayerFallingState::_handle_input(const Ref<InputEvent>& event)
     m_IsJumpPressed = true;
   }
 
+  if(Input::get_singleton()->is_action_just_pressed("dash"))
+  {
+    emit_signal("state_changed", "Dash");
+  }
 }
 
 void PlayerFallingState::_physics_update(double delta) 

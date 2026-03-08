@@ -28,7 +28,11 @@ void PlayerSprintState::_handle_input(const Ref<InputEvent>& event)
   {
     emit_signal("state_changed", "Slide");
   }
-
+  
+  if(Input::get_singleton()->is_action_just_pressed("dash"))
+  {
+    emit_signal("state_changed", "Dash");
+  }
 
 }
 

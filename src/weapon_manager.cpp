@@ -38,7 +38,7 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
 
   for(int i = 0; i < weaponList.size(); i++)
   {
-    String inputAction = "weapon_" + String::num(i + 1, 0); // Need to match the set input action in the editor
+    String inputAction = "weapon_" + String::num(i + 1, 0); // INFO: Need to match the set input action in the editor
     if(Input::get_singleton()->is_action_just_pressed(inputAction))
     {
       m_WeaponIndex = i;
@@ -49,7 +49,7 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
     }
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("reload_weapon"))
+  if(Input::get_singleton()->is_action_just_pressed("reload_weapon") && m_CurrentWeapon->get_ammoCount() != m_WeaponAmmoTotal)
   {
     _reload();
   }
@@ -79,7 +79,12 @@ void WeaponManager::_weapon_bob(double delta)
     Utils::exp_decay(currentPos.y, y_bob, m_WeaponBobSmoothVal, (float)delta), 
     0.0f
   );
-
+  
+  if(!m_HoldPointNode->get_transform().is_finite())
+  {
+    print_error("Weapon BOB: Transform is infinite!");
+    GENERATE_TRAP();
+  }
   m_HoldPointNode->set_position(newPos);
 }
 
@@ -97,6 +102,11 @@ void WeaponManager::_idle_weapon_sway(double delta)
     0.0f
   );
 
+  if(!m_HoldPointNode->get_transform().is_finite())
+  {
+    print_error("Idle weapon sway: Transform is infinite!");
+    GENERATE_TRAP();
+  }
   m_HoldPointNode->set_position(newPos);
 
 }
@@ -106,6 +116,11 @@ void WeaponManager::_reset_weapon_sway(double delta)
   Vector3 m_HoldPointPos = m_HoldPointNode->get_position();
   m_HoldPointPos.x = Math::lerp(m_HoldPointNode->get_position().x, 0.0f, m_WeaponSwayResetValue * (float)delta);
   m_HoldPointPos.y = Math::lerp(m_HoldPointNode->get_position().y, 0.0f, m_WeaponSwayResetValue * (float)delta);
+  if(!m_HoldPointNode->get_transform().is_finite())
+  {
+    print_error("Reset Weapon Sway: Transform is infinite!");
+    GENERATE_TRAP();
+  }
   m_HoldPointNode->set_position(m_HoldPointPos);
 }
 
@@ -115,6 +130,11 @@ void WeaponManager::_weapon_sway(Vector2 sway_vector)
   m_HoldPointPos.x -= sway_vector.x * m_WeaponSwayMult * m_PlayerInst->get_physics_process_delta_time();
   m_HoldPointPos.y += sway_vector.y * m_WeaponSwayMult * m_PlayerInst->get_physics_process_delta_time();
 
+  if(!m_HoldPointNode->get_transform().is_finite())
+  {
+    print_error("Weapon Sway: Transform is infinite!");
+    GENERATE_TRAP();
+  }
   m_HoldPointNode->set_position(m_HoldPointPos);
 }
 
@@ -164,18 +184,18 @@ void WeaponManager::_reload()
   {
     m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName());
   }
- 
-  // INFO: It's 1'o clock and I'm sleep af. Idk if this is correct logic. Check later!!!
+  
+  // NOTE: Currently no ammo pickups...
   if(m_CurrentWeapon->get_ammoCount() != m_WeaponAmmoTotal) // If it ain't full
   {
     if(m_CurrentWeapon->get_ammoCount() != 0)
     {
       float weaponAmmo = m_WeaponAmmoTotal - m_CurrentWeapon->get_bulletsConsumed();
-      m_CurrentWeapon->set_ammoCount(weaponAmmo);
+      m_CurrentWeapon->set_ammoCount(m_CurrentWeapon->get_bulletsConsumed() + weaponAmmo);
       print_line("Set ", weaponAmmo, " ammo");
     } else {
       m_CurrentWeapon->set_ammoCount(m_WeaponAmmoTotal);
-      print_line("Set complete ", m_WeaponAmmoTotal, "ammo");
+      print_line("Set complete ", m_WeaponAmmoTotal, " ammo");
     }
   }
   

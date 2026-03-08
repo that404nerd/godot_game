@@ -5,7 +5,6 @@ void PlayerSlideState::_enter()
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
   m_SlideVector = m_PlayerInst->get_wish_dir();
 
-  m_PlayerCamInst = m_PlayerInst->get_player_camera();
   m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
   m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - m_PlayerInst->get_crouch_translate();
   m_SlideTimer = 2.0f;

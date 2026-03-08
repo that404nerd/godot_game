@@ -36,5 +36,4 @@ private:
 
   PlayerStateMachine* m_StateMachineInst { nullptr };
   Ref<Tween> m_CrouchTween;
-  Camera3D* m_PlayerCamInst;
 };

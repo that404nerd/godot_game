@@ -221,12 +221,13 @@ shape = SubResource("ConvexPolygonShape3D_l1g8i")
 [node name="entity_0_brush_17_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=407715589]
 shape = SubResource("ConvexPolygonShape3D_8qpon")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1812326670]
+[node name="RigidBlock" type="RigidBody3D" parent="." unique_id=228699220]
+mass = 0.5
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1722258983]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBlock" unique_id=1722258983]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.007, 2.838, 0)
 shape = SubResource("BoxShape3D_qsrgx")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1427821645]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBlock" unique_id=1427821645]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.007147, 2.8376393, 0)
 mesh = SubResource("BoxMesh_2h6oo")

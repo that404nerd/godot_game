@@ -1,4 +1,5 @@
 #include "register_types.hpp"
+#include "player_dash_state.h"
 #include <godot_cpp/core/class_db.hpp>
 
 #include <gdextension_interface.h>
@@ -34,6 +35,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("PlayerIdleState")) GDREGISTER_CLASS(PlayerIdleState); 
   if(!ClassDB::class_exists("PlayerSprintState")) GDREGISTER_CLASS(PlayerSprintState); 
   if(!ClassDB::class_exists("PlayerJumpState")) GDREGISTER_CLASS(PlayerJumpState); 
+  if(!ClassDB::class_exists("PlayerDashState")) GDREGISTER_CLASS(PlayerDashState); 
   if(!ClassDB::class_exists("PlayerCrouchState")) GDREGISTER_CLASS(PlayerCrouchState); 
   if(!ClassDB::class_exists("PlayerSlideState")) GDREGISTER_CLASS(PlayerSlideState); 
   if(!ClassDB::class_exists("PlayerFallingState")) GDREGISTER_CLASS(PlayerFallingState); 

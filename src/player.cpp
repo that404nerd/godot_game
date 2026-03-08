@@ -21,6 +21,7 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, crouch_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, sprint_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, slide_speed, Variant::FLOAT);
+  GD_BIND_PROPERTY(Player, dash_speed, Variant::FLOAT);
 
   ADD_GROUP("Player Jump Settings", "");
   GD_BIND_PROPERTY(Player, jump_height, Variant::FLOAT);
