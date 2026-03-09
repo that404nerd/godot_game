@@ -37,7 +37,10 @@ class Player : public CharacterBody3D {
   GDCLASS(Player, CharacterBody3D);
 
 private:
+
   struct PlayerGlobalState {
+    bool CanDash = true;
+    float DashCooldown;
   };
 
 public:
@@ -115,6 +118,7 @@ private:
 
   GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
 
+  GD_DEFINE_PROPERTY(float, dash_cooldown, 1.0f);
   GD_DEFINE_PROPERTY(float, ground_accel, 0.0f);
   GD_DEFINE_PROPERTY(float, ground_decel, 0.2f);
 };

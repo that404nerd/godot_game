@@ -19,7 +19,7 @@ void PlayerFallingState::_handle_input(const Ref<InputEvent>& event)
     m_IsJumpPressed = true;
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("dash"))
+  if(Input::get_singleton()->is_action_just_pressed("dash") && m_PlayerInst->get_global_state().CanDash)
   {
     emit_signal("state_changed", "Dash");
   }
@@ -42,6 +42,12 @@ void PlayerFallingState::_physics_update(double delta)
   if (wishDir.length() > 0.0f) {
     playerVel.x = Utils::exp_decay(playerVel.x, targetX, 15.0f, delta);
     playerVel.z = Utils::exp_decay(playerVel.z, targetZ, 15.0f, delta);
+  }
+
+  if(m_PlayerInst->get_global_state().DashCooldown <= 0.0f)
+  {
+    m_PlayerInst->get_global_state().CanDash = true;
+    m_PlayerInst->get_global_state().DashCooldown = m_PlayerInst->get_dash_cooldown();
   }
 
   m_PlayerInst->set_velocity(playerVel);

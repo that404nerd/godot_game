@@ -20,6 +20,8 @@ void PlayerDashState::_physics_update(double delta)
 {
   m_PlayerInst->_update_input();    
   m_PlayerInst->_update_velocity();
+
+  m_PlayerInst->get_global_state().CanDash = false;
   
   Vector3 playerVel = m_PlayerInst->get_velocity();
   

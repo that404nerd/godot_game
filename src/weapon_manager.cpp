@@ -148,7 +148,7 @@ void WeaponManager::_weapon_sway(Vector2 sway_vector)
 
 void WeaponManager::_equip_weapon()
 {
-  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), m_CurrentWeapon->get_weaponAnimSpeedMultiplier());
+  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), -1, m_CurrentWeapon->get_weaponAnimSpeedMultiplier());
 }
 
 void WeaponManager::_generate_decal()
@@ -168,7 +168,7 @@ void WeaponManager::_generate_decal()
     Decal* bulletDecal = Object::cast_to<Decal>(instance);
     get_tree()->get_root()->add_child(bulletDecal);
     bulletDecal->set_global_position(result["position"]);
-    bulletDecal->look_at(bulletDecal->get_global_transform().origin + result["normal"], Vector3(0.0f, -1.0f, 0.0f));
+    bulletDecal->look_at(bulletDecal->get_global_transform().origin + result["normal"], Vector3(0.0f, 1.0f, 0.0f));
     bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
    }
 
@@ -178,7 +178,7 @@ void WeaponManager::_shoot()
 {
   if(m_WeaponAnimPlayer)
   {
-    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), m_CurrentWeapon->get_weaponAnimSpeedMultiplier());
+    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), -1, m_CurrentWeapon->get_weaponAnimSpeedMultiplier());
   }
 
   _generate_decal();
@@ -191,7 +191,7 @@ void WeaponManager::_reload()
 {
   if(m_WeaponAnimPlayer)
   {
-    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), m_CurrentWeapon->get_weaponAnimSpeedMultiplier());
+    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), -1, m_CurrentWeapon->get_weaponAnimSpeedMultiplier());
   }
   
   // NOTE: Currently no ammo pickups...
@@ -214,7 +214,7 @@ void WeaponManager::_unequip_weapon(const StringName& nextWeaponName)
   {
     if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
     {
-      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), m_CurrentWeapon->get_weaponAnimSpeedMultiplier()); // Plays the unequip animation of the current weapon
+      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), -1, m_CurrentWeapon->get_weaponAnimSpeedMultiplier()); // Plays the unequip animation of the current weapon
       m_NextWeaponName = nextWeaponName;
     }
   }

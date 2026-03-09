@@ -223,6 +223,8 @@ shape = SubResource("ConvexPolygonShape3D_8qpon")
 
 [node name="RigidBlock" type="RigidBody3D" parent="." unique_id=228699220]
 mass = 0.5
+continuous_cd = true
+contact_monitor = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBlock" unique_id=1722258983]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.007, 2.838, 0)

@@ -29,7 +29,7 @@ void PlayerSprintState::_handle_input(const Ref<InputEvent>& event)
     emit_signal("state_changed", "Slide");
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("dash"))
+  if(Input::get_singleton()->is_action_just_pressed("dash") && m_PlayerInst->get_global_state().CanDash)
   {
     emit_signal("state_changed", "Dash");
   }
@@ -43,6 +43,13 @@ void PlayerSprintState::_physics_update(double delta)
   
   Vector3 playerVel = m_PlayerInst->get_velocity();
   playerVel = Utils::exp_decay(playerVel, m_PlayerInst->get_sprint_speed() * m_PlayerInst->get_wish_dir(), 15.0f, (float)delta);
+
+
+  if(m_PlayerInst->get_global_state().DashCooldown <= 0.0f)
+  {
+    m_PlayerInst->get_global_state().CanDash = true;
+    m_PlayerInst->get_global_state().DashCooldown = m_PlayerInst->get_dash_cooldown();
+  }
 
   m_PlayerInst->set_velocity(playerVel);
 
