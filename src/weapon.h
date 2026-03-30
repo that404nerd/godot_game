@@ -15,11 +15,28 @@ class Weapon : public Resource {
   GDCLASS(Weapon, Resource)
 
 public:
+
+  /* This is so that we don't modify the resource file and instead we can multiple instances of this for other entities (if required)
+     Basically, the resource file or the properties we expose are read only (we don't modify them in other classes, just read it), this struct is for individual weapon's data like
+     current ammo count, number of bullets consumed etc etc, that requires changes to the resource data which we don't want. */
+
+  struct WeaponData {
+    int CurrentAmmoCount = 0;
+    int BulletsConsumed = 0;
+    float CurrentReloadTime = 0.0f;
+  };
+
+public:
   Weapon();
+
+  WeaponData& get_weaponData_inst() { return m_WeaponData; }
 
   ~Weapon();
 protected: 
   static void _bind_methods();
+
+private:
+  WeaponData m_WeaponData;
 
 private:
 
@@ -30,9 +47,7 @@ private:
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
   GD_DEFINE_PROPERTY(int, weaponAnimSpeedMultiplier, 1); // It can't be 0!!
 
-  GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); // Read only
-  GD_DEFINE_PROPERTY(int, currentAmmoCount, 0); // The current weapon's ammo count
-  GD_DEFINE_PROPERTY(int, bulletsConsumed, 0);
+  GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
   GD_DEFINE_PROPERTY(float, shoot_delay, 0.0f);
   GD_DEFINE_PROPERTY(float, reload_time, 0.0f);

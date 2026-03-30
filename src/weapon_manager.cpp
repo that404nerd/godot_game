@@ -12,6 +12,9 @@ void WeaponManager::_bind_methods()
 
   ClassDB::bind_method(D_METHOD("_on_animation_finished", "anim_name"), &WeaponManager::_on_animation_finished);
 
+  ADD_SIGNAL(MethodInfo("weapon_idle"));
+  ADD_SIGNAL(MethodInfo("weapon_shoot"));
+  ADD_SIGNAL(MethodInfo("weapon_reload"));
 }
 
 void WeaponManager::_ready()
@@ -37,7 +40,7 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
     _weapon_sway(m_MouseInput);
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("fire") && m_CurrentWeapon->get_currentAmmoCount() > 0)
+  if(Input::get_singleton()->is_action_just_pressed("fire") && m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount > 0)
   {
     m_WantsToShoot = true;
   }
@@ -56,8 +59,10 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
     }
   }
 
-  print_line(m_CurrentWeapon->get_weaponName(), " has ", m_CurrentWeapon->get_currentAmmoCount(), " ammo");
-  if(Input::get_singleton()->is_action_just_pressed("reload_weapon") && (m_CurrentWeapon->get_currentAmmoCount() != m_WeaponAmmoTotal || m_CurrentWeapon->get_currentAmmoCount() == 0))
+  print_line(m_CurrentWeapon->get_weaponName(), " has ", m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount, " ammo");
+
+  if(Input::get_singleton()->is_action_just_pressed("reload_weapon") && 
+    (m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount != m_CurrentWeapon->get_totalAmmoCount() || m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount == 0))
   {
     _reload();
   }
@@ -67,7 +72,7 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
 void WeaponManager::_init_weapon()
 {
   m_CurrentWeapon = weaponList[m_WeaponIndex];
-  m_WeaponAmmoTotal = m_CurrentWeapon->get_totalAmmoCount();
+  m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount = m_CurrentWeapon->get_totalAmmoCount();
   _equip_weapon();
 }
 
@@ -151,6 +156,7 @@ void WeaponManager::_equip_weapon()
   m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), -1, m_CurrentWeapon->get_weaponAnimSpeedMultiplier());
 }
 
+// TODO: Rewrite this
 void WeaponManager::_generate_decal()
 {
   m_SpaceState = m_PlayerInst->get_player_camera()->get_world_3d()->get_direct_space_state();
@@ -182,9 +188,9 @@ void WeaponManager::_shoot()
   }
 
   _generate_decal();
-  m_CurrentWeapon->set_bulletsConsumed(m_CurrentWeapon->get_bulletsConsumed() + 1);
-  print_line(m_CurrentWeapon->get_bulletsConsumed(), " bullets consumed");
-  m_CurrentWeapon->set_currentAmmoCount(m_CurrentWeapon->get_currentAmmoCount() - 1);
+  m_CurrentWeapon->get_weaponData_inst().BulletsConsumed = m_CurrentWeapon->get_weaponData_inst().BulletsConsumed + 1;
+  print_line(m_CurrentWeapon->get_weaponData_inst().BulletsConsumed, " bullets consumed");
+  m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount = m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount - 1;
 }
 
 void WeaponManager::_reload()
@@ -195,17 +201,17 @@ void WeaponManager::_reload()
   }
   
   // NOTE: Currently no ammo pickups...
-  if(m_CurrentWeapon->get_currentAmmoCount() != 0)
+  if(m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount != 0)
   {
-    float weaponAmmo = m_WeaponAmmoTotal - m_CurrentWeapon->get_bulletsConsumed();
-    m_CurrentWeapon->set_currentAmmoCount(m_CurrentWeapon->get_bulletsConsumed() + weaponAmmo);
+    float weaponAmmo = m_CurrentWeapon->get_totalAmmoCount() - m_CurrentWeapon->get_weaponData_inst().BulletsConsumed;
+    m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount = m_CurrentWeapon->get_weaponData_inst().BulletsConsumed + weaponAmmo;
     print_line("Set ", weaponAmmo, " ammo");
-  } else if(m_CurrentWeapon->get_currentAmmoCount() == 0) {
-    m_CurrentWeapon->set_currentAmmoCount(m_CurrentWeapon->get_totalAmmoCount());
+  } else if(m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount == 0) {
+    m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount = m_CurrentWeapon->get_totalAmmoCount();
     print_line("Set complete ", m_CurrentWeapon->get_totalAmmoCount(), " ammo");
   }
 
-  m_CurrentWeapon->set_bulletsConsumed(0);
+  m_CurrentWeapon->get_weaponData_inst().BulletsConsumed = 0;
 }
 
 void WeaponManager::_unequip_weapon(const StringName& nextWeaponName)
@@ -233,12 +239,13 @@ void WeaponManager::_change_weapon(const StringName& weaponName)
       break;
     }
   }
-
+  
   if(weapon_index != -1)
   {
     m_CurrentWeapon = weaponList[weapon_index];
-    m_WeaponAmmoTotal = m_CurrentWeapon->get_currentAmmoCount();
+    m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount = m_CurrentWeapon->get_totalAmmoCount() - m_CurrentWeapon->get_weaponData_inst().BulletsConsumed;
     m_NextWeaponName = "";
+
     _equip_weapon();
   }
 
@@ -255,6 +262,7 @@ void WeaponManager::_on_animation_finished(const StringName& anim_name)
 
 void WeaponManager::_physics_process(double delta)
 {
+
   m_IdleWeaponBobAmp = m_CurrentWeapon->get_idle_weapon_bob_amp();
   m_IdleWeaponBobFreq = m_CurrentWeapon->get_idle_weapon_bob_freq();
   m_WeaponBobAmp = m_CurrentWeapon->get_weapon_bob_amp();

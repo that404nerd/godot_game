@@ -47,6 +47,9 @@ public:
   ~WeaponManager();
 
 private:
+
+
+
   void _idle_weapon_sway(double delta);
   void _weapon_sway(Vector2 sway_vector);
   void _reset_weapon_sway(double delta); 
@@ -64,8 +67,7 @@ private:
 
 private: // Signal stuff
   void _on_animation_finished(const StringName& anim_name);
-
-
+  
 protected:
   static void _bind_methods();
 
@@ -94,7 +96,6 @@ private:
   Vector2 m_ScreenCenter;
 
   int m_WeaponIndex;
-  int m_WeaponAmmoTotal;
   String m_NextWeaponName;
 
   StringName m_CurrentStateName;

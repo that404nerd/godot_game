@@ -5,5 +5,5 @@ PlayerState::PlayerState() {}
 
 void PlayerState::_bind_methods() 
 {
-    ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::STRING, "stateName")));
+  ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::STRING, "stateName")));
 }
