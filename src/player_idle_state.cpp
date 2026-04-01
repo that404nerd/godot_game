@@ -26,7 +26,7 @@ void PlayerIdleState::_handle_input(const Ref<InputEvent>& event)
 
 void PlayerIdleState::_physics_update(double delta) 
 {
-  m_PlayerInst->_update_input();    
+  m_PlayerInst->_update_input();
   m_PlayerInst->_update_velocity();
   
   Vector3 playerVel = m_PlayerInst->get_velocity();

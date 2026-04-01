@@ -32,6 +32,7 @@ void PlayerStateMachine::_ready()
     initial_state->_enter();
     m_CurrentState = initial_state;
   }
+
 }
 
 void PlayerStateMachine::_input(const Ref<InputEvent>& event)
@@ -49,6 +50,7 @@ void PlayerStateMachine::_physics_process(double delta)
 
     // print_line("Current state: ", get_current_state());
   }
+
 }
 
 void PlayerStateMachine::_change_state(const String& stateName)

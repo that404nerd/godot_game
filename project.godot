@@ -35,17 +35,22 @@ config/size/viewport_width=800
 
 buses/default_bus_layout="uid://cq2mfupdsh2tc"
 
+[autoload]
+
+Signal_Debugger="*uid://ca2r28n3mwlgx"
+
 [debug_draw_3d]
 
 settings/addon_root_folder="res://addons/debug_draw_3d"
 
 [display]
 
+window/size/resizable=false
 window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/func_godot/plugin.cfg")
+enabled=PackedStringArray("res://addons/SignalVisualizer/plugin.cfg", "res://addons/func_godot/plugin.cfg")
 
 [filesystem]
 
