@@ -16,6 +16,7 @@
 #include "player_slide_state.h"
 #include "weapon.h"
 #include "weapon_manager.h"
+#include "weapon_state.h"
 #include "global_state_handler.h"
 
 #include "game_manager.h"

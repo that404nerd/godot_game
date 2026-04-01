@@ -7,6 +7,7 @@ using namespace godot;
 
 class Player;
 class PlayerStateMachine;
+class WeaponManager;
 
 class GameManager : public Object { 
 
@@ -23,6 +24,10 @@ public:
   void set_state_machine_inst(PlayerStateMachine* stateMachine);
   PlayerStateMachine* get_player_state_machine();
 
+  void set_weapon_manager_inst(WeaponManager* weaponManagerInst);
+  WeaponManager* get_weapon_manager_inst();
+
+
   ~GameManager();
 protected:
   static void _bind_methods();
@@ -30,4 +35,5 @@ protected:
 private:
   Player* m_PlayerInst = nullptr;
   PlayerStateMachine* m_PlayerStateMachineInst = nullptr;
+  WeaponManager* m_WeaponManager = nullptr;
 };

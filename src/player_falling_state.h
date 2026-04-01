@@ -4,26 +4,23 @@
 #include "player_state_machine.h"
 #include "player.h"
 
-#include "dd3d_cpp_api.hpp"
-#include "godot_cpp/classes/window.hpp"
-
 class PlayerFallingState : public PlayerState {
-    GDCLASS(PlayerFallingState, PlayerState);
+  GDCLASS(PlayerFallingState, PlayerState);
 
 public:
-    PlayerFallingState() : m_IsJumpPressed(false) {}; 
+  PlayerFallingState() : m_IsJumpPressed(false) {}; 
 
-    virtual void _enter() override;
-    virtual void _handle_input(const Ref<InputEvent>& event) override;
-    virtual void _physics_update(double delta) override;
-    virtual void _exit() override; 
+  virtual void _enter() override;
+  virtual void _handle_input(const Ref<InputEvent>& event) override;
+  virtual void _physics_update(double delta) override;
+  virtual void _exit() override; 
 
 protected:
-    static void _bind_methods();
+  static void _bind_methods();
 
 private:
-    Player* m_PlayerInst;
-    PlayerStateMachine* m_StateMachineInst;
+  Player* m_PlayerInst;
+  PlayerStateMachine* m_StateMachineInst;
 
-    bool m_IsJumpPressed;
+  bool m_IsJumpPressed, m_IsCrouchPressed;
 };

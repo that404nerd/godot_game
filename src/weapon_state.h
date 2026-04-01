@@ -3,6 +3,8 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/node.hpp>
 
+#include "weapon_manager.h"
+
 using namespace godot;
 
 class WeaponState : public Node
@@ -18,4 +20,8 @@ public:
 
 protected:
   static void _bind_methods();
+
+private:
+  WeaponManager* m_WeaponManager; 
+  PlayerStateMachine* m_StateMachineInst;
 };

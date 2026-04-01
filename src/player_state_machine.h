@@ -11,6 +11,7 @@
 #include "player.h"
 #include "game_manager.h"
 #include "globals.h"
+#include "weapon_manager.h"
 
 using namespace godot;
 
@@ -43,5 +44,6 @@ private:
   Player* m_PlayerInst { nullptr };
   PlayerState* m_CurrentState { nullptr };
   PlayerState* m_PrevState { nullptr };
+
   AHashMap<String, PlayerState*> m_States;
 };

@@ -41,6 +41,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("PlayerFallingState")) GDREGISTER_CLASS(PlayerFallingState); 
 
   if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager); // RUNTIME probably because the weapon anim is played in the editor (not sure)
+  if(!ClassDB::class_exists("WeaponState")) GDREGISTER_RUNTIME_CLASS(WeaponState);
   if(!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
 
 }

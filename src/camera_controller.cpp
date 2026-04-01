@@ -93,11 +93,8 @@ void CameraController::_tilt_player(double delta)
   set_rotation(camControllerRot);
 }
 
-void CameraController::_physics_process(double delta) 
+void CameraController::_apply_fov(double delta)
 {
-  m_CurrentState = m_StateMachineInst->get_current_state();
-
-
   if(m_CurrentState == StringName("Sprint"))
   {
     m_PlayerCamera->set_fov(Math::lerp(m_OriginalFOV, sprint_fov, sprint_fov_zoom_out_transition_value * (float)delta));
@@ -106,11 +103,21 @@ void CameraController::_physics_process(double delta)
     m_PlayerCamera->set_fov(Math::lerp(m_PlayerCamera->get_fov(), slide_fov, slide_fov_zoom_in_transition_value * (float)delta));
   } else {
     m_PlayerCamera->set_fov(Math::lerp(m_PlayerCamera->get_fov(), m_OriginalFOV, sprint_fov_zoom_out_transition_value * (float)delta));
-  } 
+  }
+}
+
+void CameraController::_physics_process(double delta) 
+{
+  m_CurrentState = m_StateMachineInst->get_current_state();
   
+  _apply_fov(delta);
+   
   _tilt_player(delta);
   
-  _headbob_effect(delta);
+  if(m_CurrentState == StringName("Sprint") || m_CurrentState == StringName("Crouch"))
+  {
+    _headbob_effect(delta);
+  }
 
 }
 

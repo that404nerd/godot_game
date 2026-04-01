@@ -108,6 +108,7 @@ private:
   GD_DEFINE_PROPERTY(float, dash_speed, 50.0f);  
 
   GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
+  GD_DEFINE_PROPERTY(float, crouch_translate_speed, 10.0f);
   
   GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
 

@@ -1,5 +1,4 @@
 #include "player_falling_state.h"
-#include "globals.h"
 
 void PlayerFallingState::_enter()
 { 
@@ -22,6 +21,11 @@ void PlayerFallingState::_handle_input(const Ref<InputEvent>& event)
   if(Input::get_singleton()->is_action_just_pressed("dash") && m_PlayerInst->get_global_state().CanDash)
   {
     emit_signal("state_changed", "Dash");
+  }
+
+  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_IsCrouchPressed == false)
+  {
+    m_IsCrouchPressed = true;
   }
 }
 
@@ -54,12 +58,20 @@ void PlayerFallingState::_physics_update(double delta)
 
   if(m_PlayerInst->is_on_floor())
   {
-    m_IsJumpPressed = false;
-    emit_signal("state_changed", "Idle");
-  }}
+    if(m_IsCrouchPressed == true)
+    {
+      emit_signal("state_changed", "Crouch");
+    } else {
+      m_IsJumpPressed = false;
+      emit_signal("state_changed", "Idle");
+    }
+  }
+
+}
 
 
 void PlayerFallingState::_exit() 
 {
   m_PlayerInst->set_gravity_vec(Vector3(0.0f, 0.0f, 0.0f));
+  m_IsCrouchPressed = false;
 }

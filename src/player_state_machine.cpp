@@ -72,9 +72,9 @@ StringName PlayerStateMachine::get_current_state()
 {
   StringName current_state;
   if(m_CurrentState)
-      current_state = m_CurrentState->get_name();
+    current_state = m_CurrentState->get_name();
   else
-      print_error("State not found!");
+    print_error("State not found!");
 
   return current_state;
 }
@@ -83,9 +83,9 @@ StringName PlayerStateMachine::get_prev_state()
 {
   StringName prev_state_name;
   if(m_PrevState == nullptr) {
-      print_error("Prev state doesn't exist!");
+    CRASH_NOW_MSG("Prev State doesn't exist!");
   } else {
-      prev_state_name = m_PrevState->get_name();
+    prev_state_name = m_PrevState->get_name();
   }
 
   return prev_state_name;

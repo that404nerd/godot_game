@@ -4,6 +4,7 @@ WeaponManager::WeaponManager()
 {
   m_WeaponIndex = 0;
   m_WantsToShoot = false;
+
 }
 
 void WeaponManager::_bind_methods()
@@ -19,6 +20,7 @@ void WeaponManager::_bind_methods()
 
 void WeaponManager::_ready()
 {
+  GameManager::get_singleton()->set_weapon_manager_inst(this);
   m_PlayerInst = GameManager::get_singleton()->get_player_inst();
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
   m_HoldPointNode = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
@@ -59,7 +61,7 @@ void WeaponManager::_input(const Ref<InputEvent>& event)
     }
   }
 
-  print_line(m_CurrentWeapon->get_weaponName(), " has ", m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount, " ammo");
+  // print_line(m_CurrentWeapon->get_weaponName(), " has ", m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount, " ammo");
 
   if(Input::get_singleton()->is_action_just_pressed("reload_weapon") && 
     (m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount != m_CurrentWeapon->get_totalAmmoCount() || m_CurrentWeapon->get_weaponData_inst().CurrentAmmoCount == 0))
@@ -275,6 +277,8 @@ void WeaponManager::_physics_process(double delta)
 
   m_GunRange = m_CurrentWeapon->get_gun_range();
   m_CurrentStateName = m_StateMachineInst->get_current_state();
+
+  
   
   if(m_CurrentStateName == StringName("Sprint") || m_CurrentStateName == StringName("Crouch"))
     _weapon_bob(delta);

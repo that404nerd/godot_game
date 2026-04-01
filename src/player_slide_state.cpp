@@ -32,7 +32,6 @@ void PlayerSlideState::_on_slide_finished()
     m_CrouchTween->kill();
   }
 
-
   m_CrouchTween = m_PlayerInst->create_tween();
   m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_OriginalHeadPosition.y, 0.1f);
 }

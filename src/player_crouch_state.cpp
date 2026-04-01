@@ -1,4 +1,5 @@
 #include "player_crouch_state.h"
+#include "godot_cpp/variant/string_name.hpp"
 
 void PlayerCrouchState::_enter()
 { 
@@ -21,7 +22,7 @@ void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event)
     emit_signal("state_changed", "Idle");
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(0.0f, -m_FinalPos, 0.0f))) 
+  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->get_collider_raycast()->is_colliding()) 
   {
     _on_crouch_finished();
     emit_signal("state_changed", "Jump");
@@ -48,31 +49,34 @@ void PlayerCrouchState::_physics_update(double delta)
   m_PlayerInst->_update_velocity();
 
   Vector3 playerVel = m_PlayerInst->get_velocity();
-  
-  if(m_CrouchTween != nullptr) {
-    m_CrouchTween->kill();
-  }
-
-  m_CrouchTween = m_PlayerInst->create_tween();
-  if(m_StateMachineInst->get_prev_state() == StringName("Slide"))
-  {
-    float finalCrouchPos = m_FinalPos - m_PlayerInst->get_player_head()->get_position().y;
-    m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", finalCrouchPos, 0.1f);
-  } else {
-    m_CrouchTween->tween_property(m_PlayerInst->get_player_head(), "position:y", m_FinalPos, 0.1f);
-  }
+  Vector3 playerHeadPos = m_PlayerInst->get_player_head()->get_position();
 
   m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
   m_PlayerInst->get_player_standing_collider()->set_disabled(true);
 
+  if(m_StateMachineInst->get_prev_state() == StringName("Slide"))
+  {
+    float finalCrouchPos = m_FinalPos - m_PlayerInst->get_player_head()->get_position().y;
+    playerHeadPos.y = Utils::exp_decay(playerHeadPos.y, finalCrouchPos, m_PlayerInst->get_crouch_translate_speed(), (float)delta);
+  } else {
+    playerHeadPos.y = Utils::exp_decay(playerHeadPos.y, m_FinalPos, m_PlayerInst->get_crouch_translate_speed(), (float)delta);
+  }
+
+  m_PlayerInst->get_player_head()->set_position(playerHeadPos);
+
   playerVel = m_PlayerInst->get_crouch_speed() * m_PlayerInst->get_wish_dir();
   m_PlayerInst->set_velocity(playerVel);
- 
+
+  if(m_StateMachineInst->get_prev_state() == StringName("Fall"))
+  {
+    print_line(m_PlayerInst->get_wish_dir());
+    emit_signal("state_changed", "Slide");
+  }
+
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 
   {
     emit_signal("state_changed", "Fall");
   }
-
 }
 
 void PlayerCrouchState::_exit() 

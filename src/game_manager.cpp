@@ -1,6 +1,7 @@
 #include "game_manager.h"
 #include "player.h"
 #include "player_state_machine.h"
+#include "weapon_manager.h"
 
 GameManager* GameManager::s_Singleton = nullptr;
 
@@ -43,6 +44,21 @@ PlayerStateMachine* GameManager::get_player_state_machine()
 void GameManager::set_state_machine_inst(PlayerStateMachine* stateMachine)
 {
   m_PlayerStateMachineInst = stateMachine;
+}
+
+WeaponManager* GameManager::get_weapon_manager_inst()
+{
+  if(m_WeaponManager != nullptr)
+    return m_WeaponManager;
+  else
+    print_error("Weapon Manager Instance is null!");
+
+  return nullptr;
+}
+
+void GameManager::set_weapon_manager_inst(WeaponManager* weaponManagerInst)
+{
+  m_WeaponManager = weaponManagerInst;
 }
 
 GameManager* GameManager::get_singleton() 
