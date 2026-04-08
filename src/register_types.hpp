@@ -19,6 +19,11 @@
 #include "weapon_state.h"
 #include "global_state_handler.h"
 
+#include "components/ammo_component.h"
+#include "components/weapon_effects_components.h"
+#include "components/weapon_component.h"
+#include "components/character_component.h"
+
 #include "game_manager.h"
 
 using namespace godot;

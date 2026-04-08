@@ -46,21 +46,6 @@ void GameManager::set_state_machine_inst(PlayerStateMachine* stateMachine)
   m_PlayerStateMachineInst = stateMachine;
 }
 
-WeaponManager* GameManager::get_weapon_manager_inst()
-{
-  if(m_WeaponManager != nullptr)
-    return m_WeaponManager;
-  else
-    print_error("Weapon Manager Instance is null!");
-
-  return nullptr;
-}
-
-void GameManager::set_weapon_manager_inst(WeaponManager* weaponManagerInst)
-{
-  m_WeaponManager = weaponManagerInst;
-}
-
 GameManager* GameManager::get_singleton() 
 { 
   return s_Singleton; 

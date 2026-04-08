@@ -1,6 +1,4 @@
 #include "player.h"
-#include "globals.h"
-#include "godot_cpp/classes/ray_cast3d.hpp"
 
 /*
   transform:  transform.origin = Position (Where you are with respect to the world).
@@ -53,7 +51,7 @@ void Player::_ready()
 
   m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
   m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
-
+  
 }
 
 void Player::_input(const Ref<InputEvent>& event)

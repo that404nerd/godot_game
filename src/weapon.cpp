@@ -20,7 +20,6 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weaponUnequipAnimName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, weaponReloadAnimName, Variant::STRING);
-  GD_BIND_PROPERTY(Weapon, weaponAnimSpeedMultiplier, Variant::INT);
 
   ADD_GROUP("Weapon Bob And Range", "");
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_freq, Variant::FLOAT);

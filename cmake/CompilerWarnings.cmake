@@ -52,6 +52,7 @@ target_compile_options( ${PROJECT_NAME}
 
             # Disable warnings which bleed through from godot-cpp's macros.
             -Wno-unused-parameter
+            -Wno-ctor-dtor-privacy
         >
 
         # Clang only

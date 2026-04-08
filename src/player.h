@@ -24,9 +24,13 @@
 #include <godot_cpp/core/math.hpp>
 #include <godot_cpp/classes/ray_cast3d.hpp>
 
+#include "components/weapon_effects_components.h"
+
+#include "game.h"
 #include "globals.h"
 #include "game_manager.h"
 #include "global_state_handler.h"
+#include "components/character_component.h"
 
 #include "dd3d_cpp_api.hpp"
 
