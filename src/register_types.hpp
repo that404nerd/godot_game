@@ -23,6 +23,7 @@
 #include "components/weapon_effects_components.h"
 #include "components/weapon_component.h"
 #include "components/character_component.h"
+#include "components/weapon_effects_components.h"
 
 #include "game_manager.h"
 

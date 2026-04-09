@@ -4,8 +4,8 @@
 
 #include "components/ammo_component.h"
 #include "components/weapon_component.h"
-
 #include "components/weapon_effects_components.h"
+
 #include "globals.h"
 #include "weapon.h"
 #include "player_state_machine.h"
@@ -30,15 +30,11 @@ public:
   WeaponManager();
 
   void _ready() override;
-
-  void _physics_process(double delta) override;
+  
+  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _process(double delta) override;
 
   ~WeaponManager();
-
-private:
-  void _idle_weapon_sway(double delta);
-  void _weapon_sway(Vector2 sway_vector);
-  void _reset_weapon_sway(double delta); 
 
 protected:
   static void _bind_methods();
@@ -58,7 +54,9 @@ private:
   GD_DEFINE_PROPERTY(Array, weaponList, Array());
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponBobComponent*, weapon_bob_component, nullptr);
+  GD_DEFINE_PROPERTY(WeaponSwayComponent*, weapon_sway_component, nullptr);
 
 private:
   Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 
+  bool m_IsMovingMouse = false;
 };

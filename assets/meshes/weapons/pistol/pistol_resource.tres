@@ -2,17 +2,14 @@
 
 [resource]
 totalAmmoCount = 10
-currentAmmoCount = 10
 weaponName = "Pistol"
 weaponEquipAnimName = "pistol_equip"
 weaponUnequipAnimName = "pistol_unequip"
 weaponShootingAnimName = "pistol_shoot"
 weaponReloadAnimName = "pistol_reload"
-weaponAnimSpeedMultiplier = 2
 idle_weapon_bob_freq = 3.0
 idle_weapon_bob_amp = 0.01
 weapon_bob_freq = 1.5
 weapon_bob_amp = 0.01
 gun_range = 50.0
-weapon_sway_mult = 0.1
 weapon_sway_reset = 25.0

@@ -9,6 +9,7 @@ void WeaponManager::_bind_methods()
   GD_BIND_PROPERTY(WeaponManager, weaponList, Variant::ARRAY);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_bob_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_sway_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_SIGNAL(MethodInfo("weapon_equip"));
   ADD_SIGNAL(MethodInfo("weapon_unequip", PropertyInfo(Variant::STRING, "nextWeaponName")));
@@ -26,84 +27,47 @@ void WeaponManager::_ready()
   weapon_component->set_current_weapon(weaponList[0]);
 }
 
-void WeaponManager::_idle_weapon_sway(double delta)
+void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 {
-  // m_IdleWeaponBobTime += delta * 0.5f;
-  //
-  // float x_bob = Math::cos(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.5f) * m_IdleWeaponBobAmp;
-  // float y_bob = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq) * m_IdleWeaponBobAmp;
-  //
-  // Vector3 currentPos = m_HoldPointNode->get_position();
-  // Vector3 newPos = Vector3(
-  //   Utils::exp_decay(currentPos.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta),
-  //   Utils::exp_decay(currentPos.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta), 
-  //   0.0f
-  // );
-  //
-  // if(!m_HoldPointNode->get_transform().is_finite())
-  // {
-  //   print_error("Idle weapon sway: Transform is infinite!");
-  //   GENERATE_TRAP();
-  // }
-  // m_HoldPointNode->set_position(newPos);
+  Ref<InputEventMouseMotion> mouseEvent = event;
 
+  if(event->is_class("InputEventMouseMotion")) {
+    m_MouseInput.x += -mouseEvent->get_screen_relative().x * 0.003f;
+    m_MouseInput.y += -mouseEvent->get_screen_relative().y * 0.003f;
+
+    if(!mouseEvent->get_relative().is_zero_approx())
+    {
+      m_IsMovingMouse = true;
+    } else if(mouseEvent->get_relative().is_zero_approx()) {
+      m_IsMovingMouse = false;
+    }
+  }
 }
 
-void WeaponManager::_reset_weapon_sway(double delta)
+void WeaponManager::_process(double delta)
 {
-  // Vector3 m_HoldPointPos = m_HoldPointNode->get_position();
-  // m_HoldPointPos.x = Math::lerp(m_HoldPointNode->get_position().x, 0.0f, m_WeaponSwayResetValue * (float)delta);
-  // m_HoldPointPos.y = Math::lerp(m_HoldPointNode->get_position().y, 0.0f, m_WeaponSwayResetValue * (float)delta);
-  // if(!m_HoldPointNode->get_transform().is_finite())
-  // {
-  //   print_error("Reset Weapon Sway: Transform is infinite!");
-  //   GENERATE_TRAP();
-  // }
-  // m_HoldPointNode->set_position(m_HoldPointPos);
-}
+  // YUCK...
+  m_CurrentStateName = GameManager::get_singleton()->get_player_state_machine()->get_current_state();
 
-void WeaponManager::_weapon_sway(Vector2 sway_vector)
-{
-  // Vector3 m_HoldPointPos = m_HoldPointNode->get_position();
-  // m_HoldPointPos.x -= sway_vector.x * m_WeaponSwayMult * m_PlayerInst->get_physics_process_delta_time();
-  // m_HoldPointPos.y += sway_vector.y * m_WeaponSwayMult * m_PlayerInst->get_physics_process_delta_time();
-  //
-  // if(!m_HoldPointNode->get_transform().is_finite())
-  // {
-  //   print_error("Weapon Sway: Transform is infinite!");
-  //   GENERATE_TRAP();
-  // }
-  // m_HoldPointNode->set_position(m_HoldPointPos);
-}
-
-// void WeaponManager::set_weapon_state(WeaponStates state, const WeaponAdditionalData& additionalData) 
-// { 
-   // if(m_CurrentWeaponState != WeaponStates::NONE)
-   // {
-   //   m_CurrentWeaponState = state;
-   // }
-   //
-   // if(additionalData.index != -1)
-   // {
-   //   m_WeaponIndex = additionalData.index;
-   // }
-   //
-   // if(additionalData.currentWeapon != nullptr)
-   // {
-   //   m_CurrentWeapon = additionalData.currentWeapon;
-   // }
-   //
-   // if(additionalData.nextWeaponName != "")
-   // {
-   //   m_NextWeaponName = additionalData.nextWeaponName;
-   // }
- // }
-
-
-void WeaponManager::_physics_process(double delta)
-{
-  if(weapon_bob_component)
+  if(weapon_bob_component && m_CurrentStateName == StringName("Sprint"))
+  {
+    print_line("Weapon Bobbing!"); 
     weapon_bob_component->weapon_bob(delta);
+  }
+
+  if(weapon_component && m_CurrentStateName == StringName("Idle"))
+  {
+    if(m_IsMovingMouse == true)
+    {
+      weapon_sway_component->weapon_sway(m_MouseInput);
+      print_line("Swaying weapon!");
+    }
+    if(m_IsMovingMouse == false)
+    {
+      weapon_sway_component->weapon_idle_sway(delta);
+      print_line("Idle swaying weapon!");
+    }
+  }
 }
 
 WeaponManager::~WeaponManager()
