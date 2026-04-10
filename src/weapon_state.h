@@ -3,6 +3,9 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/node.hpp>
 
+#include <functional>
+#include <unordered_map>
+
 #include "globals.h"
 #include "weapon_manager.h"
 
@@ -11,6 +14,8 @@ enum class WeaponStates {
 };
 
 using namespace godot;
+
+typedef std::function<void()> StateFunc;
 
 class WeaponState : public Node
 {
@@ -45,7 +50,5 @@ private:
   AnimationPlayer* m_WeaponAnimPlayer = nullptr;
   Ref<Weapon> m_CurrentWeapon = nullptr;
 
-  StringName m_CurrentStateName;
-private:
-  GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
+  std::unordered_map<WeaponStates, StateFunc> m_WeaponStates;
 };

@@ -34,13 +34,6 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
   if(event->is_class("InputEventMouseMotion")) {
     m_MouseInput.x += -mouseEvent->get_screen_relative().x * 0.003f;
     m_MouseInput.y += -mouseEvent->get_screen_relative().y * 0.003f;
-
-    if(!mouseEvent->get_relative().is_zero_approx())
-    {
-      m_IsMovingMouse = true;
-    } else if(mouseEvent->get_relative().is_zero_approx()) {
-      m_IsMovingMouse = false;
-    }
   }
 }
 
@@ -51,23 +44,27 @@ void WeaponManager::_process(double delta)
 
   if(weapon_bob_component && m_CurrentStateName == StringName("Sprint"))
   {
-    print_line("Weapon Bobbing!"); 
     weapon_bob_component->weapon_bob(delta);
   }
 
   if(weapon_component && m_CurrentStateName == StringName("Idle"))
   {
-    if(m_IsMovingMouse == true)
-    {
-      weapon_sway_component->weapon_sway(m_MouseInput);
-      print_line("Swaying weapon!");
-    }
-    if(m_IsMovingMouse == false)
+    /* NOTE: Didn't use is_zero_approx() because the EPSILON Value was a little too low and transitioning from normal sway 
+     * to idle sway causes the weapon to do a little snap (tbh it's barely noticable but it's kinda annoying me), so checking with 0.1f instead.
+     */
+    if((Math::abs(m_MouseInput.x) < 0.1f) && (Math::abs(m_MouseInput.y) < 0.1f))
     {
       weapon_sway_component->weapon_idle_sway(delta);
-      print_line("Idle swaying weapon!");
+    } else {
+      weapon_sway_component->weapon_sway(delta, m_MouseInput);
     }
+
   }
+
+  weapon_sway_component->reset_weapon_sway(delta);
+  
+  m_MouseInput.x = Math::lerp(m_MouseInput.x, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
+  m_MouseInput.y = Math::lerp(m_MouseInput.y, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
 }
 
 WeaponManager::~WeaponManager()

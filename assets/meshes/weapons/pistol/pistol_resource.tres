@@ -12,4 +12,5 @@ idle_weapon_bob_amp = 0.01
 weapon_bob_freq = 1.5
 weapon_bob_amp = 0.01
 gun_range = 50.0
+weapon_sway_mult = 0.1
 weapon_sway_reset = 25.0

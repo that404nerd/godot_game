@@ -5,7 +5,6 @@ file(GLOB_RECURSE SOURCES
 )
 
 target_sources(${PROJECT_NAME}
-    PRIVATE
-        ${SOURCES}
+	PRIVATE
+  ${SOURCES}
 )
-

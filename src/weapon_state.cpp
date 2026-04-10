@@ -6,7 +6,6 @@ WeaponState::WeaponState()
 
 void WeaponState::_bind_methods()
 {
-  GD_BIND_CUSTOM_PROPERTY(WeaponState, weapon_manager, Variant::OBJECT, PropertyHint::PROPERTY_HINT_NODE_TYPE);
   ClassDB::bind_method(D_METHOD("_on_animation_finished", "anim_name"), &WeaponState::_on_animation_finished);
   ClassDB::bind_method(D_METHOD("_on_weapon_equip_finished"), &WeaponState::_on_weapon_equip_anim_finished);
   ClassDB::bind_method(D_METHOD("_on_weapon_unequip_finished"), &WeaponState::_on_weapon_unequip_anim_finished);
@@ -39,6 +38,14 @@ void WeaponState::_ready()
   // }
   //
   // m_CurrentWeapon = weapon_manager->get_current_weapon();
+  // m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
+  
+  m_WeaponStates[WeaponStates::EQUIP] = [this]() { _weapon_equip(); };
+}
+
+void WeaponState::_weapon_equip()
+{
+  // print_line("Current equip anim is: ", m_CurrentWeapon->get_weaponEquipAnimName());
   // m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
 }
 
@@ -123,11 +130,7 @@ void WeaponState::_weapon_unequip()
   // }
 }
 
-void WeaponState::_weapon_equip()
-{
-  // print_line("Current equip anim is: ", m_CurrentWeapon->get_weaponEquipAnimName());
-  // m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
-}
+
 
 void WeaponState::_process_states()
 {

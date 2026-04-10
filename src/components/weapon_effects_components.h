@@ -100,17 +100,6 @@ protected:
     GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   }
 
-private:
-  void reset_weapon_sway(double delta)
-  {
-    m_HoldPointPos = hold_point_node->get_position();
-    m_HoldPointPos.x = Math::lerp(m_HoldPointPos.x, 0.0f, m_WeaponSwayResetValue * (float)delta);
-    m_HoldPointPos.y = Math::lerp(m_HoldPointPos.y, 0.0f, m_WeaponSwayResetValue * (float)delta);
-
-    hold_point_node->set_position(m_HoldPointPos);
-  }
-
-
 public:
 
   void _ready() override
@@ -129,8 +118,13 @@ public:
     m_IdleWeaponBobSmoothVal = m_CurrentWeapon->get_idle_weapon_bob_smooth_val();
   }
 
-  void _unhandled_input(const Ref<InputEvent>& event) override
+  void reset_weapon_sway(double delta)
   {
+    m_HoldPointPos = hold_point_node->get_position();
+    m_HoldPointPos.x = Math::lerp(m_HoldPointPos.x, 0.0f, m_WeaponSwayResetValue * (float)delta);
+    m_HoldPointPos.y = Math::lerp(m_HoldPointPos.y, 0.0f, m_WeaponSwayResetValue * (float)delta);
+
+    hold_point_node->set_position(m_HoldPointPos);
   }
 
   void weapon_idle_sway(double delta)
@@ -150,22 +144,17 @@ public:
     hold_point_node->set_position(newPos);
   }
 
-  void weapon_sway(Vector2 sway_vector)
+  void weapon_sway(double delta, Vector2 sway_vector)
   {
     if(!m_CharacterBody || !hold_point_node) return;
 
     m_HoldPointPos = hold_point_node->get_position();
-    m_HoldPointPos.x -= sway_vector.x * m_WeaponSwayMult * character_component->get_process_delta_time();
-    m_HoldPointPos.y += sway_vector.y * m_WeaponSwayMult * character_component->get_process_delta_time();
+    m_HoldPointPos.x -= sway_vector.x * m_WeaponSwayMult * delta;
+    m_HoldPointPos.y += sway_vector.y * m_WeaponSwayMult * delta;
 
     m_HoldPointPos = m_HoldPointPos.clamp(Vector3(-0.008f, -0.001f, 0.0f), Vector3(0.008f, 0.001f, 0.0f));
 
     hold_point_node->set_position(m_HoldPointPos);
-  }
-
-  void _process(double delta) override
-  {
-    reset_weapon_sway(delta);
   }
 
 private:

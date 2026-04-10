@@ -12,14 +12,6 @@
 
 using namespace godot;
 
-// enum class WeaponStates; 
-
-// struct WeaponAdditionalData {
-//   Ref<Weapon> currentWeapon;
-//   String nextWeaponName;
-//   int index;
-// };
-
 class WeaponManager : public Node {
 
   GDCLASS(WeaponManager, Node)
@@ -40,13 +32,12 @@ protected:
   static void _bind_methods();
 
 private:
-  AnimationPlayer* m_WeaponAnimPlayer = nullptr;
-  Node3D* m_HoldPointNode = nullptr;
+  // AnimationPlayer* m_WeaponAnimPlayer = nullptr;
 private:
-  float m_GunRange;
- 
   Vector2 m_MouseInput;
   String m_CurrentStateName;
+
+  const float MOUSE_INPUT_RESET_MULTIPLIER = 10.0f;
 
   int m_WeaponIndex;
   String m_NextWeaponName;
@@ -55,8 +46,4 @@ private:
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponBobComponent*, weapon_bob_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponSwayComponent*, weapon_sway_component, nullptr);
-
-private:
-  Array m_CurrentWeaponList; // This is the list that will have all the current weapons the player has equiped 
-  bool m_IsMovingMouse = false;
 };
