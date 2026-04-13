@@ -1,18 +1,10 @@
 #include "player.h"
 
-/*
-  transform:  transform.origin = Position (Where you are with respect to the world).
-              transform.basis = Rotation/Scale (How you are oriented with respect to the world).
-
-  input_dir: Raw 2D data (X, Y) from the player's input
-  basis: The compass of the transform that knows which way the player is facing exactly.
-  wish_dir:  You multiply the basis (rotation) by the input_dir (intent).
-*/
-
 Player::Player()
 {
   GameManager::get_singleton()->set_player_inst(this);
   get_global_state().DashCooldown = dash_cooldown;
+  m_CharacterComponent.set_character_body_inst(this);
 }
 
 void Player::_bind_methods()
@@ -44,18 +36,23 @@ void Player::_bind_methods()
 void Player::_ready()
 {
   m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
+  m_WeaponManager = memnew(WeaponManager);
   
+  m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
   m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_ColliderRayCast = get_node<RayCast3D>(NodePath("PlayerRaycasts/PlayerColliderRay"));
 
   m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
   m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
-  
+
+  m_WeaponManager->_ready();
+  m_WeaponManager->_init_data(&m_CharacterComponent, m_WeaponHoldPoint, get_node<StateMachine>(NodePath("%PlayerStateMachine")));
 }
 
-void Player::_input(const Ref<InputEvent>& event)
+void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
+  m_WeaponManager->_unhandled_input(event);
 }
 
 void Player::_update_input() 
@@ -92,9 +89,11 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
+  m_WeaponManager->_process(delta);
 }
 
 
 Player::~Player()
 {
+  memfree(m_WeaponManager);
 }

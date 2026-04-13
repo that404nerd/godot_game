@@ -2,8 +2,6 @@
 
 StateMachine::StateMachine()
 {
-  GameManager::get_singleton()->set_state_machine_inst(this);
-
   m_GlobalStateHandlerInst = memnew(GlobalStateHandler);
 }
 

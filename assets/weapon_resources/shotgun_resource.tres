@@ -1,0 +1,16 @@
+[gd_resource type="Weapon" format=3 uid="uid://g6nbobyu2ifd"]
+
+[resource]
+totalAmmoCount = 16
+currentAmmoCount = 16
+weaponName = "Shotgun"
+weaponEquipAnimName = "shotgun_equip"
+weaponUnequipAnimName = "shotgun_unequip"
+weaponShootingAnimName = "shotgun_shoot"
+weaponReloadAnimName = "shotgun_reload"
+idle_weapon_bob_freq = 3.0
+idle_weapon_bob_amp = 0.01
+weapon_bob_freq = 1.5
+weapon_bob_amp = 0.01
+gun_range = 40.0
+weapon_sway_mult = 0.08

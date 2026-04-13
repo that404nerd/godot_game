@@ -15,15 +15,8 @@
 #include "player_crouch_state.h"
 #include "player_slide_state.h"
 #include "weapon.h"
-#include "weapon_manager.h"
 #include "state.h"
 #include "global_state_handler.h"
-
-#include "components/ammo_component.h"
-#include "components/weapon_effects_components.h"
-#include "components/weapon_component.h"
-#include "components/character_component.h"
-#include "components/weapon_effects_components.h"
 
 #include "game_manager.h"
 

@@ -1,6 +1,6 @@
 #include "register_types.hpp"
-#include <godot_cpp/core/class_db.hpp>
 
+#include <godot_cpp/core/class_db.hpp>
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
@@ -10,8 +10,6 @@ using namespace godot;
 static GameManager *s_GameManager = nullptr;
 
 void initialize_module(ModuleInitializationLevel p_level) {
-  
-   
 
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
@@ -39,15 +37,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("PlayerSlideState")) GDREGISTER_CLASS(PlayerSlideState); 
   if(!ClassDB::class_exists("PlayerFallingState")) GDREGISTER_CLASS(PlayerFallingState); 
 
-  if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager); // RUNTIME probably because the weapon anim is played in the editor (not sure)
   if(!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
-
-  // Components
-  if(!ClassDB::class_exists("AmmoComponent")) GDREGISTER_CLASS(AmmoComponent);
-  if(!ClassDB::class_exists("CharacterComponent")) GDREGISTER_CLASS(CharacterComponent);
-  if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
-  if(!ClassDB::class_exists("WeaponBobComponent")) GDREGISTER_RUNTIME_CLASS(WeaponBobComponent);
-  if(!ClassDB::class_exists("WeaponSwayComponent")) GDREGISTER_RUNTIME_CLASS(WeaponSwayComponent);
 
 }
 

@@ -1,8 +1,11 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/input_event_mouse_motion.hpp>
 
 #include "components/ammo_component.h"
+#include "components/character_component.h"
 #include "components/weapon_component.h"
 #include "components/weapon_effects_components.h"
 
@@ -14,19 +17,13 @@ using namespace godot;
 
 class WeaponManager : public Node {
 
-  GDCLASS(WeaponManager, Node)
-
-private:
-
 public:
-  WeaponManager();
+  void _init_data(CharacterComponent* characterComponent, Node3D* holdPoint, StateMachine* stateMachine);
 
   void _ready() override;
   
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _process(double delta) override;
-
-  ~WeaponManager();
 
 protected:
   static void _bind_methods();
@@ -42,9 +39,12 @@ private:
   int m_WeaponIndex;
   String m_NextWeaponName;
 private:
-  GD_DEFINE_PROPERTY(Array, weaponList, Array());
-  GD_DEFINE_PROPERTY(StateMachine*, player_state_machine, nullptr);
-  GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
-  GD_DEFINE_PROPERTY(WeaponBobComponent*, weapon_bob_component, nullptr);
-  GD_DEFINE_PROPERTY(WeaponSwayComponent*, weapon_sway_component, nullptr);
+  WeaponBobComponent m_WeaponBobComponent;
+  WeaponSwayComponent m_WeaponSwayComponent;
+  WeaponComponent m_WeaponComponent;
+
+  Node3D* m_HoldPointNode { nullptr };
+  StateMachine* m_PlayerStateMachine { nullptr };
+
+  Array m_WeaponResourceList;
 };
