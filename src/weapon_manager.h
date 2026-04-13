@@ -8,7 +8,7 @@
 
 #include "globals.h"
 #include "weapon.h"
-#include "player_state_machine.h"
+#include "state_machine.h"
 
 using namespace godot;
 
@@ -43,6 +43,7 @@ private:
   String m_NextWeaponName;
 private:
   GD_DEFINE_PROPERTY(Array, weaponList, Array());
+  GD_DEFINE_PROPERTY(StateMachine*, player_state_machine, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponBobComponent*, weapon_bob_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponSwayComponent*, weapon_sway_component, nullptr);

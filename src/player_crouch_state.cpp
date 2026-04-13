@@ -1,10 +1,9 @@
 #include "player_crouch_state.h"
-#include "godot_cpp/variant/string_name.hpp"
 
 void PlayerCrouchState::_enter()
 { 
   m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
-  m_PlayerInst = m_StateMachineInst->get_player_inst();
+  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
 
   m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - m_PlayerInst->get_crouch_translate();
 }

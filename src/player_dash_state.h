@@ -3,13 +3,13 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/property_tweener.hpp>
 
-#include "player_state.h"
-#include "player_state_machine.h"
+#include "state.h"
+#include "state_machine.h"
 #include "player.h"
 #include "globals.h"
 
-class PlayerDashState : public PlayerState {
-  GDCLASS(PlayerDashState, PlayerState);
+class PlayerDashState : public State {
+  GDCLASS(PlayerDashState, State);
 
 public:
   PlayerDashState() {}; 
@@ -25,7 +25,7 @@ protected:
 
 private:
   Player* m_PlayerInst { nullptr };
-  PlayerStateMachine* m_StateMachineInst { nullptr };
+  StateMachine* m_StateMachineInst { nullptr };
 
   Vector3 m_DashDir;
 };

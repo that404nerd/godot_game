@@ -1,11 +1,11 @@
 #pragma once
 
-#include "player_state.h"
-#include "player_state_machine.h"
+#include "state.h"
+#include "state_machine.h"
 #include "player.h"
 
-class PlayerJumpState : public PlayerState {
-  GDCLASS(PlayerJumpState, PlayerState);
+class PlayerJumpState : public State {
+  GDCLASS(PlayerJumpState, State);
 
 public:
   PlayerJumpState() : m_PlayerInst(nullptr) {}; 
@@ -22,5 +22,5 @@ protected:
 
 private:
   Player* m_PlayerInst;
-  PlayerStateMachine* m_StateMachineInst;
+  StateMachine* m_StateMachineInst;
 };

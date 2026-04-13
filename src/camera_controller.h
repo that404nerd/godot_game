@@ -6,10 +6,8 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 
-#include <godot_cpp/variant/string.hpp>
-
 #include "globals.h"
-#include "player_state_machine.h"
+#include "state_machine.h"
 #include "player.h"
 
 using namespace godot;
@@ -35,14 +33,13 @@ public:
 
 private:
   Player* m_PlayerInst = nullptr;
-  PlayerStateMachine* m_StateMachineInst = nullptr;
 
   Camera3D* m_PlayerCamera = nullptr;
 
   float m_OriginalFOV;
   float m_HeadbobTime;
 
-  StringName m_CurrentState;
+  StringName m_CurrentStateName;
 
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_out_transition_value, 20.0f);
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_in_transition_value, 10.0f);
@@ -60,4 +57,6 @@ private:
   GD_DEFINE_PROPERTY(float, crouch_headbob_amp, 0.04f);
   GD_DEFINE_PROPERTY(float, crouch_headbob_freq, 2.0f);
 
+private:
+  GD_DEFINE_PROPERTY(StateMachine*, player_state_machine, nullptr);
 };

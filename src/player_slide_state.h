@@ -4,13 +4,13 @@
 #include <godot_cpp/classes/property_tweener.hpp>
 #include <godot_cpp/classes/physics_server3d.hpp>
 
-#include "player_state.h"
-#include "player_state_machine.h"
+#include "state.h"
+#include "state_machine.h"
 #include "player.h"
 #include "globals.h"
 
-class PlayerSlideState : public PlayerState {
-  GDCLASS(PlayerSlideState, PlayerState);
+class PlayerSlideState : public State {
+  GDCLASS(PlayerSlideState, State);
 
 public:
   PlayerSlideState() {}; 
@@ -34,6 +34,6 @@ private:
 
   Vector3 m_SlideVector { Vector3(0.0f, 0.0f, 0.0f) };
 
-  PlayerStateMachine* m_StateMachineInst { nullptr };
+  StateMachine* m_StateMachineInst { nullptr };
   Ref<Tween> m_CrouchTween;
 };

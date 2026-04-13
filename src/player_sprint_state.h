@@ -1,7 +1,7 @@
 #pragma once
 
-#include "player_state.h"
-#include "player_state_machine.h"
+#include "state.h"
+#include "state_machine.h"
 #include "player.h"
 
 #include <godot_cpp/classes/tween.hpp>
@@ -11,8 +11,8 @@
 
 #include "dd3d_cpp_api.hpp"
 
-class PlayerSprintState : public PlayerState {
-  GDCLASS(PlayerSprintState, PlayerState);
+class PlayerSprintState : public State {
+  GDCLASS(PlayerSprintState, State);
 
 public:
   PlayerSprintState() {}; 
@@ -29,6 +29,6 @@ protected:
 
 private:
   Player* m_PlayerInst;
-  PlayerStateMachine* m_StateMachineInst;
+  StateMachine* m_StateMachineInst;
 
 };

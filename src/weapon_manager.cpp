@@ -10,6 +10,7 @@ void WeaponManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_bob_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_sway_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, player_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_SIGNAL(MethodInfo("weapon_equip"));
   ADD_SIGNAL(MethodInfo("weapon_unequip", PropertyInfo(Variant::STRING, "nextWeaponName")));
@@ -39,8 +40,12 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
-  // YUCK...
-  m_CurrentStateName = GameManager::get_singleton()->get_player_state_machine()->get_current_state();
+  m_CurrentStateName = player_state_machine->get_current_state();
+  if(!m_CurrentStateName)
+  {
+    print_error("Weapon Manager: Current state is null!");
+    return;
+  }
 
   if(weapon_bob_component && m_CurrentStateName == StringName("Sprint"))
   {

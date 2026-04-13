@@ -1,11 +1,11 @@
 #pragma once
 
-#include "player_state.h"
-#include "player_state_machine.h"
+#include "state.h"
+#include "state_machine.h"
 #include "player.h"
 
-class PlayerFallingState : public PlayerState {
-  GDCLASS(PlayerFallingState, PlayerState);
+class PlayerFallingState : public State {
+  GDCLASS(PlayerFallingState, State);
 
 public:
   PlayerFallingState() : m_IsJumpPressed(false) {}; 
@@ -20,7 +20,7 @@ protected:
 
 private:
   Player* m_PlayerInst;
-  PlayerStateMachine* m_StateMachineInst;
+  StateMachine* m_StateMachineInst;
 
   bool m_IsJumpPressed, m_IsCrouchPressed;
 };
