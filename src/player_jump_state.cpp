@@ -2,14 +2,9 @@
 
 void PlayerJumpState::_enter()
 { 
-  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
+  m_PlayerInst = m_PlayerStateMachine->get_player_inst();
   
   _jump();
-}
-
-void PlayerJumpState::_bind_methods()
-{
 }
 
 void PlayerJumpState::_handle_input(const Ref<InputEvent>& event) 
@@ -37,11 +32,11 @@ void PlayerJumpState::_physics_update(double delta)
   Vector3 playerVel = m_PlayerInst->get_velocity();
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", "Fall");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::FALL));
   }
   
   if (m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", "Idle");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
   }
 }
 

@@ -2,60 +2,37 @@
 
 StateMachine::StateMachine()
 {
-  m_GlobalStateHandlerInst = memnew(GlobalStateHandler);
 }
 
-void StateMachine::_bind_methods() 
+void StateMachine::_enter()
 {
-  GD_BIND_CUSTOM_PROPERTY(StateMachine, initial_state, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  ClassDB::bind_method(D_METHOD("_change_state", "stateName"), &StateMachine::_change_state);
+  if(m_InitialState) {
+    m_InitialState->_enter();
+    m_CurrentState = m_InitialState;
+  }
 }
 
-void StateMachine::_ready()
-{
-  for (auto& child : get_children()) {
-    Node *node = Object::cast_to<Node>(child);
-    
-    StringName key = node->get_name();
-    State *playerState = Object::cast_to<State>(node);
-    
-    if (playerState) {
-      playerState->connect("state_changed", Callable(this, "_change_state"));
-      m_States[key] = playerState;
-    }
-  }
-  
-  if(initial_state) {
-    print_line("Initial state is: ", initial_state->get_name());
-    initial_state->_enter();
-    m_CurrentState = initial_state;
-  }
-
-}
-
-void StateMachine::_input(const Ref<InputEvent>& event)
+void StateMachine::_unhandled_input(const Ref<InputEvent>& event)
 {
   if(m_CurrentState) {
     m_CurrentState->_handle_input(event);
   }
 }
 
-void StateMachine::_physics_process(double delta)
+void StateMachine::_physics_update(double delta)
 {
   if(m_CurrentState) {
     m_CurrentState->_physics_update(delta);
-    m_GlobalStateHandlerInst->_physics_process(delta);
-
     // print_line("Current state: ", get_current_state());
   }
 
 }
 
-void StateMachine::_change_state(const String& stateName)
+void StateMachine::_change_state(uint8_t stateID)
 {
-  State* new_state = m_States.get(stateName);
+  State* newState = m_States.at(stateID).get();
 
-  if(!new_state) {
+  if(!newState) {
     print_error("New state not found!");
   }
 
@@ -63,32 +40,33 @@ void StateMachine::_change_state(const String& stateName)
     m_CurrentState->_exit();
   }
 
-  new_state->_enter();
+  newState->_enter();
   m_PrevState = m_CurrentState;
-  m_CurrentState = new_state;
+  m_CurrentState = newState;
 }
 
-StringName StateMachine::get_current_state()
+uint8_t StateMachine::get_current_state()
 {
-  StringName current_state;
-  if(m_CurrentState)
-    current_state = m_CurrentState->get_name();
-  else
-    print_error("State not found!");
-
-  return current_state;
-}
-
-StringName StateMachine::get_prev_state()
-{
-  StringName prev_state_name;
-  if(m_PrevState == nullptr) {
-    CRASH_NOW_MSG("Prev State doesn't exist!");
-  } else {
-    prev_state_name = m_PrevState->get_name();
+  if(m_CurrentState == nullptr)
+  {
+    print_error("Current state is null!");
+    return -1;
   }
 
-  return prev_state_name;
+  return m_CurrentState->get_current_state();
+}
+
+uint8_t StateMachine::get_prev_state()
+{
+  uint8_t prev_state_id;
+  if(m_PrevState == nullptr) {
+    print_error("Prev State doesn't exist!");
+    return -1;
+  } else {
+    prev_state_id = m_PrevState->get_current_state();
+  }
+
+  return prev_state_id;
 }
 
 StateMachine::~StateMachine() {}

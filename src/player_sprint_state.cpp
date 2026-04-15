@@ -1,37 +1,30 @@
 #include "player_sprint_state.h"
-#include "state_machine.h"
 
 void PlayerSprintState::_enter()
 { 
-  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
-  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-  
-}
-
-void PlayerSprintState::_bind_methods()
-{
+  m_PlayerInst = m_PlayerStateMachine->get_player_inst();
 }
 
 void PlayerSprintState::_handle_input(const Ref<InputEvent>& event) 
 {
   if(Input::get_singleton()->is_action_just_pressed("jump")) {
-    emit_signal("state_changed", "Jump");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::JUMP));
   }
   
   if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
   {
-    emit_signal("state_changed", "Crouch");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::CROUCH));
   }
   
   // TODO: Have a direction enum or smtg like that
   if(m_PlayerInst->get_velocity().length() > (m_PlayerInst->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch"))
   {
-    emit_signal("state_changed", "Slide");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::SLIDE));
   }
   
   if(Input::get_singleton()->is_action_just_pressed("dash") && m_PlayerInst->get_global_state().CanDash)
   {
-    emit_signal("state_changed", "Dash");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::DASH));
   }
 
 }
@@ -54,11 +47,11 @@ void PlayerSprintState::_physics_update(double delta)
   m_PlayerInst->set_velocity(playerVel);
 
   if(m_PlayerInst->get_velocity().length() < 1.0f && m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", "Idle");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
   }
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
-    emit_signal("state_changed", "Fall");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::FALL));
   }
 }
 

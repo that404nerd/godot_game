@@ -1,30 +1,16 @@
 #pragma once
 
-#include <godot_cpp/godot.hpp>
-
-#include <godot_cpp/classes/node.hpp>
-
-#include "game_manager.h"
-
-using namespace godot;
-
 class Player;
 
-class GlobalStateHandler : public Node {
-  GDCLASS(GlobalStateHandler, Node);
-
-protected:
-  static void _bind_methods();
-
+class GlobalStateHandler {
 public:
-  GlobalStateHandler();
+  GlobalStateHandler(Player* player);
 
-  void _ready() override;
-
-  void _physics_process(double delta) override;
+  void _enter();
+  void _physics_update(double delta);
 
   ~GlobalStateHandler();
 
 private:
-  Player* m_PlayerInst = nullptr;
+  Player* m_PlayerInst { nullptr };
 };

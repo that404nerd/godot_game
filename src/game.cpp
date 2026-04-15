@@ -8,7 +8,10 @@ void Game::_ready()
   Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
 }
 
-void Game::_bind_methods() {}
+void Game::_bind_methods() 
+{
+  // ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::STRING, "stateName")));
+}
 
 void Game::_input(const Ref<InputEvent>& event)
 {

@@ -11,28 +11,26 @@
 
 #include "globals.h"
 #include "weapon.h"
-#include "state_machine.h"
+
+class PlayerStateMachine;
+
+class StateMachine;
 
 using namespace godot;
 
-class WeaponManager : public Node {
+class WeaponManager {
 
 public:
   void _init_data(CharacterComponent* characterComponent, Node3D* holdPoint, StateMachine* stateMachine);
 
-  void _ready() override;
-  
-  void _unhandled_input(const Ref<InputEvent>& event) override;
-  void _process(double delta) override;
-
-protected:
-  static void _bind_methods();
+  void _unhandled_input(const Ref<InputEvent>& event);
+  void _update(double delta);
 
 private:
   // AnimationPlayer* m_WeaponAnimPlayer = nullptr;
 private:
   Vector2 m_MouseInput;
-  String m_CurrentStateName;
+  uint8_t m_CurrentStateName;
 
   const float MOUSE_INPUT_RESET_MULTIPLIER = 10.0f;
 

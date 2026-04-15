@@ -2,7 +2,7 @@
 
 void PlayerSlideState::_enter()
 { 
-  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
+  m_PlayerInst = m_PlayerStateMachine->get_player_inst();
   m_SlideVector = m_PlayerInst->get_wish_dir();
 
   m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
@@ -10,15 +10,12 @@ void PlayerSlideState::_enter()
   m_SlideTimer = 2.0f;
 }
 
-void PlayerSlideState::_bind_methods()
-{
-}
 
 void PlayerSlideState::_handle_input(const Ref<InputEvent>& event) 
 {
   if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->get_collider_raycast()->is_colliding()) {
     _on_slide_finished();
-    emit_signal("state_changed", "Jump");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::JUMP));
   }
 
 }
@@ -67,7 +64,7 @@ void PlayerSlideState::_physics_update(double delta)
   // TODO: This is bad. Anything the player collides with will cancel the slide state. A normal body like a crate, box would make sense
   // if(m_PlayerInst->test_move(m_PlayerInst->get_transform(), Vector3(m_SlideVector.x, 0.0f, m_SlideVector.z))) {
   //   _on_slide_finished();
-  //   emit_signal("state_changed", "Idle");
+  //   // emit_signal("state_changed", "Idle");
   // }
   playerVel = Vector3(horizVel.x, playerVel.y, horizVel.z);
   m_PlayerInst->set_velocity(playerVel);
@@ -76,17 +73,17 @@ void PlayerSlideState::_physics_update(double delta)
     if(m_PlayerInst->get_collider_raycast()->is_colliding())
     {
       _on_slide_finished();
-      emit_signal("state_changed", "Crouch");
+      m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::CROUCH));
     } else {
       _on_slide_finished();
-      emit_signal("state_changed", "Idle");
+      m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
     }
   }
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 
   {
     _on_slide_finished();
-    emit_signal("state_changed", "Fall");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::FALL));
   }
 }
 

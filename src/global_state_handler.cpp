@@ -1,22 +1,16 @@
 #include "global_state_handler.h"
-
 #include "player.h"
 
-GlobalStateHandler::GlobalStateHandler()
+GlobalStateHandler::GlobalStateHandler(Player* player)
 {
-  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
+  m_PlayerInst = player;
 }
 
-void GlobalStateHandler::_ready()
+void GlobalStateHandler::_enter()
 {
 }
 
-void GlobalStateHandler::_bind_methods()
-{
-
-}
-
-void GlobalStateHandler::_physics_process(double delta)
+void GlobalStateHandler::_physics_update(double delta)
 {
   if(!m_PlayerInst->get_global_state().CanDash)
   {

@@ -15,7 +15,6 @@ public:
   { 
     if(m_CharacterBody != nullptr)
     {
-      print_line("Character Body instance set successfully!");
       return m_CharacterBody;
     }
     return nullptr;

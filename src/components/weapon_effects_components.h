@@ -42,7 +42,6 @@ public:
   {
     if(!m_CharacterBody || !m_HoldPointNode)
     {
-      print_error("Character body or hold point is null!");
       return;
     }
 

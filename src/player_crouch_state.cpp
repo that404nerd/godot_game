@@ -2,14 +2,9 @@
 
 void PlayerCrouchState::_enter()
 { 
-  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
-  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
+  m_PlayerInst = m_PlayerStateMachine->get_player_inst();
 
   m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - m_PlayerInst->get_crouch_translate();
-}
-
-void PlayerCrouchState::_bind_methods()
-{
 }
 
 void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event) 
@@ -18,13 +13,13 @@ void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event)
   // TODO2 : Switch from normal test_move check to a raycast for better results.
   if (Input::get_singleton()->is_action_just_pressed("crouch") && !m_PlayerInst->get_collider_raycast()->is_colliding()) {
     _on_crouch_finished();
-    emit_signal("state_changed", "Idle");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
   }
   
   if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->get_collider_raycast()->is_colliding()) 
   {
     _on_crouch_finished();
-    emit_signal("state_changed", "Jump");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::JUMP));
   }
 }
 
@@ -53,7 +48,7 @@ void PlayerCrouchState::_physics_update(double delta)
   m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
   m_PlayerInst->get_player_standing_collider()->set_disabled(true);
 
-  if(m_StateMachineInst->get_prev_state() == StringName("Slide"))
+  if(m_PlayerStateMachine->get_prev_state() == static_cast<uint8_t>(PlayerStates::SLIDE))
   {
     float finalCrouchPos = m_FinalPos - m_PlayerInst->get_player_head()->get_position().y;
     playerHeadPos.y = Utils::exp_decay(playerHeadPos.y, finalCrouchPos, m_PlayerInst->get_crouch_translate_speed(), (float)delta);
@@ -66,15 +61,14 @@ void PlayerCrouchState::_physics_update(double delta)
   playerVel = m_PlayerInst->get_crouch_speed() * m_PlayerInst->get_wish_dir();
   m_PlayerInst->set_velocity(playerVel);
 
-  if(m_StateMachineInst->get_prev_state() == StringName("Fall"))
+  if(m_PlayerStateMachine->get_prev_state() == static_cast<uint8_t>(PlayerStates::FALL))
   {
-    print_line(m_PlayerInst->get_wish_dir());
-    emit_signal("state_changed", "Slide");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::SLIDE));
   }
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 
   {
-    emit_signal("state_changed", "Fall");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::FALL));
   }
 }
 

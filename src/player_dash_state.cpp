@@ -2,14 +2,9 @@
 
 void PlayerDashState::_enter()
 { 
-  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
+  m_PlayerInst = m_PlayerStateMachine->get_player_inst();
 
   m_DashDir = m_PlayerInst->get_wish_dir();
-}
-
-void PlayerDashState::_bind_methods()
-{
 }
 
 void PlayerDashState::_handle_input(const Ref<InputEvent>& event) 
@@ -31,9 +26,9 @@ void PlayerDashState::_physics_update(double delta)
   m_PlayerInst->set_velocity(playerVel);
 
   if(m_PlayerInst->get_velocity().length() > 0.0f)
-    emit_signal("state_changed", "Sprint");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::SPRINT));
   else
-    emit_signal("state_changed", "Idle");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
   
 }
 

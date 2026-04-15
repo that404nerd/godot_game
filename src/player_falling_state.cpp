@@ -2,25 +2,20 @@
 
 void PlayerFallingState::_enter()
 { 
-  m_StateMachineInst = GameManager::get_singleton()->get_player_state_machine();
-  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-}
-
-void PlayerFallingState::_bind_methods()
-{
+  m_PlayerInst = m_PlayerStateMachine->get_player_inst();
 }
 
 void PlayerFallingState::_handle_input(const Ref<InputEvent>& event) 
 {
   if (!m_IsJumpPressed && Input::get_singleton()->is_action_just_pressed("jump")) 
   {
-    emit_signal("state_changed", "Jump");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::JUMP));
     m_IsJumpPressed = true;
   }
 
   if(Input::get_singleton()->is_action_just_pressed("dash") && m_PlayerInst->get_global_state().CanDash)
   {
-    emit_signal("state_changed", "Dash");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::DASH));
   }
 
   if(Input::get_singleton()->is_action_just_pressed("crouch") && m_IsCrouchPressed == false)
@@ -60,10 +55,10 @@ void PlayerFallingState::_physics_update(double delta)
   {
     if(m_IsCrouchPressed == true)
     {
-      emit_signal("state_changed", "Crouch");
+    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::CROUCH));
     } else {
       m_IsJumpPressed = false;
-      emit_signal("state_changed", "Idle");
+      m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
     }
   }
 

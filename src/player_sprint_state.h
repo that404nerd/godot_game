@@ -1,5 +1,6 @@
 #pragma once
 
+#include "player_state_machine.h"
 #include "state.h"
 #include "state_machine.h"
 #include "player.h"
@@ -12,10 +13,12 @@
 #include "dd3d_cpp_api.hpp"
 
 class PlayerSprintState : public State {
-  GDCLASS(PlayerSprintState, State);
 
 public:
-  PlayerSprintState() {}; 
+  PlayerSprintState(PlayerStateMachine* playerStateMachine) 
+    : State(static_cast<uint8_t>(PlayerStates::SPRINT)),
+    m_PlayerStateMachine(playerStateMachine)
+  {}; 
 
   virtual void _enter() override;
   virtual void _handle_input(const Ref<InputEvent>& event) override;
@@ -24,11 +27,7 @@ public:
 
   void _headbob_effect(double delta);
 
-protected:
-  static void _bind_methods();
-
 private:
   Player* m_PlayerInst;
-  StateMachine* m_StateMachineInst;
-
+  PlayerStateMachine* m_PlayerStateMachine { nullptr };
 };

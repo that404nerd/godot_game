@@ -1,25 +1,22 @@
 #pragma once
 
+#include "player_state_machine.h"
 #include "state.h"
-#include "state_machine.h"
 #include "player.h"
 
 class PlayerIdleState : public State {
-  GDCLASS(PlayerIdleState, State);
-
 public:
 
-  PlayerIdleState() : m_PlayerInst(nullptr) {};
+  PlayerIdleState(PlayerStateMachine* playerStateMachine) : 
+    State(static_cast<uint8_t>(PlayerStates::IDLE)),
+    m_PlayerStateMachine(playerStateMachine) {};
 
   virtual void _enter() override;
   virtual void _handle_input(const Ref<InputEvent>& event) override;
   virtual void _physics_update(double delta) override;
   virtual void _exit() override; 
 
-protected:
-  static void _bind_methods();
-
 private:
-  Player* m_PlayerInst;
-  StateMachine* m_StateMachineInst;
+  Player* m_PlayerInst { nullptr };
+  PlayerStateMachine* m_PlayerStateMachine { nullptr };
 };

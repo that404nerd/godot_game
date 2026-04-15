@@ -1,8 +1,9 @@
 #include "player.h"
+#include "global_state_handler.h"
+#include "player_state_machine.h"
 
 Player::Player()
 {
-  GameManager::get_singleton()->set_player_inst(this);
   get_global_state().DashCooldown = dash_cooldown;
   m_CharacterComponent.set_character_body_inst(this);
 }
@@ -31,27 +32,32 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, crouch_translate_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, dash_cooldown, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, crouch_translate, Variant::FLOAT);
+
 }
 
 void Player::_ready()
 {
-  m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
+  m_PlayerStateMachine = memnew(PlayerStateMachine);
+  m_GlobalStateHandler = memnew(GlobalStateHandler(this));
   m_WeaponManager = memnew(WeaponManager);
+
+  m_PlayerStateMachine->set_player_inst(this);
+  m_PlayerStateMachine->_enter();
+  m_GlobalStateHandler->_enter();
+  m_WeaponManager->_init_data(&m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine);
   
+  m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
   m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
   m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_ColliderRayCast = get_node<RayCast3D>(NodePath("PlayerRaycasts/PlayerColliderRay"));
-
   m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
   m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
-
-  m_WeaponManager->_ready();
-  m_WeaponManager->_init_data(&m_CharacterComponent, m_WeaponHoldPoint, get_node<StateMachine>(NodePath("%PlayerStateMachine")));
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
+  m_PlayerStateMachine->_unhandled_input(event);
   m_WeaponManager->_unhandled_input(event);
 }
 
@@ -60,7 +66,6 @@ void Player::_update_input()
   Vector3 playerVel = get_velocity();
 
   m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
-  
   m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
   
   if (is_on_floor())
@@ -89,11 +94,14 @@ void Player::_update_velocity()
 
 void Player::_physics_process(double delta) 
 {
-  m_WeaponManager->_process(delta);
+  m_PlayerStateMachine->_physics_update(delta);
+  m_GlobalStateHandler->_physics_update(delta);
+  m_WeaponManager->_update(delta);
 }
-
 
 Player::~Player()
 {
   memfree(m_WeaponManager);
+  memfree(m_PlayerStateMachine);
+  memfree(m_GlobalStateHandler);
 }

@@ -6,6 +6,27 @@
 
 using namespace godot;
 
-class WeaponIdleState : public State {
+class WeaponEquipState : public State {
+public:
+  void _enter() override
+  {
+    
+  }
 
+  void _handle_input(const Ref<InputEvent>& event) override
+  {
+
+  }
+
+  void _update(double delta) override
+  {
+
+  }
+
+  void _exit() override
+  {
+
+  }
+
+private:
 };

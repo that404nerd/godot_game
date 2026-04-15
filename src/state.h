@@ -1,24 +1,26 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
-#include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 
 using namespace godot;
 
-class State : public Node {
-  GDCLASS(State, Node);
-
+class State {
 public:
-  State();
-  virtual ~State() {};
+
+  State(uint8_t stateID) : m_StateId(stateID) {};
 
   virtual void _enter() = 0;
   virtual void _handle_input(const Ref<InputEvent>& event) = 0;
-  virtual void _physics_update(double delta) = 0;
+  virtual void _physics_update(double delta) {};
+  virtual void _update(double delta) {};
 
   virtual void _exit() = 0;
+  virtual ~State() {};
 
-protected:
-  static void _bind_methods();
+public:
+  uint8_t get_current_state() { return m_StateId; }
+
+private:
+  uint8_t m_StateId;
 };

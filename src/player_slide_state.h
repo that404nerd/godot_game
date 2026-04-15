@@ -4,16 +4,16 @@
 #include <godot_cpp/classes/property_tweener.hpp>
 #include <godot_cpp/classes/physics_server3d.hpp>
 
-#include "state.h"
-#include "state_machine.h"
+#include "player_state_machine.h"
 #include "player.h"
-#include "globals.h"
 
 class PlayerSlideState : public State {
-  GDCLASS(PlayerSlideState, State);
 
 public:
-  PlayerSlideState() {}; 
+  PlayerSlideState(PlayerStateMachine* playerStateMachine) 
+    : State(static_cast<uint8_t>(PlayerStates::SLIDE)),
+        m_PlayerStateMachine(playerStateMachine)
+  {}; 
 
   virtual void _enter() override;
   virtual void _handle_input(const Ref<InputEvent>& event) override;
@@ -24,16 +24,13 @@ public:
 
   virtual void _exit() override;
 
-protected:
-  static void _bind_methods();
-
 private:
   float m_FinalPos { 0.0f }, m_SlideTimer { 0.0f };
   Vector3 m_OriginalHeadPosition { Vector3(0.0f, 0.0f, 0.0f) };
   Player* m_PlayerInst { nullptr };
+  PlayerStateMachine* m_PlayerStateMachine { nullptr };
 
   Vector3 m_SlideVector { Vector3(0.0f, 0.0f, 0.0f) };
 
-  StateMachine* m_StateMachineInst { nullptr };
   Ref<Tween> m_CrouchTween;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "state.h"
-#include "state_machine.h"
+#include "player_state_machine.h"
 #include "player.h"
 
 #include <godot_cpp/classes/tween.hpp>
@@ -11,10 +11,14 @@
 #include <godot_cpp/classes/capsule_mesh.hpp>
 
 class PlayerCrouchState : public State {
-  GDCLASS(PlayerCrouchState, State);
 
 public:
-  PlayerCrouchState() : m_CurrentHeadPosition(Vector3(0.0f, 0.0f, 0.0f)), m_SlideVector(Vector3(0.0f, 0.0f, 0.0f)), m_PlayerInst(nullptr), m_CrouchTween(nullptr) {}; 
+  PlayerCrouchState(PlayerStateMachine* playerStateMachine) : 
+    State(static_cast<uint8_t>(PlayerStates::CROUCH)),
+    m_CurrentHeadPosition(Vector3(0.0f, 0.0f, 0.0f)), 
+    m_SlideVector(Vector3(0.0f, 0.0f, 0.0f)), 
+    m_PlayerInst(nullptr),
+    m_CrouchTween(nullptr), m_PlayerStateMachine(playerStateMachine) {}; 
 
   virtual void _enter() override;
   virtual void _handle_input(const Ref<InputEvent>& event) override;
@@ -23,9 +27,6 @@ public:
 
   void _on_crouch_finished();
 
-protected:
-  static void _bind_methods();
-
 private:
   float m_FinalPos, m_SlideTimer;
 
@@ -33,5 +34,5 @@ private:
   Player* m_PlayerInst;
   Ref<Tween> m_CrouchTween;
 
-  StateMachine* m_StateMachineInst;
+  PlayerStateMachine* m_PlayerStateMachine;
 };

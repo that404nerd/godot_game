@@ -6,8 +6,7 @@ CameraController::CameraController()
 
 void CameraController::_ready()
 {
-  m_PlayerInst = GameManager::get_singleton()->get_player_inst();
-
+  m_PlayerInst = Object::cast_to<Player>(get_parent());
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
 
   m_OriginalFOV = m_PlayerCamera->get_fov();
@@ -31,8 +30,6 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 
 void CameraController::_bind_methods() 
 {
-  GD_BIND_CUSTOM_PROPERTY(CameraController, player_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-
   ADD_GROUP("FOV Settings", "");
   GD_BIND_PROPERTY(CameraController, sprint_fov, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, slide_fov, Variant::FLOAT);
@@ -63,7 +60,7 @@ void CameraController::_headbob_effect(double delta)
   float x_bob = Math::cos(m_HeadbobTime * sprint_headbob_freq * 0.5f) * sprint_headbob_amp; 
   float y_bob = Math::sin(m_HeadbobTime * sprint_headbob_freq) * sprint_headbob_amp;        
 
-  if(m_CurrentStateName == StringName("Crouch") && m_PlayerInst->get_velocity().length() > 0.001f) {
+  if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::CROUCH) && m_PlayerInst->get_velocity().length() > 0.001f) {
     x_bob = Math::cos(m_HeadbobTime * crouch_headbob_freq * 0.5f) * crouch_headbob_amp; 
     y_bob = Math::sin(m_HeadbobTime * crouch_headbob_freq) * crouch_headbob_amp;        
   }
@@ -81,10 +78,10 @@ void CameraController::_headbob_effect(double delta)
 void CameraController::_tilt_player(double delta)
 {
   Vector3 camControllerRot = get_rotation();
-  if(m_CurrentStateName == StringName("Sprint"))
+  if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SPRINT))
   {
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -m_PlayerInst->get_input_dir().x, side_tilt_transition_value, (float)delta);
-  } else if(m_CurrentStateName == StringName("Slide"))
+  } else if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SLIDE))
   {
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle), side_tilt_transition_value, (float)delta);
   } else {
@@ -96,10 +93,10 @@ void CameraController::_tilt_player(double delta)
 
 void CameraController::_apply_fov(double delta)
 {
-  if(m_CurrentStateName == StringName("Sprint"))
+  if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SPRINT))
   {
     m_PlayerCamera->set_fov(Math::lerp(m_OriginalFOV, sprint_fov, sprint_fov_zoom_out_transition_value * (float)delta));
-  } else if(m_CurrentStateName == StringName("Slide"))
+  } else if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SLIDE))
   {
     m_PlayerCamera->set_fov(Math::lerp(m_PlayerCamera->get_fov(), slide_fov, slide_fov_zoom_in_transition_value * (float)delta));
   } else {
@@ -109,19 +106,21 @@ void CameraController::_apply_fov(double delta)
 
 void CameraController::_physics_process(double delta) 
 {
-  m_CurrentStateName = player_state_machine->get_current_state();
-
-  if(!m_CurrentStateName)
+  /* I check if the player's is_node_ready() because the player's _ready()
+     is called after the camera controller node's _ready() which means that setting this without
+     any checks is a guaranteed nullptr and a crash if used */
+  if(m_PlayerInst->is_node_ready() && m_PlayerInst != nullptr)
   {
-    print_error("Camera Controller: Current state is null!");
-    return;
+    m_PlayerStateMachine = m_PlayerInst->get_player_state_machine();
   }
-  
+
+  m_CurrentStateID = m_PlayerStateMachine->get_current_state();
+
   _apply_fov(delta);
    
   _tilt_player(delta);
   
-  if(m_CurrentStateName == StringName("Sprint") || m_CurrentStateName == StringName("Crouch"))
+  if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SPRINT) || m_CurrentStateID == static_cast<uint8_t>(PlayerStates::CROUCH))
   {
     _headbob_effect(delta);
   }

@@ -1,14 +1,15 @@
 #pragma once
 
 #include "state.h"
-#include "state_machine.h"
+#include "player_state_machine.h"
 #include "player.h"
 
 class PlayerJumpState : public State {
-  GDCLASS(PlayerJumpState, State);
 
 public:
-  PlayerJumpState() : m_PlayerInst(nullptr) {}; 
+  PlayerJumpState(PlayerStateMachine* playerStateMachine) : 
+    State(static_cast<uint8_t>(PlayerStates::JUMP)), 
+    m_PlayerStateMachine(playerStateMachine) {};
 
   virtual void _enter() override;
   virtual void _handle_input(const Ref<InputEvent>& event) override;
@@ -17,10 +18,7 @@ public:
 
   void _jump(); 
 
-protected:
-  static void _bind_methods();
-
 private:
-  Player* m_PlayerInst;
-  StateMachine* m_StateMachineInst;
+  PlayerStateMachine* m_PlayerStateMachine { nullptr };
+  Player* m_PlayerInst { nullptr };
 };
