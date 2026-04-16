@@ -20,19 +20,16 @@ using namespace godot;
 class StateMachine {
 
 public:
-  StateMachine();
-
   void _enter();
 
   void _unhandled_input(const Ref<InputEvent>& event);
   void _physics_update(double delta);
+  void _update(double delta);
 
   void _change_state(uint8_t stateID);
 
   uint8_t get_current_state();
   uint8_t get_prev_state();
-
-  ~StateMachine();
 
 private:
   State* m_CurrentState { nullptr };

@@ -17,10 +17,8 @@ enum class PlayerStates : uint8_t {
 class PlayerStateMachine : public StateMachine 
 {
 public:
-  PlayerStateMachine();
-
-  void set_player_inst(Player* playerInst) { m_PlayerInst = playerInst; };
-  Player* get_player_inst() { return m_PlayerInst; }
+  PlayerStateMachine(Player* playerInst);
+  Player* get_player_inst() const { return m_PlayerInst; }
 
 private:
   Player* m_PlayerInst;

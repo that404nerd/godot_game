@@ -1,5 +1,4 @@
 #include "player.h"
-#include "global_state_handler.h"
 #include "player_state_machine.h"
 
 Player::Player()
@@ -37,17 +36,19 @@ void Player::_bind_methods()
 
 void Player::_ready()
 {
-  m_PlayerStateMachine = memnew(PlayerStateMachine);
+  m_PlayerStateMachine = memnew(PlayerStateMachine(this));
   m_GlobalStateHandler = memnew(GlobalStateHandler(this));
   m_WeaponManager = memnew(WeaponManager);
 
-  m_PlayerStateMachine->set_player_inst(this);
   m_PlayerStateMachine->_enter();
   m_GlobalStateHandler->_enter();
-  m_WeaponManager->_init_data(&m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine);
+
+  m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
+  m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("%WeaponAnimPlayer"));
+
+  m_WeaponManager->_init_data({ &m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine, m_WeaponAnimPlayer });
   
   m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
-  m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
   m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_ColliderRayCast = get_node<RayCast3D>(NodePath("PlayerRaycasts/PlayerColliderRay"));
@@ -92,11 +93,15 @@ void Player::_update_velocity()
   move_and_slide();
 }
 
+void Player::_process(double delta)
+{
+  m_WeaponManager->_update(delta);
+}
+
 void Player::_physics_process(double delta) 
 {
   m_PlayerStateMachine->_physics_update(delta);
   m_GlobalStateHandler->_physics_update(delta);
-  m_WeaponManager->_update(delta);
 }
 
 Player::~Player()

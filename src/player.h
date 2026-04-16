@@ -4,17 +4,9 @@
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
-#include <godot_cpp/classes/engine.hpp>
-#include <godot_cpp/classes/project_settings.hpp>
-#include <godot_cpp/classes/animation_player.hpp>
-#include <godot_cpp/classes/animation_player.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
-#include <godot_cpp/classes/capsule_mesh.hpp>
-#include <godot_cpp/classes/sub_viewport.hpp>
-#include <godot_cpp/core/math.hpp>
 #include <godot_cpp/classes/ray_cast3d.hpp>
 
-#include "components/weapon_effects_components.h"
 #include "components/character_component.h"
 
 #include "globals.h"
@@ -40,6 +32,7 @@ public:
   Player();
   
   void _ready() override;
+  void _process(double delta) override;
   void _physics_process(double delta) override;
   void _unhandled_input(const Ref<InputEvent>& event) override;
 
@@ -75,17 +68,18 @@ public:
 private:
   PlayerGlobalState m_GlobalState;
 
-  Node3D* m_PlayerHead = nullptr;
-  Node3D* m_CameraControllerNode = nullptr;
+  Node3D* m_PlayerHead { nullptr };
+  Node3D* m_CameraControllerNode { nullptr };
   
   // Get Collision shapes
-  CollisionShape3D* m_StandingPlayerCollider = nullptr;
-  CollisionShape3D* m_CrouchingPlayerCollider = nullptr;
+  CollisionShape3D* m_StandingPlayerCollider { nullptr };
+  CollisionShape3D* m_CrouchingPlayerCollider { nullptr };
   
-  RayCast3D* m_ColliderRayCast = nullptr;
-  Camera3D* m_PlayerCamera = nullptr;
+  RayCast3D* m_ColliderRayCast { nullptr };
+  Camera3D* m_PlayerCamera { nullptr };
   
-  Node3D* m_CamController = nullptr;
+  Node3D* m_CamController { nullptr };
+  AnimationPlayer* m_WeaponAnimPlayer { nullptr };
 
   CharacterComponent m_CharacterComponent;
   PlayerStateMachine* m_PlayerStateMachine { nullptr };
@@ -96,11 +90,11 @@ private:
 private:
 
   // Player vectors & Input vectors
-  Vector2 m_InputDir = Vector2(0.0f, 0.0f);
-  Vector3 m_WishDir = Vector3(0.0f, 0.0f, 0.0f);
-  Vector3 m_PlayerTiltVector = Vector3(0.0f, 0.0f, 0.0f);
+  Vector2 m_InputDir { Vector2(0.0f, 0.0f) };
+  Vector3 m_WishDir { Vector3(0.0f, 0.0f, 0.0f) };
+  Vector3 m_PlayerTiltVector { Vector3(0.0f, 0.0f, 0.0f) };
 
-  Vector3 m_GravityVec = Vector3(0.0f, 0.0f, 0.0f);
+  Vector3 m_GravityVec = { Vector3(0.0f, 0.0f, 0.0f) };
 
 private:
   GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);

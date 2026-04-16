@@ -1,9 +1,5 @@
 #include "state_machine.h"
 
-StateMachine::StateMachine()
-{
-}
-
 void StateMachine::_enter()
 {
   if(m_InitialState) {
@@ -25,7 +21,11 @@ void StateMachine::_physics_update(double delta)
     m_CurrentState->_physics_update(delta);
     // print_line("Current state: ", get_current_state());
   }
+}
 
+void StateMachine::_update(double delta)
+{
+  m_CurrentState->_update(delta);  
 }
 
 void StateMachine::_change_state(uint8_t stateID)
@@ -68,5 +68,3 @@ uint8_t StateMachine::get_prev_state()
 
   return prev_state_id;
 }
-
-StateMachine::~StateMachine() {}
