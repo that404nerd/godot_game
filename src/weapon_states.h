@@ -21,45 +21,7 @@ public:
 private:
   WeaponManager* m_WeaponManager { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
-<<<<<<< HEAD
-};
-
-class WeaponEquipState : public State {
-public:
-  WeaponEquipState(WeaponManager* weaponManager);
-
-  void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
-  void _update(double delta) override;
-  void _exit() override;
-
-private:
-  WeaponManager* m_WeaponManager { nullptr };
-  AnimationPlayer* m_WeaponAnimPlayer { nullptr };
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  Ref<Weapon> m_CurrentWeapon { nullptr };
-};
-
-class WeaponShootState : public State {
-public:
-  WeaponShootState(WeaponManager* weaponManager);
-
-  void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
-  void _update(double delta) override;
-  void _exit() override;
-
-private:
-  WeaponManager* m_WeaponManager { nullptr };
-  AnimationPlayer* m_WeaponAnimPlayer { nullptr };
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  Ref<Weapon> m_CurrentWeapon { nullptr };
-
-private:
-  bool m_DidShoot, m_WantsToShoot;
-  float m_TimeBetweenShots;
-=======
->>>>>>> 55838bc (changed weapon anims)
+  
 };
 
 class WeaponEquipState : public State {

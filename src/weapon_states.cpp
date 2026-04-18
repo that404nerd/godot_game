@@ -54,18 +54,18 @@ void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
 void WeaponEquipState::_enter()
 {
   m_WeaponStateMachine = m_WeaponManager->get_weapon_state_machine();
-<<<<<<< HEAD
+  
   m_WeaponAnimPlayer = m_WeaponManager->get_weapon_anim_player();
   m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
 
-=======
+   
   m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
 
   Ref<PackedScene> weaponScene = m_CurrentWeapon->get_weaponScene();
   Node* weaponNode = weaponScene->instantiate();
   m_WeaponAnimPlayer = weaponNode->get_node<AnimationPlayer>(NodePath("%AnimationPlayer"));
 
->>>>>>> 55838bc (changed weapon anims)
+ 
   if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
   {
     assert("Weapon Equip state data is null!");
@@ -100,24 +100,24 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
   {
     m_WantsToShoot = true;
   }
-<<<<<<< HEAD
-=======
+  
+   
 
   if(Input::get_singleton()->is_action_just_pressed("reload_weapon"))
   {
     m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::RELOAD));
   }
->>>>>>> 55838bc (changed weapon anims)
+ 
 }
 
 void WeaponShootState::_enter()
 {
   m_WeaponStateMachine = m_WeaponManager->get_weapon_state_machine();
-<<<<<<< HEAD
+  
   m_WeaponAnimPlayer = m_WeaponManager->get_weapon_anim_player();
   m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
 
-=======
+   
   m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
 
   Ref<PackedScene> weaponScene = m_CurrentWeapon->get_weaponScene();
@@ -126,29 +126,29 @@ void WeaponShootState::_enter()
 
   print_line(m_WeaponAnimPlayer->get_animation_list());
 
->>>>>>> 55838bc (changed weapon anims)
+ 
   if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
   {
     assert("Weapon Equip state data is null!");
   }
 
   m_DidShoot = false;
-<<<<<<< HEAD
+  
   m_WantsToShoot = false;
-=======
+   
   m_WantsToShoot = true;
->>>>>>> 55838bc (changed weapon anims)
+ 
   m_TimeBetweenShots = 0.3f;
 }
 
 void WeaponShootState::_update(double delta)
 {
 
-<<<<<<< HEAD
+  
   if(m_DidShoot == false && m_TimeBetweenShots > 0.0f)
-=======
+   
   if(m_DidShoot == false && m_WantsToShoot == true)
->>>>>>> 55838bc (changed weapon anims)
+ 
   {
     m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName());
     m_TimeBetweenShots -= delta;
@@ -160,11 +160,11 @@ void WeaponShootState::_update(double delta)
     }
   }
 
-<<<<<<< HEAD
+  
   print_line("Time between shots: ", m_TimeBetweenShots);
 
-=======
->>>>>>> 55838bc (changed weapon anims)
+   
+ 
   if(m_DidShoot == true && m_WantsToShoot == true)
   {
     m_DidShoot = false;
@@ -180,8 +180,8 @@ void WeaponShootState::_exit()
 
 }
 
-<<<<<<< HEAD
-=======
+  
+   
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Weapon Reload State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,4 +221,4 @@ void WeaponReloadState::_exit()
 {
 
 }
->>>>>>> 55838bc (changed weapon anims)
+ 

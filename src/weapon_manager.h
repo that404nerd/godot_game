@@ -27,10 +27,10 @@ private:
     CharacterComponent* characterComponent;
     Node3D* holdPoint;
     StateMachine* stateMachine;
-<<<<<<< HEAD
+  
     AnimationPlayer* weaponAnimPlayer;
-=======
->>>>>>> 55838bc (changed weapon anims)
+   
+ 
   };
 
 public:
@@ -41,18 +41,15 @@ public:
 
   WeaponComponent get_weapon_component() { return m_WeaponComponent; }
   WeaponStateMachine* get_weapon_state_machine() { return m_WeaponStateMachine; }
-<<<<<<< HEAD
+  
   AnimationPlayer* get_weapon_anim_player() { return m_WeaponAnimPlayer; }
 
   ~WeaponManager();
 
 private:
   AnimationPlayer* m_WeaponAnimPlayer { nullptr };
-=======
+   
 
-  ~WeaponManager();
-
->>>>>>> 55838bc (changed weapon anims)
 private:
   Vector2 m_MouseInput;
   uint8_t m_CurrentStateName;
@@ -67,11 +64,11 @@ private:
   WeaponComponent m_WeaponComponent;
 
   Node3D* m_HoldPointNode { nullptr };
-<<<<<<< HEAD
+  
   StateMachine* m_PlayerStateMachine { nullptr };
-=======
+   
   StateMachine* m_CharacterStateMachine { nullptr };
->>>>>>> 55838bc (changed weapon anims)
+ 
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
 
   Array m_WeaponResourceList;

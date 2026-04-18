@@ -4,8 +4,7 @@
 
 void WeaponManager::_init_data(const WeaponManagerData& weaponManagerData)
 {
-  if(weaponManagerData.weaponAnimPlayer == nullptr || weaponManagerData.characterComponent == nullptr 
-  if(weaponManagerData.characterComponent == nullptr 
+  if(weaponManagerData.weaponAnimPlayer == nullptr || weaponManagerData.characterComponent == nullptr || weaponManagerData.characterComponent == nullptr 
         || weaponManagerData.holdPoint == nullptr || weaponManagerData.stateMachine == nullptr)
   {
     assert("WeaponManagerData is uninitialized!");

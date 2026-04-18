@@ -44,14 +44,14 @@ void Player::_ready()
   m_GlobalStateHandler->_enter();
 
   m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
-<<<<<<< HEAD
+  
   m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("%WeaponAnimPlayer"));
 
   m_WeaponManager->_init_data({ &m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine, m_WeaponAnimPlayer });
-=======
+   
 
   m_WeaponManager->_init_data({ &m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine });
->>>>>>> 55838bc (changed weapon anims)
+ 
   
   m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
   m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
