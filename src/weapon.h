@@ -28,6 +28,7 @@ private:
   GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
   GD_DEFINE_PROPERTY(String, weaponReloadAnimName, "");
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
+  GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
 
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);

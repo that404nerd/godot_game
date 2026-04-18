@@ -9,6 +9,10 @@ class WeaponManager;
 class WeaponIdleState;
 class WeaponEquipState;
 class WeaponShootState;
+<<<<<<< HEAD
+=======
+class WeaponReloadState;
+>>>>>>> 55838bc (changed weapon anims)
 
 enum class WeaponStates : uint8_t {
   IDLE, EQUIP, SHOOT, RELOAD, UNEQUIP, WEAPON_SWITCH
