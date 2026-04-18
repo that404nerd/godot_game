@@ -16,9 +16,14 @@ enum class PlayerStates : uint8_t {
 
 class PlayerStateMachine : public StateMachine 
 {
+  GDCLASS(PlayerStateMachine, StateMachine);
+
 public:
-  PlayerStateMachine(Player* playerInst);
+  void _init_data(Player* playerInst);
   Player* get_player_inst() const { return m_PlayerInst; }
+
+protected:
+  static void _bind_methods();
 
 private:
   Player* m_PlayerInst;

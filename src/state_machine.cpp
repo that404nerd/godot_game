@@ -1,11 +1,18 @@
 #include "state_machine.h"
 
-void StateMachine::_enter()
+void StateMachine::_ready()
 {
   if(m_InitialState) {
     m_InitialState->_enter();
     m_CurrentState = m_InitialState;
   }
+
+  
+}
+
+void StateMachine::_bind_methods()
+{
+
 }
 
 void StateMachine::_unhandled_input(const Ref<InputEvent>& event)
@@ -15,7 +22,7 @@ void StateMachine::_unhandled_input(const Ref<InputEvent>& event)
   }
 }
 
-void StateMachine::_physics_update(double delta)
+void StateMachine::_physics_process(double delta)
 {
   if(m_CurrentState) {
     m_CurrentState->_physics_update(delta);
@@ -23,7 +30,7 @@ void StateMachine::_physics_update(double delta)
   }
 }
 
-void StateMachine::_update(double delta)
+void StateMachine::_process(double delta)
 {
   m_CurrentState->_update(delta);  
 }

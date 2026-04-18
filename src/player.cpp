@@ -1,5 +1,6 @@
 #include "player.h"
 #include "player_state_machine.h"
+#include "weapon_manager.h"
 
 Player::Player()
 {
@@ -36,22 +37,18 @@ void Player::_bind_methods()
 
 void Player::_ready()
 {
-  m_PlayerStateMachine = memnew(PlayerStateMachine(this));
+  m_PlayerStateMachine = memnew(PlayerStateMachine);
   m_GlobalStateHandler = memnew(GlobalStateHandler(this));
   m_WeaponManager = memnew(WeaponManager);
 
-  m_PlayerStateMachine->_enter();
-  m_GlobalStateHandler->_enter();
-
   m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
-  
-  m_WeaponAnimPlayer = get_node<AnimationPlayer>(NodePath("%WeaponAnimPlayer"));
 
-  m_WeaponManager->_init_data({ &m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine, m_WeaponAnimPlayer });
-   
-
+  m_PlayerStateMachine->_init_data(this);
   m_WeaponManager->_init_data({ &m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine });
- 
+
+  add_child(m_WeaponManager);
+  
+  m_GlobalStateHandler->_enter();
   
   m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
   m_PlayerHead = get_node<Node3D>(NodePath("CameraController/PlayerHead"));
@@ -59,12 +56,12 @@ void Player::_ready()
   m_ColliderRayCast = get_node<RayCast3D>(NodePath("PlayerRaycasts/PlayerColliderRay"));
   m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
   m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
+
+  add_child(m_PlayerStateMachine);
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)
 {
-  m_PlayerStateMachine->_unhandled_input(event);
-  m_WeaponManager->_unhandled_input(event);
 }
 
 void Player::_update_input() 
@@ -100,18 +97,14 @@ void Player::_update_velocity()
 
 void Player::_process(double delta)
 {
-  m_WeaponManager->_update(delta);
 }
 
 void Player::_physics_process(double delta) 
 {
-  m_PlayerStateMachine->_physics_update(delta);
   m_GlobalStateHandler->_physics_update(delta);
 }
 
 Player::~Player()
 {
-  memfree(m_WeaponManager);
-  memfree(m_PlayerStateMachine);
   memfree(m_GlobalStateHandler);
 }

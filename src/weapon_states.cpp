@@ -55,16 +55,15 @@ void WeaponEquipState::_enter()
 {
   m_WeaponStateMachine = m_WeaponManager->get_weapon_state_machine();
   
-  m_WeaponAnimPlayer = m_WeaponManager->get_weapon_anim_player();
   m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
-
-   
-  m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
-
-  Ref<PackedScene> weaponScene = m_CurrentWeapon->get_weaponScene();
-  Node* weaponNode = weaponScene->instantiate();
-  m_WeaponAnimPlayer = weaponNode->get_node<AnimationPlayer>(NodePath("%AnimationPlayer"));
-
+  
+  m_WeaponScene = m_CurrentWeapon->get_weaponScene();
+  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
+  
+  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
+  if (!animPlayers.is_empty()) {
+    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
+  }
  
   if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
   {
@@ -83,7 +82,6 @@ void WeaponEquipState::_update(double delta)
 
 void WeaponEquipState::_exit()
 {
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,30 +112,24 @@ void WeaponShootState::_enter()
 {
   m_WeaponStateMachine = m_WeaponManager->get_weapon_state_machine();
   
-  m_WeaponAnimPlayer = m_WeaponManager->get_weapon_anim_player();
   m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
-
    
-  m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
-
   Ref<PackedScene> weaponScene = m_CurrentWeapon->get_weaponScene();
-  Node* weaponNode = weaponScene->instantiate(PackedScene::GEN_EDIT_STATE_INSTANCE);
-  m_WeaponAnimPlayer = weaponNode->get_node<AnimationPlayer>(NodePath("%AnimationPlayer"));
+  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
+  
+  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
+  if (!animPlayers.is_empty()) {
+    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
+  }
 
-  print_line(m_WeaponAnimPlayer->get_animation_list());
-
- 
   if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
   {
-    assert("Weapon Equip state data is null!");
+    print_error("Weapon Equip state data is null!");
+    return;
   }
 
   m_DidShoot = false;
-  
-  m_WantsToShoot = false;
-   
   m_WantsToShoot = true;
- 
   m_TimeBetweenShots = 0.3f;
 }
 
@@ -145,10 +137,7 @@ void WeaponShootState::_update(double delta)
 {
 
   
-  if(m_DidShoot == false && m_TimeBetweenShots > 0.0f)
-   
   if(m_DidShoot == false && m_WantsToShoot == true)
- 
   {
     m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName());
     m_TimeBetweenShots -= delta;
@@ -161,17 +150,13 @@ void WeaponShootState::_update(double delta)
   }
 
   
-  print_line("Time between shots: ", m_TimeBetweenShots);
-
-   
- 
   if(m_DidShoot == true && m_WantsToShoot == true)
   {
     m_DidShoot = false;
     m_TimeBetweenShots = 0.3f;
   }
 
-
+  
     // m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::IDLE));
 }
 
@@ -201,12 +186,11 @@ void WeaponReloadState::_enter()
   m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
 
   Ref<PackedScene> weaponScene = m_CurrentWeapon->get_weaponScene();
-  Node* weaponNode = weaponScene->instantiate();
-  m_WeaponAnimPlayer = weaponNode->get_node<AnimationPlayer>(NodePath("%AnimationPlayer"));
-
-  if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
-  {
-    assert("Weapon Equip state data is null!");
+  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
+  
+  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
+  if (!animPlayers.is_empty()) {
+    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
   }
 
   m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName());
@@ -221,4 +205,3 @@ void WeaponReloadState::_exit()
 {
 
 }
- 

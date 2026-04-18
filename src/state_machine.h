@@ -17,19 +17,24 @@
 
 using namespace godot;
 
-class StateMachine {
+class StateMachine : public Node {
+
+  GDCLASS(StateMachine, Node);
 
 public:
-  void _enter();
+  void _ready() override;
 
-  void _unhandled_input(const Ref<InputEvent>& event);
-  void _physics_update(double delta);
-  void _update(double delta);
+  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _physics_process(double delta) override;
+  void _process(double delta) override;
 
   void _change_state(uint8_t stateID);
 
   uint8_t get_current_state();
   uint8_t get_prev_state();
+
+protected:
+  static void _bind_methods();
 
 private:
   State* m_CurrentState { nullptr };

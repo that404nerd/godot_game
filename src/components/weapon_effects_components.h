@@ -13,7 +13,7 @@ using namespace godot;
 struct WeaponEffectsData
 {
   CharacterComponent* characterComponent;
-  WeaponComponent* weaponComponent;
+  WeaponComponent weaponComponent;
   Node3D* holdPoint;  
 };
 
@@ -28,7 +28,7 @@ public:
     m_HoldPointNode = weaponEffectsData.holdPoint;
 
     // TODO: Do the checking and assignment only during weapon_change state
-    m_CurrentWeapon = weaponEffectsData.weaponComponent->get_current_weapon_data();
+    m_CurrentWeapon = weaponEffectsData.weaponComponent.get_current_weapon_data();
   
     m_WeaponBobFreq = m_CurrentWeapon->get_weapon_bob_freq();
     m_WeaponBobAmp = m_CurrentWeapon->get_weapon_bob_amp();
@@ -87,7 +87,7 @@ public:
     m_HoldPointNode = weaponEffectsData.holdPoint;
 
     // TODO: Do the checking and assignment only during weapon_change state
-    m_CurrentWeapon = weaponEffectsData.weaponComponent->get_current_weapon_data();
+    m_CurrentWeapon = weaponEffectsData.weaponComponent.get_current_weapon_data();
   
     m_WeaponSwayMult = m_CurrentWeapon->get_weapon_sway_mult();
     m_WeaponSwayResetValue = m_CurrentWeapon->get_weapon_sway_reset();

@@ -79,7 +79,6 @@ private:
   Camera3D* m_PlayerCamera { nullptr };
   
   Node3D* m_CamController { nullptr };
-  AnimationPlayer* m_WeaponAnimPlayer { nullptr };
 
   CharacterComponent m_CharacterComponent;
   PlayerStateMachine* m_PlayerStateMachine { nullptr };

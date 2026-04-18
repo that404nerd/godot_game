@@ -8,9 +8,10 @@
 #include "player_slide_state.h"
 #include "player_dash_state.h"
 
-PlayerStateMachine::PlayerStateMachine(Player* playerInst)
-  : m_PlayerInst(playerInst)
+void PlayerStateMachine::_init_data(Player* playerInst)
 {
+  m_PlayerInst = playerInst;
+
   m_States[static_cast<uint8_t>(PlayerStates::IDLE)] = std::make_unique<PlayerIdleState>(this);
   m_States[static_cast<uint8_t>(PlayerStates::SPRINT)] = std::make_unique<PlayerSprintState>(this);
   m_States[static_cast<uint8_t>(PlayerStates::JUMP)] = std::make_unique<PlayerJumpState>(this);
@@ -22,3 +23,7 @@ PlayerStateMachine::PlayerStateMachine(Player* playerInst)
   m_InitialState = m_States.at(static_cast<uint8_t>(PlayerStates::IDLE)).get();
 }
 
+void PlayerStateMachine::_bind_methods()
+{
+
+}

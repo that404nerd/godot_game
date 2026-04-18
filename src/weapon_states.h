@@ -1,7 +1,7 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
-#include <godot_cpp/classes/scene_state.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 
 #include "state.h"
 #include "weapon_manager.h"
@@ -38,6 +38,7 @@ private:
   AnimationPlayer* m_WeaponAnimPlayer { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
+  Ref<PackedScene> m_WeaponScene { nullptr };
 };
 
 class WeaponShootState : public State {

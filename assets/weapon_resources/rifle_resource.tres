@@ -1,6 +1,6 @@
 [gd_resource type="Weapon" format=3 uid="uid://c6bcoxa876t4a"]
 
-[ext_resource type="PackedScene" uid="uid://c5whtykp64bnt" path="res://assets/weapon_scenes/rifle.tscn" id="1_bdfqo"]
+[ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="1_bdfqo"]
 
 [resource]
 totalAmmoCount = 20
