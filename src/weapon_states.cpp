@@ -66,11 +66,11 @@ void WeaponEquipState::_enter()
     return;
   }
 
-  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
 }
 
 void WeaponEquipState::_update(double delta)
 {
+  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
   m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::IDLE));
 }
 

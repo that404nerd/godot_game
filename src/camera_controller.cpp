@@ -9,6 +9,8 @@ void CameraController::_ready()
   m_PlayerInst = Object::cast_to<Player>(get_parent());
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
 
+  m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
+
   m_OriginalFOV = m_PlayerCamera->get_fov();
   sprint_fov = m_PlayerCamera->get_fov() + 10.0f;
   slide_fov = m_PlayerCamera->get_fov() + 20.0f;
@@ -39,8 +41,9 @@ void CameraController::_bind_methods()
 
   ADD_GROUP("Side Tilt Settings", "");
   GD_BIND_PROPERTY(CameraController, slide_tilt_angle, Variant::FLOAT);
-  GD_BIND_PROPERTY(CameraController, side_tilt_angle, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, side_tilt_transition_value, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, slide_tilt_rotation, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, slide_tilt_rotation_transition, Variant::FLOAT);
 
   ADD_GROUP("Headbob Settings", "");
   GD_BIND_PROPERTY(CameraController, sprint_headbob_amp, Variant::FLOAT);
@@ -78,16 +81,23 @@ void CameraController::_headbob_effect(double delta)
 void CameraController::_tilt_player(double delta)
 {
   Vector3 camControllerRot = get_rotation();
+  Vector3 weaponHoldPointRot = m_WeaponHoldPoint->get_rotation();
+
   if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SPRINT))
   {
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -m_PlayerInst->get_input_dir().x, side_tilt_transition_value, (float)delta);
+
   } else if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SLIDE))
   {
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle), side_tilt_transition_value, (float)delta);
+    weaponHoldPointRot.z = Utils::exp_decay(m_WeaponHoldPoint->get_rotation().z, Math::deg_to_rad(slide_tilt_rotation), slide_tilt_rotation_transition, (float)delta);
+
   } else {
+    weaponHoldPointRot.z = Utils::exp_decay(m_WeaponHoldPoint->get_rotation().z, 0.0f, slide_tilt_rotation_transition, (float)delta);
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, 0.0f, side_tilt_transition_value, (float)delta);
   }
 
+  m_WeaponHoldPoint->set_rotation(weaponHoldPointRot);
   set_rotation(camControllerRot);
 }
 

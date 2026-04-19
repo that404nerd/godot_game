@@ -12,7 +12,9 @@ void WeaponManager::_init_data(const WeaponManagerData& weaponManagerData)
   }
 
   m_CharacterStateMachine = weaponManagerData.stateMachine;
+  m_CharacterBodyInst = weaponManagerData.characterComponent->get_character_body();
   m_WeaponStateMachine = memnew(WeaponStateMachine);
+
 
   m_WeaponResourceList = {
     ResourceLoader::get_singleton()->load("res://assets/weapon_resources/pistol_resource.tres"),

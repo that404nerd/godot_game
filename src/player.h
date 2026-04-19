@@ -6,6 +6,8 @@
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/ray_cast3d.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/classes/engine.hpp>
 
 #include "components/character_component.h"
 
@@ -85,6 +87,8 @@ private:
   GlobalStateHandler* m_GlobalStateHandler { nullptr };
   Node3D* m_WeaponHoldPoint { nullptr };
   WeaponManager* m_WeaponManager { nullptr };
+
+  Array m_WeaponNodesGroup;
 
 private:
 

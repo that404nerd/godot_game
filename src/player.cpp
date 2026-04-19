@@ -43,6 +43,8 @@ void Player::_ready()
 
   m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 
+  m_WeaponNodesGroup = get_tree()->get_nodes_in_group("weapon_nodes");
+
   m_PlayerStateMachine->_init_data(this);
   m_WeaponManager->_init_data({ &m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine });
 

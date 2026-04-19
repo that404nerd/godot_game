@@ -58,6 +58,10 @@ private:
   GD_DEFINE_PROPERTY(float, crouch_headbob_amp, 0.04f);
   GD_DEFINE_PROPERTY(float, crouch_headbob_freq, 2.0f);
 
+  GD_DEFINE_PROPERTY(float, slide_tilt_rotation, 10.0f);
+  GD_DEFINE_PROPERTY(float, slide_tilt_rotation_transition, 10.0f);
+
 private:
   PlayerStateMachine* m_PlayerStateMachine { nullptr };
+  Node3D* m_WeaponHoldPoint { nullptr };
 };

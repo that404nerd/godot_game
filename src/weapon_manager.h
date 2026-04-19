@@ -3,7 +3,6 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
-#include <godot_cpp/classes/weak_ref.hpp>
 
 #include <cassert>
 
@@ -61,6 +60,7 @@ private:
   WeaponComponent m_WeaponComponent;
 
   Node3D* m_HoldPointNode { nullptr };
+  CharacterBody3D* m_CharacterBodyInst { nullptr };
   
   StateMachine* m_CharacterStateMachine { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };

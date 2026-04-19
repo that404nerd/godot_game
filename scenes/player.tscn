@@ -18,7 +18,7 @@ down_gravity = 20.0
 max_air_move_speed = 7.0
 crouch_translate_speed = 15.0
 crouch_translate = 0.6
-velocity = Vector3(0, -531.3061, 0)
+velocity = Vector3(0, -689.29645, 0)
 
 [node name="CameraController" type="CameraController" parent="." unique_id=459137490]
 sprint_fov = 110.0
@@ -35,6 +35,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715, 0)
 
 [node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead" unique_id=27902470]
 unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.11343908, -0.26044202)
 current = true
 fov = 90.0
 near = 0.01
@@ -42,9 +43,10 @@ near = 0.01
 [node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/PlayerCamera" unique_id=1899973665]
 unique_name_in_owner = true
 
-[node name="Pistol" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 instance=ExtResource("1_dqkch")]
+[node name="Pistol" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 groups=["weapon_nodes"] instance=ExtResource("1_dqkch")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.202, 0.179)
 
-[node name="Rifle" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=745645197 instance=ExtResource("2_qhqgy")]
+[node name="Rifle" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=745645197 groups=["weapon_nodes"] instance=ExtResource("2_qhqgy")]
 transform = Transform3D(-0.5, 0, 7.54979e-08, 0, 0.5, 0, -7.54979e-08, 0, -0.5, 0.034, -0.343, 0.033)
 visible = false
 
