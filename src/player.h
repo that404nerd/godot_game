@@ -62,7 +62,6 @@ public:
   Vector2 get_input_dir() { return m_InputDir; }
 
   PlayerGlobalState& get_global_state() { return m_GlobalState; }
-  PlayerStateMachine* get_player_state_machine() { return m_PlayerStateMachine; }
 
   void _update_input();
   void _update_velocity();
@@ -82,11 +81,8 @@ private:
   
   Node3D* m_CamController { nullptr };
 
-  CharacterComponent m_CharacterComponent;
-  PlayerStateMachine* m_PlayerStateMachine { nullptr };
   GlobalStateHandler* m_GlobalStateHandler { nullptr };
   Node3D* m_WeaponHoldPoint { nullptr };
-  WeaponManager* m_WeaponManager { nullptr };
 
   Array m_WeaponNodesGroup;
 

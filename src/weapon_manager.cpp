@@ -2,40 +2,18 @@
 #include "player_state_machine.h"
 #include "weapon_state_machine.h"
 
-void WeaponManager::_init_data(const WeaponManagerData& weaponManagerData)
-{
-  if(weaponManagerData.characterComponent == nullptr || weaponManagerData.holdPoint == nullptr 
-    || weaponManagerData.stateMachine == nullptr)
-  {
-    print_error("WeaponManagerData is uninitialized!");
-    return;
-  }
-
-  m_CharacterStateMachine = weaponManagerData.stateMachine;
-  m_CharacterBodyInst = weaponManagerData.characterComponent->get_character_body();
-  m_WeaponStateMachine = memnew(WeaponStateMachine);
-
-
-  m_WeaponResourceList = {
-    ResourceLoader::get_singleton()->load("res://assets/weapon_resources/pistol_resource.tres"),
-    ResourceLoader::get_singleton()->load("res://assets/weapon_resources/rifle_resource.tres"),
-    ResourceLoader::get_singleton()->load("res://assets/weapon_resources/shotgun_resource.tres"),
-  };
-
-  m_WeaponComponent.set_current_weapon(m_WeaponResourceList[0]);
-
-  m_WeaponStateMachine->_init_data({ this, &m_WeaponComponent, weaponManagerData.characterComponent });
-  m_WeaponBobComponent._init_data({ weaponManagerData.characterComponent, m_WeaponComponent, weaponManagerData.holdPoint });
-  m_WeaponSwayComponent._init_data({ weaponManagerData.characterComponent, m_WeaponComponent, weaponManagerData.holdPoint });
-}
-
 void WeaponManager::_ready()
 {
-  add_child(m_WeaponStateMachine);
 }
 
 void WeaponManager::_bind_methods()
 {
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_bob_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_sway_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
 void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
@@ -50,28 +28,28 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
-  m_CurrentStateID = m_CharacterStateMachine->get_current_state();
+  m_CurrentStateID = character_state_machine->get_current_state();
  
   if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SPRINT))
   {
-    m_WeaponBobComponent.weapon_bob(delta);
+    weapon_bob_component->weapon_bob(delta);
   }
   
-  if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::IDLE))
-  {
-    /* NOTE: Didn't use is_zero_approx() because the EPSILON Value was a little too low and transitioning from normal sway 
-     * to idle sway causes the weapon to do a little snap (tbh it's barely noticable but it's kinda annoying me), so checking with 0.1f instead.
-     */
-    if((Math::abs(m_MouseInput.x) < 0.1f) && (Math::abs(m_MouseInput.y) < 0.1f))
-    {
-      m_WeaponSwayComponent.weapon_idle_sway(delta);
-    } else {
-      m_WeaponSwayComponent.weapon_sway(delta, m_MouseInput);
-    }
+  // if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::IDLE))
+  // {
+  //   /* NOTE: Didn't use is_zero_approx() because the EPSILON Value was a little too low and transitioning from normal sway 
+  //    * to idle sway causes the weapon to do a little snap (tbh it's barely noticable but it's kinda annoying me), so checking with 0.1f instead.
+  //    */
+  //   if((Math::abs(m_MouseInput.x) < 0.1f) && (Math::abs(m_MouseInput.y) < 0.1f))
+  //   {
+  //     weapon_sway_component->weapon_idle_sway(delta);
+  //   } else {
+  //     weapon_sway_component->weapon_sway(delta, m_MouseInput);
+  //   }
     
-  }
+  // }
   
-  m_WeaponSwayComponent.reset_weapon_sway(delta);
+  // weapon_sway_component->reset_weapon_sway(delta);
 
   m_MouseInput.x = Math::lerp(m_MouseInput.x, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
   m_MouseInput.y = Math::lerp(m_MouseInput.y, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);

@@ -2,6 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://b7khe2s865pte" path="res://assets/weapon_scenes/pistol.tscn" id="1_dqkch"]
 [ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="2_qhqgy"]
+[ext_resource type="Theme" uid="uid://607bfwn0648t" path="res://assets/ui/debug_panel_theme.tres" id="4_dqkch"]
+[ext_resource type="Script" uid="uid://oy60tgw2vc2c" path="res://src/scripts/debug_panel.gd" id="5_qlg0r"]
+[ext_resource type="Weapon" uid="uid://ct4xiq7b5h3b0" path="res://assets/weapon_resources/pistol_resource.tres" id="6_tuyoq"]
+[ext_resource type="Weapon" uid="uid://g6nbobyu2ifd" path="res://assets/weapon_resources/shotgun_resource.tres" id="7_smehm"]
+[ext_resource type="Weapon" uid="uid://c6bcoxa876t4a" path="res://assets/weapon_resources/rifle_resource.tres" id="8_ur7pv"]
 [ext_resource type="Texture2D" uid="uid://cho3drv247dd5" path="res://assets/textures/crosshair.png" id="10_y4r1p"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8vuu"]
@@ -20,7 +25,9 @@ crouch_translate_speed = 15.0
 crouch_translate = 0.6
 velocity = Vector3(0, -689.29645, 0)
 
-[node name="CameraController" type="CameraController" parent="." unique_id=459137490]
+[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("player_state_machine", "weapon_hold_point")]
+player_state_machine = NodePath("../PlayerStateMachine")
+weapon_hold_point = NodePath("PlayerHead/PlayerCamera/WeaponHoldPoint")
 sprint_fov = 110.0
 slide_fov = 120.0
 sprint_fov_zoom_out_transition_value = 4.0
@@ -65,9 +72,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=1708918887]
+[node name="HUD" type="Control" parent="." unique_id=1846530686]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
 
-[node name="TextureRect" type="TextureRect" parent="HUD" unique_id=849627784]
+[node name="Rectile" type="TextureRect" parent="HUD" unique_id=849627784]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -81,3 +96,51 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("10_y4r1p")
 metadata/_edit_use_anchors_ = true
+
+[node name="DebugPanel" type="PanelContainer" parent="HUD" unique_id=1278294091 node_paths=PackedStringArray("player")]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 210.0
+offset_bottom = 50.0
+theme = ExtResource("4_dqkch")
+script = ExtResource("5_qlg0r")
+player = NodePath("../..")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/DebugPanel" unique_id=1805067421]
+layout_mode = 2
+
+[node name="PropertyContainer" type="VBoxContainer" parent="HUD/DebugPanel/MarginContainer" unique_id=395446820]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CharacterComponent" type="CharacterComponent" parent="." unique_id=1236826411]
+
+[node name="PlayerStateMachine" type="PlayerStateMachine" parent="." unique_id=602236311 node_paths=PackedStringArray("player_inst")]
+player_inst = NodePath("..")
+unique_name_in_owner = true
+
+[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("weapon_bob_component", "weapon_sway_component", "hold_point_node", "character_component", "character_state_machine")]
+weapon_bob_component = NodePath("WeaponBobComponent")
+weapon_sway_component = NodePath("WeaponSwayComponent")
+hold_point_node = NodePath("../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")
+character_component = NodePath("../CharacterComponent")
+character_state_machine = NodePath("../PlayerStateMachine")
+
+[node name="WeaponComponent" type="WeaponComponent" parent="WeaponManager" unique_id=1645035038]
+weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("7_smehm"), ExtResource("8_ur7pv")]
+
+[node name="WeaponStateMachine" type="WeaponStateMachine" parent="WeaponManager" unique_id=29975295 node_paths=PackedStringArray("character_component", "weapon_component")]
+character_component = NodePath("../../CharacterComponent")
+weapon_component = NodePath("../WeaponComponent")
+
+[node name="WeaponBobComponent" type="WeaponBobComponent" parent="WeaponManager" unique_id=704879417 node_paths=PackedStringArray("character_component", "weapon_component", "hold_point_node")]
+character_component = NodePath("../../CharacterComponent")
+weapon_component = NodePath("../WeaponComponent")
+hold_point_node = NodePath("../../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")
+
+[node name="WeaponSwayComponent" type="WeaponSwayComponent" parent="WeaponManager" unique_id=119254840 node_paths=PackedStringArray("character_component", "weapon_component", "hold_point_node")]
+character_component = NodePath("../../CharacterComponent")
+weapon_component = NodePath("../WeaponComponent")
+hold_point_node = NodePath("../../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")

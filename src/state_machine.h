@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 #include "global_state_handler.h"
+#include "godot_cpp/core/binder_common.hpp"
 #include "state.h"
 #include "player.h"
 #include "globals.h"
@@ -23,6 +24,7 @@ class StateMachine : public Node {
 
 public:
   void _ready() override;
+  virtual void _init_data() {};
 
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _physics_process(double delta) override;
@@ -32,6 +34,7 @@ public:
 
   uint8_t get_current_state();
   uint8_t get_prev_state();
+
 
 protected:
   static void _bind_methods();

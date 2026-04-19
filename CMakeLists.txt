@@ -134,6 +134,7 @@ endif()
 set( GODOT_CPP_SYSTEM_HEADERS ON CACHE BOOL "" FORCE )
 
 add_subdirectory( addons/godot-cpp )
+add_subdirectory( addons/magic_enum )
 
 set_target_properties( godot-cpp
 	PROPERTIES
@@ -143,4 +144,5 @@ set_target_properties( godot-cpp
 target_link_libraries( ${PROJECT_NAME}
 	PRIVATE
 	godot-cpp
+  magic_enum::magic_enum
 )

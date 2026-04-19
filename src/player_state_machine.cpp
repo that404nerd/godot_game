@@ -1,4 +1,4 @@
-#include "player_state_machine.h"
+#include "globals.h"
 
 #include "player_idle_state.h"
 #include "player_sprint_state.h"
@@ -8,10 +8,8 @@
 #include "player_slide_state.h"
 #include "player_dash_state.h"
 
-void PlayerStateMachine::_init_data(Player* playerInst)
+void PlayerStateMachine::_init_data()
 {
-  m_PlayerInst = playerInst;
-
   m_States[static_cast<uint8_t>(PlayerStates::IDLE)] = std::make_unique<PlayerIdleState>(this);
   m_States[static_cast<uint8_t>(PlayerStates::SPRINT)] = std::make_unique<PlayerSprintState>(this);
   m_States[static_cast<uint8_t>(PlayerStates::JUMP)] = std::make_unique<PlayerJumpState>(this);
@@ -25,5 +23,5 @@ void PlayerStateMachine::_init_data(Player* playerInst)
 
 void PlayerStateMachine::_bind_methods()
 {
-
+  GD_BIND_CUSTOM_PROPERTY(PlayerStateMachine, player_inst, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }

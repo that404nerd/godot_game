@@ -14,8 +14,6 @@
 #include "globals.h"
 #include "weapon.h"
 
-class PlayerStateMachine;
-class WeaponStateMachine;
 class StateMachine;
 
 using namespace godot;
@@ -24,23 +22,11 @@ class WeaponManager : public Node {
 
   GDCLASS(WeaponManager, Node);
 
-private:
-  struct WeaponManagerData {
-    CharacterComponent* characterComponent;
-    Node3D* holdPoint;
-    StateMachine* stateMachine;
-  };
-
 public:
-  void _init_data(const WeaponManagerData& weaponManagerData);
-
   void _ready() override;
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _process(double delta) override;
 
-  WeaponComponent get_weapon_component() { return m_WeaponComponent; }
-  WeaponStateMachine* get_weapon_state_machine() { return m_WeaponStateMachine; }
-  
   ~WeaponManager();
 
 protected:
@@ -55,15 +41,10 @@ private:
   int m_WeaponIndex;
   String m_NextWeaponName;
 private:
-  WeaponBobComponent m_WeaponBobComponent;
-  WeaponSwayComponent m_WeaponSwayComponent;
-  WeaponComponent m_WeaponComponent;
+  GD_DEFINE_PROPERTY(WeaponBobComponent*, weapon_bob_component, nullptr);
+  GD_DEFINE_PROPERTY(WeaponSwayComponent*, weapon_sway_component, nullptr);
 
-  Node3D* m_HoldPointNode { nullptr };
-  CharacterBody3D* m_CharacterBodyInst { nullptr };
-  
-  StateMachine* m_CharacterStateMachine { nullptr };
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
-
-  Array m_WeaponResourceList;
+  GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
+  GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
+  GD_DEFINE_PROPERTY(StateMachine*, character_state_machine, nullptr);
 };

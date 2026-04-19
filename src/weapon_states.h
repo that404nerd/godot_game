@@ -5,9 +5,10 @@
 
 #include "state.h"
 #include "weapon_manager.h"
-#include "weapon_state_machine.h"
 
 using namespace godot;
+
+class WeaponStateMachine;
 
 class WeaponIdleState : public State {
 public:
@@ -20,6 +21,7 @@ public:
 
 private:
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
+  bool m_IsUnequiped { false };
 };
 
 class WeaponEquipState : public State {
@@ -59,6 +61,21 @@ private:
 class WeaponReloadState : public State {
 public:
   WeaponReloadState(WeaponStateMachine* weaponStateMachine);
+
+  void _enter() override;
+  void _handle_input(const Ref<InputEvent>& event) override;
+  void _update(double delta) override;
+  void _exit() override;
+
+private:
+  AnimationPlayer* m_WeaponAnimPlayer { nullptr };
+  WeaponStateMachine* m_WeaponStateMachine { nullptr };
+  Ref<Weapon> m_CurrentWeapon { nullptr };
+};
+
+class WeaponUnequipState : public State {
+public:
+  WeaponUnequipState(WeaponStateMachine* weaponStateMachine);
 
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;

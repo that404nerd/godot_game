@@ -5,7 +5,6 @@
 Player::Player()
 {
   get_global_state().DashCooldown = dash_cooldown;
-  m_CharacterComponent.set_character_body_inst(this);
 }
 
 void Player::_bind_methods()
@@ -37,19 +36,11 @@ void Player::_bind_methods()
 
 void Player::_ready()
 {
-  m_PlayerStateMachine = memnew(PlayerStateMachine);
   m_GlobalStateHandler = memnew(GlobalStateHandler(this));
-  m_WeaponManager = memnew(WeaponManager);
-
   m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 
   m_WeaponNodesGroup = get_tree()->get_nodes_in_group("weapon_nodes");
 
-  m_PlayerStateMachine->_init_data(this);
-  m_WeaponManager->_init_data({ &m_CharacterComponent, m_WeaponHoldPoint, m_PlayerStateMachine });
-
-  add_child(m_WeaponManager);
-  
   m_GlobalStateHandler->_enter();
   
   m_CameraControllerNode = get_node<Node3D>(NodePath("CameraController"));
@@ -58,8 +49,6 @@ void Player::_ready()
   m_ColliderRayCast = get_node<RayCast3D>(NodePath("PlayerRaycasts/PlayerColliderRay"));
   m_StandingPlayerCollider = get_node<CollisionShape3D>(NodePath("StandingPlayerCollider"));
   m_CrouchingPlayerCollider = get_node<CollisionShape3D>(NodePath("CrouchingPlayerCollider"));
-
-  add_child(m_PlayerStateMachine);
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)

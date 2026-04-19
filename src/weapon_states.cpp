@@ -1,4 +1,5 @@
 #include "weapon_states.h"
+#include "weapon_state_machine.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Weapon Idle State ///////////////////////////////////////
@@ -10,9 +11,21 @@ WeaponIdleState::WeaponIdleState(WeaponStateMachine* weaponManager)
 
 void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(Input::get_singleton()->is_action_just_pressed("shoot"))
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
   {
     m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::SHOOT));
+  }
+
+  if(Input::get_singleton()->is_action_just_pressed("unequip_weapon") && m_IsUnequiped == false)
+  {
+    m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::UNEQUIP));
+    m_IsUnequiped = true;
+  }
+
+  if(Input::get_singleton()->is_action_just_pressed("unequip_weapon") && m_IsUnequiped == true)
+  {
+    m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::EQUIP));
+    m_IsUnequiped = false;
   }
 }
 
@@ -44,7 +57,7 @@ WeaponEquipState::WeaponEquipState(WeaponStateMachine* weaponStateMachine)
 
 void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(Input::get_singleton()->is_action_just_pressed("shoot"))
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
   {
     m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::SHOOT));
   }
@@ -65,12 +78,12 @@ void WeaponEquipState::_enter()
     print_error("Weapon Equip state data is null!");
     return;
   }
-
+  
+  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
 }
 
 void WeaponEquipState::_update(double delta)
 {
-  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
   m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::IDLE));
 }
 
@@ -89,7 +102,7 @@ WeaponShootState::WeaponShootState(WeaponStateMachine* weaponManager)
 
 void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(Input::get_singleton()->is_action_just_pressed("shoot"))
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
   {
     m_WantsToShoot = true;
   }
@@ -97,6 +110,11 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
   if(Input::get_singleton()->is_action_just_pressed("reload_weapon"))
   {
     m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::RELOAD));
+  }
+
+  if(Input::get_singleton()->is_action_just_pressed("unequip_weapon"))
+  {
+    m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::UNEQUIP));
   }
  
 }
@@ -190,6 +208,43 @@ void WeaponReloadState::_update(double delta)
 }
 
 void WeaponReloadState::_exit()
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Weapon Unequip State ///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+WeaponUnequipState::WeaponUnequipState(WeaponStateMachine* weaponManager)
+  : State(static_cast<uint8_t>(WeaponStates::UNEQUIP)), m_WeaponStateMachine(weaponManager)
+{
+}
+
+void WeaponUnequipState::_handle_input(const Ref<InputEvent>& event)
+{
+
+}
+
+void WeaponUnequipState::_enter()
+{
+  m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
+
+  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
+  
+  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
+  if (!animPlayers.is_empty()) {
+    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
+  }
+
+  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
+}
+
+void WeaponUnequipState::_update(double delta)
+{
+  m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::IDLE));
+}
+
+void WeaponUnequipState::_exit()
 {
 
 }

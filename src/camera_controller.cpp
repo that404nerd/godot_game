@@ -1,4 +1,5 @@
 #include "camera_controller.h"
+#include "globals.h"
 
 CameraController::CameraController() 
 {
@@ -7,9 +8,8 @@ CameraController::CameraController()
 void CameraController::_ready()
 {
   m_PlayerInst = Object::cast_to<Player>(get_parent());
-  m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
 
-  m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
+  m_PlayerCamera = get_node<Camera3D>("%PlayerCamera");
 
   m_OriginalFOV = m_PlayerCamera->get_fov();
   sprint_fov = m_PlayerCamera->get_fov() + 10.0f;
@@ -32,6 +32,9 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 
 void CameraController::_bind_methods() 
 {
+  GD_BIND_CUSTOM_PROPERTY(CameraController, player_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CameraController, weapon_hold_point, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+
   ADD_GROUP("FOV Settings", "");
   GD_BIND_PROPERTY(CameraController, sprint_fov, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, slide_fov, Variant::FLOAT);
@@ -81,7 +84,7 @@ void CameraController::_headbob_effect(double delta)
 void CameraController::_tilt_player(double delta)
 {
   Vector3 camControllerRot = get_rotation();
-  Vector3 weaponHoldPointRot = m_WeaponHoldPoint->get_rotation();
+  Vector3 weaponHoldPointRot = weapon_hold_point->get_rotation();
 
   if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SPRINT))
   {
@@ -90,14 +93,14 @@ void CameraController::_tilt_player(double delta)
   } else if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SLIDE))
   {
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle), side_tilt_transition_value, (float)delta);
-    weaponHoldPointRot.z = Utils::exp_decay(m_WeaponHoldPoint->get_rotation().z, Math::deg_to_rad(slide_tilt_rotation), slide_tilt_rotation_transition, (float)delta);
+    weaponHoldPointRot.z = Utils::exp_decay(weaponHoldPointRot.z, Math::deg_to_rad(slide_tilt_rotation), slide_tilt_rotation_transition, (float)delta);
 
   } else {
-    weaponHoldPointRot.z = Utils::exp_decay(m_WeaponHoldPoint->get_rotation().z, 0.0f, slide_tilt_rotation_transition, (float)delta);
+    weaponHoldPointRot.z = Utils::exp_decay(weaponHoldPointRot.z, 0.0f, slide_tilt_rotation_transition, (float)delta);
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, 0.0f, side_tilt_transition_value, (float)delta);
   }
 
-  m_WeaponHoldPoint->set_rotation(weaponHoldPointRot);
+  weapon_hold_point->set_rotation(weaponHoldPointRot);
   set_rotation(camControllerRot);
 }
 
@@ -116,15 +119,7 @@ void CameraController::_apply_fov(double delta)
 
 void CameraController::_physics_process(double delta) 
 {
-  /* I check if the player's is_node_ready() because the player's _ready()
-     is called after the camera controller node's _ready() which means that setting this without
-     any checks is a guaranteed nullptr and a crash if used */
-  if(m_PlayerInst->is_node_ready() && m_PlayerInst != nullptr)
-  {
-    m_PlayerStateMachine = m_PlayerInst->get_player_state_machine();
-  }
-
-  m_CurrentStateID = m_PlayerStateMachine->get_current_state();
+  m_CurrentStateID = player_state_machine->get_current_state();
 
   _apply_fov(delta);
    

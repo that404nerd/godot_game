@@ -35,8 +35,6 @@ public:
 private:
   Player* m_PlayerInst = nullptr;
 
-  Camera3D* m_PlayerCamera = nullptr;
-
   float m_OriginalFOV;
   float m_HeadbobTime;
 
@@ -62,6 +60,7 @@ private:
   GD_DEFINE_PROPERTY(float, slide_tilt_rotation_transition, 10.0f);
 
 private:
-  PlayerStateMachine* m_PlayerStateMachine { nullptr };
-  Node3D* m_WeaponHoldPoint { nullptr };
+  Camera3D* m_PlayerCamera { nullptr };
+  GD_DEFINE_PROPERTY(PlayerStateMachine*, player_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(Node3D*, weapon_hold_point, nullptr);
 };

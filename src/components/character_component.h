@@ -7,21 +7,30 @@
 
 using namespace godot;
 
-class CharacterComponent {
+class CharacterComponent : public Node {
+  GDCLASS(CharacterComponent, Node)
+
+protected:
+  static void _bind_methods()
+  {
+  }
 
 public:
+  void _ready() override
+  {
+    m_CharacterBody = Object::cast_to<CharacterBody3D>(get_parent());
+  }
 
-  CharacterBody3D* get_character_body()
-  { 
+  CharacterBody3D* get_character_body() { 
+
     if(m_CharacterBody != nullptr)
     {
       return m_CharacterBody;
     }
+    
     return nullptr;
   }
 
-  void set_character_body_inst(CharacterBody3D* characterBody) { m_CharacterBody = characterBody; }
-
 private:
-  CharacterBody3D* m_CharacterBody { nullptr };
+  CharacterBody3D* m_CharacterBody = nullptr;
 };

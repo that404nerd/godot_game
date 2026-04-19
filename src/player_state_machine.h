@@ -19,12 +19,11 @@ class PlayerStateMachine : public StateMachine
   GDCLASS(PlayerStateMachine, StateMachine);
 
 public:
-  void _init_data(Player* playerInst);
-  Player* get_player_inst() const { return m_PlayerInst; }
+  void _init_data() override;
 
 protected:
   static void _bind_methods();
 
 private:
-  Player* m_PlayerInst;
+  GD_DEFINE_PROPERTY(Player*, player_inst, nullptr);
 };

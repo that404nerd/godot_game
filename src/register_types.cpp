@@ -21,10 +21,16 @@ void initialize_module(ModuleInitializationLevel p_level) {
 
   if(!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
 
-  if(!ClassDB::class_exists("StateMachine")) GDREGISTER_CLASS(StateMachine);
-  if(!ClassDB::class_exists("PlayerStateMachine")) GDREGISTER_CLASS(PlayerStateMachine);
-  if(!ClassDB::class_exists("WeaponStateMachine")) GDREGISTER_CLASS(WeaponStateMachine);
-  if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_CLASS(WeaponManager);
+  if(!ClassDB::class_exists("StateMachine")) GDREGISTER_RUNTIME_CLASS(StateMachine);
+  if(!ClassDB::class_exists("PlayerStateMachine")) GDREGISTER_RUNTIME_CLASS(PlayerStateMachine);
+  if(!ClassDB::class_exists("WeaponStateMachine")) GDREGISTER_RUNTIME_CLASS(WeaponStateMachine);
+  if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager);
+
+  // Components
+  if(!ClassDB::class_exists("CharacterComponent")) GDREGISTER_CLASS(CharacterComponent);
+  if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
+  if(!ClassDB::class_exists("WeaponBobComponent")) GDREGISTER_RUNTIME_CLASS(WeaponBobComponent);
+  if(!ClassDB::class_exists("WeaponSwayComponent")) GDREGISTER_RUNTIME_CLASS(WeaponSwayComponent);
 }
 
 
