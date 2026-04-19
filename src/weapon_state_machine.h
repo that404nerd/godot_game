@@ -19,20 +19,27 @@ class WeaponStateMachine : public StateMachine {
 
   GDCLASS(WeaponStateMachine, StateMachine);
 
+private:
+  struct WeaponStateMachineData 
+  {
+    WeaponManager* weaponManager;
+    WeaponComponent* weaponComponent;
+    CharacterComponent* characterComponent;
+  };
+
 public:
-  void _init_data(WeaponManager* weaponManager, CharacterComponent* characterComponent);
+  void _init_data(const WeaponStateMachineData& weaponStateMachineData);
 
-  const Array get_weapon_anim_groups() const { return m_WeaponAnimGroups; }
-
-  const WeaponManager* get_weapon_manager_inst() const { return m_WeaponManagerInst; }
-  CharacterComponent* get_character_component() { return m_CharacterComponent; }
+  Array get_weapon_anim_groups() const { return m_WeaponAnimGroups; }
+  CharacterComponent* get_character_component() const { return m_CharacterComponent; }
+  WeaponComponent* get_weapon_component() const { return m_WeaponComponent; }
 
 protected:
   static void _bind_methods();
 
 private:
-  WeaponManager* m_WeaponManagerInst { nullptr };
   CharacterComponent* m_CharacterComponent { nullptr };
+  WeaponComponent* m_WeaponComponent { nullptr };
 
   Array m_WeaponAnimGroups;
 };

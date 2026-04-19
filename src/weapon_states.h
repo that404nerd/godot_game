@@ -11,7 +11,7 @@ using namespace godot;
 
 class WeaponIdleState : public State {
 public:
-  WeaponIdleState(WeaponManager* weaponManager);
+  WeaponIdleState(WeaponStateMachine* weaponStateMachine);
 
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;
@@ -19,14 +19,12 @@ public:
   void _exit() override;
 
 private:
-  WeaponManager* m_WeaponManager { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  
 };
 
 class WeaponEquipState : public State {
 public:
-  WeaponEquipState(WeaponManager* weaponManager);
+  WeaponEquipState(WeaponStateMachine* weaponStateMachine);
 
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;
@@ -34,16 +32,14 @@ public:
   void _exit() override;
 
 private:
-  WeaponManager* m_WeaponManager { nullptr };
   AnimationPlayer* m_WeaponAnimPlayer { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
-  Ref<PackedScene> m_WeaponScene { nullptr };
 };
 
 class WeaponShootState : public State {
 public:
-  WeaponShootState(WeaponManager* weaponManager);
+  WeaponShootState(WeaponStateMachine* weaponStateMachine);
 
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;
@@ -51,7 +47,6 @@ public:
   void _exit() override;
 
 private:
-  WeaponManager* m_WeaponManager { nullptr };
   AnimationPlayer* m_WeaponAnimPlayer { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
@@ -63,7 +58,7 @@ private:
 
 class WeaponReloadState : public State {
 public:
-  WeaponReloadState(WeaponManager* weaponManager);
+  WeaponReloadState(WeaponStateMachine* weaponStateMachine);
 
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;
@@ -71,7 +66,6 @@ public:
   void _exit() override;
 
 private:
-  WeaponManager* m_WeaponManager { nullptr };
   AnimationPlayer* m_WeaponAnimPlayer { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };

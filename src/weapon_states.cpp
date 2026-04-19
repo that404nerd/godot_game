@@ -3,8 +3,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Weapon Idle State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-WeaponIdleState::WeaponIdleState(WeaponManager* weaponManager)
-  : State(static_cast<uint8_t>(WeaponStates::IDLE)), m_WeaponManager(weaponManager)
+WeaponIdleState::WeaponIdleState(WeaponStateMachine* weaponManager)
+  : State(static_cast<uint8_t>(WeaponStates::IDLE)), m_WeaponStateMachine(weaponManager)
 {
 }
 
@@ -18,7 +18,6 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponIdleState::_enter()
 {
-  m_WeaponStateMachine = m_WeaponManager->get_weapon_state_machine();
   if(m_WeaponStateMachine == nullptr)
   {
     assert("Weapon Equip state data is null!");
@@ -38,8 +37,8 @@ void WeaponIdleState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Weapon Equip State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-WeaponEquipState::WeaponEquipState(WeaponManager* weaponManager)
-  : State(static_cast<uint8_t>(WeaponStates::EQUIP)), m_WeaponManager(weaponManager)
+WeaponEquipState::WeaponEquipState(WeaponStateMachine* weaponStateMachine)
+  : State(static_cast<uint8_t>(WeaponStates::EQUIP)), m_WeaponStateMachine(weaponStateMachine)
 {
 }
 
@@ -53,13 +52,9 @@ void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponEquipState::_enter()
 {
-  m_WeaponStateMachine = m_WeaponManager->get_weapon_state_machine();
+  m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
   
-  m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
-  
-  m_WeaponScene = m_CurrentWeapon->get_weaponScene();
   CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
-  
   Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
   if (!animPlayers.is_empty()) {
     m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
@@ -67,9 +62,9 @@ void WeaponEquipState::_enter()
  
   if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
   {
-    assert("Weapon Equip state data is null!");
+    print_error("Weapon Equip state data is null!");
+    return;
   }
-  
 
   m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
 }
@@ -87,8 +82,8 @@ void WeaponEquipState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Weapon Shoot State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-WeaponShootState::WeaponShootState(WeaponManager* weaponManager)
-  : State(static_cast<uint8_t>(WeaponStates::SHOOT)), m_WeaponManager(weaponManager)
+WeaponShootState::WeaponShootState(WeaponStateMachine* weaponManager)
+  : State(static_cast<uint8_t>(WeaponStates::SHOOT)), m_WeaponStateMachine(weaponManager)
 {
 }
 
@@ -99,8 +94,6 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
     m_WantsToShoot = true;
   }
   
-   
-
   if(Input::get_singleton()->is_action_just_pressed("reload_weapon"))
   {
     m_WeaponStateMachine->_change_state(static_cast<uint8_t>(WeaponStates::RELOAD));
@@ -110,14 +103,11 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponShootState::_enter()
 {
-  m_WeaponStateMachine = m_WeaponManager->get_weapon_state_machine();
-  
-  m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
+  m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
    
-  Ref<PackedScene> weaponScene = m_CurrentWeapon->get_weaponScene();
   CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
-  
   Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
+
   if (!animPlayers.is_empty()) {
     m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
   }
@@ -170,8 +160,8 @@ void WeaponShootState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Weapon Reload State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-WeaponReloadState::WeaponReloadState(WeaponManager* weaponManager)
-  : State(static_cast<uint8_t>(WeaponStates::RELOAD)), m_WeaponManager(weaponManager)
+WeaponReloadState::WeaponReloadState(WeaponStateMachine* weaponManager)
+  : State(static_cast<uint8_t>(WeaponStates::RELOAD)), m_WeaponStateMachine(weaponManager)
 {
 }
 
@@ -182,10 +172,8 @@ void WeaponReloadState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponReloadState::_enter()
 {
-  m_WeaponStateMachine = m_WeaponManager->get_weapon_state_machine();
-  m_CurrentWeapon = m_WeaponManager->get_weapon_component().get_current_weapon_data();
+  m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
 
-  Ref<PackedScene> weaponScene = m_CurrentWeapon->get_weaponScene();
   CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
   
   Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");

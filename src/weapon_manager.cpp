@@ -22,8 +22,7 @@ void WeaponManager::_init_data(const WeaponManagerData& weaponManagerData)
 
   m_WeaponComponent.set_current_weapon(m_WeaponResourceList[0]);
 
-  m_WeaponStateMachine->_init_data(this, weaponManagerData.characterComponent);
-
+  m_WeaponStateMachine->_init_data({ this, &m_WeaponComponent, weaponManagerData.characterComponent });
   m_WeaponBobComponent._init_data({ weaponManagerData.characterComponent, m_WeaponComponent, weaponManagerData.holdPoint });
   m_WeaponSwayComponent._init_data({ weaponManagerData.characterComponent, m_WeaponComponent, weaponManagerData.holdPoint });
 }
