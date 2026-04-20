@@ -15,6 +15,8 @@ void WeaponStateMachine::_init_data()
   CharacterBody3D* characterBody = character_component->get_character_body();
   m_WeaponAnimGroups = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
 
+  /* NOTE: This took me 2 hours to find lol, i forgot that i was dealing with different animation
+     players for different weapon scene, this connects the _on_animation_finished to all animation players */
   for(int i = 0; i < m_WeaponAnimGroups.size(); i++)
   {
     AnimationPlayer* anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[i]);
