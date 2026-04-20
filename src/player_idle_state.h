@@ -8,7 +8,7 @@ class PlayerIdleState : public State {
 public:
 
   PlayerIdleState(PlayerStateMachine* playerStateMachine) : 
-    State(static_cast<uint8_t>(PlayerStates::IDLE)),
+    State(static_cast<int8_t>(PlayerStates::IDLE)),
     m_PlayerStateMachine(playerStateMachine) {};
 
   virtual void _enter() override;

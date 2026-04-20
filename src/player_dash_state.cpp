@@ -26,9 +26,9 @@ void PlayerDashState::_physics_update(double delta)
   m_PlayerInst->set_velocity(playerVel);
 
   if(m_PlayerInst->get_velocity().length() > 0.0f)
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::SPRINT));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::SPRINT));
   else
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::IDLE));
   
 }
 

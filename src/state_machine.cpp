@@ -1,4 +1,5 @@
 #include "state_machine.h"
+#include <cstdint>
 
 void StateMachine::_ready()
 {
@@ -35,7 +36,7 @@ void StateMachine::_process(double delta)
   m_CurrentState->_update(delta);  
 }
 
-void StateMachine::_change_state(uint8_t stateID)
+void StateMachine::_change_state(int8_t stateID)
 {
   State* newState = m_States.at(stateID).get();
 
@@ -52,7 +53,7 @@ void StateMachine::_change_state(uint8_t stateID)
   m_CurrentState = newState;
 }
 
-uint8_t StateMachine::get_current_state()
+int8_t StateMachine::get_current_state()
 {
   if(m_CurrentState == nullptr)
   {
@@ -63,7 +64,7 @@ uint8_t StateMachine::get_current_state()
   return m_CurrentState->get_current_state();
 }
 
-uint8_t StateMachine::get_prev_state()
+int8_t StateMachine::get_prev_state()
 {
   uint8_t prev_state_id;
   if(m_PrevState == nullptr) {

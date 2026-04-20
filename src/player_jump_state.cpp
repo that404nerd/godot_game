@@ -32,11 +32,11 @@ void PlayerJumpState::_physics_update(double delta)
   Vector3 playerVel = m_PlayerInst->get_velocity();
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::FALL));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::FALL));
   }
   
   if (m_PlayerInst->is_on_floor()) {
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::IDLE));
   }
 }
 

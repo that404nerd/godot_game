@@ -9,7 +9,7 @@ class PlayerDashState : public State {
 
 public:
   PlayerDashState(PlayerStateMachine* playerStateMachine)
-    : State(static_cast<uint8_t>(PlayerStates::DASH)),
+    : State(static_cast<int8_t>(PlayerStates::DASH)),
       m_PlayerStateMachine(playerStateMachine)
   {}; 
 

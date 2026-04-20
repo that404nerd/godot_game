@@ -30,26 +30,26 @@ void WeaponManager::_process(double delta)
 {
   m_CurrentStateID = character_state_machine->get_current_state();
  
-  if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::SPRINT))
+  if(m_CurrentStateID == static_cast<int8_t>(PlayerStates::SPRINT))
   {
     weapon_bob_component->weapon_bob(delta);
   }
   
-  // if(m_CurrentStateID == static_cast<uint8_t>(PlayerStates::IDLE))
-  // {
-  //   /* NOTE: Didn't use is_zero_approx() because the EPSILON Value was a little too low and transitioning from normal sway 
-  //    * to idle sway causes the weapon to do a little snap (tbh it's barely noticable but it's kinda annoying me), so checking with 0.1f instead.
-  //    */
-  //   if((Math::abs(m_MouseInput.x) < 0.1f) && (Math::abs(m_MouseInput.y) < 0.1f))
-  //   {
-  //     weapon_sway_component->weapon_idle_sway(delta);
-  //   } else {
-  //     weapon_sway_component->weapon_sway(delta, m_MouseInput);
-  //   }
+  if(m_CurrentStateID == static_cast<int8_t>(PlayerStates::IDLE))
+  {
+    /* NOTE: Didn't use is_zero_approx() because the EPSILON Value was a little too low and transitioning from normal sway 
+     * to idle sway causes the weapon to do a little snap (tbh it's barely noticable but it's kinda annoying me), so checking with 0.1f instead.
+     */
+    if((Math::abs(m_MouseInput.x) < 0.1f) && (Math::abs(m_MouseInput.y) < 0.1f))
+    {
+      weapon_sway_component->weapon_idle_sway(delta);
+    } else {
+      weapon_sway_component->weapon_sway(delta, m_MouseInput);
+    }
     
-  // }
+  }
   
-  // weapon_sway_component->reset_weapon_sway(delta);
+  weapon_sway_component->reset_weapon_sway(delta);
 
   m_MouseInput.x = Math::lerp(m_MouseInput.x, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
   m_MouseInput.y = Math::lerp(m_MouseInput.y, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);

@@ -21,7 +21,7 @@ public:
 
 private:
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  bool m_IsUnequiped { false };
+  bool m_IsUnequiped;
 };
 
 class WeaponEquipState : public State {

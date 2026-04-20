@@ -14,7 +14,7 @@ class PlayerCrouchState : public State {
 
 public:
   PlayerCrouchState(PlayerStateMachine* playerStateMachine) : 
-    State(static_cast<uint8_t>(PlayerStates::CROUCH)),
+    State(static_cast<int8_t>(PlayerStates::CROUCH)),
     m_CurrentHeadPosition(Vector3(0.0f, 0.0f, 0.0f)), 
     m_SlideVector(Vector3(0.0f, 0.0f, 0.0f)), 
     m_PlayerInst(nullptr),

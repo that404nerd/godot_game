@@ -8,12 +8,12 @@ void PlayerIdleState::_enter()
 void PlayerIdleState::_handle_input(const Ref<InputEvent>& event) 
 {
   if(Input::get_singleton()->is_action_just_pressed("jump") && m_PlayerInst->is_on_floor()) {
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::JUMP));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::JUMP));
   }
   
   if(Input::get_singleton()->is_action_just_pressed("crouch") && m_PlayerInst->is_on_floor())
   {
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::CROUCH));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::CROUCH));
   }
 
 }
@@ -26,11 +26,11 @@ void PlayerIdleState::_physics_update(double delta)
   Vector3 playerVel = m_PlayerInst->get_velocity();
 
   if(m_PlayerInst->get_input_dir() != Vector2(0.0f, 0.0f) && m_PlayerInst->is_on_floor()) {
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::SPRINT));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::SPRINT));
   }
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) {
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::FALL));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::FALL));
   }
 }
 

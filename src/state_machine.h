@@ -30,20 +30,17 @@ public:
   void _physics_process(double delta) override;
   void _process(double delta) override;
 
-  void _change_state(uint8_t stateID);
+  void _change_state(int8_t stateID);
 
-  uint8_t get_current_state();
-  uint8_t get_prev_state();
-
+  int8_t get_current_state();
+  int8_t get_prev_state();
 
 protected:
   static void _bind_methods();
 
-private:
+protected:
   State* m_CurrentState { nullptr };
   State* m_PrevState { nullptr };
-  
-protected:
-  State* m_InitialState;
+  State* m_InitialState { nullptr };
   std::unordered_map<uint8_t, std::unique_ptr<State>> m_States;
 };

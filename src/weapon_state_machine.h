@@ -4,6 +4,7 @@
 #include "state_machine.h"
 #include "weapon_states.h"
 
+#include "magic_enum/magic_enum.hpp"
 #include <memory>
 
 class WeaponManager;
@@ -13,8 +14,8 @@ class WeaponShootState;
 class WeaponReloadState;
 class WeaponUnequipState;
  
-enum class WeaponStates : uint8_t {
-  IDLE, EQUIP, SHOOT, RELOAD, UNEQUIP, WEAPON_SWITCH
+enum class WeaponStates : int8_t {
+  NONE = -1, IDLE, EQUIP, SHOOT, RELOAD, UNEQUIP, WEAPON_SWITCH
 };
 
 class WeaponStateMachine : public StateMachine {
@@ -26,12 +27,31 @@ public:
 
   Array get_weapon_anim_groups() const { return m_WeaponAnimGroups; }
 
+  StringName get_current_state_name()
+  {
+    auto none_name = magic_enum::enum_name(WeaponStates::NONE);
+    StringName noneString = std::string(none_name).c_str();
+    if(m_CurrentState == nullptr)
+    {
+      print_error("Current state is null!");
+      return noneString;
+    }
+
+    auto state = magic_enum::enum_cast<WeaponStates>(m_CurrentState->get_current_state());
+    auto stateName = magic_enum::enum_name(state.value());
+    StringName finalStateName = std::string(stateName).c_str();
+
+    return finalStateName;
+  }
+
 protected:
   static void _bind_methods();
 
 private:
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
+
+  GD_DEFINE_PROPERTY(float, time_between_shots, 0.3f);
 
   Array m_WeaponAnimGroups;
 

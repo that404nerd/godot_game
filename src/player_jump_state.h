@@ -8,7 +8,7 @@ class PlayerJumpState : public State {
 
 public:
   PlayerJumpState(PlayerStateMachine* playerStateMachine) : 
-    State(static_cast<uint8_t>(PlayerStates::JUMP)), 
+    State(static_cast<int8_t>(PlayerStates::JUMP)), 
     m_PlayerStateMachine(playerStateMachine) {};
 
   virtual void _enter() override;

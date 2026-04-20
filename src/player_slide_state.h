@@ -11,7 +11,7 @@ class PlayerSlideState : public State {
 
 public:
   PlayerSlideState(PlayerStateMachine* playerStateMachine) 
-    : State(static_cast<uint8_t>(PlayerStates::SLIDE)),
+    : State(static_cast<int8_t>(PlayerStates::SLIDE)),
         m_PlayerStateMachine(playerStateMachine)
   {}; 
 

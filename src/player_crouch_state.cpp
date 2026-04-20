@@ -13,13 +13,13 @@ void PlayerCrouchState::_handle_input(const Ref<InputEvent>& event)
   // TODO2 : Switch from normal test_move check to a raycast for better results.
   if (Input::get_singleton()->is_action_just_pressed("crouch") && !m_PlayerInst->get_collider_raycast()->is_colliding()) {
     _on_crouch_finished();
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::IDLE));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::IDLE));
   }
   
   if(Input::get_singleton()->is_action_just_pressed("jump") && !m_PlayerInst->get_collider_raycast()->is_colliding()) 
   {
     _on_crouch_finished();
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::JUMP));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::JUMP));
   }
 }
 
@@ -48,7 +48,7 @@ void PlayerCrouchState::_physics_update(double delta)
   m_PlayerInst->get_player_crouching_collider()->set_disabled(false);
   m_PlayerInst->get_player_standing_collider()->set_disabled(true);
 
-  if(m_PlayerStateMachine->get_prev_state() == static_cast<uint8_t>(PlayerStates::SLIDE))
+  if(m_PlayerStateMachine->get_prev_state() == static_cast<int8_t>(PlayerStates::SLIDE))
   {
     float finalCrouchPos = m_FinalPos - m_PlayerInst->get_player_head()->get_position().y;
     playerHeadPos.y = Utils::exp_decay(playerHeadPos.y, finalCrouchPos, m_PlayerInst->get_crouch_translate_speed(), (float)delta);
@@ -61,14 +61,14 @@ void PlayerCrouchState::_physics_update(double delta)
   playerVel = m_PlayerInst->get_crouch_speed() * m_PlayerInst->get_wish_dir();
   m_PlayerInst->set_velocity(playerVel);
 
-  if(m_PlayerStateMachine->get_prev_state() == static_cast<uint8_t>(PlayerStates::FALL))
+  if(m_PlayerStateMachine->get_prev_state() == static_cast<int8_t>(PlayerStates::FALL))
   {
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::SLIDE));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::SLIDE));
   }
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 
   {
-    m_PlayerStateMachine->_change_state(static_cast<uint8_t>(PlayerStates::FALL));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::FALL));
   }
 }
 

@@ -69,10 +69,6 @@ public:
     hold_point_node->set_position(newPos);
   }
 
-  void _process(double delta) override
-  {
-  }
-
 private:
   float m_WeaponBobFreq { 0.0f }, m_WeaponBobAmp { 0.0f }, m_WeaponBobSmoothVal { 0.0f };
   float m_IdleWeaponBobFreq { 0.0f }, m_IdleWeaponBobAmp { 0.0f }, m_IdleWeaponBobSmoothVal { 0.0f };

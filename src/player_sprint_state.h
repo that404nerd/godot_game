@@ -16,7 +16,7 @@ class PlayerSprintState : public State {
 
 public:
   PlayerSprintState(PlayerStateMachine* playerStateMachine) 
-    : State(static_cast<uint8_t>(PlayerStates::SPRINT)),
+    : State(static_cast<int8_t>(PlayerStates::SPRINT)),
     m_PlayerStateMachine(playerStateMachine)
   {}; 
 

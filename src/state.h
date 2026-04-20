@@ -19,8 +19,8 @@ public:
   virtual ~State() {};
 
 public:
-  uint8_t get_current_state() { return m_StateId; }
+  int8_t get_current_state() { return m_StateId; }
 
 private:
-  uint8_t m_StateId;
+  int8_t m_StateId;
 };

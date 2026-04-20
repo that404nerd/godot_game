@@ -1,29 +1,41 @@
 extends PanelContainer
 
-@export var player: Player
-@onready var propertyContainer : VBoxContainer = %PropertyContainer
 @onready var playerStateMachine : PlayerStateMachine = %PlayerStateMachine
+@onready var weaponStateMachine : WeaponStateMachine = %WeaponStateMachine
+@onready var propertyContainer : VBoxContainer = %PropertyContainer
 
-# We use this to add a new label in the property container
-var property : Label
+var fps_label : Label = Label.new()
+var player_state_label : Label = Label.new()
+var weapon_state_label : Label = Label.new()
+	
 var frames_per_second : String
+var player_state_name : StringName
+var weapon_state_name : StringName
 
 func _ready() -> void:
 	visible = true
-	add_debug_property("FPS", frames_per_second)
+	add_debug_property("FPS", frames_per_second, fps_label)
+	add_debug_property("Player State", player_state_name, player_state_label)
+	add_debug_property("Weapon State", weapon_state_name, weapon_state_label)
+
+func _unhandled_input(_event: InputEvent) -> void:
+	if Input.is_action_just_pressed("toggle_debug_panel"):
+		visible = !visible
 	
 func _process(_delta: float) -> void:
 	if visible == true:
 		frames_per_second = str(Engine.get_frames_per_second())
-		property.text = property.name + ": " + frames_per_second
-	print(playerStateMachine.get_current_state())
-	
-func _unhandled_input(_event: InputEvent) -> void:
-	if Input.is_action_just_pressed("toggle_debug_panel"):
-		visible = !visible
+		player_state_name = playerStateMachine.get_current_state_name()
+		weapon_state_name = weaponStateMachine.get_current_state_name()
+		
+		update_debug_property(frames_per_second, fps_label)
+		update_debug_property(player_state_name, player_state_label)
+		update_debug_property(weapon_state_name, weapon_state_label)
 
-func add_debug_property(title: String, value):
-	property = Label.new()
+func add_debug_property(title: String, value, property: Label):
 	propertyContainer.add_child(property)
 	property.name = title
 	property.text = property.name + value
+	
+func update_debug_property(value, property: Label):
+	property.text = property.name + ": " + value
