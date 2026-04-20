@@ -19,6 +19,7 @@ void StateMachine::_bind_methods()
 
 void StateMachine::_unhandled_input(const Ref<InputEvent>& event)
 {
+  _handle_state_machine_input(event);
   if(m_CurrentState) {
     m_CurrentState->_handle_input(event);
   }

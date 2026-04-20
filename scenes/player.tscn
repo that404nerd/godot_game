@@ -53,8 +53,7 @@ unique_name_in_owner = true
 [node name="Pistol" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 groups=["weapon_nodes"] instance=ExtResource("1_dqkch")]
 
 [node name="Rifle" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=745645197 groups=["weapon_nodes"] instance=ExtResource("2_qhqgy")]
-transform = Transform3D(-0.5, 0, 7.54979e-08, 0, 0.5, 0, -7.54979e-08, 0, -0.5, 0.034, -0.463, 0.033)
-visible = false
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="PlayerRaycasts" type="Node3D" parent="." unique_id=187939257]
 
@@ -127,11 +126,12 @@ character_component = NodePath("../CharacterComponent")
 character_state_machine = NodePath("../PlayerStateMachine")
 
 [node name="WeaponComponent" type="WeaponComponent" parent="WeaponManager" unique_id=1645035038]
-weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("7_smehm"), ExtResource("8_ur7pv")]
+weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("8_ur7pv"), ExtResource("7_smehm")]
 
 [node name="WeaponStateMachine" type="WeaponStateMachine" parent="WeaponManager" unique_id=29975295 node_paths=PackedStringArray("character_component", "weapon_component")]
 character_component = NodePath("../../CharacterComponent")
 weapon_component = NodePath("../WeaponComponent")
+time_between_shots = 1.0
 unique_name_in_owner = true
 
 [node name="WeaponBobComponent" type="WeaponBobComponent" parent="WeaponManager" unique_id=704879417 node_paths=PackedStringArray("character_component", "weapon_component", "hold_point_node")]

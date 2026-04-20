@@ -21,7 +21,6 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
     print_line("Unequipping!");
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::UNEQUIP));
   }
-
   
 }
 
@@ -33,6 +32,8 @@ void WeaponIdleState::_enter()
     print_error("Weapon Equip state data is null!");
     return;
   }
+
+  m_WeaponComponent = m_WeaponStateMachine->get_weapon_component();
 }
 
 void WeaponIdleState::_update(double delta)
@@ -99,6 +100,7 @@ WeaponShootState::WeaponShootState(WeaponStateMachine* weaponManager)
 
 void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
+
   if(Input::get_singleton()->is_action_just_pressed("reload_weapon"))
   {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::RELOAD));
@@ -128,32 +130,33 @@ void WeaponShootState::_enter()
     return;
   }
 
-  m_DidShoot = false;
+  m_ShootTimeBeforeIdle = m_WeaponStateMachine->get_shoot_time_before_idle();
   m_WantsToShoot = true;
-  m_TimeBetweenShots = m_WeaponStateMachine->get_time_between_shots();
 }
 
 void WeaponShootState::_update(double delta)
 {
-  if(Input::get_singleton()->is_action_pressed("shoot_weapon"))
+  m_WantsToShoot = false;
+  if(m_ShootTimeBeforeIdle >= 0.0f)
   {
-    m_DidShoot = false;
-    m_TimeBetweenShots = m_WeaponStateMachine->get_time_between_shots();
-
-    if(m_DidShoot == false && m_TimeBetweenShots >= 0.0f)
-    {
-      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName());
-      m_DidShoot = true;
-    }
+    m_ShootTimeBeforeIdle -= delta;
   }
 
-  if(m_DidShoot == true)
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) m_WantsToShoot = true;
+
+  if(m_WantsToShoot == true)
   {
-    m_TimeBetweenShots -= delta;
+    m_WeaponAnimPlayer->stop(true);
+    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName());
+
+    m_WantsToShoot = false;
   }
-  
-  if(m_TimeBetweenShots <= 0.0f)
+
+  if(m_ShootTimeBeforeIdle <= 0.0f)
+  {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  }
+
 }
 
 void WeaponShootState::_exit()
@@ -221,6 +224,7 @@ void WeaponUnequipState::_handle_input(const Ref<InputEvent>& event)
 void WeaponUnequipState::_enter()
 {
   m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
+  m_WeaponComponent = m_WeaponStateMachine->get_weapon_component();
 
   CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
   
@@ -229,14 +233,88 @@ void WeaponUnequipState::_enter()
     m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
   }
 
-  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
+  _unequip_weapon();
+}
+
+void WeaponUnequipState::_unequip_weapon()
+{
+  if(m_WeaponComponent->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
+  {
+    if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
+    {
+      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
+    }
+  }
 }
 
 void WeaponUnequipState::_update(double delta)
 {
+  if(!m_WeaponAnimPlayer->is_playing())
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::WEAPON_SWITCH));
 }
 
 void WeaponUnequipState::_exit()
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Weapon Switch State ///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+WeaponSwitchState::WeaponSwitchState(WeaponStateMachine* weaponManager)
+  : State(static_cast<int8_t>(WeaponStates::WEAPON_SWITCH)), m_WeaponStateMachine(weaponManager)
+{
+}
+
+void WeaponSwitchState::_handle_input(const Ref<InputEvent>& event)
+{
+ 
+}
+
+void WeaponSwitchState::_enter()
+{
+  m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
+  m_WeaponComponent = m_WeaponStateMachine->get_weapon_component();
+
+  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
+  
+  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
+  if (!animPlayers.is_empty()) {
+    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
+  }
+  
+  _weapon_switch();
+}
+
+void WeaponSwitchState::_weapon_switch()
+{
+  int weapon_index = -1;
+  
+  for (int i = 0; i < m_WeaponComponent->get_weapon_resource_list().size(); i++) {
+    Ref<Weapon> res = m_WeaponComponent->get_weapon_resource_list()[i]; 
+
+    if (res.is_valid() && res->get_weaponName() == m_WeaponComponent->get_next_weapon_name()) {
+      print_line("Weapon found at index: ", i);
+      weapon_index = i;
+      break;
+    }
+  }
+  
+  if(weapon_index != -1)
+  {
+    Ref<Weapon> nextWeapon = m_WeaponComponent->get_weapon_resource_list()[weapon_index];
+    m_WeaponComponent->set_current_weapon(nextWeapon);
+    m_WeaponComponent->set_next_weapon_name(nextWeapon->get_weaponName());
+    print_line("New Weapon name is: ", m_WeaponComponent->get_current_weapon_data()->get_weaponName());
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::EQUIP));
+  }
+}
+
+void WeaponSwitchState::_update(double delta)
+{
+}
+
+void WeaponSwitchState::_exit()
 {
 
 }

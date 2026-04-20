@@ -25,6 +25,7 @@ class StateMachine : public Node {
 public:
   void _ready() override;
   virtual void _init_data() {};
+  virtual void _handle_state_machine_input(const Ref<InputEvent>& event) {};
 
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _physics_process(double delta) override;

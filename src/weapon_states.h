@@ -21,6 +21,7 @@ public:
 
 private:
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
+  WeaponComponent* m_WeaponComponent { nullptr };
   bool m_IsUnequiped;
 };
 
@@ -54,8 +55,8 @@ private:
   Ref<Weapon> m_CurrentWeapon { nullptr };
 
 private:
-  bool m_DidShoot, m_WantsToShoot;
-  float m_TimeBetweenShots;
+  float m_ShootTimeBeforeIdle;
+  bool m_WantsToShoot;
 };
 
 class WeaponReloadState : public State {
@@ -82,8 +83,30 @@ public:
   void _update(double delta) override;
   void _exit() override;
 
+  void _unequip_weapon();
+
+private:
+  AnimationPlayer* m_WeaponAnimPlayer { nullptr };
+  WeaponComponent* m_WeaponComponent { nullptr };
+  WeaponStateMachine* m_WeaponStateMachine { nullptr };
+  Ref<Weapon> m_CurrentWeapon { nullptr };
+};
+
+class WeaponSwitchState : public State {
+public:
+  WeaponSwitchState(WeaponStateMachine* weaponStateMachine);
+
+  void _enter() override;
+  void _handle_input(const Ref<InputEvent>& event) override;
+  void _update(double delta) override;
+  void _exit() override;
+
+  void _weapon_switch();
+
 private:
   AnimationPlayer* m_WeaponAnimPlayer { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
+  WeaponComponent* m_WeaponComponent { nullptr };
+
   Ref<Weapon> m_CurrentWeapon { nullptr };
 };

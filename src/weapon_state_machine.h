@@ -13,6 +13,7 @@ class WeaponEquipState;
 class WeaponShootState;
 class WeaponReloadState;
 class WeaponUnequipState;
+class WeaponSwitchState;
  
 enum class WeaponStates : int8_t {
   NONE = -1, IDLE, EQUIP, SHOOT, RELOAD, UNEQUIP, WEAPON_SWITCH
@@ -24,6 +25,7 @@ class WeaponStateMachine : public StateMachine {
 
 public:
   void _init_data() override;
+  void _handle_state_machine_input(const Ref<InputEvent>& event) override;
 
   Array get_weapon_anim_groups() const { return m_WeaponAnimGroups; }
 
@@ -51,7 +53,7 @@ private:
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
 
-  GD_DEFINE_PROPERTY(float, time_between_shots, 0.3f);
+  GD_DEFINE_PROPERTY(float, shoot_time_before_idle, 0.3f);
 
   Array m_WeaponAnimGroups;
 
