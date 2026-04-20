@@ -131,7 +131,6 @@ weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("8_ur7pv"), ExtResou
 [node name="WeaponStateMachine" type="WeaponStateMachine" parent="WeaponManager" unique_id=29975295 node_paths=PackedStringArray("character_component", "weapon_component")]
 character_component = NodePath("../../CharacterComponent")
 weapon_component = NodePath("../WeaponComponent")
-time_between_shots = 1.0
 unique_name_in_owner = true
 
 [node name="WeaponBobComponent" type="WeaponBobComponent" parent="WeaponManager" unique_id=704879417 node_paths=PackedStringArray("character_component", "weapon_component", "hold_point_node")]

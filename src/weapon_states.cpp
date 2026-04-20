@@ -16,9 +16,8 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::SHOOT));
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("unequip_weapon") && m_IsUnequiped == false)
+  if(Input::get_singleton()->is_action_just_pressed("unequip_weapon"))
   {
-    print_line("Unequipping!");
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::UNEQUIP));
   }
   
@@ -26,7 +25,6 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponIdleState::_enter()
 {
-  m_IsUnequiped = false;
   if(m_WeaponStateMachine == nullptr)
   {
     print_error("Weapon Equip state data is null!");
@@ -42,7 +40,6 @@ void WeaponIdleState::_update(double delta)
 
 void WeaponIdleState::_exit()
 {
-  m_IsUnequiped = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,18 +62,13 @@ void WeaponEquipState::_enter()
 {
   m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
   
-  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
-  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
-  if (!animPlayers.is_empty()) {
-    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
-  }
- 
+  m_WeaponAnimPlayer = m_WeaponStateMachine->get_current_weapon_anim_player();
   if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
   {
     print_error("Weapon Equip state data is null!");
     return;
   }
-  
+
   m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
 }
 
@@ -117,12 +109,7 @@ void WeaponShootState::_enter()
 {
   m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
    
-  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
-  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
-
-  if (!animPlayers.is_empty()) {
-    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
-  }
+  m_WeaponAnimPlayer = m_WeaponStateMachine->get_current_weapon_anim_player();
 
   if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
   {
@@ -183,12 +170,7 @@ void WeaponReloadState::_enter()
 {
   m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
 
-  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
-  
-  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
-  if (!animPlayers.is_empty()) {
-    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
-  }
+  m_WeaponAnimPlayer = m_WeaponStateMachine->get_current_weapon_anim_player();
 
   m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName());
 }
@@ -216,7 +198,6 @@ void WeaponUnequipState::_handle_input(const Ref<InputEvent>& event)
 {
   if(Input::get_singleton()->is_action_just_pressed("equip_weapon"))
   {
-    print_line("Equipping!");
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::EQUIP));
   }
 }
@@ -226,31 +207,18 @@ void WeaponUnequipState::_enter()
   m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
   m_WeaponComponent = m_WeaponStateMachine->get_weapon_component();
 
-  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
-  
-  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
-  if (!animPlayers.is_empty()) {
-    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
-  }
+  m_WeaponAnimPlayer = m_WeaponStateMachine->get_current_weapon_anim_player();
 
   _unequip_weapon();
 }
 
 void WeaponUnequipState::_unequip_weapon()
 {
-  if(m_WeaponComponent->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
-  {
-    if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
-    {
-      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
-    }
-  }
+  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
 }
 
 void WeaponUnequipState::_update(double delta)
 {
-  if(!m_WeaponAnimPlayer->is_playing())
-    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::WEAPON_SWITCH));
 }
 
 void WeaponUnequipState::_exit()
@@ -276,12 +244,7 @@ void WeaponSwitchState::_enter()
   m_CurrentWeapon = m_WeaponStateMachine->get_weapon_component()->get_current_weapon_data();
   m_WeaponComponent = m_WeaponStateMachine->get_weapon_component();
 
-  CharacterBody3D* characterBody = m_WeaponStateMachine->get_character_component()->get_character_body();
-  
-  Array animPlayers = characterBody->get_tree()->get_nodes_in_group("weapon_anims");
-  if (!animPlayers.is_empty()) {
-    m_WeaponAnimPlayer = Object::cast_to<AnimationPlayer>(animPlayers[0]);
-  }
+  m_WeaponAnimPlayer = m_WeaponStateMachine->get_current_weapon_anim_player();
   
   _weapon_switch();
 }
@@ -294,7 +257,6 @@ void WeaponSwitchState::_weapon_switch()
     Ref<Weapon> res = m_WeaponComponent->get_weapon_resource_list()[i]; 
 
     if (res.is_valid() && res->get_weaponName() == m_WeaponComponent->get_next_weapon_name()) {
-      print_line("Weapon found at index: ", i);
       weapon_index = i;
       break;
     }
@@ -304,14 +266,12 @@ void WeaponSwitchState::_weapon_switch()
   {
     Ref<Weapon> nextWeapon = m_WeaponComponent->get_weapon_resource_list()[weapon_index];
     m_WeaponComponent->set_current_weapon(nextWeapon);
-    m_WeaponComponent->set_next_weapon_name(nextWeapon->get_weaponName());
-    print_line("New Weapon name is: ", m_WeaponComponent->get_current_weapon_data()->get_weaponName());
-    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::EQUIP));
   }
 }
 
 void WeaponSwitchState::_update(double delta)
 {
+  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::EQUIP));
 }
 
 void WeaponSwitchState::_exit()
