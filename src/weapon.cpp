@@ -10,13 +10,21 @@ Weapon::Weapon()
 void Weapon::_bind_methods() {
 
   ADD_GROUP("General Weapon Properties", "");
+
+  BIND_ENUM_CONSTANT(AUTO);
+  BIND_ENUM_CONSTANT(MANUAL);
+  GD_BIND_ENUM(Weapon, weapon_type, "Manual,Auto");
+
   GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, shoot_delay, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, reload_time, Variant::FLOAT);
-  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponScene, Variant::OBJECT, godot::PROPERTY_HINT_FILE_PATH);
 
-  ADD_GROUP("Weapon Animation Names", "");
+  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponScene, Variant::OBJECT, PROPERTY_HINT_FILE_PATH);
+
+  ADD_GROUP("Weapon Animation Properties", "");
+  GD_BIND_PROPERTY(Weapon, weapon_anim_blend, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weapon_anim_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponEquipAnimName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, weaponUnequipAnimName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);

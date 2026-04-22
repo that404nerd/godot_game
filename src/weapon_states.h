@@ -54,8 +54,9 @@ private:
   Ref<Weapon> m_CurrentWeapon { nullptr };
 
 private:
+  Weapon::WeaponType m_WeaponType;
   float m_ShootTimeBeforeIdle;
-  bool m_WantsToShoot;
+  bool m_WantsToShoot, m_IsKeyHeld;
 };
 
 class WeaponReloadState : public State {

@@ -3,9 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://b7khe2s865pte" path="res://assets/weapon_scenes/pistol.tscn" id="1_eol0p"]
 
 [resource]
+weapon_type = 1
 totalAmmoCount = 10
 weaponName = "Pistol"
 weaponScene = ExtResource("1_eol0p")
+weapon_anim_blend = -1.0
 weaponEquipAnimName = "pistol_equip"
 weaponUnequipAnimName = "pistol_unequip"
 weaponShootingAnimName = "pistol_shoot"

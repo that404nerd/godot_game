@@ -109,7 +109,6 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::UNEQUIP));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) m_WantsToShoot = true;
 }
 
 void WeaponShootState::_enter()
@@ -125,29 +124,51 @@ void WeaponShootState::_enter()
   }
 
   m_ShootTimeBeforeIdle = m_WeaponStateMachine->get_shoot_time_before_idle();
+  m_WeaponType = m_CurrentWeapon->get_weapon_type();
   m_WantsToShoot = true;
+  m_IsKeyHeld = true;
 }
 
 void WeaponShootState::_update(double delta)
 {
+  m_WantsToShoot = false;
+
   if(m_ShootTimeBeforeIdle >= 0.0f)
   {
     m_ShootTimeBeforeIdle -= delta;
   }
 
-
-  if(m_WantsToShoot)
+  if(m_WeaponType == Weapon::WeaponType::AUTO && Input::get_singleton()->is_action_pressed("shoot_weapon"))
   {
-    m_WeaponAnimPlayer->stop(true);
-    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName());
+    m_IsKeyHeld = true;
+    m_ShootTimeBeforeIdle = m_WeaponStateMachine->get_shoot_time_before_idle();
+  }
 
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && m_WeaponType == Weapon::WeaponType::MANUAL)
+  {
+    m_IsKeyHeld = false;
+    m_WantsToShoot = true;
+  }
+
+  if(m_IsKeyHeld || m_WantsToShoot)
+  {
+    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), m_CurrentWeapon->get_weapon_anim_blend(), m_CurrentWeapon->get_weapon_anim_speed());
+  }
+
+  if(!Input::get_singleton()->is_action_just_released("shoot_weapon"))
+  {
+    m_IsKeyHeld = false;
+  }
+
+  if(m_WantsToShoot == true)
+  {
     m_WantsToShoot = false;
   }
 
-  if(m_ShootTimeBeforeIdle <= 0.0f)
-  {
-    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
-  }
+  // if(m_ShootTimeBeforeIdle <= 0.0f && m_IsKeyHeld == false && m_WantsToShoot == false)
+  // {
+  //   m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  // }
 
 }
 

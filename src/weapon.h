@@ -13,15 +13,25 @@ using namespace godot;
 
 class Weapon : public Resource {
   GDCLASS(Weapon, Resource)
-
-public:
+  
+public:  
   Weapon();
-
+  
   ~Weapon();
-protected: 
+  
+protected:   
+  
   static void _bind_methods();
+  
+public:
+  enum WeaponType
+  {
+    MANUAL, AUTO
+  };
 
 private:
+
+  GD_DEFINE_PROPERTY(WeaponType, weapon_type, WeaponType::MANUAL);
 
   GD_DEFINE_PROPERTY(String, weaponName, "");
   GD_DEFINE_PROPERTY(String, weaponEquipAnimName, "");
@@ -30,6 +40,8 @@ private:
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
 
+  GD_DEFINE_PROPERTY(float, weapon_anim_blend, 0.0f);
+  GD_DEFINE_PROPERTY(float, weapon_anim_speed, 1.0f);
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
   GD_DEFINE_PROPERTY(float, shoot_delay, 0.0f);
@@ -45,3 +57,5 @@ private:
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_smooth_val, 2.0f);
   GD_DEFINE_PROPERTY(float, weapon_bob_smooth_val, 1.5f);
 };
+
+VARIANT_ENUM_CAST(Weapon::WeaponType);

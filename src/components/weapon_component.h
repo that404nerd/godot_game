@@ -2,6 +2,8 @@
 
 #include "../weapon.h"
 
+#include <magic_enum/magic_enum.hpp>
+
 class WeaponComponent : public Node
 {
   GDCLASS(WeaponComponent, Node);

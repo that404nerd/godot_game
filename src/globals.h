@@ -1,7 +1,10 @@
 #pragma once
 
+#include "godot_cpp/core/class_db.hpp"
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/core/math.hpp>
+
+#include <array>
 
 using namespace godot;
 
@@ -31,19 +34,26 @@ public:                                                  \
     }                                                    \
     struct _CAT(__semicolon_place, __LINE__)
 
+// For binding a general property
 #define GD_BIND_PROPERTY(p_class, p_name, p_type) \
         ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name); \
         ClassDB::bind_method(D_METHOD("set_" #p_name, "p_" #p_name), &p_class::set_##p_name); \
         ADD_PROPERTY(PropertyInfo(p_type, #p_name), "set_" #p_name, "get_" #p_name);
 
-// This is for assigning a value to the property
+// For binding a property like an Array, Nodes etc...
 #define GD_BIND_CUSTOM_PROPERTY(p_class, p_name, p_type, p_property_type) \
-        ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name); \
-        ClassDB::bind_method(D_METHOD("set_" #p_name, "p_" #p_name), &p_class::set_##p_name); \
+        ClassDB::bind_method(D_METHOD("get_"#p_name), &p_class::get_##p_name); \
+        ClassDB::bind_method(D_METHOD("set_"#p_name, "p_"#p_name), &p_class::set_##p_name); \
         ADD_PROPERTY(PropertyInfo(p_type, #p_name, p_property_type), "set_" #p_name, "get_" #p_name);
 
+#define GD_BIND_ENUM(p_class, p_name, p_enum_values) \
+        ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name); \
+        ClassDB::bind_method(D_METHOD("set_" #p_name, "p_" #p_name), &p_class::set_##p_name); \
+        ADD_PROPERTY(PropertyInfo(Variant::INT, #p_name, PROPERTY_HINT_ENUM, p_enum_values), \
+                    "set_"#p_name, "get_"#p_name);
+
 namespace Utils {
-  
+
   // Exponential decay function
   template <typename T>
   inline T exp_decay(T a, T b, float decay, double dt)
