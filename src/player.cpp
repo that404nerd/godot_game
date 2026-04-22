@@ -39,7 +39,6 @@ void Player::_ready()
   m_GlobalStateHandler = memnew(GlobalStateHandler(this));
   m_WeaponHoldPoint = get_node<Node3D>(NodePath("%WeaponHoldPoint"));
 
-  m_WeaponNodesGroup = get_tree()->get_nodes_in_group("weapon_nodes");
 
   m_GlobalStateHandler->_enter();
   

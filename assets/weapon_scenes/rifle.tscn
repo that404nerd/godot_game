@@ -1,15 +1,20 @@
 [gd_scene format=4 uid="uid://1oiq6mop2pvk"]
 
-[ext_resource type="Texture2D" uid="uid://3sc264e5bkso" path="res://assets/meshes/weapons/rifle/gun_rifle_0.png" id="1_cs2xk"]
+[ext_resource type="Texture2D" uid="uid://b4b2f7jg3rcr2" path="res://assets/meshes/weapons/rifle/gun_rifle_0.png" id="1_cs2xk"]
 [ext_resource type="AnimationLibrary" uid="uid://dcy4abfxytyuu" path="res://assets/weapon_resources/animations/rifle_anim.tres" id="1_dycod"]
-[ext_resource type="Texture2D" uid="uid://jdt3nk5lntdt" path="res://assets/meshes/weapons/rifle/gun_rifle_1.png" id="2_3f8p1"]
-[ext_resource type="Texture2D" uid="uid://dd5ora6q6dme7" path="res://assets/meshes/weapons/rifle/gun_rifle_2.png" id="3_rdymk"]
-[ext_resource type="Texture2D" uid="uid://dvxt8rg24tq03" path="res://assets/meshes/weapons/rifle/gun_rifle_3.png" id="4_2qaxf"]
-[ext_resource type="Texture2D" uid="uid://eqhomuym4qr2" path="res://assets/meshes/weapons/rifle/gun_rifle_4.png" id="5_or1is"]
-[ext_resource type="Texture2D" uid="uid://dnn8iacjhsmjy" path="res://assets/meshes/weapons/rifle/gun_rifle_5.png" id="6_ek60l"]
+[ext_resource type="Texture2D" uid="uid://cdg5w2ai6olow" path="res://assets/meshes/weapons/rifle/gun_rifle_1.png" id="2_3f8p1"]
+[ext_resource type="Texture2D" uid="uid://bn8p1vyqrpj72" path="res://assets/meshes/weapons/rifle/gun_rifle_2.png" id="3_rdymk"]
+[ext_resource type="Texture2D" uid="uid://iycjjjo3l5k2" path="res://assets/meshes/weapons/rifle/gun_rifle_3.png" id="4_2qaxf"]
+[ext_resource type="Texture2D" uid="uid://b87jjl755b8y" path="res://assets/meshes/weapons/rifle/gun_rifle_4.png" id="5_or1is"]
+[ext_resource type="Texture2D" uid="uid://bc2fv3xxlyjiv" path="res://assets/meshes/weapons/rifle/gun_rifle_5.png" id="6_ek60l"]
+[ext_resource type="Texture2D" uid="uid://dlna3nscmpmcs" path="res://assets/meshes/weapons/rifle/gun_rifle_7.png" id="6_ptx4k"]
+[ext_resource type="Texture2D" uid="uid://35t4pnj2xyld" path="res://assets/meshes/weapons/rifle/gun_rifle_6.png" id="8_2qp15"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_60mlk"]
-albedo_texture = ExtResource("1_cs2xk")
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dycod"]
+load_path = "res://.godot/imported/gun_rifle_0.png-b68bcceee3f138e880e86f96101ebc27.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_74nu3"]
+albedo_texture = SubResource("CompressedTexture2D_dycod")
 use_z_clip_scale = true
 z_clip_scale = 0.5
 use_fov_override = true
@@ -301,6 +306,18 @@ bind/82/name = &"Pmag_end_081"
 bind/82/bone = -1
 bind/82/pose = Transform3D(1.0000005, 0, 0, 0, 1.0000005, 0, 0, 0, 1.0000005, 0, 0, 0)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ptx4k"]
+albedo_texture = ExtResource("4_2qaxf")
+metallic = 0.5
+metallic_texture = ExtResource("6_ptx4k")
+roughness_texture = ExtResource("8_2qp15")
+normal_enabled = true
+normal_texture = ExtResource("6_ek60l")
+use_z_clip_scale = true
+z_clip_scale = 0.5
+use_fov_override = true
+fov_override = 70.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w7urd"]
 resource_name = "Body"
 cull_mode = 2
@@ -334,13 +351,13 @@ _surfaces = [{
 blend_shape_mode = 0
 
 [node name="Rifle" type="Node3D" unique_id=991172594]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=155187373 groups=["weapon_anims"]]
 libraries/ = ExtResource("1_dycod")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=809723060]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.253, 0)
+visible = false
 
 [node name="WeaponTransform" type="Node3D" parent="." unique_id=1434461277]
 transform = Transform3D(-1, -8.742278e-08, -3.821371e-15, 0, -4.371139e-08, 1, -8.742278e-08, 1, 4.371139e-08, 0, -0.267, -0.066)
@@ -929,13 +946,13 @@ bones/82/rotation = Quaternion(0, 0, -1.3660947e-17, 1)
 bones/82/scale = Vector3(1, 1, 1)
 
 [node name="hands_mesh" type="MeshInstance3D" parent="WeaponTransform/Skeleton3D" unique_id=1172168110]
-material_override = SubResource("StandardMaterial3D_60mlk")
+material_override = SubResource("StandardMaterial3D_74nu3")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_erhqq")
 skin = SubResource("Skin_yvhyk")
 
 [node name="rifle_mesh" type="MeshInstance3D" parent="WeaponTransform/Skeleton3D" unique_id=1331112100]
-material_override = SubResource("StandardMaterial3D_60mlk")
+material_override = SubResource("StandardMaterial3D_ptx4k")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_5qeg5")
 skin = SubResource("Skin_yvhyk")

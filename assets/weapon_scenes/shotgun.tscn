@@ -1,35 +1,44 @@
 [gd_scene format=4 uid="uid://lfo3x6xjd6h3"]
 
-[ext_resource type="Texture2D" uid="uid://bqgestgf2heam" path="res://assets/meshes/weapons/shotgun/gun_shotgun_0.png" id="1_5blxk"]
-[ext_resource type="Texture2D" uid="uid://c5ehck2k5cnyu" path="res://assets/meshes/weapons/shotgun/gun_shotgun_7.png" id="2_hnpij"]
-[ext_resource type="Texture2D" uid="uid://bpkblp1pd77rj" path="res://assets/meshes/weapons/shotgun/gun_shotgun_1.png" id="3_pv1oe"]
-[ext_resource type="Texture2D" uid="uid://myc7f4jn1qed" path="res://assets/meshes/weapons/shotgun/gun_shotgun_2.png" id="4_w8c57"]
-[ext_resource type="Texture2D" uid="uid://qgq61h56p0g2" path="res://assets/meshes/weapons/shotgun/gun_shotgun_4.png" id="6_78vyi"]
-[ext_resource type="Texture2D" uid="uid://dr6tqcyclvn3c" path="res://assets/meshes/weapons/shotgun/gun_shotgun_5.png" id="7_luid4"]
-[ext_resource type="Texture2D" uid="uid://bnj6hpvx0ymma" path="res://assets/meshes/weapons/shotgun/gun_shotgun_6.png" id="8_fbfpu"]
-[ext_resource type="Texture2D" uid="uid://2d4bi6qxjynh" path="res://assets/meshes/weapons/shotgun/gun_shotgun_8.png" id="9_0scrr"]
+[ext_resource type="Texture2D" uid="uid://b4b2f7jg3rcr2" path="res://assets/meshes/weapons/rifle/gun_rifle_0.png" id="2_oud13"]
 [ext_resource type="AnimationLibrary" uid="uid://ccv87b3lfrmog" path="res://assets/weapon_resources/animations/shotgun_anims.tres" id="9_5blxk"]
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pv1oe"]
+load_path = "res://.godot/imported/gun_shotgun_5.png-01d25f9e80d97e8e997bb0f8fa002acf.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pe2eg"]
+load_path = "res://.godot/imported/gun_pistol_1.png-ba5fec7f99d392aeac827d9d5bc12925.s3tc.ctex"
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hnpij"]
-albedo_texture = ExtResource("1_5blxk")
+albedo_texture = ExtResource("2_oud13")
+roughness_texture = SubResource("CompressedTexture2D_pe2eg")
 normal_enabled = true
-normal_texture = ExtResource("7_luid4")
+normal_texture = SubResource("CompressedTexture2D_pv1oe")
 use_z_clip_scale = true
 z_clip_scale = 0.5
 use_fov_override = true
 fov_override = 70.0
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yedub"]
+load_path = "res://.godot/imported/gun_shotgun_0.png-961003324ba9c4f501dd9db8ae2c6862.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y4psw"]
+load_path = "res://.godot/imported/gun_shotgun_1.png-636801d79e80cd053522c76b88799a7e.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_trrci"]
+load_path = "res://.godot/imported/gun_shotgun_2.png-8868d9041a735f8d31520532e72f2dc0.s3tc.ctex"
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u8ru2"]
 resource_name = "material"
 cull_mode = 2
-albedo_texture = ExtResource("1_5blxk")
+albedo_texture = SubResource("CompressedTexture2D_yedub")
 metallic = 0.053333495
-metallic_texture = ExtResource("3_pv1oe")
+metallic_texture = SubResource("CompressedTexture2D_y4psw")
 metallic_texture_channel = 2
-roughness_texture = ExtResource("3_pv1oe")
+roughness_texture = SubResource("CompressedTexture2D_y4psw")
 roughness_texture_channel = 1
 normal_enabled = true
-normal_texture = ExtResource("4_w8c57")
+normal_texture = SubResource("CompressedTexture2D_trrci")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_kmunc"]
 resource_name = "Sketchfab_Scene_mesh_Mat_0"
@@ -304,30 +313,40 @@ bind/82/name = &"12ge_low_end_081"
 bind/82/bone = -1
 bind/82/pose = Transform3D(0.99571264, 0, 0, 0, 0.9957125, 0, 0, 0, 0.99571264, 0, 0, 0)
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hnpij"]
-load_path = "res://.godot/imported/gun_shotgun_0.png-961003324ba9c4f501dd9db8ae2c6862.s3tc.ctex"
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_sun5c"]
+load_path = "res://.godot/imported/gun_shotgun_3.jpg-d55ee6f6b50b387f43ea3cc126eb14cf.s3tc.ctex"
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pv1oe"]
-albedo_texture = SubResource("CompressedTexture2D_hnpij")
-roughness_texture = ExtResource("2_hnpij")
-normal_enabled = true
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_oud13"]
+load_path = "res://.godot/imported/gun_shotgun_4.png-579de96a2aa5b5624ed6b39414e4135d.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pe2eg"]
+albedo_texture = SubResource("CompressedTexture2D_sun5c")
+metallic = 1.0
+roughness = 0.4
+roughness_texture = SubResource("CompressedTexture2D_oud13")
 use_z_clip_scale = true
 z_clip_scale = 0.5
 use_fov_override = true
 fov_override = 70.0
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yyh7y"]
+load_path = "res://.godot/imported/gun_shotgun_4.png-579de96a2aa5b5624ed6b39414e4135d.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_iuvhe"]
+load_path = "res://.godot/imported/gun_shotgun_5.png-01d25f9e80d97e8e997bb0f8fa002acf.s3tc.ctex"
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0st5a"]
 resource_name = "remington"
 cull_mode = 2
 metallic = 1.0
-metallic_texture = ExtResource("6_78vyi")
+metallic_texture = SubResource("CompressedTexture2D_yyh7y")
 metallic_texture_channel = 2
-roughness_texture = ExtResource("6_78vyi")
+roughness_texture = SubResource("CompressedTexture2D_yyh7y")
 roughness_texture_channel = 1
 normal_enabled = true
-normal_texture = ExtResource("7_luid4")
+normal_texture = SubResource("CompressedTexture2D_iuvhe")
 ao_enabled = true
-ao_texture = ExtResource("6_78vyi")
+ao_texture = SubResource("CompressedTexture2D_yyh7y")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_psf7x"]
 resource_name = "Sketchfab_Scene_main_remington_0"
@@ -349,11 +368,20 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hnpij"]
+load_path = "res://.godot/imported/gun_shotgun_6.png-11257afd344aeae9979bc3c98bf1cd7e.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_w8c57"]
+load_path = "res://.godot/imported/gun_shotgun_8.png-f737c8bfaca9db311465bc22d16605a3.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_n37ph"]
+load_path = "res://.godot/imported/gun_shotgun_7.png-06589505fc7cd9c89f4758343ed46f15.s3tc.ctex"
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i4ail"]
-albedo_texture = ExtResource("8_fbfpu")
-roughness_texture = ExtResource("2_hnpij")
+albedo_texture = SubResource("CompressedTexture2D_hnpij")
+roughness_texture = SubResource("CompressedTexture2D_n37ph")
 normal_enabled = true
-normal_texture = ExtResource("9_0scrr")
+normal_texture = SubResource("CompressedTexture2D_w8c57")
 use_z_clip_scale = true
 z_clip_scale = 0.5
 use_fov_override = true
@@ -362,16 +390,16 @@ fov_override = 70.0
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjt35"]
 resource_name = "12ge"
 cull_mode = 2
-albedo_texture = ExtResource("8_fbfpu")
+albedo_texture = SubResource("CompressedTexture2D_hnpij")
 metallic = 1.0
-metallic_texture = ExtResource("2_hnpij")
+metallic_texture = SubResource("CompressedTexture2D_n37ph")
 metallic_texture_channel = 2
-roughness_texture = ExtResource("2_hnpij")
+roughness_texture = SubResource("CompressedTexture2D_n37ph")
 roughness_texture_channel = 1
 normal_enabled = true
-normal_texture = ExtResource("9_0scrr")
+normal_texture = SubResource("CompressedTexture2D_w8c57")
 ao_enabled = true
-ao_texture = ExtResource("2_hnpij")
+ao_texture = SubResource("CompressedTexture2D_n37ph")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_gg82j"]
 resource_name = "Sketchfab_Scene_12ge_low_12ge_0"
@@ -394,10 +422,13 @@ _surfaces = [{
 blend_shape_mode = 0
 
 [node name="Shotgun" type="Node3D" unique_id=670607748]
-visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1642065233 groups=["weapon_anims"]]
 libraries/ = ExtResource("9_5blxk")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=945955197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.011, -0.104)
+visible = false
 
 [node name="WeaponTransform" type="Node3D" parent="." unique_id=782084282]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, -0.265, 0.16)
@@ -423,7 +454,7 @@ bones/2/parent = 1
 bones/2/rest = Transform3D(-0.9633585, 0.22813338, 0.14105186, -0.00991244, -0.5558095, 0.8312508, 0.26803392, 0.79939437, 0.5377052, 0, 0.21583539, 0)
 bones/2/enabled = true
 bones/2/position = Vector3(0, 0.21583539, 0)
-bones/2/rotation = Quaternion(0.116989166, 0.46632713, 0.8741958, -0.06807565)
+bones/2/rotation = Quaternion(0.11698916, 0.46632716, 0.8741958, -0.06807565)
 bones/2/scale = Vector3(1, 1.0000001, 1.0000001)
 bones/3/name = "UpArm_L_03"
 bones/3/parent = 2
@@ -437,7 +468,7 @@ bones/4/parent = 3
 bones/4/rest = Transform3D(0.9201088, 0.17128484, -0.35222298, 0.15835516, 0.65982735, 0.7345417, 0.35822216, -0.7316347, 0.57998925, 1.3969839e-08, 0.23800072, 2.3283064e-09)
 bones/4/enabled = true
 bones/4/position = Vector3(1.3969839e-08, 0.23800072, 2.3283064e-09)
-bones/4/rotation = Quaternion(-0.41239917, -0.19983068, -0.0036367876, 0.88880897)
+bones/4/rotation = Quaternion(-0.41239923, -0.1998307, -0.003636794, 0.888809)
 bones/4/scale = Vector3(0.9999998, 0.99999994, 1)
 bones/5/name = "BoneTwist_03.L_05"
 bones/5/parent = 4
@@ -731,7 +762,7 @@ bones/46/parent = 0
 bones/46/rest = Transform3D(-0.15506984, -0.9751611, 0.1581588, -0.11828865, -0.14061546, -0.9829727, 0.9807962, -0.17113778, -0.09354528, -0.14662328, -0.13564076, 0.13606405)
 bones/46/enabled = true
 bones/46/position = Vector3(-0.14662328, -0.13564076, 0.13606405)
-bones/46/rotation = Quaternion(0.5193965, -0.52630776, 0.54821074, 0.39075872)
+bones/46/rotation = Quaternion(0.5193966, -0.5263078, 0.54821074, 0.39075875)
 bones/46/scale = Vector3(1, 0.99999994, 1.0000001)
 bones/47/name = "Hand_R_038"
 bones/47/parent = 46
@@ -976,7 +1007,7 @@ bones/81/parent = 0
 bones/81/rest = Transform3D(1, -3.4043684e-14, -3.8941437e-07, -1.6940659e-21, -1, 8.742278e-08, -3.8941437e-07, -8.742278e-08, -1, 0, 0, 0)
 bones/81/enabled = true
 bones/81/position = Vector3(0, 0, 0)
-bones/81/rotation = Quaternion(1, -8.510921e-15, -1.9470718e-07, -4.371139e-08)
+bones/81/rotation = Quaternion(1, 0, -1.9470718e-07, 0)
 bones/81/scale = Vector3(1, 1, 1)
 bones/82/name = "12ge_low_end_081"
 bones/82/parent = 81
@@ -988,17 +1019,18 @@ bones/82/scale = Vector3(1, 1, 1)
 
 [node name="arm_mesh" type="MeshInstance3D" parent="WeaponTransform/Skeleton3D" unique_id=1170809054]
 material_override = SubResource("StandardMaterial3D_hnpij")
+cast_shadow = 0
 mesh = SubResource("ArrayMesh_kmunc")
 skin = SubResource("Skin_ljg5d")
 
 [node name="shotgun_mesh" type="MeshInstance3D" parent="WeaponTransform/Skeleton3D" unique_id=249107136]
-material_override = SubResource("StandardMaterial3D_pv1oe")
+material_override = SubResource("StandardMaterial3D_pe2eg")
+cast_shadow = 0
 mesh = SubResource("ArrayMesh_psf7x")
 skin = SubResource("Skin_ljg5d")
 
 [node name="bullet_mesh" type="MeshInstance3D" parent="WeaponTransform/Skeleton3D" unique_id=1896204706]
 material_override = SubResource("StandardMaterial3D_i4ail")
+cast_shadow = 0
 mesh = SubResource("ArrayMesh_gg82j")
 skin = SubResource("Skin_ljg5d")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=945955197]

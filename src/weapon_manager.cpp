@@ -4,6 +4,8 @@
 
 void WeaponManager::_ready()
 {
+  // To push the weapons back a little bit
+  hold_point_node->set_position(Vector3(0.0f, 0.0f, 0.03f));
 }
 
 void WeaponManager::_bind_methods()

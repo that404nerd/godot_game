@@ -79,7 +79,8 @@ void WeaponEquipState::_enter()
 
 void WeaponEquipState::_update(double delta)
 {
-  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  if(!m_WeaponAnimPlayer->is_playing())
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }
 
 
@@ -230,7 +231,8 @@ void WeaponUnequipState::_unequip_weapon()
 void WeaponUnequipState::_update(double delta)
 {
   // This only runs if we try to unequip the same weapon
-  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  if(!m_WeaponAnimPlayer->is_playing())
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }
 
 void WeaponUnequipState::_exit()

@@ -14,7 +14,6 @@ public:
   void set_next_weapon(Ref<Weapon> nextWeapon) { m_NextWeapon = nextWeapon; }
   const Ref<Weapon> get_next_weapon_data() const { return m_NextWeapon; }
 
-
   void set_next_weapon_name(StringName nextWeaponName) { m_NextWeaponName = nextWeaponName; }
   StringName get_next_weapon_name() { return m_NextWeaponName; }
 
@@ -26,6 +25,8 @@ protected:
 
 private:
   GD_DEFINE_PROPERTY(Array, weapon_resource_list, Array());
+
+  Array m_WeaponNodeGroup;
 
   StringName m_NextWeaponName;
   Ref<Weapon> m_CurrentWeapon { nullptr };

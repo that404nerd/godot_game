@@ -84,7 +84,6 @@ private:
   GlobalStateHandler* m_GlobalStateHandler { nullptr };
   Node3D* m_WeaponHoldPoint { nullptr };
 
-  Array m_WeaponNodesGroup;
 
 private:
 
