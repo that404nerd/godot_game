@@ -51,8 +51,8 @@ void WeaponManager::_process(double delta)
   
   weapon_sway_component->reset_weapon_sway(delta);
 
-  m_MouseInput.x = Math::lerp(m_MouseInput.x, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
-  m_MouseInput.y = Math::lerp(m_MouseInput.y, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
+  m_MouseInput.x = Math::lerp(m_MouseInput.x, Math::sign(m_MouseInput.x) * 0.1f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
+  m_MouseInput.y = Math::lerp(m_MouseInput.y, Math::sign(m_MouseInput.y) * 0.1f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
 }
 
 WeaponManager::~WeaponManager()

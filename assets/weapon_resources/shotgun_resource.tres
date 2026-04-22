@@ -1,9 +1,11 @@
 [gd_resource type="Weapon" format=3 uid="uid://g6nbobyu2ifd"]
 
+[ext_resource type="PackedScene" uid="uid://lfo3x6xjd6h3" path="res://assets/weapon_scenes/shotgun.tscn" id="1_lvpox"]
+
 [resource]
 totalAmmoCount = 16
-currentAmmoCount = 16
 weaponName = "Shotgun"
+weaponScene = ExtResource("1_lvpox")
 weaponEquipAnimName = "shotgun_equip"
 weaponUnequipAnimName = "shotgun_unequip"
 weaponShootingAnimName = "shotgun_shoot"

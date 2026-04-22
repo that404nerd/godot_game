@@ -334,7 +334,8 @@ _surfaces = [{
 blend_shape_mode = 0
 
 [node name="Rifle" type="Node3D" unique_id=991172594]
-transform = Transform3D(-0.5, 0, 7.54979e-08, 0, 0.5, 0, -7.54979e-08, 0, -0.5, 0, 0, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=155187373 groups=["weapon_anims"]]
 libraries/ = ExtResource("1_dycod")
@@ -342,7 +343,7 @@ libraries/ = ExtResource("1_dycod")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=809723060]
 
 [node name="WeaponTransform" type="Node3D" parent="." unique_id=1434461277]
-transform = Transform3D(-1, -8.742278e-08, -3.821371e-15, 0, -4.371139e-08, 1, -8.742278e-08, 1, 4.371139e-08, 0, -0.654, -0.066)
+transform = Transform3D(-1, -8.742278e-08, -3.821371e-15, 0, -4.371139e-08, 1, -8.742278e-08, 1, 4.371139e-08, 0, -0.267, -0.066)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="WeaponTransform" unique_id=1889036539]
 bones/0/name = "_rootJoint"

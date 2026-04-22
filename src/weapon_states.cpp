@@ -20,6 +20,11 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
   {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::UNEQUIP));
   }
+
+  if(Input::get_singleton()->is_action_just_pressed("reload_weapon"))
+  {
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::RELOAD));
+  }
   
 }
 
@@ -102,7 +107,8 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
   {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::UNEQUIP));
   }
- 
+  
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) m_WantsToShoot = true;
 }
 
 void WeaponShootState::_enter()
@@ -123,15 +129,13 @@ void WeaponShootState::_enter()
 
 void WeaponShootState::_update(double delta)
 {
-  m_WantsToShoot = false;
   if(m_ShootTimeBeforeIdle >= 0.0f)
   {
     m_ShootTimeBeforeIdle -= delta;
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) m_WantsToShoot = true;
 
-  if(m_WantsToShoot == true)
+  if(m_WantsToShoot)
   {
     m_WeaponAnimPlayer->stop(true);
     m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName());
@@ -214,11 +218,19 @@ void WeaponUnequipState::_enter()
 
 void WeaponUnequipState::_unequip_weapon()
 {
-  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
+  if(m_WeaponComponent->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
+  {
+    if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
+    {
+      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
+    }
+  }
 }
 
 void WeaponUnequipState::_update(double delta)
 {
+  // This only runs if we try to unequip the same weapon
+  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }
 
 void WeaponUnequipState::_exit()
