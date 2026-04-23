@@ -140,17 +140,27 @@ public:
     hold_point_node->set_position(newPos);
   }
 
-  void weapon_sway(double delta, Vector2 sway_vector)
+  void weapon_sway(double delta, Vector3& sway_vel)
   {
     if(!m_CharacterBody || !hold_point_node) return;
-
     m_HoldPointPos = hold_point_node->get_position();
-    m_HoldPointPos.x -= sway_vector.x * m_WeaponSwayMult * delta;
-    m_HoldPointPos.y += sway_vector.y * m_WeaponSwayMult * delta;
 
-    m_HoldPointPos = m_HoldPointPos.clamp(Vector3(-0.008f, -0.001f, 0.0f), Vector3(0.008f, 0.001f, 0.0f));
+    Vector3 equilibriumPos = Vector3(0, 0, 0);
+    Vector3 currentPos = hold_point_node->get_position();
 
-    hold_point_node->set_position(m_HoldPointPos);
+    Utils::CalcDampedSpringMotionParams(
+        m_SwayParams, 
+        (float)delta, 
+        m_CurrentWeapon->get_angularFreq(), 
+        m_CurrentWeapon->get_dampingRatio()
+    );
+
+    Utils::UpdateDampedSpringMotion(currentPos, sway_vel, equilibriumPos, m_SwayParams);
+
+    currentPos.x = Math::clamp(currentPos.x, -0.05f, 0.05f);
+    currentPos.y = Math::clamp(currentPos.y, -0.05f, 0.05f);
+
+    hold_point_node->set_position(currentPos);
   }
 
 private:
@@ -160,6 +170,7 @@ private:
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr }; // This is used to read the current weapon data set in the weapon component
   Vector3 m_HoldPointPos { Vector3(0.0f, 0.0f, 0.0f ) };
+  Utils::tDampedSpringMotionParams m_SwayParams;
   
 private:
   GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);

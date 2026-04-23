@@ -33,7 +33,8 @@ protected:
   static void _bind_methods();
 
 private:
-  Vector2 m_MouseInput;
+  Vector3 m_MouseInput, m_MouseVel { Vector3(0.0f, 0.0f, 0.0f) };
+  Vector2 m_MouseVelocity;
   uint8_t m_CurrentStateID;
 
   const float MOUSE_INPUT_RESET_MULTIPLIER { 10.0f };

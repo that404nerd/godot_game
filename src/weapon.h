@@ -33,6 +33,9 @@ private:
 
   GD_DEFINE_PROPERTY(WeaponType, weapon_type, WeaponType::MANUAL);
 
+  GD_DEFINE_PROPERTY(float, angularFreq, 0.0f);
+  GD_DEFINE_PROPERTY(float, dampingRatio, 0.0f);
+
   GD_DEFINE_PROPERTY(String, weaponName, "");
   GD_DEFINE_PROPERTY(String, weaponEquipAnimName, "");
   GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");

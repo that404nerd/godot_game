@@ -1,4 +1,5 @@
 #include "weapon_states.h"
+#include "globals.h"
 #include "weapon_state_machine.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,10 +128,12 @@ void WeaponShootState::_enter()
   m_WeaponType = m_CurrentWeapon->get_weapon_type();
   m_WantsToShoot = true;
   m_IsKeyHeld = true;
+
 }
 
 void WeaponShootState::_update(double delta)
 {
+ 
   m_WantsToShoot = false;
 
   if(m_ShootTimeBeforeIdle >= 0.0f)

@@ -4,8 +4,6 @@
 
 void WeaponManager::_ready()
 {
-  // To push the weapons back a little bit
-  hold_point_node->set_position(Vector3(0.0f, 0.0f, 0.03f));
 }
 
 void WeaponManager::_bind_methods()
@@ -21,10 +19,16 @@ void WeaponManager::_bind_methods()
 void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 {
   Ref<InputEventMouseMotion> mouseEvent = event;
-
+  
   if(event->is_class("InputEventMouseMotion")) {
     m_MouseInput.x += -mouseEvent->get_screen_relative().x * 0.003f;
     m_MouseInput.y += -mouseEvent->get_screen_relative().y * 0.003f;
+    
+    float swayIntensity = 0.005f; 
+
+    Vector2 relative = mouseEvent->get_relative(); 
+    m_MouseVel.x += -relative.x * swayIntensity;
+    m_MouseVel.y += -relative.y * swayIntensity;
   }
 }
 
@@ -46,7 +50,7 @@ void WeaponManager::_process(double delta)
     {
       weapon_sway_component->weapon_idle_sway(delta);
     } else {
-      weapon_sway_component->weapon_sway(delta, m_MouseInput);
+      weapon_sway_component->weapon_sway(delta, m_MouseVel);
     }
     
   }

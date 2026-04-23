@@ -9,6 +9,10 @@ Weapon::Weapon()
 
 void Weapon::_bind_methods() {
 
+  ADD_GROUP("Weapon Spring Values", "");
+  GD_BIND_PROPERTY(Weapon, angularFreq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, dampingRatio, Variant::FLOAT);
+
   ADD_GROUP("General Weapon Properties", "");
 
   BIND_ENUM_CONSTANT(AUTO);
