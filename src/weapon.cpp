@@ -42,7 +42,6 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, gun_range, Variant::FLOAT);
 
   ADD_GROUP("Weapon Bob Multipliers and Smoothing Properties", "");
-  GD_BIND_PROPERTY(Weapon, weapon_sway_mult, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weapon_sway_reset, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_smooth_val, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weapon_bob_smooth_val, Variant::FLOAT);

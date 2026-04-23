@@ -168,10 +168,10 @@ void WeaponShootState::_update(double delta)
     m_WantsToShoot = false;
   }
 
-  // if(m_ShootTimeBeforeIdle <= 0.0f && m_IsKeyHeld == false && m_WantsToShoot == false)
-  // {
-  //   m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
-  // }
+  if(m_ShootTimeBeforeIdle <= 0.0f && m_IsKeyHeld == false && m_WantsToShoot == false)
+  {
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  }
 
 }
 

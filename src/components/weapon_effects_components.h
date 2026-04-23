@@ -10,7 +10,11 @@
 #include "godot_cpp/core/math.hpp"
 #include "weapon_component.h"
 
+class WeaponStateMachine;
+
 using namespace godot;
+
+class WeaponStateMachine;
 
 class WeaponBobComponent : public Node
 {
@@ -89,83 +93,23 @@ class WeaponSwayComponent : public Node
   GDCLASS(WeaponSwayComponent, Node)
 
 protected:
-  static void _bind_methods()
-  {
-    GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-    GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-    GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  }
-
+  static void _bind_methods();
 public:
 
-  void _ready() override
-  {
-    if(character_component)
-      m_CharacterBody = character_component->get_character_body();
+  void _init_data();
 
-    // TODO: Do the checking and assignment only during weapon_change state
-    if(weapon_component)
-      m_CurrentWeapon = weapon_component->get_current_weapon_data();
-  
-    m_WeaponSwayMult = m_CurrentWeapon->get_weapon_sway_mult();
-    m_WeaponSwayResetValue = m_CurrentWeapon->get_weapon_sway_reset();
-    m_IdleWeaponBobFreq = m_CurrentWeapon->get_idle_weapon_bob_freq();
-    m_IdleWeaponBobAmp = m_CurrentWeapon->get_idle_weapon_bob_amp();
-    m_IdleWeaponBobSmoothVal = m_CurrentWeapon->get_idle_weapon_bob_smooth_val();
-  }
+  void _ready() override;
+  void _process(double delta) override;
 
-  void reset_weapon_sway(double delta)
-  {
-    m_HoldPointPos = hold_point_node->get_position();
-    m_HoldPointPos.x = Math::lerp(m_HoldPointPos.x, 0.0f, m_WeaponSwayResetValue * (float)delta);
-    m_HoldPointPos.y = Math::lerp(m_HoldPointPos.y, 0.0f, m_WeaponSwayResetValue * (float)delta);
-
-    hold_point_node->set_position(m_HoldPointPos);
-  }
-
-  void weapon_idle_sway(double delta)
-  {
-    m_IdleWeaponBobTime += delta * 0.5f;
-
-    float x_bob = Math::cos(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.5f) * m_IdleWeaponBobAmp;
-    float y_bob = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq) * m_IdleWeaponBobAmp;
-
-    Vector3 currentPos = hold_point_node->get_position();
-    Vector3 newPos = Vector3(
-      Utils::exp_decay(currentPos.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta),
-      Utils::exp_decay(currentPos.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta), 
-      0.0f
-    );
-
-    hold_point_node->set_position(newPos);
-  }
-
-  void weapon_sway(double delta, Vector3& sway_vel)
-  {
-    if(!m_CharacterBody || !hold_point_node) return;
-    m_HoldPointPos = hold_point_node->get_position();
-
-    Vector3 equilibriumPos = Vector3(0, 0, 0);
-    Vector3 currentPos = hold_point_node->get_position();
-
-    Utils::CalcDampedSpringMotionParams(
-        m_SwayParams, 
-        (float)delta, 
-        m_CurrentWeapon->get_angularFreq(), 
-        m_CurrentWeapon->get_dampingRatio()
-    );
-
-    Utils::UpdateDampedSpringMotion(currentPos, sway_vel, equilibriumPos, m_SwayParams);
-
-    currentPos.x = Math::clamp(currentPos.x, -0.05f, 0.05f);
-    currentPos.y = Math::clamp(currentPos.y, -0.05f, 0.05f);
-
-    hold_point_node->set_position(currentPos);
-  }
+  void reset_weapon_sway(double delta);
+  void weapon_idle_sway(double delta);
+  void weapon_sway(double delta, Vector3& sway_vel);
 
 private:
-  float m_WeaponSwayMult { 0.0f }, m_WeaponSwayResetValue { 0.0f };
+  float m_WeaponSpringAngFreq { 0.0f }, m_WeaponSpringDampingRatio { 0.0f };
+  float m_WeaponSwayResetValue { 0.0f };
   float m_IdleWeaponBobTime { 0.0f }, m_IdleWeaponBobFreq { 0.0f }, m_IdleWeaponBobAmp { 0.0f }, m_IdleWeaponBobSmoothVal;
+  uint8_t m_WeaponStateID;
 
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr }; // This is used to read the current weapon data set in the weapon component
@@ -173,6 +117,7 @@ private:
   Utils::tDampedSpringMotionParams m_SwayParams;
   
 private:
+  GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
