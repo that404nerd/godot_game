@@ -1,8 +1,8 @@
 [gd_resource type="Weapon" format=3 uid="uid://c6bcoxa876t4a"]
 
 [resource]
-angularFreq = 15.0
-dampingRatio = 0.8
+angularFreq = 45.0
+dampingRatio = 0.9
 weapon_type = 1
 totalAmmoCount = 20
 weaponName = "AK-47"
@@ -15,6 +15,6 @@ weaponReloadAnimName = "rifle_reload"
 idle_weapon_bob_freq = 3.0
 idle_weapon_bob_amp = 0.01
 weapon_bob_freq = 1.5
-weapon_bob_amp = 0.01
+weapon_bob_amp = 0.07
 gun_range = 100.0
 weapon_sway_reset = 20.0

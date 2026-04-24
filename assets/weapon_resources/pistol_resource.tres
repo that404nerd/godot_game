@@ -3,8 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://b7khe2s865pte" path="res://assets/weapon_scenes/pistol.tscn" id="1_eol0p"]
 
 [resource]
-angularFreq = 15.0
-dampingRatio = 0.8
+angularFreq = 45.0
+dampingRatio = 0.9
+weaponVerticalPush = 0.001
+weaponVerticalAngFreq = 20.0
+weaponVerticalDampingRatio = 0.1
 weapon_type = 1
 totalAmmoCount = 10
 weaponName = "Pistol"

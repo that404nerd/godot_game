@@ -32,11 +32,17 @@ public:
 
   void _ready() override
   {
+    _init_data();
+  }
+  
+  void _init_data()
+  {
+    
     if(character_component != nullptr)
     {
       m_CharacterBody = character_component->get_character_body();
     }
-
+  
     // TODO: Do the checking and assignment only during weapon_change state
     if(weapon_component)
       m_CurrentWeapon = weapon_component->get_current_weapon_data();
@@ -47,13 +53,18 @@ public:
     m_IdleWeaponBobFreq = m_CurrentWeapon->get_idle_weapon_bob_freq();
     m_IdleWeaponBobAmp = m_CurrentWeapon->get_idle_weapon_bob_amp();
     m_IdleWeaponBobSmoothVal = m_CurrentWeapon->get_idle_weapon_bob_smooth_val();
-
+  
+    m_WeaponSpringAngFreq = m_CurrentWeapon->get_weaponVerticalAngFreq();
+    m_WeaponSpringDampingRatio = m_CurrentWeapon->get_weaponVerticalDampingRatio();
+    m_WeaponVerticalPush = m_CurrentWeapon->get_weaponVerticalPush();
+  
   }
 
   void weapon_bob(double delta)
   {
     if(!m_CharacterBody || !hold_point_node) return;
 
+    m_PlayerVel = m_CharacterBody->get_velocity();
     bool onFloor = m_CharacterBody->is_on_floor(); // so that bobbing doesn't occur during airborne states
 
     float velocity = m_CharacterBody->get_velocity().length();
@@ -70,13 +81,37 @@ public:
       0.0f
     );
 
+    float equilibriumPos = 0.0f;
+    Utils::CalcDampedSpringMotionParams(
+      m_BobParams, 
+      (float)delta, 
+      m_WeaponSpringAngFreq,
+      m_WeaponSpringDampingRatio
+    );
+
+    float newPosFinal = (Math::abs(m_PlayerVel.y) > 0.0f ? m_WeaponVerticalPush : 0.0f); 
+    float vel = m_PlayerVel.y;
+    Utils::UpdateDampedSpringMotion(newPosFinal, vel, equilibriumPos, m_BobParams);
+
+    newPos.y = newPosFinal;
+    print_line(newPos.y);
+    
     hold_point_node->set_position(newPos);
   }
 
+  void _process(double delta) override
+  {
+    _init_data();
+  }
+
 private:
+  float m_WeaponSpringAngFreq { 0.0f }, m_WeaponSpringDampingRatio { 0.0f };
   float m_WeaponBobFreq { 0.0f }, m_WeaponBobAmp { 0.0f }, m_WeaponBobSmoothVal { 0.0f };
   float m_IdleWeaponBobFreq { 0.0f }, m_IdleWeaponBobAmp { 0.0f }, m_IdleWeaponBobSmoothVal { 0.0f };
-  float m_WeaponBobTime { 0.0f };
+  float m_WeaponBobTime { 0.0f }, m_WeaponVerticalPush { 0.0f };
+
+  Vector3 m_PlayerVel { Vector3(0.0f, 0.0f, 0.0f) };
+  Utils::tDampedSpringMotionParams m_BobParams;
 
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr }; // This is used to read the current weapon data set in the weapon component
@@ -109,7 +144,6 @@ private:
   float m_WeaponSpringAngFreq { 0.0f }, m_WeaponSpringDampingRatio { 0.0f };
   float m_WeaponSwayResetValue { 0.0f };
   float m_IdleWeaponBobTime { 0.0f }, m_IdleWeaponBobFreq { 0.0f }, m_IdleWeaponBobAmp { 0.0f }, m_IdleWeaponBobSmoothVal;
-  uint8_t m_WeaponStateID;
 
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr }; // This is used to read the current weapon data set in the weapon component
@@ -117,7 +151,6 @@ private:
   Utils::tDampedSpringMotionParams m_SwayParams;
   
 private:
-  GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);

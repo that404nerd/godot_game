@@ -102,7 +102,6 @@ namespace Utils {
 		{
 			pOutParams.m_posPosCoef = 1.0f; pOutParams.m_posVelCoef = 0.0f;
 			pOutParams.m_velPosCoef = 0.0f; pOutParams.m_velVelCoef = 1.0f;
-			print_line("Returning!");
 			return;
 		}
 
@@ -172,14 +171,15 @@ namespace Utils {
 	// This function will update the supplied position and velocity values over
 	// according to the motion parameters.
 	//******************************************************************************
+	template <typename T>
 	inline void UpdateDampedSpringMotion(
-		Vector3&                           pPos,           // position value to update
-		Vector3&                           pVel,           // velocity value to update
-		const Vector3                      equilibriumPos, // position to approach
+		T&                           pPos,           // position value to update
+		T&                           pVel,           // velocity value to update
+		const T                      equilibriumPos, // position to approach
 		const tDampedSpringMotionParams& params)         // motion parameters to use
 	{		
-		const Vector3 oldPos = pPos - equilibriumPos; // update in equilibrium relative space
-		const Vector3 oldVel = pVel;
+		const T oldPos = pPos - equilibriumPos; // update in equilibrium relative space
+		const T oldVel = pVel;
 
 		pPos = oldPos*params.m_posPosCoef + oldVel*params.m_posVelCoef + equilibriumPos;
 		pVel = oldPos*params.m_velPosCoef + oldVel*params.m_velVelCoef;

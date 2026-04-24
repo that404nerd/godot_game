@@ -3,7 +3,6 @@
 
 void WeaponSwayComponent::_bind_methods()
 {
-  GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -86,8 +85,8 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
 
   Utils::UpdateDampedSpringMotion(currentPos, sway_vel, equilibriumPos, m_SwayParams);
 
-  currentPos.x = Math::clamp(currentPos.x, -0.05f, 0.05f);
-  currentPos.y = Math::clamp(currentPos.y, -0.05f, 0.05f);
+  currentPos.x = Math::clamp(currentPos.x, Math::lerp(-0.049f, -0.05f, (float)delta), Math::lerp(0.049f, 0.05f, (float)delta));
+  currentPos.y = Math::clamp(currentPos.y, Math::lerp(-0.049f, -0.05f, (float)delta), Math::lerp(0.049f, 0.05f, (float)delta));
 
   hold_point_node->set_position(currentPos);
 }

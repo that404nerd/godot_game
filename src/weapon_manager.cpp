@@ -41,25 +41,19 @@ void WeaponManager::_process(double delta)
     m_WeaponStateID = weapon_state_machine->get_current_state();
   }
  
-  if(m_PlayerStateID == static_cast<int8_t>(PlayerStates::SPRINT))
-  {
-    weapon_bob_component->weapon_bob(delta);
-  }
-  
+  weapon_bob_component->weapon_bob(delta);
+  weapon_sway_component->weapon_sway(delta, m_MouseVel);
+
   if(m_PlayerStateID == static_cast<int8_t>(PlayerStates::IDLE))
   {
-    if((Math::abs(m_MouseInput.x) <= 0.1f) && (Math::abs(m_MouseInput.y) <= 0.1f) && (
-      m_WeaponStateID != static_cast<int8_t>(WeaponStates::SHOOT)
-    ))
+    if((Math::abs(m_MouseInput.x) <= 0.1f) && (Math::abs(m_MouseInput.y) <= 0.1f) && (m_WeaponStateID != static_cast<int8_t>(WeaponStates::SHOOT)))
     {
       weapon_sway_component->weapon_idle_sway(delta);
-    } else {
-      weapon_sway_component->weapon_sway(delta, m_MouseVel);
     }
   }
 
-  m_MouseInput.x = Math::lerp(m_MouseInput.x, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
-  m_MouseInput.y = Math::lerp(m_MouseInput.y, 0.0f, MOUSE_INPUT_RESET_MULTIPLIER * (float)delta);
+  m_MouseInput.x = 0.0f;
+  m_MouseInput.y = 0.0f;
 }
 
 WeaponManager::~WeaponManager()

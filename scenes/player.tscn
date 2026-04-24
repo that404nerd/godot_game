@@ -146,8 +146,7 @@ character_component = NodePath("../../CharacterComponent")
 weapon_component = NodePath("../WeaponComponent")
 hold_point_node = NodePath("../../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")
 
-[node name="WeaponSwayComponent" type="WeaponSwayComponent" parent="WeaponManager" unique_id=119254840 node_paths=PackedStringArray("weapon_state_machine", "character_component", "weapon_component", "hold_point_node")]
-weapon_state_machine = NodePath("../../WeaponStateMachine")
+[node name="WeaponSwayComponent" type="WeaponSwayComponent" parent="WeaponManager" unique_id=119254840 node_paths=PackedStringArray("character_component", "weapon_component", "hold_point_node")]
 character_component = NodePath("../../CharacterComponent")
 weapon_component = NodePath("../WeaponComponent")
 hold_point_node = NodePath("../../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")

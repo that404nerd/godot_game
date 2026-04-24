@@ -12,6 +12,9 @@ void Weapon::_bind_methods() {
   ADD_GROUP("Weapon Spring Values", "");
   GD_BIND_PROPERTY(Weapon, angularFreq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, dampingRatio, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weaponVerticalPush, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weaponVerticalAngFreq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weaponVerticalDampingRatio, Variant::FLOAT);
 
   ADD_GROUP("General Weapon Properties", "");
 

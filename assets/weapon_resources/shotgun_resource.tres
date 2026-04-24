@@ -3,8 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://lfo3x6xjd6h3" path="res://assets/weapon_scenes/shotgun.tscn" id="1_lvpox"]
 
 [resource]
-angularFreq = 15.0
-dampingRatio = 1.0
+angularFreq = 45.0
+dampingRatio = 0.7
 totalAmmoCount = 16
 weaponName = "Shotgun"
 weaponScene = ExtResource("1_lvpox")
