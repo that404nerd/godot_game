@@ -89,12 +89,12 @@ public:
       m_WeaponSpringDampingRatio
     );
 
-    float newPosFinal = (Math::abs(m_PlayerVel.y) > 0.0f ? m_WeaponVerticalPush : 0.0f); 
-    float vel = m_PlayerVel.y;
-    Utils::UpdateDampedSpringMotion(newPosFinal, vel, equilibriumPos, m_BobParams);
+    // float newPosFinal = (Math::abs(m_PlayerVel.y) > 0.0f ? m_WeaponVerticalPush : 0.0f); 
+    // float vel = m_PlayerVel.y;
+    // Utils::UpdateDampedSpringMotion(newPosFinal, vel, equilibriumPos, m_BobParams);
 
-    newPos.y = newPosFinal;
-    print_line(newPos.y);
+    // newPos.y = newPosFinal;
+    // print_line(newPos.y);
     
     hold_point_node->set_position(newPos);
   }
