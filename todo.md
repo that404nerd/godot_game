@@ -15,11 +15,11 @@
 - Fix head position after sliding [x]
 - Fix incorrect idle check in sprint state [x]
 - Make the side tilt smoothly lerp back [x]
+- Weapon State Machine [x]
+- Animations for different states [x]
+- ObjectDB and resource leak fix [x]
 
 ## Issues & TODO
-- Do not modify the weapon resource file instead have a Weapon State that's independent to the player and in the future, the enemies []
-- Weapon State Machine []
+- Allow weapon animation groups to be in any order []
 - Transition to idle state when sliding into a world objects []
 - Allow sliding when crouch is toggled during falling state []
-- Animations for different states []
-- ObjectDB and resource leak fix []

@@ -42,6 +42,7 @@ void WeaponManager::_process(double delta)
   }
  
   weapon_bob_component->weapon_bob(delta);
+  // weapon_bob_component->weapon_bob_up(delta);
   weapon_sway_component->weapon_sway(delta, m_MouseVel);
 
   if(m_PlayerStateID == static_cast<int8_t>(PlayerStates::IDLE))

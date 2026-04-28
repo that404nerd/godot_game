@@ -52,15 +52,13 @@ near = 0.01
 
 [node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/PlayerCamera" unique_id=1899973665]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.031)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 
 [node name="Pistol" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 groups=["weapon_nodes"] instance=ExtResource("1_dqkch")]
 
 [node name="Rifle" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=745645197 groups=["weapon_nodes"] instance=ExtResource("2_qhqgy")]
-visible = false
 
 [node name="Shotgun" parent="CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint" unique_id=670607748 groups=["weapon_nodes"] instance=ExtResource("3_ur7pv")]
-visible = false
 
 [node name="PlayerRaycasts" type="Node3D" parent="." unique_id=187939257]
 

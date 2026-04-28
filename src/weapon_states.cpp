@@ -58,7 +58,7 @@ WeaponEquipState::WeaponEquipState(WeaponStateMachine* weaponStateMachine)
 
 void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && !m_WeaponAnimPlayer->is_playing())
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
   {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::SHOOT));
   }
@@ -206,8 +206,7 @@ void WeaponReloadState::_enter()
 
 void WeaponReloadState::_update(double delta)
 {
-  if(!m_WeaponAnimPlayer->is_playing())
-    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }
 
 void WeaponReloadState::_exit()
@@ -254,9 +253,7 @@ void WeaponUnequipState::_unequip_weapon()
 
 void WeaponUnequipState::_update(double delta)
 {
-  // This only runs if we try to unequip the same weapon
-  if(!m_WeaponAnimPlayer->is_playing())
-    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }
 
 void WeaponUnequipState::_exit()

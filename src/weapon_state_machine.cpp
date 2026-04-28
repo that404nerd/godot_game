@@ -25,7 +25,6 @@ void WeaponStateMachine::_init_data()
 
   m_CurrentWeaponAnimPlayer = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[m_WeaponIndex]);
   weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
-
 }
 
 void WeaponStateMachine::_bind_methods()

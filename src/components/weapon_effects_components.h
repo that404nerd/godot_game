@@ -60,6 +60,30 @@ public:
   
   }
 
+  void weapon_bob_up(double delta)
+  {
+    Vector3 holdPointPos = hold_point_node->get_position();
+    
+    Vector3 equilibriumPos = Vector3(0.0f, 0.0f, 0.0f);
+    Utils::CalcDampedSpringMotionParams(
+      m_BobParams, 
+      (float)delta, 
+      m_WeaponSpringAngFreq,
+      m_WeaponSpringDampingRatio
+    );
+    
+    static float newPosFinal = 0.0f;
+    if(Math::abs(m_PlayerVel.y) > 0.0f)
+    {
+      newPosFinal = m_WeaponVerticalPush;
+    }
+    Vector3 newPosVector = Vector3(holdPointPos.x, holdPointPos.y, holdPointPos.z);
+    Utils::UpdateDampedSpringMotion(newPosVector, m_PlayerVel, equilibriumPos, m_BobParams);
+
+    // hold_point_node->set_position(newPosVector);
+    print_line(hold_point_node->get_position());
+  }  
+
   void weapon_bob(double delta)
   {
     if(!m_CharacterBody || !hold_point_node) return;
@@ -81,21 +105,6 @@ public:
       0.0f
     );
 
-    float equilibriumPos = 0.0f;
-    Utils::CalcDampedSpringMotionParams(
-      m_BobParams, 
-      (float)delta, 
-      m_WeaponSpringAngFreq,
-      m_WeaponSpringDampingRatio
-    );
-
-    // float newPosFinal = (Math::abs(m_PlayerVel.y) > 0.0f ? m_WeaponVerticalPush : 0.0f); 
-    // float vel = m_PlayerVel.y;
-    // Utils::UpdateDampedSpringMotion(newPosFinal, vel, equilibriumPos, m_BobParams);
-
-    // newPos.y = newPosFinal;
-    // print_line(newPos.y);
-    
     hold_point_node->set_position(newPos);
   }
 
