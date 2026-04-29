@@ -63,7 +63,7 @@ void PlayerCrouchState::_physics_update(double delta)
 
   if(m_PlayerStateMachine->get_prev_state() == static_cast<int8_t>(PlayerStates::FALL))
   {
-    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::SLIDE));
+    m_PlayerStateMachine->_change_state(static_cast<int8_t>(PlayerStates::CROUCH));
   }
 
   if(playerVel.y < -1.0f || !m_PlayerInst->is_on_floor()) 

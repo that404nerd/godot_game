@@ -75,13 +75,13 @@ void WeaponEquipState::_enter()
     return;
   }
 
-  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName());
+  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
+            m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
 }
 
 void WeaponEquipState::_update(double delta)
 {
-  if(!m_WeaponAnimPlayer->is_playing())
-    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }
 
 
@@ -128,12 +128,10 @@ void WeaponShootState::_enter()
   m_WeaponType = m_CurrentWeapon->get_weapon_type();
   m_WantsToShoot = true;
   m_IsKeyHeld = true;
-
 }
 
 void WeaponShootState::_update(double delta)
 {
- 
   m_WantsToShoot = false;
 
   if(m_ShootTimeBeforeIdle >= 0.0f)
@@ -155,17 +153,12 @@ void WeaponShootState::_update(double delta)
 
   if(m_IsKeyHeld || m_WantsToShoot)
   {
-    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), m_CurrentWeapon->get_weapon_anim_blend(), m_CurrentWeapon->get_weapon_anim_speed());
+    m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
   }
 
   if(!Input::get_singleton()->is_action_just_released("shoot_weapon"))
   {
     m_IsKeyHeld = false;
-  }
-
-  if(m_WantsToShoot == true)
-  {
-    m_WantsToShoot = false;
   }
 
   if(m_ShootTimeBeforeIdle <= 0.0f && m_IsKeyHeld == false && m_WantsToShoot == false)
@@ -201,7 +194,8 @@ void WeaponReloadState::_enter()
 
   m_WeaponAnimPlayer = m_WeaponStateMachine->get_current_weapon_anim_player();
 
-  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName());
+  m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), 
+                      m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
 }
 
 void WeaponReloadState::_update(double delta)
@@ -246,14 +240,14 @@ void WeaponUnequipState::_unequip_weapon()
   {
     if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
     {
-      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName());
+      m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
+                            m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
     }
   }
 }
 
 void WeaponUnequipState::_update(double delta)
 {
-  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }
 
 void WeaponUnequipState::_exit()

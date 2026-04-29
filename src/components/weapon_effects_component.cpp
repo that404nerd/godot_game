@@ -22,7 +22,6 @@ void WeaponSwayComponent::_init_data()
   if(weapon_component)
     m_CurrentWeapon = weapon_component->get_current_weapon_data();
 
-  m_WeaponSwayResetValue = m_CurrentWeapon->get_weapon_sway_reset();
   m_IdleWeaponBobFreq = m_CurrentWeapon->get_idle_weapon_bob_freq();
   m_IdleWeaponBobAmp = m_CurrentWeapon->get_idle_weapon_bob_amp();
   m_IdleWeaponBobSmoothVal = m_CurrentWeapon->get_idle_weapon_bob_smooth_val();
@@ -30,15 +29,6 @@ void WeaponSwayComponent::_init_data()
   m_WeaponSpringAngFreq = m_CurrentWeapon->get_angularFreq();
   m_WeaponSpringDampingRatio = m_CurrentWeapon->get_dampingRatio();
 
-}
-
-void WeaponSwayComponent::reset_weapon_sway(double delta)
-{
-  m_HoldPointPos = hold_point_node->get_position();
-  m_HoldPointPos.x = Math::lerp(m_HoldPointPos.x, 0.0f, m_WeaponSwayResetValue * (float)delta);
-  m_HoldPointPos.y = Math::lerp(m_HoldPointPos.y, 0.0f, m_WeaponSwayResetValue * (float)delta);
-
-  hold_point_node->set_position(m_HoldPointPos);
 }
 
 void WeaponSwayComponent::_process(double delta) 
@@ -53,7 +43,8 @@ void WeaponSwayComponent::_process(double delta)
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
 {
-  m_IdleWeaponBobTime += delta * 0.5f;
+  bool isNotInMotion = character_component->get_character_body()->get_velocity().length() < 0.0001f;
+  m_IdleWeaponBobTime += delta * 0.5f * isNotInMotion;
 
   float x_bob = Math::cos(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.5f) * m_IdleWeaponBobAmp;
   float y_bob = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq) * m_IdleWeaponBobAmp;

@@ -145,7 +145,6 @@ public:
   void _ready() override;
   void _process(double delta) override;
 
-  void reset_weapon_sway(double delta);
   void weapon_idle_sway(double delta);
   void weapon_sway(double delta, Vector3& sway_vel);
 

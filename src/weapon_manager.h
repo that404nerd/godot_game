@@ -38,16 +38,14 @@ private:
   Vector2 m_MouseVelocity;
   uint8_t m_PlayerStateID, m_WeaponStateID;
 
-  const float MOUSE_INPUT_RESET_MULTIPLIER { 10.0f };
-
   int m_WeaponIndex;
   String m_NextWeaponName;
+
+  Array m_WeaponNodesGroup;
+
 private:
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponBobComponent*, weapon_bob_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponSwayComponent*, weapon_sway_component, nullptr);
-
-  GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
-  GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
-  GD_DEFINE_PROPERTY(StateMachine*, character_state_machine, nullptr);
 };
