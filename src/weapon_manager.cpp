@@ -1,20 +1,33 @@
 #include "weapon_manager.h"
-#include "player_state_machine.h"
 #include "weapon_state_machine.h"
 
 void WeaponManager::_ready()
 {
+  m_WeaponNodesGroup = get_tree()->get_nodes_in_group(StringName("weapon_nodes"));
+  m_WeaponAnimGroups = get_tree()->get_nodes_in_group(StringName("weapon_anims"));
+  
+  weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
+  m_WeaponEffects._init_data(hold_point_node, character_component, weapon_component);
+
+  /* NOTE: This took me 2 hours to find lol, i forgot that i was dealing with different animation
+  players for different weapon scene, this connects the _on_animation_finished to all animation players */
+  for(int i = 0; i < m_WeaponAnimGroups.size(); i++)
+  {
+    AnimationPlayer* anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[i]);
+    anim_player->connect("animation_finished", Callable(this, "_on_animation_finished"));
+  }
+  
+  m_CurrentWeaponAnimPlayer = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[m_WeaponIndex]);
+  // Set the current weapon right here first!
+  m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  
 }
 
 void WeaponManager::_bind_methods()
 {
-  GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_bob_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_sway_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-
-  GD_BIND_CUSTOM_PROPERTY(WeaponManager, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
 void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
@@ -35,26 +48,49 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
-  if(character_state_machine && weapon_state_machine)
-  {
-    m_PlayerStateID = character_state_machine->get_current_state();
-    m_WeaponStateID = weapon_state_machine->get_current_state();
-  }
- 
-  weapon_bob_component->weapon_bob(delta);
-  // weapon_bob_component->weapon_bob_up(delta);
-  weapon_sway_component->weapon_sway(delta, m_MouseVel);
+  m_CurrentWeapon = weapon_component->get_current_weapon_data();
 
-  if(m_PlayerStateID == static_cast<int8_t>(PlayerStates::IDLE))
-  {
-    if((Math::abs(m_MouseInput.x) <= 0.1f) && (Math::abs(m_MouseInput.y) <= 0.1f) && (m_WeaponStateID != static_cast<int8_t>(WeaponStates::SHOOT)))
-    {
-      weapon_sway_component->weapon_idle_sway(delta);
-    }
-  }
+  // weapon_bob_component->weapon_bob_up(delta);
+  m_WeaponEffects._update(delta, m_MouseVel);
 
   m_MouseInput.x = 0.0f;
   m_MouseInput.y = 0.0f;
+}
+
+void WeaponManager::_equip_weapon()
+{
+  m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
+                           m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
+}
+
+void WeaponManager::_unequip_weapon()
+{
+
+}
+
+void WeaponManager::_shoot_weapon()
+{
+
+}
+
+void WeaponManager::_reload_weapon()
+{
+
+}
+
+void WeaponManager::_weapon_unequip_over()
+{
+
+}
+
+void WeaponManager::_weapon_switch()
+{
+
+}
+
+void WeaponManager::_switch_weapon_data()
+{
+
 }
 
 WeaponManager::~WeaponManager()

@@ -29,8 +29,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   // Components
   if(!ClassDB::class_exists("CharacterComponent")) GDREGISTER_CLASS(CharacterComponent);
   if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
-  if(!ClassDB::class_exists("WeaponBobComponent")) GDREGISTER_RUNTIME_CLASS(WeaponBobComponent);
-  if(!ClassDB::class_exists("WeaponSwayComponent")) GDREGISTER_RUNTIME_CLASS(WeaponSwayComponent);
+  if(!ClassDB::class_exists("AmmoComponent")) GDREGISTER_RUNTIME_CLASS(AmmoComponent);
 }
 
 

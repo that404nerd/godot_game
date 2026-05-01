@@ -18,10 +18,11 @@
 
 using namespace godot;
 
+
 class StateMachine : public Node {
-
+  
   GDCLASS(StateMachine, Node);
-
+  
 public:
   void _ready() override;
   virtual void _init_data() {};

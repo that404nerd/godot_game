@@ -1,92 +1,132 @@
 #include "weapon_effects_components.h"
-#include "../weapon_state_machine.h" 
 
-void WeaponSwayComponent::_bind_methods()
+void WeaponBobComponent::_init_data(CharacterComponent* characterComponent, WeaponComponent* weaponComponent)
 {
-  GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(WeaponSwayComponent, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  if (!characterComponent) {
+    print_error("Character component is null!");
+    return;
+  }
+
+  if (!weaponComponent) {
+    print_error("Weapon component is null!");
+    return;
+  }
+
+  m_CharacterBody = characterComponent->get_character_body();
+  m_CurrentWeapon = weaponComponent->get_current_weapon_data();
+
+  if (!m_CurrentWeapon.is_valid()) {
+    print_error("Current weapon is not valid!");
+    return;
+  }
+
+  m_WeaponBobFreq = m_CurrentWeapon->get_weapon_bob_freq();
+  m_WeaponBobAmp = m_CurrentWeapon->get_weapon_bob_amp();
+  m_WeaponBobSmoothVal = m_CurrentWeapon->get_weapon_bob_smooth_val();
 }
 
-
-void WeaponSwayComponent::_ready()
+void WeaponBobComponent::weapon_bob(double delta)
 {
-  if(character_component)
-    m_CharacterBody = character_component->get_character_body();
+  if (!m_CharacterBody) return;
 
-  _init_data();
+  m_PlayerVel = m_CharacterBody->get_velocity();
+  bool onFloor = m_CharacterBody->is_on_floor();
+
+  float velocity = m_PlayerVel.length();
+
+  m_WeaponBobTime += delta * velocity * onFloor;
+
+  float x_bob = Math::cos(m_WeaponBobTime * m_WeaponBobFreq * 0.5f) * m_WeaponBobAmp;
+  float y_bob = Math::sin(m_WeaponBobTime * m_WeaponBobFreq) * m_WeaponBobAmp;
+
+  m_BobOffset.x = Utils::exp_decay(m_BobOffset.x, x_bob, m_WeaponBobSmoothVal, (float)delta);
+  m_BobOffset.y = Utils::exp_decay(m_BobOffset.y, y_bob, m_WeaponBobSmoothVal, (float)delta);
+  m_BobOffset.z = 0.0f;
 }
 
-void WeaponSwayComponent::_init_data()
+void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, WeaponComponent* weaponComponent)
 {
-  if(weapon_component)
-    m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  if (!characterComponent) {
+    print_error("Character component is null!");
+    return;
+  }
 
-  m_WeaponSwayResetValue = m_CurrentWeapon->get_weapon_sway_reset();
+  if (!weaponComponent) {
+    print_error("Weapon component is null!");
+    return;
+  }
+
+  m_CharacterBody = characterComponent->get_character_body();
+  m_CurrentWeapon = weaponComponent->get_current_weapon_data();
+
+  if (!m_CurrentWeapon.is_valid()) {
+    print_error("Current weapon is not valid!");
+    return;
+  }
+
   m_IdleWeaponBobFreq = m_CurrentWeapon->get_idle_weapon_bob_freq();
   m_IdleWeaponBobAmp = m_CurrentWeapon->get_idle_weapon_bob_amp();
   m_IdleWeaponBobSmoothVal = m_CurrentWeapon->get_idle_weapon_bob_smooth_val();
 
   m_WeaponSpringAngFreq = m_CurrentWeapon->get_angularFreq();
   m_WeaponSpringDampingRatio = m_CurrentWeapon->get_dampingRatio();
-
-}
-
-void WeaponSwayComponent::reset_weapon_sway(double delta)
-{
-  m_HoldPointPos = hold_point_node->get_position();
-  m_HoldPointPos.x = Math::lerp(m_HoldPointPos.x, 0.0f, m_WeaponSwayResetValue * (float)delta);
-  m_HoldPointPos.y = Math::lerp(m_HoldPointPos.y, 0.0f, m_WeaponSwayResetValue * (float)delta);
-
-  hold_point_node->set_position(m_HoldPointPos);
-}
-
-void WeaponSwayComponent::_process(double delta) 
-{
-  // TODO: Fix this!
-//   m_WeaponStateID = weapon_state_machine->get_current_state();
-//   if(m_WeaponStateID == static_cast<int8_t>(WeaponStates::WEAPON_SWITCH))
-//   {
-    _init_data();
-//   }
 }
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
 {
-  m_IdleWeaponBobTime += delta * 0.5f;
+  if (!m_CharacterBody) return;
+
+  bool isNotInMotion = m_CharacterBody->get_velocity().length() <= 0.1f;
+  m_IdleWeaponBobTime += delta * 0.5f * isNotInMotion;
 
   float x_bob = Math::cos(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.5f) * m_IdleWeaponBobAmp;
   float y_bob = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq) * m_IdleWeaponBobAmp;
 
-  Vector3 currentPos = hold_point_node->get_position();
-  Vector3 newPos = Vector3(
-    Utils::exp_decay(currentPos.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta),
-    Utils::exp_decay(currentPos.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta), 
-    0.0f
-  );
-
-  hold_point_node->set_position(newPos);
+  m_IdleSwayOffset.x = Utils::exp_decay(m_IdleSwayOffset.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta);
+  m_IdleSwayOffset.y = Utils::exp_decay(m_IdleSwayOffset.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta);
+  m_IdleSwayOffset.z = 0.0f;
 }
 
 void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
 {
-  if(!m_CharacterBody || !hold_point_node) return;
-  m_HoldPointPos = hold_point_node->get_position();
-
-  Vector3 equilibriumPos = Vector3(0, 0, 0);
-  Vector3 currentPos = hold_point_node->get_position();
+  Vector3 equilibriumPos {};
 
   Utils::CalcDampedSpringMotionParams(
-      m_SwayParams, 
-      (float)delta, 
+      m_SwayParams,
+      (float)delta,
       m_WeaponSpringAngFreq,
-      m_WeaponSpringDampingRatio
-  );
+      m_WeaponSpringDampingRatio);
 
-  Utils::UpdateDampedSpringMotion(currentPos, sway_vel, equilibriumPos, m_SwayParams);
+  Utils::UpdateDampedSpringMotion(
+      m_SwayOffset,
+      sway_vel,
+      equilibriumPos,
+      m_SwayParams);
 
-  currentPos.x = Math::clamp(currentPos.x, Math::lerp(-0.049f, -0.05f, (float)delta), Math::lerp(0.049f, 0.05f, (float)delta));
-  currentPos.y = Math::clamp(currentPos.y, Math::lerp(-0.049f, -0.05f, (float)delta), Math::lerp(0.049f, 0.05f, (float)delta));
+  m_SwayOffset.x = Math::clamp(m_SwayOffset.x, -0.05f, 0.05f);
+  m_SwayOffset.y = Math::clamp(m_SwayOffset.y, -0.05f, 0.05f);
+}
 
-  hold_point_node->set_position(currentPos);
+void WeaponEffects::_init_data(Node3D* holdPointNode,
+                               CharacterComponent* characterComponent,
+                               WeaponComponent* weaponComponent)
+{
+  m_HoldPointNode = holdPointNode;
+
+  m_WeaponBobComponent._init_data(characterComponent, weaponComponent);
+  m_WeaponSwayComponent._init_data(characterComponent, weaponComponent);
+}
+
+void WeaponEffects::_update(double delta, Vector3& sway_vel)
+{
+  m_WeaponSwayComponent.weapon_idle_sway(delta);
+  m_WeaponSwayComponent.weapon_sway(delta, sway_vel);
+  m_WeaponBobComponent.weapon_bob(delta);
+
+  if (!m_HoldPointNode) return;
+
+  m_HoldPointNode->set_position(
+      m_WeaponSwayComponent.get_idle_offset() +
+      m_WeaponSwayComponent.get_sway_offset() +
+      m_WeaponBobComponent.get_offset());
 }

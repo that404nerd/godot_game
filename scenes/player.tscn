@@ -118,33 +118,28 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="CharacterComponent" type="CharacterComponent" parent="." unique_id=1236826411]
+character_body_path = NodePath("..")
+unique_name_in_owner = true
 
 [node name="PlayerStateMachine" type="PlayerStateMachine" parent="." unique_id=602236311 node_paths=PackedStringArray("player_inst")]
 player_inst = NodePath("..")
 unique_name_in_owner = true
 
-[node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=29975295 node_paths=PackedStringArray("character_component", "weapon_component")]
+[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("weapon_component", "character_component", "hold_point_node")]
+weapon_component = NodePath("../WeaponComponent")
 character_component = NodePath("../CharacterComponent")
-weapon_component = NodePath("../WeaponManager/WeaponComponent")
+hold_point_node = NodePath("../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")
 unique_name_in_owner = true
 
-[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("weapon_state_machine", "weapon_bob_component", "weapon_sway_component", "hold_point_node", "character_component", "character_state_machine")]
-weapon_state_machine = NodePath("../WeaponStateMachine")
-weapon_bob_component = NodePath("WeaponBobComponent")
-weapon_sway_component = NodePath("WeaponSwayComponent")
-hold_point_node = NodePath("../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")
-character_component = NodePath("../CharacterComponent")
-character_state_machine = NodePath("../PlayerStateMachine")
-
-[node name="WeaponComponent" type="WeaponComponent" parent="WeaponManager" unique_id=1645035038]
+[node name="WeaponComponent" type="WeaponComponent" parent="." unique_id=1645035038]
 weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("8_ur7pv"), ExtResource("7_smehm")]
+unique_name_in_owner = true
 
-[node name="WeaponBobComponent" type="WeaponBobComponent" parent="WeaponManager" unique_id=704879417 node_paths=PackedStringArray("character_component", "weapon_component", "hold_point_node")]
-character_component = NodePath("../../CharacterComponent")
-weapon_component = NodePath("../WeaponComponent")
-hold_point_node = NodePath("../../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")
+[node name="AmmoComponent" type="AmmoComponent" parent="." unique_id=260726032]
+unique_name_in_owner = true
 
-[node name="WeaponSwayComponent" type="WeaponSwayComponent" parent="WeaponManager" unique_id=119254840 node_paths=PackedStringArray("character_component", "weapon_component", "hold_point_node")]
-character_component = NodePath("../../CharacterComponent")
+[node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=29975295 node_paths=PackedStringArray("weapon_manager", "ammo_component", "weapon_component")]
+weapon_manager = NodePath("../WeaponManager")
+ammo_component = NodePath("../AmmoComponent")
 weapon_component = NodePath("../WeaponComponent")
-hold_point_node = NodePath("../../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")
+unique_name_in_owner = true

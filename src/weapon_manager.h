@@ -28,26 +28,36 @@ public:
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _process(double delta) override;
 
+  void _equip_weapon();
+  void _unequip_weapon();
+  void _shoot_weapon();
+  void _reload_weapon();
+  void _weapon_switch();
+
+  void _weapon_unequip_over();
+  void _switch_weapon_data();
+
   ~WeaponManager();
 
 protected:
   static void _bind_methods();
 
 private:
-  Vector3 m_MouseInput, m_MouseVel { Vector3(0.0f, 0.0f, 0.0f) };
-  Vector2 m_MouseVelocity;
-  uint8_t m_PlayerStateID, m_WeaponStateID;
+  Vector3 m_MouseInput;
+  Vector3 m_MouseVel { Vector3(0.0f, 0.0f, 0.0f) };
+  Array m_WeaponNodesGroup, m_WeaponAnimGroups;
 
-  const float MOUSE_INPUT_RESET_MULTIPLIER { 10.0f };
+  int m_WeaponIndex { 0 };
 
-  int m_WeaponIndex;
-  String m_NextWeaponName;
+  AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
+  Ref<Weapon> m_CurrentWeapon;
+
 private:
-  GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
-  GD_DEFINE_PROPERTY(WeaponBobComponent*, weapon_bob_component, nullptr);
-  GD_DEFINE_PROPERTY(WeaponSwayComponent*, weapon_sway_component, nullptr);
-
-  GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
+  GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
-  GD_DEFINE_PROPERTY(StateMachine*, character_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
+
+  WeaponEffects m_WeaponEffects;
+  WeaponBobComponent m_WeaponBobComponent;
+  WeaponSwayComponent m_WeaponSwayComponent;
 };

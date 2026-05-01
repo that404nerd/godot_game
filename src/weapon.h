@@ -40,25 +40,31 @@ private:
   GD_DEFINE_PROPERTY(float, weaponVerticalPush, 1.0f);
 
   GD_DEFINE_PROPERTY(String, weaponName, "");
-  GD_DEFINE_PROPERTY(String, weaponEquipAnimName, "");
-  GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
-  GD_DEFINE_PROPERTY(String, weaponReloadAnimName, "");
-  GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
-  GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
 
-  GD_DEFINE_PROPERTY(float, weapon_anim_blend, 0.0f);
-  GD_DEFINE_PROPERTY(float, weapon_anim_speed, 1.0f);
+  GD_DEFINE_PROPERTY(float, weapon_equip_anim_speed, 1.0f);
+  GD_DEFINE_PROPERTY(float, weapon_equip_anim_blend, -1.0f);
+  GD_DEFINE_PROPERTY(String, weaponEquipAnimName, "");
+
+  GD_DEFINE_PROPERTY(float, weapon_shoot_anim_speed, 1.0f);
+  GD_DEFINE_PROPERTY(float, weapon_shoot_anim_blend, -1.0f);
+  GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
+
+  GD_DEFINE_PROPERTY(float, weapon_reload_anim_speed, 1.0f);
+  GD_DEFINE_PROPERTY(float, weapon_reload_anim_blend, -1.0f);
+  GD_DEFINE_PROPERTY(String, weaponReloadAnimName, "");
+
+  GD_DEFINE_PROPERTY(float, weapon_unequip_anim_speed, 1.0f);
+  GD_DEFINE_PROPERTY(float, weapon_unequip_anim_blend, -1.0f);
+  GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
+
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
-  GD_DEFINE_PROPERTY(float, shoot_delay, 0.0f);
-  GD_DEFINE_PROPERTY(float, reload_time, 0.0f);
   
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_freq, 0.0f);
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_amp, 0.0f);
   GD_DEFINE_PROPERTY(float, weapon_bob_freq, 0.0f);
   GD_DEFINE_PROPERTY(float, weapon_bob_amp, 0.0f);
 
-  GD_DEFINE_PROPERTY(float, weapon_sway_reset, 15.0f);
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_smooth_val, 2.0f);
   GD_DEFINE_PROPERTY(float, weapon_bob_smooth_val, 1.5f);
 };

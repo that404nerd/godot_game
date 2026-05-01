@@ -1,7 +1,5 @@
 [gd_resource type="Weapon" format=3 uid="uid://c6bcoxa876t4a"]
 
-[ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="1_bdfqo"]
-
 [resource]
 angularFreq = 45.0
 dampingRatio = 0.9
@@ -10,11 +8,10 @@ weaponVerticalAngFreq = 30.0
 weaponVerticalDampingRatio = 0.2
 weapon_type = 1
 totalAmmoCount = 20
-weaponName = "AK-47"
-weaponScene = ExtResource("1_bdfqo")
-weapon_anim_blend = -1.0
+weaponName = "Rifle"
 weaponEquipAnimName = "rifle_equip"
 weaponUnequipAnimName = "rifle_unequip"
+weapon_shoot_anim_speed = 2.0
 weaponShootingAnimName = "rifle_shoot"
 weaponReloadAnimName = "rifle_reload"
 idle_weapon_bob_freq = 3.0
