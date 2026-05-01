@@ -46,7 +46,7 @@ private:
   Vector3 m_MouseInput;
   Vector3 m_MouseVel { Vector3(0.0f, 0.0f, 0.0f) };
   Array m_WeaponNodesGroup, m_WeaponAnimGroups;
-
+  
   int m_WeaponIndex { 0 };
 
   AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
@@ -60,4 +60,11 @@ private:
   WeaponEffects m_WeaponEffects;
   WeaponBobComponent m_WeaponBobComponent;
   WeaponSwayComponent m_WeaponSwayComponent;
+  
+  String m_NextWeaponName;
+
+private:
+  GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(WeaponBobComponent*, weapon_bob_component, nullptr);
+  GD_DEFINE_PROPERTY(WeaponSwayComponent*, weapon_sway_component, nullptr);
 };

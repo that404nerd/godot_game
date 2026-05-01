@@ -70,13 +70,18 @@ void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, Wea
 
   m_WeaponSpringAngFreq = m_CurrentWeapon->get_angularFreq();
   m_WeaponSpringDampingRatio = m_CurrentWeapon->get_dampingRatio();
+  
+  
+
 }
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
 {
+  
   if (!m_CharacterBody) return;
 
   bool isNotInMotion = m_CharacterBody->get_velocity().length() <= 0.1f;
+  
   m_IdleWeaponBobTime += delta * 0.5f * isNotInMotion;
 
   float x_bob = Math::cos(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.5f) * m_IdleWeaponBobAmp;

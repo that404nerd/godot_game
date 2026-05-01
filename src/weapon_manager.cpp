@@ -21,13 +21,17 @@ void WeaponManager::_ready()
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   
+  
+ 
 }
 
 void WeaponManager::_bind_methods()
 {
+  
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+ 
 }
 
 void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
@@ -48,11 +52,11 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
+  
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
 
-  // weapon_bob_component->weapon_bob_up(delta);
   m_WeaponEffects._update(delta, m_MouseVel);
-
+  
   m_MouseInput.x = 0.0f;
   m_MouseInput.y = 0.0f;
 }

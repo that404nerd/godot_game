@@ -81,6 +81,8 @@ void WeaponEquipState::_enter()
 
   m_WeaponManager->_equip_weapon();
 
+  
+  
 }
 
 void WeaponEquipState::_update(double delta)
@@ -118,6 +120,7 @@ void WeaponShootState::_enter()
   // m_AmmoComponent = m_WeaponManager->get_ammo_component(); 
   // m_WeaponAnimPlayer = m_WeaponManager->get_current_weapon_anim_player();
 
+  
   // if(m_WeaponAnimPlayer == nullptr || !m_CurrentWeapon.is_valid())
   // {
   //   print_error("Weapon Equip state data is null!");
@@ -132,8 +135,10 @@ void WeaponShootState::_enter()
 
 void WeaponShootState::_update(double delta)
 {
+  
   m_WeaponManager->_shoot_weapon();
   // m_WantsToShoot = false;
+  
 
   // if(m_ShootTimeBeforeIdle >= 0.0f)
   // {
@@ -153,6 +158,7 @@ void WeaponShootState::_update(double delta)
   // }
 
   
+  
   // if(m_WantsToShoot || m_IsKeyHeld)
   // {
   //   if(m_AmmoComponent->get_current_weapon_ammo() <= 0)
@@ -165,8 +171,9 @@ void WeaponShootState::_update(double delta)
   //     m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
   //   }
   // }
+  
 
-
+  
   // if(!Input::get_singleton()->is_action_just_released("shoot_weapon"))
   // {
   //   m_IsKeyHeld = false;
@@ -176,6 +183,7 @@ void WeaponShootState::_update(double delta)
   // {
   //   m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
   // }
+  
 
 }
 
@@ -207,12 +215,14 @@ void WeaponReloadState::_enter()
 
   // m_WeaponAnimPlayer = m_WeaponManager->get_current_weapon_anim_player();
 
+  
   // m_WeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), 
   //                     m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
 
   // m_AmmoComponent->set_current_weapon_ammo(m_CurrentWeapon);
 
   m_WeaponManager->_reload_weapon();
+  
 }
 
 void WeaponReloadState::_update(double delta)
@@ -251,6 +261,7 @@ void WeaponUnequipState::_enter()
 
 void WeaponUnequipState::_unequip_weapon()
 {
+  
   // if(m_WeaponComponent->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
   // {
   //   if(m_WeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
@@ -259,6 +270,7 @@ void WeaponUnequipState::_unequip_weapon()
   //                           m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
   //   }
   // }
+  
 }
 
 void WeaponUnequipState::_update(double delta)
