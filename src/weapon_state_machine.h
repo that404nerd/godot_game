@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO: Maybe move this to weapon manager instead of a node!
+
 #include "components/weapon_component.h"
 #include "godot_cpp/classes/animation_player.hpp"
 #include "state_machine.h"

@@ -26,7 +26,7 @@ protected:
 public:
   enum WeaponType
   {
-    MANUAL, AUTO
+    MANUAL, AUTO, NONE = -1
   };
 
 private:

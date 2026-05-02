@@ -18,7 +18,6 @@
 
 using namespace godot;
 
-
 class StateMachine : public Node {
   
   GDCLASS(StateMachine, Node);
@@ -44,5 +43,5 @@ protected:
   State* m_CurrentState { nullptr };
   State* m_PrevState { nullptr };
   State* m_InitialState { nullptr };
-  std::unordered_map<uint8_t, std::unique_ptr<State>> m_States;
+  std::unordered_map<int8_t, std::unique_ptr<State>> m_States;
 };

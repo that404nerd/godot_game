@@ -125,7 +125,8 @@ unique_name_in_owner = true
 player_inst = NodePath("..")
 unique_name_in_owner = true
 
-[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("weapon_component", "character_component", "hold_point_node")]
+[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
+weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
 character_component = NodePath("../CharacterComponent")
 hold_point_node = NodePath("../CameraController/PlayerHead/PlayerCamera/WeaponHoldPoint")

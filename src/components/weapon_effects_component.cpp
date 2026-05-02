@@ -46,12 +46,12 @@ void WeaponBobComponent::weapon_bob(double delta)
 
 void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, WeaponComponent* weaponComponent)
 {
-  if (!characterComponent) {
+  if(!characterComponent) {
     print_error("Character component is null!");
     return;
   }
 
-  if (!weaponComponent) {
+  if(!weaponComponent) {
     print_error("Weapon component is null!");
     return;
   }
@@ -59,7 +59,7 @@ void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, Wea
   m_CharacterBody = characterComponent->get_character_body();
   m_CurrentWeapon = weaponComponent->get_current_weapon_data();
 
-  if (!m_CurrentWeapon.is_valid()) {
+  if(!m_CurrentWeapon.is_valid()) {
     print_error("Current weapon is not valid!");
     return;
   }
@@ -70,14 +70,10 @@ void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, Wea
 
   m_WeaponSpringAngFreq = m_CurrentWeapon->get_angularFreq();
   m_WeaponSpringDampingRatio = m_CurrentWeapon->get_dampingRatio();
-  
-  
-
 }
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
 {
-  
   if (!m_CharacterBody) return;
 
   bool isNotInMotion = m_CharacterBody->get_velocity().length() <= 0.1f;
@@ -90,6 +86,8 @@ void WeaponSwayComponent::weapon_idle_sway(double delta)
   m_IdleSwayOffset.x = Utils::exp_decay(m_IdleSwayOffset.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta);
   m_IdleSwayOffset.y = Utils::exp_decay(m_IdleSwayOffset.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta);
   m_IdleSwayOffset.z = 0.0f;
+
+  print_line("Idle sway: ", m_IdleSwayOffset);
 }
 
 void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
@@ -133,5 +131,5 @@ void WeaponEffects::_update(double delta, Vector3& sway_vel)
   m_HoldPointNode->set_position(
       m_WeaponSwayComponent.get_idle_offset() +
       m_WeaponSwayComponent.get_sway_offset() +
-      m_WeaponBobComponent.get_offset());
+      m_WeaponBobComponent.get_weapon_bob_offset());
 }

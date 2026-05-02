@@ -19,7 +19,7 @@ public:
 
   void weapon_bob(double delta);
 
-  Vector3 get_offset() const { return m_BobOffset; }
+  Vector3 get_weapon_bob_offset() const { return m_BobOffset; }
 
 private:
   Vector3 m_BobOffset {};

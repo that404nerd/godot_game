@@ -1,5 +1,4 @@
 #include "state_machine.h"
-#include <cstdint>
 
 void StateMachine::_ready()
 {
@@ -8,7 +7,6 @@ void StateMachine::_ready()
     m_InitialState->_enter();
     m_CurrentState = m_InitialState;
   }
-
 }
 
 void StateMachine::_bind_methods()
@@ -41,8 +39,9 @@ void StateMachine::_change_state(int8_t stateID)
 {
   State* newState = m_States.at(stateID).get();
 
-  if(!newState) {
+  if(newState == nullptr) {
     print_error("New state not found!");
+    return;
   }
 
   if(m_CurrentState) {
