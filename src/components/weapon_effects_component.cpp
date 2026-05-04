@@ -25,6 +25,13 @@ void WeaponBobComponent::_init_data(CharacterComponent* characterComponent, Weap
   m_WeaponBobSmoothVal = m_CurrentWeapon->get_weapon_bob_smooth_val();
 }
 
+void WeaponBobComponent::_update_bob_data(Ref<Weapon> currentWeapon)
+{
+  m_WeaponBobFreq = currentWeapon->get_weapon_bob_freq();
+  m_WeaponBobAmp = currentWeapon->get_weapon_bob_amp();
+  m_WeaponBobSmoothVal = currentWeapon->get_weapon_bob_smooth_val();
+}
+
 void WeaponBobComponent::weapon_bob(double delta)
 {
   if (!m_CharacterBody) return;
@@ -67,9 +74,19 @@ void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, Wea
   m_IdleWeaponBobFreq = m_CurrentWeapon->get_idle_weapon_bob_freq();
   m_IdleWeaponBobAmp = m_CurrentWeapon->get_idle_weapon_bob_amp();
   m_IdleWeaponBobSmoothVal = m_CurrentWeapon->get_idle_weapon_bob_smooth_val();
-
+  
   m_WeaponSpringAngFreq = m_CurrentWeapon->get_angularFreq();
   m_WeaponSpringDampingRatio = m_CurrentWeapon->get_dampingRatio();
+}
+
+void WeaponSwayComponent::_update_sway_data(Ref<Weapon> currentWeapon)
+{
+  m_IdleWeaponBobFreq = currentWeapon->get_idle_weapon_bob_freq();
+  m_IdleWeaponBobAmp = currentWeapon->get_idle_weapon_bob_amp();
+  m_IdleWeaponBobSmoothVal = currentWeapon->get_idle_weapon_bob_smooth_val();
+  
+  m_WeaponSpringAngFreq = currentWeapon->get_angularFreq();
+  m_WeaponSpringDampingRatio = currentWeapon->get_dampingRatio();
 }
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
@@ -85,9 +102,6 @@ void WeaponSwayComponent::weapon_idle_sway(double delta)
 
   m_IdleSwayOffset.x = Utils::exp_decay(m_IdleSwayOffset.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta);
   m_IdleSwayOffset.y = Utils::exp_decay(m_IdleSwayOffset.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta);
-  m_IdleSwayOffset.z = 0.0f;
-
-  print_line("Idle sway: ", m_IdleSwayOffset);
 }
 
 void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
@@ -118,6 +132,12 @@ void WeaponEffects::_init_data(Node3D* holdPointNode,
 
   m_WeaponBobComponent._init_data(characterComponent, weaponComponent);
   m_WeaponSwayComponent._init_data(characterComponent, weaponComponent);
+}
+
+void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
+{
+  m_WeaponBobComponent._update_bob_data(currentWeapon);
+  m_WeaponSwayComponent._update_sway_data(currentWeapon);
 }
 
 void WeaponEffects::_update(double delta, Vector3& sway_vel)

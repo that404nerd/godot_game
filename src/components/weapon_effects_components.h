@@ -17,6 +17,8 @@ class WeaponBobComponent
 public:
   void _init_data(CharacterComponent* characterComponent, WeaponComponent* weaponComponent);
 
+  void _update_bob_data(Ref<Weapon> currentWeapon);
+
   void weapon_bob(double delta);
 
   Vector3 get_weapon_bob_offset() const { return m_BobOffset; }
@@ -38,6 +40,7 @@ class WeaponSwayComponent
 {
 public:
   void _init_data(CharacterComponent* characterComponent, WeaponComponent* weaponComponent);
+  void _update_sway_data(Ref<Weapon> currentWeapon);
 
   void weapon_idle_sway(double delta);
   void weapon_sway(double delta, Vector3& sway_vel);
@@ -71,6 +74,7 @@ public:
                   CharacterComponent* characterComponent,
                   WeaponComponent* weaponComponent);
 
+  void _update_data(Ref<Weapon> currentWeapon);
   void _update(double delta, Vector3& sway_vel);
 
 private:

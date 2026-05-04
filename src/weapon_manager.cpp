@@ -21,7 +21,11 @@ void WeaponManager::_ready()
   m_CurrentWeaponAnimPlayer = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[m_WeaponIndex]);
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  m_CharacterBody = character_component->get_character_body();
 
+  m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
+  m_ScreenCenter = get_viewport()->get_visible_rect().get_size() / 2.0f;
+  m_LoadScene = ResourceLoader::get_singleton()->load("res://assets/decals/bullet_decal.tscn");
 }
 
 void WeaponManager::_bind_methods()
@@ -61,6 +65,18 @@ void WeaponManager::_process(double delta)
   m_MouseInput.y = 0.0f;
 }
 
+void WeaponManager::_physics_process(double delta)
+{
+  Vector3 ray_start = m_Camera->project_ray_origin(m_ScreenCenter);
+  Vector3 ray_end = ray_start + m_Camera->project_ray_normal(m_ScreenCenter) * 1000.0f;
+
+  m_SpaceState = m_CharacterBody->get_world_3d()->get_direct_space_state();
+  m_Query = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
+  m_Query->set_collide_with_bodies(true);
+
+  m_Result = m_SpaceState->intersect_ray(m_Query);
+}
+
 
 ///////////////////////////////////////////////////////////////////////
 /////////////////// Weapon State Implementation ///////////////////////
@@ -82,6 +98,19 @@ void WeaponManager::_unequip_weapon()
     }
   }
   
+}
+
+void WeaponManager::generate_decal()
+{
+  if(!m_Result.is_empty())
+  {
+    Node* instance = m_LoadScene->instantiate();
+    Decal* bulletDecal = Object::cast_to<Decal>(instance);
+    add_child(bulletDecal);
+    bulletDecal->set_global_position(m_Result["position"]);
+    bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, -1.0f, 0.0f));
+    bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+   }
 }
 
 void WeaponManager::_shoot_weapon(double delta)
@@ -120,6 +149,7 @@ void WeaponManager::_shoot_weapon(double delta)
       // }
     m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
       m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+    generate_decal();
   }
 
   if(!Input::get_singleton()->is_action_just_released("shoot_weapon"))
@@ -157,8 +187,10 @@ void WeaponManager::_weapon_switch()
   {
     Ref<Weapon> nextWeapon = weapon_component->get_weapon_resource_list()[weapon_index];
     weapon_component->set_current_weapon(nextWeapon);
+    m_WeaponEffects._update_data(nextWeapon);
   }
 }
+
 
 void WeaponManager::_switch_weapon_data(int weaponIndex)
 {

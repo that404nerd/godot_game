@@ -5,13 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://qxs28siudske" path="res://assets/meshes/weapons/rifle/textures/Rifle_albedo.jpeg" id="1_wo84q"]
 [ext_resource type="Texture2D" uid="uid://cxdkbrffculfy" path="res://assets/meshes/weapons/rifle/gun_rifle_Image.png" id="1_xwf5d"]
 [ext_resource type="AnimationLibrary" uid="uid://dcy4abfxytyuu" path="res://assets/weapon_resources/animations/rifle_anim.tres" id="2_1cw3a"]
-[ext_resource type="Texture2D" uid="uid://d2764wnjq1lhj" path="res://assets/meshes/weapons/pistol/textures/armColor.png" id="2_7nkrr"]
 [ext_resource type="Texture2D" uid="uid://ba5odaguclqaj" path="res://assets/meshes/weapons/rifle/textures/Rifle_normal.jpeg" id="2_74nu3"]
 [ext_resource type="Texture2D" uid="uid://dmecwejupy5lo" path="res://assets/meshes/weapons/rifle/textures/Rifle_AO.jpeg" id="2_u6vgn"]
-[ext_resource type="Texture2D" uid="uid://dntl51o4rcvji" path="res://assets/meshes/weapons/rifle/textures/armNormal.png" id="3_opsci"]
 [ext_resource type="Texture2D" uid="uid://xuqxivjq2v0v" path="res://assets/meshes/weapons/rifle/textures/Scope_metallic.jpeg" id="3_ptx4k"]
 [ext_resource type="Texture2D" uid="uid://4wwh4jiqb275" path="res://assets/meshes/weapons/rifle/textures/Scope_roughness.jpeg" id="4_2qp15"]
-[ext_resource type="Texture2D" uid="uid://dybyv6jg4qs3u" path="res://assets/meshes/weapons/rifle/textures/armRoughness.png" id="4_dycod"]
 [ext_resource type="Texture2D" uid="uid://bc7f34d02s2qd" path="res://assets/meshes/weapons/rifle/textures/Pmag_albedo.jpeg" id="5_nkql2"]
 [ext_resource type="Texture2D" uid="uid://c2xj7c3l1r28w" path="res://assets/meshes/weapons/rifle/textures/Pmag_metallic.jpeg" id="6_0don6"]
 [ext_resource type="Texture2D" uid="uid://b1f0s2ie4w3r0" path="res://assets/meshes/weapons/rifle/textures/Silencer_albedo.jpeg" id="6_4vvfw"]
@@ -395,11 +392,121 @@ bind/79/name = &"Pmag_end"
 bind/79/bone = -1
 bind/79/pose = Transform3D(1, 3.2949476e-09, -4.7682622e-07, 3.4416914e-14, 0.99997616, 0.0069100717, 4.7683756e-07, -0.006909997, 0.9999761, 3.1558173e-08, -0.077163205, -0.06618222)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ptx4k"]
-albedo_texture = ExtResource("2_7nkrr")
-roughness_texture = ExtResource("4_dycod")
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_we1mk"]
+load_path = "res://.godot/imported/Rifle_albedo.jpeg-ada2e6c383aaadea850c38e10f9a781b.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6qnol"]
+load_path = "res://.godot/imported/Rifle_AO.jpeg-04a07c3483aac872148c80bbcdfd3d64.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_iehkx"]
+load_path = "res://.godot/imported/Rifle_metallic.jpeg-7b2d2a9caf466411a875f0ea14f45464.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lidcj"]
+load_path = "res://.godot/imported/Rifle_normal.jpeg-8debe992bc66501c0d686afcfe13a78a.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_q47kb"]
+load_path = "res://.godot/imported/Rifle_roughness.jpeg-73b59ca8cd8d06b6a3ead1712ce40dd6.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rl2xm"]
+albedo_texture = SubResource("CompressedTexture2D_we1mk")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_iehkx")
+roughness_texture = SubResource("CompressedTexture2D_q47kb")
 normal_enabled = true
-normal_texture = ExtResource("3_opsci")
+normal_texture = SubResource("CompressedTexture2D_lidcj")
+ao_enabled = true
+ao_texture = SubResource("CompressedTexture2D_6qnol")
+use_z_clip_scale = true
+z_clip_scale = 0.65
+use_fov_override = true
+fov_override = 60.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rl2xm"]
+load_path = "res://.godot/imported/Silencer_albedo.jpeg-a95934868278683be2eb72b3619c4b16.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4q25o"]
+load_path = "res://.godot/imported/Silencer_metallic.jpeg-f6e1af57cf3538a3532cad51aeb69092.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2qedj"]
+load_path = "res://.godot/imported/Silencer_normal.jpeg-62f3968353f64ad4bbdf4ca997b93942.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2dv4o"]
+load_path = "res://.godot/imported/Silencer_roughness.jpeg-3e0ff2704ca27e9dda6fbb0db8fd9f55.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1hegd"]
+albedo_texture = SubResource("CompressedTexture2D_rl2xm")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_4q25o")
+roughness_texture = SubResource("CompressedTexture2D_2dv4o")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_2qedj")
+use_z_clip_scale = true
+z_clip_scale = 0.65
+use_fov_override = true
+fov_override = 60.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_1hegd"]
+load_path = "res://.godot/imported/Scope_albedo.jpeg-f768e7d186f00b0bae2f09d46bfdfc0c.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_nt651"]
+load_path = "res://.godot/imported/Scope_emissive.jpeg-709fbced047285c20822021786899f29.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_omc5c"]
+load_path = "res://.godot/imported/Scope_metallic.jpeg-99697f37cbc5d51a050d31b4c9104610.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y4n5m"]
+load_path = "res://.godot/imported/Scope_roughness.jpeg-1fdf378384f44ca50040a1db40f4d357.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ah4op"]
+albedo_texture = SubResource("CompressedTexture2D_1hegd")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_omc5c")
+roughness_texture = SubResource("CompressedTexture2D_y4n5m")
+emission_enabled = true
+emission_texture = SubResource("CompressedTexture2D_nt651")
+use_z_clip_scale = true
+z_clip_scale = 0.65
+use_fov_override = true
+fov_override = 60.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hc6ms"]
+load_path = "res://.godot/imported/Pmag_albedo.jpeg-e85477e1ac13ab7185d136fc668c269f.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_myb22"]
+load_path = "res://.godot/imported/Pmag_metallic.jpeg-ae47788d1fca801a4751633d97ea2777.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_l8kbx"]
+load_path = "res://.godot/imported/Pmag_normal.jpeg-746a0467759042f1ac1a71ed1f62e2d8.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_13cxs"]
+load_path = "res://.godot/imported/Pmag_roughness.jpeg-a0ab173fb8bbddfd12e71637a622f665.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0jqf6"]
+albedo_texture = SubResource("CompressedTexture2D_hc6ms")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_myb22")
+roughness_texture = SubResource("CompressedTexture2D_13cxs")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_l8kbx")
+use_z_clip_scale = true
+z_clip_scale = 0.65
+use_fov_override = true
+fov_override = 60.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4vvfw"]
+load_path = "res://.godot/imported/armColor.png-894bb8d0926cca381baa9d182fa1a47b.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jtb7r"]
+load_path = "res://.godot/imported/armNormal.png-a04483883621c8c6a705acf9705d8504.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jbmx7"]
+load_path = "res://.godot/imported/armRoughness.png-89e9369edaef3ff862e6f3cda98f3e6b.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lidcj"]
+albedo_texture = SubResource("CompressedTexture2D_4vvfw")
+roughness_texture = SubResource("CompressedTexture2D_jbmx7")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_jtb7r")
 use_z_clip_scale = true
 z_clip_scale = 0.65
 use_fov_override = true
@@ -1010,9 +1117,13 @@ bones/79/scale = Vector3(1, 0.9999999, 0.99999994)
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_5qeg5")
 skin = SubResource("Skin_8cs3w")
+surface_material_override/0 = SubResource("StandardMaterial3D_rl2xm")
+surface_material_override/1 = SubResource("StandardMaterial3D_1hegd")
+surface_material_override/2 = SubResource("StandardMaterial3D_ah4op")
+surface_material_override/3 = SubResource("StandardMaterial3D_0jqf6")
 
 [node name="arms" type="MeshInstance3D" parent="gun_rifle/Armature/Skeleton3D" unique_id=1461394645]
-material_override = SubResource("StandardMaterial3D_ptx4k")
+material_override = SubResource("StandardMaterial3D_lidcj")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_mrsae")
 skin = SubResource("Skin_8cs3w")

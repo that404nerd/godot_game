@@ -1,21 +1,17 @@
 [gd_resource type="Weapon" format=3 uid="uid://g6nbobyu2ifd"]
 
-[ext_resource type="PackedScene" uid="uid://lfo3x6xjd6h3" path="res://assets/weapon_scenes/shotgun.tscn" id="1_lvpox"]
-
 [resource]
 angularFreq = 45.0
 dampingRatio = 0.7
 weaponVerticalAngFreq = 30.0
 totalAmmoCount = 16
 weaponName = "Shotgun"
-weaponScene = ExtResource("1_lvpox")
-weapon_anim_blend = -1.0
 weaponEquipAnimName = "shotgun_equip"
 weaponUnequipAnimName = "shotgun_unequip"
 weaponShootingAnimName = "shotgun_shoot"
 weaponReloadAnimName = "shotgun_reload"
-idle_weapon_bob_freq = 3.0
-idle_weapon_bob_amp = 0.01
+idle_weapon_bob_freq = 0.5
+idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.5
 weapon_bob_amp = 0.04
 gun_range = 40.0

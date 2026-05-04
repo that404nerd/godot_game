@@ -4,6 +4,10 @@
 [ext_resource type="Resource" uid="uid://bmr8r3dexg0iq" path="res://trenchbroom/fpsproject_map_settings.tres" id="3_2h6oo"]
 [ext_resource type="Texture2D" uid="uid://d3u4ab5fyivaq" path="res://assets/textures/grid.jpg" id="3_qsrgx"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_d5kir"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d5kir"]
+
 [sub_resource type="Shader" id="Shader_cwof1"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.1.dev4's StandardMaterial3D.
 
@@ -149,6 +153,15 @@ points = PackedVector3Array(-34, 26.875, 2, -34, 26.625, 2, -37.25, 26.875, 2, -
 points = PackedVector3Array(-33, 27.625, 14, -33, 24.5, 14, -37.75, 27.625, 14, -37.75, 24.5, 14, -33, 27.625, 4, -33, 24.5, 4, -37.75, 27.625, 4, -37.75, 24.5, 4)
 
 [node name="LevelTest" type="Node3D" unique_id=483194061]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=809897235]
+transform = Transform3D(5.1335635, 0, 0, 0, 2.5948558, 0, 0, 0, 6.1464276, 9.326991, 4.415889, 0)
+mesh = SubResource("BoxMesh_d5kir")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=2143684841]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=275544988]
+shape = SubResource("BoxShape3D_d5kir")
 
 [node name="FuncGodotMap" type="Node3D" parent="." unique_id=1203353924]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -22.76146, 0)

@@ -4,6 +4,11 @@
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
+#include <godot_cpp/classes/physics_direct_space_state3d.hpp>
+#include <godot_cpp/classes/decal.hpp>
+#include <godot_cpp/classes/world3d.hpp>
+#include <godot_cpp/classes/viewport.hpp>
 
 #include "components/ammo_component.h"
 #include "components/character_component.h"
@@ -27,6 +32,7 @@ public:
   void _ready() override;
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _process(double delta) override;
+  void _physics_process(double delta) override;
 
   void _equip_weapon();
   void _unequip_weapon();
@@ -37,6 +43,8 @@ public:
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
 
+  void generate_decal();
+
   const WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
 
   ~WeaponManager();
@@ -45,14 +53,18 @@ protected:
   static void _bind_methods();
 
 private:
-  Vector3 m_MouseInput;
-  Vector3 m_MouseVel { Vector3(0.0f, 0.0f, 0.0f) };
+  Vector3 m_MouseInput {};
+  Vector3 m_MouseVel {};
+  Vector2 m_ScreenCenter {};
+
   Array m_WeaponNodesGroup, m_WeaponAnimGroups;
   
   int m_WeaponIndex { 0 };
 
   AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
   Ref<Weapon> m_CurrentWeapon;
+  Ref<PackedScene> m_LoadScene;
+  PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
 
   WeaponEffects m_WeaponEffects;
   WeaponBobComponent m_WeaponBobComponent;
@@ -60,6 +72,13 @@ private:
   WeaponStateContext m_WeaponStateCtx;
   
   String m_NextWeaponName;
+
+private:
+  CharacterBody3D* m_CharacterBody { nullptr };
+  Camera3D* m_Camera { nullptr };
+
+  Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
+  Dictionary m_Result;
 
 private:
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);

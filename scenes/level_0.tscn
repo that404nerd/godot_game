@@ -100,7 +100,6 @@ points = PackedVector3Array(2, 0.5, 2, 2, -0.5, 2, -2, 0.5, 2, -2, -0.5, 2, 2, 0
 [node name="Level0" type="Node3D" unique_id=238101141]
 
 [node name="FuncGodotMap" type="Node3D" parent="." unique_id=1203353924]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -22.76146, 0)
 script = ExtResource("1_rerym")
 local_map_file = "uid://c0j80l0ume4cc"
 map_settings = ExtResource("2_uijja")

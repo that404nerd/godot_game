@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://2c0bf6m5ugct"]
 
 [ext_resource type="PackedScene" uid="uid://b7khe2s865pte" path="res://assets/weapon_scenes/pistol.tscn" id="1_dqkch"]
-[ext_resource type="Script" uid="uid://chdfpgi4r3gai" path="res://src/scripts/temp.gd" id="1_y4r1p"]
 [ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="2_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://lfo3x6xjd6h3" path="res://assets/weapon_scenes/shotgun.tscn" id="3_ur7pv"]
 [ext_resource type="Theme" uid="uid://607bfwn0648t" path="res://assets/ui/debug_panel_theme.tres" id="4_dqkch"]
@@ -41,7 +40,6 @@ headbob_transition_value = 5.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715, 0)
 
 [node name="PlayerHead" type="Node3D" parent="CameraController" unique_id=1010004094]
-script = ExtResource("1_y4r1p")
 
 [node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead" unique_id=27902470]
 unique_name_in_owner = true
