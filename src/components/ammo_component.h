@@ -2,36 +2,37 @@
 
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/templates/a_hash_map.hpp>
 
 #include "../globals.h"
 #include "../weapon.h"
 
 using namespace godot;
 
-class AmmoComponent : public Node {
+struct AmmoData 
+{
+  int TotalAmmo;
+  int CurrentAmmo;
+  int BulletsConsumed;
+};
 
-  GDCLASS(AmmoComponent, Node);
+class AmmoComponent {
 
 public:
 
+  void _init_data(Array weaponList);
+
   void consume_ammo(Ref<Weapon> currentWeapon, int ammoCount);
 
-  int get_current_weapon_ammo() { return m_CurrentAmmo; }
-  void set_current_weapon_ammo(Ref<Weapon> currentWeapon)
-  {
-    m_TotalAmmo = currentWeapon->get_totalAmmoCount();
-    m_CurrentAmmo = m_TotalAmmo;
-  }
+  void set_current_weapon_ammo(Ref<Weapon> currentWeapon, int ammo) {
+    m_WeaponAmmoMap[currentWeapon].TotalAmmo = ammo;
+  } 
 
-  void set_total_weapon_ammo(Ref<Weapon> currentWeapon) { 
-    m_TotalAmmo = currentWeapon->get_totalAmmoCount();
-    m_CurrentAmmo = m_TotalAmmo;
+  int get_current_weapon_ammo(Ref<Weapon> currentWeapon) {
+    m_WeaponAmmoMap[currentWeapon].CurrentAmmo = m_WeaponAmmoMap[currentWeapon].TotalAmmo;
+    return m_WeaponAmmoMap[currentWeapon].CurrentAmmo;
   }
-
-protected:
-  static void _bind_methods();
 
 private:
-  int m_TotalAmmo { 0 };
-  int m_CurrentAmmo { 0 };
+  AHashMap<Ref<Weapon>, AmmoData> m_WeaponAmmoMap;
 };

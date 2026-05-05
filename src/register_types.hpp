@@ -11,7 +11,6 @@
 #include "player_state_machine.h"
 #include "weapon_state_machine.h"
 #include "weapon_manager.h"
-#include "components/ammo_component.h"
 
 using namespace godot;
 

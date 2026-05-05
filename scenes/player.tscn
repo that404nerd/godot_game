@@ -134,11 +134,7 @@ unique_name_in_owner = true
 weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("8_ur7pv"), ExtResource("7_smehm")]
 unique_name_in_owner = true
 
-[node name="AmmoComponent" type="AmmoComponent" parent="." unique_id=260726032]
-unique_name_in_owner = true
-
-[node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=29975295 node_paths=PackedStringArray("weapon_manager", "ammo_component", "weapon_component")]
+[node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=29975295 node_paths=PackedStringArray("weapon_manager", "weapon_component")]
 weapon_manager = NodePath("../WeaponManager")
-ammo_component = NodePath("../AmmoComponent")
 weapon_component = NodePath("../WeaponComponent")
 unique_name_in_owner = true

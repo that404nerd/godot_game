@@ -13,9 +13,9 @@ class WeaponStateMachine;
 
 struct WeaponStateContext
 {
-  bool WantsToShoot { false }, IsKeyHeld { false };
-  float ShootTimeBeforeIdle { 1.0f };
   Weapon::WeaponType CurrentWeaponType { Weapon::WeaponType::NONE };
+  float ShootTimeBeforeIdle { 1.0f };
+  bool WantsToShoot { false }, IsKeyHeld { false }, CanUnequip { false };
 };
 
 struct WeaponStateData
@@ -93,6 +93,7 @@ public:
 private:
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
   WeaponManager* m_WeaponManager { nullptr };
+  const WeaponStateContext& m_WeaponStateContext;
 };
 
 class WeaponSwitchState : public State {

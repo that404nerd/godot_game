@@ -1,7 +1,5 @@
 #pragma once
 
-// TODO: Maybe move this to weapon manager instead of a node!
-
 #include "components/weapon_component.h"
 #include "godot_cpp/classes/animation_player.hpp"
 #include "state_machine.h"
@@ -40,7 +38,6 @@ protected:
 private:
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
-  GD_DEFINE_PROPERTY(AmmoComponent*, ammo_component, nullptr);
 
   GD_DEFINE_PROPERTY(float, shoot_time_before_idle, 0.3f);
 

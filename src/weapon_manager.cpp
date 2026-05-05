@@ -26,6 +26,9 @@ void WeaponManager::_ready()
   m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_ScreenCenter = get_viewport()->get_visible_rect().get_size() / 2.0f;
   m_LoadScene = ResourceLoader::get_singleton()->load("res://assets/decals/bullet_decal.tscn");
+
+  m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
+  m_TimeBeforeShoot = m_CurrentWeapon->get_timeBeforeShoot();
 }
 
 void WeaponManager::_bind_methods()
@@ -67,6 +70,9 @@ void WeaponManager::_process(double delta)
 
 void WeaponManager::_physics_process(double delta)
 {
+  // Get space state in _process or some other function could cause errors because
+  // for some reason it's not accessible unless it's in the _physics_process
+
   Vector3 ray_start = m_Camera->project_ray_origin(m_ScreenCenter);
   Vector3 ray_end = ray_start + m_Camera->project_ray_normal(m_ScreenCenter) * 1000.0f;
 
@@ -78,28 +84,6 @@ void WeaponManager::_physics_process(double delta)
 }
 
 
-///////////////////////////////////////////////////////////////////////
-/////////////////// Weapon State Implementation ///////////////////////
-///////////////////////////////////////////////////////////////////////
-void WeaponManager::_equip_weapon()
-{
-  m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
-                           m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
-}
-
-void WeaponManager::_unequip_weapon()
-{
-  if(weapon_component->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
-  {
-    if(m_CurrentWeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
-    {
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
-                            m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
-    }
-  }
-  
-}
-
 void WeaponManager::generate_decal()
 {
   if(!m_Result.is_empty())
@@ -110,8 +94,34 @@ void WeaponManager::generate_decal()
     bulletDecal->set_global_position(m_Result["position"]);
     bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, -1.0f, 0.0f));
     bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
-   }
+  }
 }
+
+
+///////////////////////////////////////////////////////////////////////
+/////////////////// Weapon State Implementation ///////////////////////
+///////////////////////////////////////////////////////////////////////
+void WeaponManager::_equip_weapon()
+{
+  m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
+                           m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
+
+}
+
+void WeaponManager::_unequip_weapon()
+{
+  if(weapon_component->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
+  {
+    if(m_CurrentWeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
+    {
+      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
+                            m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
+    } else {
+      m_WeaponStateCtx.CanUnequip = false;
+    }
+  }
+}
+
 
 void WeaponManager::_shoot_weapon(double delta)
 {
@@ -127,7 +137,6 @@ void WeaponManager::_shoot_weapon(double delta)
   {
     m_WeaponStateCtx.IsKeyHeld = true;
     m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
-
   }
 
   if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
@@ -137,19 +146,29 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.WantsToShoot = true;
   }
 
-  if(m_WeaponStateCtx.IsKeyHeld || m_WeaponStateCtx.WantsToShoot)
+  m_TimeBeforeShoot -= delta;
+  if((m_WeaponStateCtx.IsKeyHeld || m_WeaponStateCtx.WantsToShoot) && m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) > 0)
   {
+    if(m_TimeBeforeShoot <= 0.0f)
+    {
+      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+            m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+
+      
+      generate_decal();
+      // NEED TO FIX: If the key is held, the ammo decreases by 2 or 3... Need to fix that
+      m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
+
+      m_TimeBeforeShoot = m_CurrentWeapon->get_timeBeforeShoot();
+    }
     // if(m_AmmoComponent->get_current_weapon_ammo() <= 0)
     // {
-    //   print_line("Reload!!");
-    //   m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::RELOAD));
-    // }
-    // else
-    // {
+      //   print_line("Reload!!");
+      //   m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::RELOAD));
       // }
-    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-      m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
-    generate_decal();
+      // else
+      // {
+        // }
   }
 
   if(!Input::get_singleton()->is_action_just_released("shoot_weapon"))
@@ -157,11 +176,13 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.IsKeyHeld = false;
   }
 }
-
+  
 void WeaponManager::_reload_weapon()
 {
   m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), 
                       m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+
+  m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, m_CurrentWeapon->get_totalAmmoCount());
 }
 
 void WeaponManager::_weapon_unequip_over()
@@ -188,6 +209,8 @@ void WeaponManager::_weapon_switch()
     Ref<Weapon> nextWeapon = weapon_component->get_weapon_resource_list()[weapon_index];
     weapon_component->set_current_weapon(nextWeapon);
     m_WeaponEffects._update_data(nextWeapon);
+    m_TimeBeforeShoot = nextWeapon->get_timeBeforeShoot();
+    print_line("After switching: ", m_TimeBeforeShoot);
   }
 }
 

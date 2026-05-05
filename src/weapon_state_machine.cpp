@@ -18,7 +18,6 @@ void WeaponStateMachine::_init_data()
 void WeaponStateMachine::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(WeaponStateMachine, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(WeaponStateMachine, ammo_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponStateMachine, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_PROPERTY(WeaponStateMachine, shoot_time_before_idle, Variant::FLOAT);
 

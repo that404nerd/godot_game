@@ -23,6 +23,7 @@ void Weapon::_bind_methods() {
   GD_BIND_ENUM(Weapon, weapon_type, "Manual,Auto");
 
   GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
+  GD_BIND_PROPERTY(Weapon, timeBeforeShoot, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
 
   ADD_GROUP("Weapon Animation Properties", "");

@@ -16,5 +16,5 @@ weaponReloadAnimName = "pistol_reload"
 idle_weapon_bob_freq = 0.5
 idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.5
-weapon_bob_amp = 0.04
+weapon_bob_amp = 0.02
 gun_range = 50.0

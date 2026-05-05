@@ -1,12 +1,16 @@
 #include "ammo_component.h"
 
-void AmmoComponent::consume_ammo(Ref<Weapon> currentWeapon, int ammoCount)
+void AmmoComponent::_init_data(Array weaponList)
 {
-  m_TotalAmmo -= ammoCount;
-  m_CurrentAmmo = m_TotalAmmo;
+  for(auto weapon : weaponList)
+  {
+    Ref<Weapon> currentWeapon = weapon;
+    m_WeaponAmmoMap[weapon].TotalAmmo = currentWeapon->get_totalAmmoCount(); 
+  }
 }
 
-void AmmoComponent::_bind_methods()
+void AmmoComponent::consume_ammo(Ref<Weapon> currentWeapon, int ammoCount)
 {
-  ClassDB::bind_method(D_METHOD("get_current_weapon_ammo"), &AmmoComponent::get_current_weapon_ammo);
+  m_WeaponAmmoMap[currentWeapon].TotalAmmo -= ammoCount;
+  print_line(m_WeaponAmmoMap[currentWeapon].TotalAmmo);
 }

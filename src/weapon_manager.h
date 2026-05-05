@@ -33,21 +33,22 @@ public:
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _process(double delta) override;
   void _physics_process(double delta) override;
-
+  
+  const WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
+  
+  ~WeaponManager();
+  
+public:
   void _equip_weapon();
   void _unequip_weapon();
   void _shoot_weapon(double delta);
   void _reload_weapon();
   void _weapon_switch();
-
+  
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
-
+  
   void generate_decal();
-
-  const WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
-
-  ~WeaponManager();
 
 protected:
   static void _bind_methods();
@@ -70,6 +71,7 @@ private:
   WeaponBobComponent m_WeaponBobComponent;
   WeaponSwayComponent m_WeaponSwayComponent;
   WeaponStateContext m_WeaponStateCtx;
+  AmmoComponent m_AmmoComp;
   
   String m_NextWeaponName;
 
@@ -79,6 +81,8 @@ private:
 
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
+
+  float m_TimeBeforeShoot { 0.0f };
 
 private:
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);

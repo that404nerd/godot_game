@@ -162,7 +162,7 @@ void WeaponReloadState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponUnequipState::WeaponUnequipState(const WeaponStateData& weaponStateData)
   : State(static_cast<int8_t>(WeaponStates::UNEQUIP)), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
-    m_WeaponManager(weaponStateData.weaponManager)
+    m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateContext(m_WeaponManager->get_weapon_state_ctx())
 {
 }
 
@@ -184,6 +184,10 @@ void WeaponUnequipState::_enter()
 
 void WeaponUnequipState::_update(double delta)
 {
+  if(m_WeaponStateContext.CanUnequip == false)
+  {
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  }
 }
 
 void WeaponUnequipState::_exit()

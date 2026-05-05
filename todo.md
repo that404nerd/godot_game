@@ -21,5 +21,6 @@
 
 ## Issues & TODO
 - Allow weapon animation groups to be in any order []
+- Fix head bobbing during slide and weapon idle during shooting states []
 - Transition to idle state when sliding into a world objects []
 - Allow sliding when crouch is toggled during falling state []

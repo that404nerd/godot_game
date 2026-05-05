@@ -8,6 +8,7 @@ weaponVerticalAngFreq = 30.0
 weaponVerticalDampingRatio = 0.2
 weapon_type = 1
 totalAmmoCount = 20
+timeBeforeShoot = 0.04
 weaponName = "Rifle"
 weaponEquipAnimName = "rifle_equip"
 weaponUnequipAnimName = "rifle_unequip"
