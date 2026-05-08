@@ -26,7 +26,7 @@ protected:
 public:
   enum WeaponType
   {
-    MANUAL, AUTO, NONE = -1
+    MANUAL, AUTO, BOTH, NONE = -1
   };
 
 private:
@@ -58,7 +58,6 @@ private:
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
 
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
-  GD_DEFINE_PROPERTY(float, timeBeforeShoot, 0.1f);
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
   
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_freq, 0.0f);

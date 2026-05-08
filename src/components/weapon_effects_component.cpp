@@ -1,5 +1,7 @@
 #include "weapon_effects_components.h"
 
+// TODO: Needs some rework
+
 void WeaponBobComponent::_init_data(CharacterComponent* characterComponent, WeaponComponent* weaponComponent)
 {
   if (!characterComponent) {
@@ -120,8 +122,8 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
       equilibriumPos,
       m_SwayParams);
 
-  m_SwayOffset.x = Math::clamp(m_SwayOffset.x, -0.05f, 0.05f);
-  m_SwayOffset.y = Math::clamp(m_SwayOffset.y, -0.05f, 0.05f);
+  m_SwayOffset.x = Math::clamp(m_SwayOffset.x, -0.03f, 0.03f);
+  m_SwayOffset.y = Math::clamp(m_SwayOffset.y, -0.03f, 0.03f);
 }
 
 void WeaponEffects::_init_data(Node3D* holdPointNode,
@@ -142,14 +144,14 @@ void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
 
 void WeaponEffects::_update(double delta, Vector3& sway_vel)
 {
-  m_WeaponSwayComponent.weapon_idle_sway(delta);
+  // m_WeaponSwayComponent.weapon_idle_sway(delta);
   m_WeaponSwayComponent.weapon_sway(delta, sway_vel);
   m_WeaponBobComponent.weapon_bob(delta);
 
   if (!m_HoldPointNode) return;
 
   m_HoldPointNode->set_position(
-      m_WeaponSwayComponent.get_idle_offset() +
+      // m_WeaponSwayComponent.get_idle_offset() +
       m_WeaponSwayComponent.get_sway_offset() +
       m_WeaponBobComponent.get_weapon_bob_offset());
 }

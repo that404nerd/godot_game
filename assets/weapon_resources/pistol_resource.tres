@@ -1,14 +1,15 @@
 [gd_resource type="Weapon" format=3 uid="uid://ct4xiq7b5h3b0"]
 
 [resource]
+weapon_type = 2
+totalAmmoCount = 10
+timeBeforeShoot = 0.04
+weaponName = "Pistol"
 angularFreq = 45.0
 dampingRatio = 0.9
 weaponVerticalPush = 0.001
 weaponVerticalAngFreq = 20.0
 weaponVerticalDampingRatio = 0.1
-weapon_type = 1
-totalAmmoCount = 10
-weaponName = "Pistol"
 weaponEquipAnimName = "pistol_equip"
 weaponUnequipAnimName = "pistol_unequip"
 weaponShootingAnimName = "pistol_shoot"

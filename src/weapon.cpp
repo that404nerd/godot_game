@@ -9,22 +9,22 @@ Weapon::Weapon()
 
 void Weapon::_bind_methods() {
 
+  ADD_GROUP("General Weapon Properties", "");
+
+  GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
+  GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
+
+  BIND_ENUM_CONSTANT(AUTO);
+  BIND_ENUM_CONSTANT(MANUAL);
+  BIND_ENUM_CONSTANT(BOTH);
+  GD_BIND_ENUM(Weapon, weapon_type, "Manual,Auto,Both");
+
   ADD_GROUP("Weapon Spring Values", "");
   GD_BIND_PROPERTY(Weapon, angularFreq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, dampingRatio, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponVerticalPush, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponVerticalAngFreq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponVerticalDampingRatio, Variant::FLOAT);
-
-  ADD_GROUP("General Weapon Properties", "");
-
-  BIND_ENUM_CONSTANT(AUTO);
-  BIND_ENUM_CONSTANT(MANUAL);
-  GD_BIND_ENUM(Weapon, weapon_type, "Manual,Auto");
-
-  GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
-  GD_BIND_PROPERTY(Weapon, timeBeforeShoot, Variant::FLOAT);
-  GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
 
   ADD_GROUP("Weapon Animation Properties", "");
   GD_BIND_PROPERTY(Weapon, weapon_equip_anim_speed, Variant::FLOAT);

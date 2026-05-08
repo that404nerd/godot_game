@@ -34,7 +34,7 @@ public:
   void _process(double delta) override;
   void _physics_process(double delta) override;
   
-  const WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
+  WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
   
   ~WeaponManager();
   
@@ -44,6 +44,8 @@ public:
   void _shoot_weapon(double delta);
   void _reload_weapon();
   void _weapon_switch();
+
+  void _on_weapon_shoot(const StringName& anim_name);
   
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
@@ -54,7 +56,7 @@ protected:
   static void _bind_methods();
 
 private:
-  Vector3 m_MouseInput {};
+  // Vector3 m_MouseInput {};
   Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
 
@@ -82,7 +84,7 @@ private:
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
 
-  float m_TimeBeforeShoot { 0.0f };
+  float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.1f };
 
 private:
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);

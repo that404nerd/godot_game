@@ -7,7 +7,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponIdleState::WeaponIdleState(const WeaponStateData& weaponStateData)
   : State(static_cast<int8_t>(WeaponStates::IDLE)), m_WeaponManager(weaponStateData.weaponManager),
-    m_WeaponStateMachine(weaponStateData.weaponStateMachine)
+    m_WeaponStateMachine(weaponStateData.weaponStateMachine),
+    m_WeaponStateContext(m_WeaponManager->get_weapon_state_ctx())
 {
 }
 
@@ -15,6 +16,7 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
   if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
   {
+    m_WeaponStateContext.IsKeyPressed = true;
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::SHOOT));
   }
 
@@ -85,7 +87,7 @@ void WeaponEquipState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponShootState::WeaponShootState(const WeaponStateData& weaponStateData)
   : State(static_cast<int8_t>(WeaponStates::SHOOT)), m_WeaponManager(weaponStateData.weaponManager),
-    m_WeaponStateMachine(weaponStateData.weaponStateMachine), 
+    m_WeaponStateMachine(weaponStateData.weaponStateMachine),
     m_WeaponStateContext(m_WeaponManager->get_weapon_state_ctx())
 {
 }
@@ -108,7 +110,7 @@ void WeaponShootState::_update(double delta)
   m_WeaponManager->_shoot_weapon(delta);
 
   if(m_WeaponStateContext.ShootTimeBeforeIdle <= 0.0f &&
-     m_WeaponStateContext.WantsToShoot == false && m_WeaponStateContext.IsKeyHeld == false)
+     m_WeaponStateContext.IsKeyPressed == false && m_WeaponStateContext.IsKeyHeld == false)
   {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
   }

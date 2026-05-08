@@ -15,10 +15,12 @@ void WeaponManager::_ready()
   for(int i = 0; i < m_WeaponAnimGroups.size(); i++)
   {
     AnimationPlayer* anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[i]);
+    anim_player->connect("animation_started", Callable(this, "_on_weapon_shoot"));
     anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
   }
   
   m_CurrentWeaponAnimPlayer = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[m_WeaponIndex]);
+
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_CharacterBody = character_component->get_character_body();
@@ -28,11 +30,12 @@ void WeaponManager::_ready()
   m_LoadScene = ResourceLoader::get_singleton()->load("res://assets/decals/bullet_decal.tscn");
 
   m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
-  m_TimeBeforeShoot = m_CurrentWeapon->get_timeBeforeShoot();
 }
+
 
 void WeaponManager::_bind_methods()
 {
+  ClassDB::bind_method(D_METHOD("_on_weapon_shoot", "anim_name"), &WeaponManager::_on_weapon_shoot);
   
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -48,8 +51,8 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
   if(event->is_class("InputEventMouseMotion")) {
     float swayIntensity = 0.005f; 
 
-    m_MouseInput.x += -mouseEvent->get_screen_relative().x * 0.003f;
-    m_MouseInput.y += -mouseEvent->get_screen_relative().y * 0.003f;
+    // m_MouseInput.x += -mouseEvent->get_screen_relative().x * 0.003f;
+    // m_MouseInput.y += -mouseEvent->get_screen_relative().y * 0.003f;
 
     Vector2 relative = mouseEvent->get_relative(); 
     m_MouseVel.x += -relative.x * swayIntensity;
@@ -64,8 +67,8 @@ void WeaponManager::_process(double delta)
 
   m_WeaponEffects._update(delta, m_MouseVel);
   
-  m_MouseInput.x = 0.0f;
-  m_MouseInput.y = 0.0f;
+  // m_MouseInput.x = 0.0f;
+  // m_MouseInput.y = 0.0f;
 }
 
 void WeaponManager::_physics_process(double delta)
@@ -123,66 +126,73 @@ void WeaponManager::_unequip_weapon()
 }
 
 
+void WeaponManager::_on_weapon_shoot(const StringName& anim_name)
+{
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
+  {
+    m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
+    generate_decal();
+  }
+}
+
 void WeaponManager::_shoot_weapon(double delta)
 {
-  m_WeaponStateCtx.WantsToShoot = false;
-
+  // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
   if(m_WeaponStateCtx.ShootTimeBeforeIdle >= 0.0f)
   {
     m_WeaponStateCtx.ShootTimeBeforeIdle -= delta;
   }
-
-  if(m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO && 
-    Input::get_singleton()->is_action_pressed("shoot_weapon"))
+  
+  // Check whether the fire key is held or not (for automatic weapons)
+  if(Input::get_singleton()->is_action_pressed("shoot_weapon") && (
+    m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH
+  )) 
   {
-    m_WeaponStateCtx.IsKeyHeld = true;
+    m_HoldCounter += delta;
+    m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
+
+    if(m_HoldCounter > m_HoldMaxTime)
+    {
+      m_WeaponStateCtx.IsKeyHeld = true;
+    }
+  } 
+ 
+  // Check whether we pressed the fire key (manual)
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && (
+    m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH
+  ))
+  {
+    m_WeaponStateCtx.IsKeyPressed = true;
     m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
   }
-
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
-    m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL)
+  
+  if((m_WeaponStateCtx.IsKeyPressed || m_WeaponStateCtx.IsKeyHeld) && m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) > 0)
   {
-    m_WeaponStateCtx.IsKeyHeld = false;
-    m_WeaponStateCtx.WantsToShoot = true;
+    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+        m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+
+    m_WeaponStateCtx.IsKeyPressed = false;
+
   }
 
-  m_TimeBeforeShoot -= delta;
-  if((m_WeaponStateCtx.IsKeyHeld || m_WeaponStateCtx.WantsToShoot) && m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) > 0)
-  {
-    if(m_TimeBeforeShoot <= 0.0f)
-    {
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-            m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
-
-      
-      generate_decal();
-      // NEED TO FIX: If the key is held, the ammo decreases by 2 or 3... Need to fix that
-      m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
-
-      m_TimeBeforeShoot = m_CurrentWeapon->get_timeBeforeShoot();
-    }
-    // if(m_AmmoComponent->get_current_weapon_ammo() <= 0)
-    // {
-      //   print_line("Reload!!");
-      //   m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::RELOAD));
-      // }
-      // else
-      // {
-        // }
-  }
-
-  if(!Input::get_singleton()->is_action_just_released("shoot_weapon"))
+  // Set the key held to false and reset the hold counter 
+  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) 
   {
     m_WeaponStateCtx.IsKeyHeld = false;
+    m_HoldCounter = 0.0f;
   }
 }
   
 void WeaponManager::_reload_weapon()
 {
-  m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), 
-                      m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
-
-  m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, m_CurrentWeapon->get_totalAmmoCount());
+  if(m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) < m_CurrentWeapon->get_totalAmmoCount())
+  {
+    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), 
+    m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+    
+    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, m_CurrentWeapon->get_totalAmmoCount());
+  }
+  print_line("Current ammo: ", m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon));
 }
 
 void WeaponManager::_weapon_unequip_over()
@@ -209,8 +219,6 @@ void WeaponManager::_weapon_switch()
     Ref<Weapon> nextWeapon = weapon_component->get_weapon_resource_list()[weapon_index];
     weapon_component->set_current_weapon(nextWeapon);
     m_WeaponEffects._update_data(nextWeapon);
-    m_TimeBeforeShoot = nextWeapon->get_timeBeforeShoot();
-    print_line("After switching: ", m_TimeBeforeShoot);
   }
 }
 

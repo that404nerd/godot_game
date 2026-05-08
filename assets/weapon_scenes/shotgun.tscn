@@ -24,7 +24,7 @@ normal_texture = SubResource("CompressedTexture2D_oud13")
 use_z_clip_scale = true
 z_clip_scale = 0.65
 use_fov_override = true
-fov_override = 60.0
+fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u8ru2"]
 resource_name = "arms"
@@ -201,7 +201,7 @@ normal_texture = ExtResource("4_yyh7y")
 use_z_clip_scale = true
 z_clip_scale = 0.65
 use_fov_override = true
-fov_override = 60.0
+fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0st5a"]
 resource_name = "boomstick"
