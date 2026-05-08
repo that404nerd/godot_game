@@ -538,9 +538,13 @@ blend_shape_mode = 0
 
 [node name="Rifle" type="Node3D" unique_id=991172594]
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=894221757 groups=["weapon_anims"]]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=894221757]
 root_node = NodePath("../gun_rifle")
 libraries/ = ExtResource("2_1cw3a")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=809723060]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.011, -0.104)
+visible = false
 
 [node name="gun_rifle" type="Node3D" parent="." unique_id=490263074]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.07, -0.282, -0.03)
@@ -1123,7 +1127,3 @@ material_override = SubResource("StandardMaterial3D_lidcj")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_mrsae")
 skin = SubResource("Skin_8cs3w")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=809723060]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.011, -0.104)
-visible = false

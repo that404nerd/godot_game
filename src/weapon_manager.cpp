@@ -4,22 +4,34 @@
 
 void WeaponManager::_ready()
 {
-  m_WeaponNodesGroup = get_tree()->get_nodes_in_group(StringName("weapon_nodes"));
-  m_WeaponAnimGroups = get_tree()->get_nodes_in_group(StringName("weapon_anims"));
-  
   weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
   m_WeaponEffects._init_data(hold_point_node, character_component, weapon_component);
 
   /* NOTE: This took me 2 hours to find lol, i forgot that i was dealing with different animation
   players for different weapon scene, this connects the _on_animation_finished to all animation players */
-  for(int i = 0; i < m_WeaponAnimGroups.size(); i++)
+
+  for(int i = 0; i < hold_point_node->get_children().size(); i++)
   {
-    AnimationPlayer* anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[i]);
+    Node3D* weapon_node = nullptr;
+    AnimationPlayer* anim_player = nullptr;
+
+    m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[i]));
+    weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
+
+    if(i != m_WeaponIndex) // Check if the first weapon index is m_WeaponIndex (0 in this case)
+    {
+      // Hide the other weapons except the first weapon that's gonna be equipped
+      weapon_node->set_visible(false);
+    }
+
+    m_WeaponAnims.push_back(weapon_node->get_node<AnimationPlayer>("AnimationPlayer"));
+    anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
+
     anim_player->connect("animation_started", Callable(this, "_on_weapon_shoot"));
     anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
   }
   
-  m_CurrentWeaponAnimPlayer = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[m_WeaponIndex]);
+  m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
 
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
@@ -197,7 +209,7 @@ void WeaponManager::_reload_weapon()
 
 void WeaponManager::_weapon_unequip_over()
 {
-  m_CurrentWeaponAnimPlayer = Object::cast_to<AnimationPlayer>(m_WeaponAnimGroups[m_WeaponIndex]);
+  m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
   weapon_component->set_current_weapon(weapon_component->get_next_weapon_data());
 }
 

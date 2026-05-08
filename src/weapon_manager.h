@@ -1,6 +1,8 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
+#include <godot_cpp/templates/vector.hpp>
+
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/input.hpp>
@@ -16,6 +18,8 @@
 #include "components/weapon_effects_components.h"
 
 #include "globals.h"
+#include "godot_cpp/classes/animation_player.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
 #include "weapon.h"
 #include "weapon_states.h"
 
@@ -60,7 +64,8 @@ private:
   Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
 
-  Array m_WeaponNodesGroup, m_WeaponAnimGroups;
+  Vector<AnimationPlayer*> m_WeaponAnims;
+  Vector<Node3D*> m_WeaponNodes;
   
   int m_WeaponIndex { 0 };
 
@@ -85,6 +90,7 @@ private:
   Dictionary m_Result;
 
   float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.1f };
+
 
 private:
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
