@@ -63,8 +63,8 @@ void WeaponStateMachine::_on_animation_finished(const StringName& anim_name)
     _change_state(static_cast<uint8_t>(WeaponStates::WEAPON_SWITCH));
   }
 
-  // if(anim_name == weapon_component->get_current_weapon_data()->get_weaponShootingAnimName())
-  // {
-  //   ammo_component->consume_ammo(weapon_component->get_current_weapon_data(), 1);
-  // }
+  if(anim_name == weapon_component->get_current_weapon_data()->get_weaponShootingAnimName())
+  {
+    weapon_manager->_weapon_shoot_finish();
+  }
 }

@@ -1,4 +1,7 @@
 #include "weapon_manager.h"
+#include "godot_cpp/classes/random_number_generator.hpp"
+#include "godot_cpp/classes/range.hpp"
+#include "godot_cpp/core/math.hpp"
 #include "weapon_states.h"
 #include "weapon_state_machine.h"
 
@@ -32,6 +35,11 @@ void WeaponManager::_ready()
   }
   
   m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
+  m_MuzzleFlashNode = m_WeaponNodes[m_WeaponIndex]->get_node<Node3D>(NodePath("%MuzzleFlash"));
+
+  m_OmniLightNode = m_MuzzleFlashNode->get_node<OmniLight3D>(NodePath("OmniLight3D"));
+  m_Particles3D = m_MuzzleFlashNode->get_node<GPUParticles3D>(NodePath("GPUParticles3D"));
+
 
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
@@ -53,6 +61,7 @@ void WeaponManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, player_head_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
  
 }
 
@@ -78,7 +87,11 @@ void WeaponManager::_process(double delta)
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
   m_WeaponEffects._update(delta, m_MouseVel);
-  
+
+  // m_TargetRot = m_TargetRot.lerp(Vector3(0.0f, 0.0f, 0.0f), 6.0f * get_process_delta_time());
+  // m_CurrentRot = m_CurrentRot.lerp(m_TargetRot, 6.0f * get_process_delta_time());
+  // player_head_node->set_rotation(m_CurrentRot);
+
   // m_MouseInput.x = 0.0f;
   // m_MouseInput.y = 0.0f;
 }
@@ -112,6 +125,15 @@ void WeaponManager::generate_decal()
   }
 }
 
+void WeaponManager::_weapon_recoil()
+{
+  // Ref<RandomNumberGenerator> rn;
+  // rn.instantiate();
+  // m_TargetRot += Vector3(0.08f, rn->randf_range(-0.04f, 0.04f), 0.0f);
+
+  // print_line("player head rotation: ", player_head_node->get_rotation());
+}
+
 
 ///////////////////////////////////////////////////////////////////////
 /////////////////// Weapon State Implementation ///////////////////////
@@ -142,9 +164,15 @@ void WeaponManager::_on_weapon_shoot(const StringName& anim_name)
 {
   if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
   {
+    m_LightTimeout = 0.05f;
+    m_Particles3D->set_emitting(true);
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
     generate_decal();
   }
+}
+
+void WeaponManager::_weapon_shoot_finish()
+{
 }
 
 void WeaponManager::_shoot_weapon(double delta)
@@ -183,10 +211,16 @@ void WeaponManager::_shoot_weapon(double delta)
     m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
         m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
 
+    _weapon_recoil();
+    m_OmniLightNode->set_visible(true);
     m_WeaponStateCtx.IsKeyPressed = false;
-
   }
+  m_LightTimeout -= delta;
 
+  if(m_LightTimeout <= 0.0f)
+    m_OmniLightNode->set_visible(false);
+
+  
   // Set the key held to false and reset the hold counter 
   if(Input::get_singleton()->is_action_just_released("shoot_weapon")) 
   {
@@ -197,14 +231,15 @@ void WeaponManager::_shoot_weapon(double delta)
   
 void WeaponManager::_reload_weapon()
 {
+
   if(m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) < m_CurrentWeapon->get_totalAmmoCount())
   {
     m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), 
-    m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+        m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
     
-    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, m_CurrentWeapon->get_totalAmmoCount());
+    if(m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) == 0)
+      m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, m_CurrentWeapon->get_totalAmmoCount());
   }
-  print_line("Current ammo: ", m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon));
 }
 
 void WeaponManager::_weapon_unequip_over()

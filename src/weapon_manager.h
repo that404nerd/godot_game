@@ -12,6 +12,8 @@
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/classes/viewport.hpp>
 
+#include <godot_cpp/classes/omni_light3d.hpp>
+
 #include "components/ammo_component.h"
 #include "components/character_component.h"
 #include "components/weapon_component.h"
@@ -19,6 +21,7 @@
 
 #include "globals.h"
 #include "godot_cpp/classes/animation_player.hpp"
+#include "godot_cpp/classes/gpu_particles3d.hpp"
 #include "godot_cpp/variant/typed_array.hpp"
 #include "weapon.h"
 #include "weapon_states.h"
@@ -48,6 +51,9 @@ public:
   void _shoot_weapon(double delta);
   void _reload_weapon();
   void _weapon_switch();
+
+  void _weapon_shoot_finish();
+  void _weapon_recoil();
 
   void _on_weapon_shoot(const StringName& anim_name);
   
@@ -86,16 +92,23 @@ private:
   CharacterBody3D* m_CharacterBody { nullptr };
   Camera3D* m_Camera { nullptr };
 
+  Node3D* m_MuzzleFlashNode { nullptr };
+  OmniLight3D* m_OmniLightNode { nullptr };
+  GPUParticles3D* m_Particles3D { nullptr };
+
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
 
   float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.1f };
+  float m_LightTimeout { 0.05f };
 
+  Vector3 m_TargetRot {}, m_CurrentRot {};
 
 private:
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
+  GD_DEFINE_PROPERTY(Node3D*, player_head_node, nullptr);
 
 };

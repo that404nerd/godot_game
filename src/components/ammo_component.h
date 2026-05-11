@@ -28,6 +28,8 @@ public:
     m_WeaponAmmoMap[currentWeapon].TotalAmmo = ammo;
   } 
 
+  int get_current_weapon_bullets_consumed(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].BulletsConsumed; }
+
   int get_current_weapon_ammo(Ref<Weapon> currentWeapon) {
     m_WeaponAmmoMap[currentWeapon].CurrentAmmo = m_WeaponAmmoMap[currentWeapon].TotalAmmo;
     return m_WeaponAmmoMap[currentWeapon].CurrentAmmo;

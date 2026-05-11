@@ -12,5 +12,6 @@ void AmmoComponent::_init_data(Array weaponList)
 void AmmoComponent::consume_ammo(Ref<Weapon> currentWeapon, int ammoCount)
 {
   m_WeaponAmmoMap[currentWeapon].TotalAmmo -= ammoCount;
+  m_WeaponAmmoMap[currentWeapon].BulletsConsumed += ammoCount;
   print_line(m_WeaponAmmoMap[currentWeapon].TotalAmmo);
 }
