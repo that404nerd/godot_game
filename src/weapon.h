@@ -30,15 +30,6 @@ public:
   };
 
 private:
-
-  GD_DEFINE_PROPERTY(WeaponType, weapon_type, WeaponType::MANUAL);
-
-  GD_DEFINE_PROPERTY(float, angularFreq, 0.0f);
-  GD_DEFINE_PROPERTY(float, dampingRatio, 0.0f);
-  GD_DEFINE_PROPERTY(float, weaponVerticalAngFreq, 0.0f);
-  GD_DEFINE_PROPERTY(float, weaponVerticalDampingRatio, 0.0f);
-  GD_DEFINE_PROPERTY(float, weaponVerticalPush, 1.0f);
-
   GD_DEFINE_PROPERTY(String, weaponName, "");
 
   GD_DEFINE_PROPERTY(float, weapon_equip_anim_speed, 1.0f);
@@ -59,6 +50,17 @@ private:
 
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
+
+  GD_DEFINE_PROPERTY(Vector3, recoil_vector, Vector3(0.0f, 0.0f, 0.0f));
+
+  GD_DEFINE_PROPERTY(WeaponType, weapon_type, WeaponType::MANUAL);
+
+  GD_DEFINE_PROPERTY(float, angularFreq, 0.0f);
+  GD_DEFINE_PROPERTY(float, dampingRatio, 0.0f);
+  GD_DEFINE_PROPERTY(float, weaponVerticalAngFreq, 0.0f);
+  GD_DEFINE_PROPERTY(float, weaponVerticalDampingRatio, 0.0f);
+  GD_DEFINE_PROPERTY(float, weaponVerticalPush, 1.0f);
+
   
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_freq, 0.0f);
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_amp, 0.0f);

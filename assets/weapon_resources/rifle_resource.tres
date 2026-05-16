@@ -1,20 +1,20 @@
 [gd_resource type="Weapon" format=3 uid="uid://c6bcoxa876t4a"]
 
 [resource]
+weaponName = "Rifle"
+totalAmmoCount = 40
+weapon_type = 1
 angularFreq = 45.0
 dampingRatio = 0.9
 weaponVerticalPush = 0.1
 weaponVerticalAngFreq = 30.0
 weaponVerticalDampingRatio = 0.2
-weapon_type = 1
-totalAmmoCount = 40
-timeBeforeShoot = 0.04
-weaponName = "Rifle"
 weaponEquipAnimName = "rifle_equip"
 weaponUnequipAnimName = "rifle_unequip"
 weapon_shoot_anim_speed = 2.0
 weaponShootingAnimName = "rifle_shoot"
 weaponReloadAnimName = "rifle_reload"
+recoil_vector = Vector3(0.08, 0.04, 0.01)
 idle_weapon_bob_freq = 0.5
 idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.6

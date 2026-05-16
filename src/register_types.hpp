@@ -1,6 +1,7 @@
 #pragma once
 
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/engine.hpp>
 
 #include "game.h"
 #include "camera_controller.h"
@@ -11,6 +12,8 @@
 #include "player_state_machine.h"
 #include "weapon_state_machine.h"
 #include "weapon_manager.h"
+#include "camera_recoil_holder.h"
+#include "event_bus.h"
 
 using namespace godot;
 

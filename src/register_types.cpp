@@ -1,4 +1,6 @@
 #include "register_types.hpp"
+#include "event_bus.h"
+#include "godot_cpp/core/memory.hpp"
 
 #include <godot_cpp/core/class_db.hpp>
 #include <gdextension_interface.h>
@@ -7,11 +9,17 @@
 
 using namespace godot;
 
+static EventBus *s_EventBus = NULL;
+
 void initialize_module(ModuleInitializationLevel p_level) {
 
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+
+  GDREGISTER_CLASS(EventBus);
+  s_EventBus = memnew(EventBus);
+  Engine::get_singleton()->register_singleton("EventBus", s_EventBus);
 
   // the game runs, the checks are required prevents error spam (DO NOT CHANGE THE player from GDREGISTER_RUNTIME_CLASS)
   if(!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game); 
@@ -25,6 +33,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("PlayerStateMachine")) GDREGISTER_RUNTIME_CLASS(PlayerStateMachine);
   if(!ClassDB::class_exists("WeaponStateMachine")) GDREGISTER_RUNTIME_CLASS(WeaponStateMachine);
   if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager);
+  if(!ClassDB::class_exists("CameraRecoilHolder")) GDREGISTER_RUNTIME_CLASS(CameraRecoilHolder);
 
   // Components
   if(!ClassDB::class_exists("CharacterComponent")) GDREGISTER_CLASS(CharacterComponent);
@@ -37,6 +46,14 @@ void uninitialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+
+  Engine::get_singleton()->unregister_singleton("EventBus");
+
+  if(s_EventBus)
+  {
+    memdelete(s_EventBus);
+    s_EventBus = nullptr;
+  }
 }
 
 extern "C" {

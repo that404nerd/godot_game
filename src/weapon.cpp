@@ -43,6 +43,9 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weapon_reload_anim_blend, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponReloadAnimName, Variant::STRING);
 
+  ADD_GROUP("Weapon Recoil Values", "");
+  GD_BIND_PROPERTY(Weapon, recoil_vector, Variant::VECTOR3);
+
   ADD_GROUP("Weapon Bob And Range", "");
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_amp, Variant::FLOAT);

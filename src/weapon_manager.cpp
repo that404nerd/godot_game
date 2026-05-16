@@ -1,7 +1,4 @@
 #include "weapon_manager.h"
-#include "godot_cpp/classes/random_number_generator.hpp"
-#include "godot_cpp/classes/range.hpp"
-#include "godot_cpp/core/math.hpp"
 #include "weapon_states.h"
 #include "weapon_state_machine.h"
 
@@ -62,6 +59,7 @@ void WeaponManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, player_head_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+
  
 }
 
@@ -87,10 +85,6 @@ void WeaponManager::_process(double delta)
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
   m_WeaponEffects._update(delta, m_MouseVel);
-
-  // m_TargetRot = m_TargetRot.lerp(Vector3(0.0f, 0.0f, 0.0f), 6.0f * get_process_delta_time());
-  // m_CurrentRot = m_CurrentRot.lerp(m_TargetRot, 6.0f * get_process_delta_time());
-  // player_head_node->set_rotation(m_CurrentRot);
 
   // m_MouseInput.x = 0.0f;
   // m_MouseInput.y = 0.0f;
@@ -123,15 +117,6 @@ void WeaponManager::generate_decal()
     bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, -1.0f, 0.0f));
     bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
   }
-}
-
-void WeaponManager::_weapon_recoil()
-{
-  // Ref<RandomNumberGenerator> rn;
-  // rn.instantiate();
-  // m_TargetRot += Vector3(0.08f, rn->randf_range(-0.04f, 0.04f), 0.0f);
-
-  // print_line("player head rotation: ", player_head_node->get_rotation());
 }
 
 
@@ -168,6 +153,7 @@ void WeaponManager::_on_weapon_shoot(const StringName& anim_name)
     m_Particles3D->set_emitting(true);
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
     generate_decal();
+    EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
   }
 }
 
@@ -211,7 +197,6 @@ void WeaponManager::_shoot_weapon(double delta)
     m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
         m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
 
-    _weapon_recoil();
     m_OmniLightNode->set_visible(true);
     m_WeaponStateCtx.IsKeyPressed = false;
   }

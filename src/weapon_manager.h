@@ -11,7 +11,9 @@
 #include <godot_cpp/classes/decal.hpp>
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/classes/viewport.hpp>
-
+#include <godot_cpp/classes/animation_player.hpp>
+#include <godot_cpp/classes/gpu_particles3d.hpp>
+#include <godot_cpp/variant/typed_array.hpp>
 #include <godot_cpp/classes/omni_light3d.hpp>
 
 #include "components/ammo_component.h"
@@ -20,9 +22,7 @@
 #include "components/weapon_effects_components.h"
 
 #include "globals.h"
-#include "godot_cpp/classes/animation_player.hpp"
-#include "godot_cpp/classes/gpu_particles3d.hpp"
-#include "godot_cpp/variant/typed_array.hpp"
+#include "event_bus.h"
 #include "weapon.h"
 #include "weapon_states.h"
 
@@ -53,7 +53,6 @@ public:
   void _weapon_switch();
 
   void _weapon_shoot_finish();
-  void _weapon_recoil();
 
   void _on_weapon_shoot(const StringName& anim_name);
   

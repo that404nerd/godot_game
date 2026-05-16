@@ -1,16 +1,16 @@
 [gd_resource type="Weapon" format=3 uid="uid://g6nbobyu2ifd"]
 
 [resource]
+weaponName = "Shotgun"
+totalAmmoCount = 16
 angularFreq = 45.0
 dampingRatio = 0.7
 weaponVerticalAngFreq = 30.0
-totalAmmoCount = 16
-timeBeforeShoot = 0.0
-weaponName = "Shotgun"
 weaponEquipAnimName = "shotgun_equip"
 weaponUnequipAnimName = "shotgun_unequip"
 weaponShootingAnimName = "shotgun_shoot"
 weaponReloadAnimName = "shotgun_reload"
+recoil_vector = Vector3(0.08, 0.04, 0.01)
 idle_weapon_bob_freq = 0.5
 idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.5
