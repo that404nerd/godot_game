@@ -40,6 +40,7 @@ headbob_transition_value = 5.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715, 0)
 
 [node name="PlayerHead" type="Node3D" parent="CameraController" unique_id=1010004094]
+unique_name_in_owner = true
 
 [node name="CameraRecoilHolder" type="CameraRecoilHolder" parent="CameraController/PlayerHead" unique_id=44448943]
 
@@ -52,7 +53,6 @@ near = 0.01
 
 [node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera" unique_id=1899973665]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 
 [node name="Pistol" parent="CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 instance=ExtResource("1_dqkch")]
 

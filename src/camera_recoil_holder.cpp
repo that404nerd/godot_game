@@ -14,7 +14,6 @@ void CameraRecoilHolder::_bind_methods()
 void CameraRecoilHolder::addWeaponRecoil(Ref<Weapon> currentWeapon)
 {
   Vector3 recoilVec = currentWeapon->get_recoil_vector();
-  print_line("Current weapon from recoil is: ", currentWeapon->get_weaponName());
   m_TargetRot += Vector3(recoilVec.x, m_Rng->randf_range(-recoilVec.y, recoilVec.y), recoilVec.z);
 }
 

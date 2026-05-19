@@ -49,6 +49,8 @@ private:
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
 
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
+  GD_DEFINE_PROPERTY(int, magAmmoCount, 0); 
+
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
 
   GD_DEFINE_PROPERTY(Vector3, recoil_vector, Vector3(0.0f, 0.0f, 0.0f));

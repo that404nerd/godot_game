@@ -79,6 +79,7 @@ public:
 
 private:
   Node3D* m_HoldPointNode { nullptr };
+  Vector3 m_BasePos {};
 
   WeaponBobComponent m_WeaponBobComponent;
   WeaponSwayComponent m_WeaponSwayComponent;

@@ -168,6 +168,11 @@ void WeaponManager::_shoot_weapon(double delta)
   {
     m_WeaponStateCtx.ShootTimeBeforeIdle -= delta;
   }
+
+  if(m_WeaponStateCtx.ShootCooldown > 0.0)
+  {
+    m_WeaponStateCtx.ShootCooldown -= delta;
+  }
   
   // Check whether the fire key is held or not (for automatic weapons)
   if(Input::get_singleton()->is_action_pressed("shoot_weapon") && (
@@ -200,6 +205,7 @@ void WeaponManager::_shoot_weapon(double delta)
     m_OmniLightNode->set_visible(true);
     m_WeaponStateCtx.IsKeyPressed = false;
   }
+
   m_LightTimeout -= delta;
 
   if(m_LightTimeout <= 0.0f)
@@ -216,15 +222,24 @@ void WeaponManager::_shoot_weapon(double delta)
   
 void WeaponManager::_reload_weapon()
 {
+  int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
+  int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
+  int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
 
-  if(m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) < m_CurrentWeapon->get_totalAmmoCount())
-  {
-    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(), 
-        m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
-    
-    if(m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) == 0)
-      m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, m_CurrentWeapon->get_totalAmmoCount());
-  }
+  if(current_ammo >= max_mag_capacity || current_reserve_ammo <= 0)
+    return;
+
+  m_CurrentWeaponAnimPlayer->play(
+    m_CurrentWeapon->get_weaponReloadAnimName(), 
+    m_CurrentWeapon->get_weapon_reload_anim_blend(), 
+    m_CurrentWeapon->get_weapon_reload_anim_speed()
+  );
+
+  int ammoNeeded = max_mag_capacity - current_ammo;
+  int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
+
+  m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
+  m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
 }
 
 void WeaponManager::_weapon_unequip_over()

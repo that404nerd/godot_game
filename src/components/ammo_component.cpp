@@ -6,12 +6,13 @@ void AmmoComponent::_init_data(Array weaponList)
   {
     Ref<Weapon> currentWeapon = weapon;
     m_WeaponAmmoMap[weapon].TotalAmmo = currentWeapon->get_totalAmmoCount(); 
+    m_WeaponAmmoMap[weapon].CurrentAmmo = currentWeapon->get_magAmmoCount(); 
+    m_WeaponAmmoMap[weapon].ReserveAmmo = currentWeapon->get_totalAmmoCount() - currentWeapon->get_magAmmoCount(); 
   }
 }
 
 void AmmoComponent::consume_ammo(Ref<Weapon> currentWeapon, int ammoCount)
 {
-  m_WeaponAmmoMap[currentWeapon].TotalAmmo -= ammoCount;
+  m_WeaponAmmoMap[currentWeapon].CurrentAmmo -= ammoCount;
   m_WeaponAmmoMap[currentWeapon].BulletsConsumed += ammoCount;
-  print_line(m_WeaponAmmoMap[currentWeapon].TotalAmmo);
 }

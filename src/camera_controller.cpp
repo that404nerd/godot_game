@@ -9,7 +9,8 @@ void CameraController::_ready()
 {
   m_PlayerInst = Object::cast_to<Player>(get_parent());
 
-  m_PlayerCamera = get_node<Camera3D>("%PlayerCamera");
+  m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
+  m_PlayerHead = get_node<Node3D>(NodePath("%PlayerHead"));
 
   m_OriginalFOV = m_PlayerCamera->get_fov();
   sprint_fov = m_PlayerCamera->get_fov() + 10.0f;

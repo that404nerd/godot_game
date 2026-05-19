@@ -14,6 +14,7 @@ struct AmmoData
   int TotalAmmo;
   int CurrentAmmo;
   int BulletsConsumed;
+  int ReserveAmmo;
 };
 
 class AmmoComponent {
@@ -21,19 +22,21 @@ class AmmoComponent {
 public:
 
   void _init_data(Array weaponList);
-
   void consume_ammo(Ref<Weapon> currentWeapon, int ammoCount);
 
-  void set_current_weapon_ammo(Ref<Weapon> currentWeapon, int ammo) {
-    m_WeaponAmmoMap[currentWeapon].TotalAmmo = ammo;
+  void set_current_weapon_ammo(Ref<Weapon> currentWeapon, int ammo) { 
+    m_WeaponAmmoMap[currentWeapon].CurrentAmmo = ammo; // Sets the ammo in the mag
   } 
 
-  int get_current_weapon_bullets_consumed(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].BulletsConsumed; }
-
-  int get_current_weapon_ammo(Ref<Weapon> currentWeapon) {
-    m_WeaponAmmoMap[currentWeapon].CurrentAmmo = m_WeaponAmmoMap[currentWeapon].TotalAmmo;
-    return m_WeaponAmmoMap[currentWeapon].CurrentAmmo;
+  void set_current_weapon_reserve_ammo(Ref<Weapon> currentWeapon, int ammo)
+  {
+    if(m_WeaponAmmoMap[currentWeapon].ReserveAmmo > 0)
+      m_WeaponAmmoMap[currentWeapon].ReserveAmmo = ammo; // Subtracts the reserve ammo by the give ammo count
   }
+
+  int get_current_weapon_ammo(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].CurrentAmmo; }
+
+  int get_current_weapon_reserve_ammo(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].ReserveAmmo; }
 
 private:
   AHashMap<Ref<Weapon>, AmmoData> m_WeaponAmmoMap;

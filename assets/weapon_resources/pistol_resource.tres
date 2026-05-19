@@ -2,7 +2,8 @@
 
 [resource]
 weaponName = "Pistol"
-totalAmmoCount = 10
+totalAmmoCount = 120
+magAmmoCount = 10
 weapon_type = 2
 angularFreq = 45.0
 dampingRatio = 0.9

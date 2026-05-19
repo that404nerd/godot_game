@@ -13,6 +13,7 @@ void Weapon::_bind_methods() {
 
   GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
+  GD_BIND_PROPERTY(Weapon, magAmmoCount, Variant::INT);
 
   BIND_ENUM_CONSTANT(AUTO);
   BIND_ENUM_CONSTANT(MANUAL);

@@ -61,6 +61,8 @@ private:
 
 private:
   Camera3D* m_PlayerCamera { nullptr };
+  Node3D* m_PlayerHead { nullptr };
+
   GD_DEFINE_PROPERTY(PlayerStateMachine*, player_state_machine, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, weapon_hold_point, nullptr);
 };

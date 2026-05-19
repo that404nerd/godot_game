@@ -15,6 +15,7 @@ struct WeaponStateContext
 {
   Weapon::WeaponType CurrentWeaponType { Weapon::WeaponType::NONE };
   float ShootTimeBeforeIdle { 1.0f };
+  float ShootCooldown { 0.0f };
   bool IsKeyPressed { false }, IsKeyHeld { false }, CanUnequip { false };
 };
 

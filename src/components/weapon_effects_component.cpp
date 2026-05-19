@@ -131,6 +131,7 @@ void WeaponEffects::_init_data(Node3D* holdPointNode,
                                WeaponComponent* weaponComponent)
 {
   m_HoldPointNode = holdPointNode;
+  m_BasePos = m_HoldPointNode->get_position();
 
   m_WeaponBobComponent._init_data(characterComponent, weaponComponent);
   m_WeaponSwayComponent._init_data(characterComponent, weaponComponent);
@@ -144,14 +145,15 @@ void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
 
 void WeaponEffects::_update(double delta, Vector3& sway_vel)
 {
-  // m_WeaponSwayComponent.weapon_idle_sway(delta);
+  m_WeaponSwayComponent.weapon_idle_sway(delta);
   m_WeaponSwayComponent.weapon_sway(delta, sway_vel);
   m_WeaponBobComponent.weapon_bob(delta);
 
   if (!m_HoldPointNode) return;
 
   m_HoldPointNode->set_position(
-      // m_WeaponSwayComponent.get_idle_offset() +
+      m_BasePos +
+      m_WeaponSwayComponent.get_idle_offset() +
       m_WeaponSwayComponent.get_sway_offset() +
       m_WeaponBobComponent.get_weapon_bob_offset());
 }
