@@ -95,15 +95,14 @@ void WeaponSwayComponent::weapon_idle_sway(double delta)
 {
   if (!m_CharacterBody) return;
 
-  bool isNotInMotion = m_CharacterBody->get_velocity().length() <= 0.1f;
-  
-  m_IdleWeaponBobTime += delta * 0.5f * isNotInMotion;
+  m_IdleWeaponBobTime += delta * 0.5f;
 
   float x_bob = Math::cos(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.5f) * m_IdleWeaponBobAmp;
   float y_bob = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq) * m_IdleWeaponBobAmp;
 
   m_IdleSwayOffset.x = Utils::exp_decay(m_IdleSwayOffset.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta);
   m_IdleSwayOffset.y = Utils::exp_decay(m_IdleSwayOffset.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta);
+
 }
 
 void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
@@ -122,8 +121,8 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
       equilibriumPos,
       m_SwayParams);
 
-  m_SwayOffset.x = Math::clamp(m_SwayOffset.x, -0.03f, 0.03f);
-  m_SwayOffset.y = Math::clamp(m_SwayOffset.y, -0.03f, 0.03f);
+  // m_SwayOffset.x = Math::clamp(m_SwayOffset.x, -0.03f, 0.03f);
+  // m_SwayOffset.y = Math::clamp(m_SwayOffset.y, -0.03f, 0.03f);
 }
 
 void WeaponEffects::_init_data(Node3D* holdPointNode,
@@ -150,6 +149,12 @@ void WeaponEffects::_update(double delta, Vector3& sway_vel)
   m_WeaponBobComponent.weapon_bob(delta);
 
   if (!m_HoldPointNode) return;
+
+  // print_line(
+  //   "Idle offset: ", m_WeaponSwayComponent.get_idle_offset(), "\n",
+  //   "Sway Offset: ", m_WeaponSwayComponent.get_sway_offset(), "\n",
+  //   "Bob Offset: ", m_WeaponBobComponent.get_weapon_bob_offset()
+  // );
 
   m_HoldPointNode->set_position(
       m_BasePos +

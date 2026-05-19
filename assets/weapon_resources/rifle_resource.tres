@@ -2,7 +2,7 @@
 
 [resource]
 weaponName = "Rifle"
-totalAmmoCount = 40
+totalAmmoCount = 180
 magAmmoCount = 30
 weapon_type = 1
 angularFreq = 45.0

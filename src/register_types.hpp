@@ -15,6 +15,8 @@
 #include "camera_recoil_holder.h"
 #include "event_bus.h"
 
+#include "components/muzzle_flash_component.h"
+
 using namespace godot;
 
 void initailize(ModuleInitializationLevel p_level);

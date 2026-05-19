@@ -18,6 +18,7 @@
 
 #include "components/ammo_component.h"
 #include "components/character_component.h"
+#include "components/muzzle_flash_component.h"
 #include "components/weapon_component.h"
 #include "components/weapon_effects_components.h"
 
@@ -84,6 +85,7 @@ private:
   WeaponSwayComponent m_WeaponSwayComponent;
   WeaponStateContext m_WeaponStateCtx;
   AmmoComponent m_AmmoComp;
+  MuzzleFlashComponent* m_MuzzleComp;
   
   String m_NextWeaponName;
 
@@ -91,9 +93,9 @@ private:
   CharacterBody3D* m_CharacterBody { nullptr };
   Camera3D* m_Camera { nullptr };
 
-  Node3D* m_MuzzleFlashNode { nullptr };
-  OmniLight3D* m_OmniLightNode { nullptr };
-  GPUParticles3D* m_Particles3D { nullptr };
+  // Node3D* m_MuzzleFlashNode { nullptr };
+  // OmniLight3D* m_OmniLightNode { nullptr };
+  // GPUParticles3D* m_Particles3D { nullptr };
 
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;

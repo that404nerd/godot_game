@@ -605,17 +605,19 @@ cast_shadow = 0
 mesh = SubResource("ArrayMesh_aixgn")
 skin = SubResource("Skin_v3y6n")
 
-[node name="MuzzleFlash" type="Node3D" parent="." unique_id=1419103276]
+[node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="." unique_id=219364471 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
+omni_light_inst = NodePath("OmniLight3D")
+gpu_particles_inst = NodePath("GPUParticles3D")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.248, -0.085, -0.85)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="MuzzleFlash" unique_id=601494058]
+[node name="OmniLight3D" type="OmniLight3D" parent="MuzzleFlashComponent" unique_id=601494058]
 visible = false
 light_color = Color(0.96862745, 0.7529412, 0.29803923, 1)
 light_indirect_energy = 2.236
 omni_range = 26.214
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="MuzzleFlash" unique_id=496056986]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="MuzzleFlashComponent" unique_id=496056986]
 emitting = false
 amount = 100
 lifetime = 0.05

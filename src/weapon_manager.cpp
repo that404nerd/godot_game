@@ -32,11 +32,7 @@ void WeaponManager::_ready()
   }
   
   m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
-  m_MuzzleFlashNode = m_WeaponNodes[m_WeaponIndex]->get_node<Node3D>(NodePath("%MuzzleFlash"));
-
-  m_OmniLightNode = m_MuzzleFlashNode->get_node<OmniLight3D>(NodePath("OmniLight3D"));
-  m_Particles3D = m_MuzzleFlashNode->get_node<GPUParticles3D>(NodePath("GPUParticles3D"));
-
+  m_MuzzleComp = m_WeaponNodes[m_WeaponIndex]->get_node<MuzzleFlashComponent>(NodePath("%MuzzleFlashComponent"));
 
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
@@ -150,7 +146,7 @@ void WeaponManager::_on_weapon_shoot(const StringName& anim_name)
   if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
   {
     m_LightTimeout = 0.05f;
-    m_Particles3D->set_emitting(true);
+    m_MuzzleComp->_set_particles_status(true);
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
     generate_decal();
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
@@ -202,14 +198,14 @@ void WeaponManager::_shoot_weapon(double delta)
     m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
         m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
 
-    m_OmniLightNode->set_visible(true);
+    m_MuzzleComp->_enable_light_status(true);
     m_WeaponStateCtx.IsKeyPressed = false;
   }
 
   m_LightTimeout -= delta;
 
   if(m_LightTimeout <= 0.0f)
-    m_OmniLightNode->set_visible(false);
+    m_MuzzleComp->_enable_light_status(false);
 
   
   // Set the key held to false and reset the hold counter 
@@ -222,24 +218,51 @@ void WeaponManager::_shoot_weapon(double delta)
   
 void WeaponManager::_reload_weapon()
 {
+  
   int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
   int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
   int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
-
+  
   if(current_ammo >= max_mag_capacity || current_reserve_ammo <= 0)
     return;
-
-  m_CurrentWeaponAnimPlayer->play(
-    m_CurrentWeapon->get_weaponReloadAnimName(), 
-    m_CurrentWeapon->get_weapon_reload_anim_blend(), 
-    m_CurrentWeapon->get_weapon_reload_anim_speed()
-  );
 
   int ammoNeeded = max_mag_capacity - current_ammo;
   int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
-  m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
-  m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
+  m_WeaponStateCtx.IsReloading = true;
+
+  if(m_CurrentWeapon->get_is_incremental_reload())
+  {
+    // TODO: Rewrite this mess!
+    // for(int i = 0; i < ammoToBeReloaded; i++)
+    // {
+    //   m_CurrentWeaponAnimPlayer->queue(m_CurrentWeapon->get_weaponReloadAnimName());
+    //   m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
+    //   m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - 1);
+    // }
+
+    // current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
+    // current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
+    // max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
+  
+    // ammoNeeded = max_mag_capacity - current_ammo;
+    // ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
+    
+    // if(ammoToBeReloaded == 0)
+    // {
+    //   m_CurrentWeaponAnimPlayer->queue(m_CurrentWeapon->get_weaponReloadEndAnimName());
+    // }
+  } else {
+    m_CurrentWeaponAnimPlayer->play(
+      m_CurrentWeapon->get_weaponReloadAnimName(), 
+      m_CurrentWeapon->get_weapon_reload_anim_blend(), 
+      m_CurrentWeapon->get_weapon_reload_anim_speed()
+    );
+    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
+    m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
+  }
+  
+  m_WeaponStateCtx.IsReloading = false;
 }
 
 void WeaponManager::_weapon_unequip_over()
@@ -250,22 +273,23 @@ void WeaponManager::_weapon_unequip_over()
 
 void WeaponManager::_weapon_switch()
 {
-  int weapon_index = -1;
-  
   for (int i = 0; i < weapon_component->get_weapon_resource_list().size(); i++) {
     Ref<Weapon> res = weapon_component->get_weapon_resource_list()[i]; 
 
     if (res.is_valid() && res->get_weaponName() == weapon_component->get_next_weapon_name()) {
-      weapon_index = i;
+      m_WeaponIndex = i;
       break;
     }
   }
   
-  if(weapon_index != -1)
+  if(m_WeaponIndex != -1)
   {
-    Ref<Weapon> nextWeapon = weapon_component->get_weapon_resource_list()[weapon_index];
+    Ref<Weapon> nextWeapon = weapon_component->get_weapon_resource_list()[m_WeaponIndex];
     weapon_component->set_current_weapon(nextWeapon);
     m_WeaponEffects._update_data(nextWeapon);
+
+    // TODO: This looks messy, fix it!
+    m_MuzzleComp = m_WeaponNodes[m_WeaponIndex]->get_node<MuzzleFlashComponent>(NodePath("%MuzzleFlashComponent"));
   }
 }
 

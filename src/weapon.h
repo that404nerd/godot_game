@@ -44,12 +44,17 @@ private:
   GD_DEFINE_PROPERTY(float, weapon_reload_anim_blend, -1.0f);
   GD_DEFINE_PROPERTY(String, weaponReloadAnimName, "");
 
+  GD_DEFINE_PROPERTY(float, weapon_reload_end_anim_speed, 1.0f);
+  GD_DEFINE_PROPERTY(float, weapon_reload_end_anim_blend, -1.0f);
+  GD_DEFINE_PROPERTY(String, weaponReloadEndAnimName, "");
+
   GD_DEFINE_PROPERTY(float, weapon_unequip_anim_speed, 1.0f);
   GD_DEFINE_PROPERTY(float, weapon_unequip_anim_blend, -1.0f);
   GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
 
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(int, magAmmoCount, 0); 
+  GD_DEFINE_PROPERTY(bool, is_incremental_reload, false); 
 
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
 

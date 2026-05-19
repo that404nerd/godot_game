@@ -19,7 +19,7 @@ void CameraRecoilHolder::addWeaponRecoil(Ref<Weapon> currentWeapon)
 
 void CameraRecoilHolder::_process(double delta)
 {
-  m_TargetRot = m_TargetRot.lerp(Vector3(0.0f, 0.0f, 0.0f), 6.0f * get_process_delta_time());
-  m_CurrentRot = m_CurrentRot.lerp(m_TargetRot, 6.0f * get_process_delta_time());
+  m_TargetRot = Utils::exp_decay(m_TargetRot, Vector3(0.0f, 0.0f, 0.0f), 7.0f, delta);
+  m_CurrentRot = Utils::exp_decay(m_CurrentRot, m_TargetRot, 8.0f, delta);
   set_rotation(m_CurrentRot);
 }

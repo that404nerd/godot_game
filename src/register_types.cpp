@@ -1,4 +1,5 @@
 #include "register_types.hpp"
+#include "components/muzzle_flash_component.h"
 #include "event_bus.h"
 #include "godot_cpp/core/memory.hpp"
 
@@ -38,6 +39,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   // Components
   if(!ClassDB::class_exists("CharacterComponent")) GDREGISTER_CLASS(CharacterComponent);
   if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
+  if(!ClassDB::class_exists("MuzzleFlashComponent")) GDREGISTER_CLASS(MuzzleFlashComponent);
 }
 
 

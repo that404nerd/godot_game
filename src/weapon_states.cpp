@@ -128,7 +128,8 @@ void WeaponShootState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponReloadState::WeaponReloadState(const WeaponStateData& weaponStateData)
   : State(static_cast<int8_t>(WeaponStates::RELOAD)), m_WeaponManager(weaponStateData.weaponManager),
-    m_WeaponStateMachine(weaponStateData.weaponStateMachine)
+    m_WeaponStateMachine(weaponStateData.weaponStateMachine),
+    m_WeaponStateContext(m_WeaponManager->get_weapon_state_ctx())
 {
 }
 
@@ -151,7 +152,8 @@ void WeaponReloadState::_enter()
 
 void WeaponReloadState::_update(double delta)
 {
-  m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  if(m_WeaponStateContext.IsReloading == false)
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }
 
 void WeaponReloadState::_exit()

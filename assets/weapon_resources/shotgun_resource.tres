@@ -4,6 +4,7 @@
 weaponName = "Shotgun"
 totalAmmoCount = 48
 magAmmoCount = 6
+is_incremental_reload = true
 angularFreq = 45.0
 dampingRatio = 0.7
 weaponVerticalAngFreq = 30.0
@@ -11,6 +12,7 @@ weaponEquipAnimName = "shotgun_equip"
 weaponUnequipAnimName = "shotgun_unequip"
 weaponShootingAnimName = "shotgun_shoot"
 weaponReloadAnimName = "shotgun_reload"
+weaponReloadEndAnimName = "shotgun_reload_end"
 recoil_vector = Vector3(0.08, 0.04, 0.01)
 idle_weapon_bob_freq = 0.5
 idle_weapon_bob_amp = 0.02

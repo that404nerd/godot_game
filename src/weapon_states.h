@@ -16,6 +16,7 @@ struct WeaponStateContext
   Weapon::WeaponType CurrentWeaponType { Weapon::WeaponType::NONE };
   float ShootTimeBeforeIdle { 1.0f };
   float ShootCooldown { 0.0f };
+  bool IsReloading { false };
   bool IsKeyPressed { false }, IsKeyHeld { false }, CanUnequip { false };
 };
 
@@ -81,6 +82,7 @@ public:
 private:
   WeaponManager* m_WeaponManager { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
+  const WeaponStateContext& m_WeaponStateContext;
 };
 
 class WeaponUnequipState : public State {

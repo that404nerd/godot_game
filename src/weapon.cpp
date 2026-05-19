@@ -14,6 +14,7 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, magAmmoCount, Variant::INT);
+  GD_BIND_PROPERTY(Weapon, is_incremental_reload, Variant::BOOL);
 
   BIND_ENUM_CONSTANT(AUTO);
   BIND_ENUM_CONSTANT(MANUAL);
@@ -43,6 +44,10 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weapon_reload_anim_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weapon_reload_anim_blend, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponReloadAnimName, Variant::STRING);
+
+  GD_BIND_PROPERTY(Weapon, weapon_reload_end_anim_speed, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weapon_reload_end_anim_blend, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weaponReloadEndAnimName, Variant::STRING);
 
   ADD_GROUP("Weapon Recoil Values", "");
   GD_BIND_PROPERTY(Weapon, recoil_vector, Variant::VECTOR3);
