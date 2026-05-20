@@ -2,11 +2,6 @@
 
 using namespace godot;
 
-Weapon::Weapon()
-{
-
-}
-
 void Weapon::_bind_methods() {
 
   ADD_GROUP("General Weapon Properties", "");
@@ -15,7 +10,7 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, magAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, is_incremental_reload, Variant::BOOL);
-
+  
   BIND_ENUM_CONSTANT(AUTO);
   BIND_ENUM_CONSTANT(MANUAL);
   BIND_ENUM_CONSTANT(BOTH);
@@ -41,6 +36,10 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weapon_shoot_anim_blend, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponShootingAnimName, Variant::STRING);
 
+  GD_BIND_PROPERTY(Weapon, weapon_reload_start_anim_speed, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weapon_reload_start_anim_blend, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weaponReloadStartAnimName, Variant::STRING);
+
   GD_BIND_PROPERTY(Weapon, weapon_reload_anim_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weapon_reload_anim_blend, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponReloadAnimName, Variant::STRING);
@@ -63,5 +62,3 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_smooth_val, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weapon_bob_smooth_val, Variant::FLOAT);
 }
-
-Weapon::~Weapon() {}

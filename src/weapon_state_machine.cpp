@@ -62,9 +62,4 @@ void WeaponStateMachine::_on_animation_finished(const StringName& anim_name)
     weapon_manager->_weapon_unequip_over();
     _change_state(static_cast<uint8_t>(WeaponStates::WEAPON_SWITCH));
   }
-
-  if(anim_name == weapon_component->get_current_weapon_data()->get_weaponShootingAnimName())
-  {
-    weapon_manager->_weapon_shoot_finish();
-  }
 }

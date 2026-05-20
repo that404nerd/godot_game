@@ -3,8 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://b7khe2s865pte" path="res://assets/weapon_scenes/pistol.tscn" id="1_dqkch"]
 [ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="2_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://lfo3x6xjd6h3" path="res://assets/weapon_scenes/shotgun.tscn" id="3_ur7pv"]
+[ext_resource type="Script" uid="uid://cu33kq028l77c" path="res://src/scripts/hud.gd" id="4_d2wvv"]
 [ext_resource type="Theme" uid="uid://607bfwn0648t" path="res://assets/ui/debug_panel_theme.tres" id="4_dqkch"]
-[ext_resource type="Script" uid="uid://oy60tgw2vc2c" path="res://src/scripts/debug_panel.gd" id="5_qlg0r"]
 [ext_resource type="Weapon" uid="uid://ct4xiq7b5h3b0" path="res://assets/weapon_resources/pistol_resource.tres" id="6_tuyoq"]
 [ext_resource type="Weapon" uid="uid://g6nbobyu2ifd" path="res://assets/weapon_resources/shotgun_resource.tres" id="7_smehm"]
 [ext_resource type="Weapon" uid="uid://c6bcoxa876t4a" path="res://assets/weapon_resources/rifle_resource.tres" id="8_ur7pv"]
@@ -14,6 +14,11 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 height = 1.2
+
+[sub_resource type="LabelSettings" id="LabelSettings_y4r1p"]
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_d2wvv"]
 
 [node name="Player" type="Player" unique_id=377799196]
 crouch_speed = 2.5
@@ -83,6 +88,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+script = ExtResource("4_d2wvv")
 
 [node name="Rectile" type="TextureRect" parent="HUD" unique_id=849627784]
 layout_mode = 1
@@ -108,14 +114,51 @@ offset_top = 10.0
 offset_right = 210.0
 offset_bottom = 50.0
 theme = ExtResource("4_dqkch")
-script = ExtResource("5_qlg0r")
 
 [node name="MarginContainer" type="MarginContainer" parent="HUD/DebugPanel" unique_id=1805067421]
 layout_mode = 2
 
 [node name="PropertyContainer" type="VBoxContainer" parent="HUD/DebugPanel/MarginContainer" unique_id=395446820]
+layout_mode = 2
+
+[node name="FPSLabel" type="Label" parent="HUD/DebugPanel/MarginContainer/PropertyContainer" unique_id=1510971308]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="PlayerStateNameLabel" type="Label" parent="HUD/DebugPanel/MarginContainer/PropertyContainer" unique_id=982788286]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="WeaponStateNameLabel" type="Label" parent="HUD/DebugPanel/MarginContainer/PropertyContainer" unique_id=1160361437]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AmmoPanel" type="PanelContainer" parent="HUD" unique_id=2122185159]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -86.0
+offset_right = 250.0
+grow_vertical = 0
+theme = ExtResource("4_dqkch")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/AmmoPanel" unique_id=673300634]
+layout_mode = 2
+
+[node name="PropertyContainer" type="VBoxContainer" parent="HUD/AmmoPanel/MarginContainer" unique_id=981816483]
+layout_mode = 2
+
+[node name="WeaponNameLabel" type="Label" parent="HUD/AmmoPanel/MarginContainer/PropertyContainer" unique_id=747143352]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_y4r1p")
+
+[node name="AmmoLabel" type="Label" parent="HUD/AmmoPanel/MarginContainer/PropertyContainer" unique_id=1875875096]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_d2wvv")
 
 [node name="CharacterComponent" type="CharacterComponent" parent="." unique_id=1236826411]
 character_body_path = NodePath("..")
@@ -125,12 +168,11 @@ unique_name_in_owner = true
 player_inst = NodePath("..")
 unique_name_in_owner = true
 
-[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("weapon_state_machine", "weapon_component", "character_component", "hold_point_node", "player_head_node")]
+[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
 character_component = NodePath("../CharacterComponent")
 hold_point_node = NodePath("../CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint")
-player_head_node = NodePath("../CameraController/PlayerHead")
 unique_name_in_owner = true
 
 [node name="WeaponComponent" type="WeaponComponent" parent="." unique_id=1645035038]

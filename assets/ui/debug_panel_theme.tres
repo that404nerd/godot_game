@@ -2,6 +2,7 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rfuxx"]
 bg_color = Color(0.6, 0.6, 0.6, 0.29411766)
+draw_center = false
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2

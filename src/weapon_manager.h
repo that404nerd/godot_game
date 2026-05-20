@@ -53,14 +53,18 @@ public:
   void _reload_weapon();
   void _weapon_switch();
 
-  void _weapon_shoot_finish();
-
+  void _on_weapon_anim_finished(const StringName& anim_name);
   void _on_weapon_shoot(const StringName& anim_name);
   
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
   
   void generate_decal();
+
+public:
+  int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
+  int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
+  StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
 
 protected:
   static void _bind_methods();
@@ -93,10 +97,6 @@ private:
   CharacterBody3D* m_CharacterBody { nullptr };
   Camera3D* m_Camera { nullptr };
 
-  // Node3D* m_MuzzleFlashNode { nullptr };
-  // OmniLight3D* m_OmniLightNode { nullptr };
-  // GPUParticles3D* m_Particles3D { nullptr };
-
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
 
@@ -110,6 +110,4 @@ private:
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
-  GD_DEFINE_PROPERTY(Node3D*, player_head_node, nullptr);
-
 };

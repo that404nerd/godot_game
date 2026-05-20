@@ -11,6 +11,7 @@
 
 #include "global_state_handler.h"
 #include "godot_cpp/core/binder_common.hpp"
+#include "godot_cpp/core/memory.hpp"
 #include "state.h"
 #include "player.h"
 #include "globals.h"

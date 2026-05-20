@@ -14,11 +14,6 @@ using namespace godot;
 class Weapon : public Resource {
   GDCLASS(Weapon, Resource)
   
-public:  
-  Weapon();
-  
-  ~Weapon();
-  
 protected:   
   
   static void _bind_methods();
@@ -39,6 +34,10 @@ private:
   GD_DEFINE_PROPERTY(float, weapon_shoot_anim_speed, 1.0f);
   GD_DEFINE_PROPERTY(float, weapon_shoot_anim_blend, -1.0f);
   GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
+
+  GD_DEFINE_PROPERTY(float, weapon_reload_start_anim_speed, 1.0f);
+  GD_DEFINE_PROPERTY(float, weapon_reload_start_anim_blend, -1.0f);
+  GD_DEFINE_PROPERTY(String, weaponReloadStartAnimName, "");
 
   GD_DEFINE_PROPERTY(float, weapon_reload_anim_speed, 1.0f);
   GD_DEFINE_PROPERTY(float, weapon_reload_anim_blend, -1.0f);
