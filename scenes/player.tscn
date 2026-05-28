@@ -10,6 +10,8 @@
 [ext_resource type="Weapon" uid="uid://c6bcoxa876t4a" path="res://assets/weapon_resources/rifle_resource.tres" id="8_ur7pv"]
 [ext_resource type="Texture2D" uid="uid://cho3drv247dd5" path="res://assets/textures/crosshair.png" id="10_y4r1p"]
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ur7pv"]
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8vuu"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
@@ -21,12 +23,13 @@ font_size = 20
 [sub_resource type="LabelSettings" id="LabelSettings_d2wvv"]
 
 [node name="Player" type="Player" unique_id=377799196]
-crouch_speed = 2.5
-slide_speed = 7.0
+crouch_speed = 4.0
+slide_speed = 14.0
 dash_speed = 70.0
-jump_height = 3.5
+jump_height = 4.0
 down_gravity = 20.0
 max_air_move_speed = 7.0
+slide_timer = 1.5
 crouch_translate_speed = 15.0
 crouch_translate = 0.6
 velocity = Vector3(0, -689.29645, 0)
@@ -37,8 +40,8 @@ weapon_hold_point = NodePath("PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponH
 sprint_fov = 110.0
 slide_fov = 120.0
 sprint_fov_zoom_out_transition_value = 4.0
-sprint_headbob_amp = 0.09
-sprint_headbob_freq = 1.5
+sprint_headbob_amp = 0.3
+sprint_headbob_freq = 1.3
 crouch_headbob_amp = 0.08
 crouch_headbob_freq = 3.0
 headbob_transition_value = 5.0
@@ -71,6 +74,9 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5316644, 0)
 hit_from_inside = true
 debug_shape_custom_color = Color(1, 0, 0, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1085840622]
+mesh = SubResource("CapsuleMesh_ur7pv")
 
 [node name="StandingPlayerCollider" type="CollisionShape3D" parent="." unique_id=1268338097]
 shape = SubResource("CapsuleShape3D_u8vuu")

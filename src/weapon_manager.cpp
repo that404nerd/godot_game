@@ -10,37 +10,37 @@ void WeaponManager::_ready()
   /* NOTE: This took me 2 hours to find lol, i forgot that i was dealing with different animation
   players for different weapon scene, this connects the _on_animation_finished to all animation players */
 
-  m_CurrentWeapon = weapon_component->get_current_weapon_data();
-
+  
   for(int i = 0; i < hold_point_node->get_children().size(); i++)
   {
     Node3D* weapon_node = nullptr;
     AnimationPlayer* anim_player = nullptr;
-
+    
     m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[i]));
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
-
+    
     if(i != m_WeaponIndex) // Check if the first weapon index is m_WeaponIndex (0 in this case)
     {
       // Hide the other weapons except the first weapon that's gonna be equipped
       weapon_node->set_visible(false);
     }
-
+    
     m_WeaponAnims.push_back(weapon_node->get_node<AnimationPlayer>("AnimationPlayer"));
     anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
-
+    
     anim_player->connect("animation_started", Callable(this, "_on_weapon_shoot"));
-
+    
     /* I have seperate functions in both the weapon state machine and this class that connect to the same signal
-       but the state machine's animation finished function only handles the state part only! */
+    but the state machine's animation finished function only handles the state part only! */
     anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
     anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
   }
   
   m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
   m_MuzzleComp = m_WeaponNodes[m_WeaponIndex]->get_node<MuzzleFlashComponent>(NodePath("%MuzzleFlashComponent"));
-
+  
   // Set the current weapon right here first!
+  m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_CharacterBody = character_component->get_character_body();
 
   m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
@@ -281,6 +281,7 @@ void WeaponManager::_reload_weapon()
     );
     m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
     m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
+    m_WeaponStateCtx.IsReloading = false;
   }
   
 }

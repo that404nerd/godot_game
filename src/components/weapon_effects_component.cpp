@@ -38,12 +38,13 @@ void WeaponBobComponent::weapon_bob(double delta)
 {
   if (!m_CharacterBody) return;
 
-  m_PlayerVel = m_CharacterBody->get_velocity();
+  m_CharacterVel = m_CharacterBody->get_velocity();
+
   bool onFloor = m_CharacterBody->is_on_floor();
+  float velocityMag = m_CharacterVel.length();
 
-  float velocity = m_PlayerVel.length();
-
-  m_WeaponBobTime += delta * velocity * onFloor;
+  // Simple fix to avoid bobbing of weapon during slide. Improve this later
+  m_WeaponBobTime += delta * velocityMag * onFloor * (velocityMag <= 10.0f ? 1.0f : 0.0f);
 
   float x_bob = Math::cos(m_WeaponBobTime * m_WeaponBobFreq * 0.5f) * m_WeaponBobAmp;
   float y_bob = Math::sin(m_WeaponBobTime * m_WeaponBobFreq) * m_WeaponBobAmp;
@@ -121,8 +122,8 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
       equilibriumPos,
       m_SwayParams);
 
-  // m_SwayOffset.x = Math::clamp(m_SwayOffset.x, -0.03f, 0.03f);
-  // m_SwayOffset.y = Math::clamp(m_SwayOffset.y, -0.03f, 0.03f);
+  m_SwayOffset.x = Math::clamp(m_SwayOffset.x, -0.03f, 0.03f);
+  m_SwayOffset.y = Math::clamp(m_SwayOffset.y, -0.03f, 0.03f);
 }
 
 void WeaponEffects::_init_data(Node3D* holdPointNode,

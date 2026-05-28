@@ -7,7 +7,7 @@ void PlayerSlideState::_enter()
 
   m_OriginalHeadPosition = m_PlayerInst->get_player_head()->get_position();
   m_FinalPos = m_PlayerInst->get_player_head()->get_position().y - m_PlayerInst->get_crouch_translate();
-  m_SlideTimer = 2.0f;
+  m_SlideTimer = m_PlayerInst->get_slide_timer();
 }
 
 

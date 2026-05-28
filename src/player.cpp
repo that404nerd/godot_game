@@ -28,6 +28,7 @@ void Player::_bind_methods()
   GD_BIND_PROPERTY(Player, ground_decel, Variant::FLOAT);
 
   ADD_GROUP("Player Misc Settings", "");
+  GD_BIND_PROPERTY(Player, slide_timer, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, crouch_translate_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, dash_cooldown, Variant::FLOAT);
   GD_BIND_PROPERTY(Player, crouch_translate, Variant::FLOAT);

@@ -25,7 +25,7 @@ public:
 
 private:
   Vector3 m_BobOffset {};
-  Vector3 m_PlayerVel {};
+  Vector3 m_CharacterVel {};
 
   float m_WeaponBobTime { 0.0f };
   float m_WeaponBobFreq { 0.0f };
