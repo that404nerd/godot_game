@@ -10,8 +10,7 @@ config_version=5
 
 [ambientcg]
 
-extract_path="res://AmbientCG/Downloads"
-material_file_directory="res://AmbientCG/Materials"
+extract_path="res://assets/textures"
 environment_file_directory="res://AmbientCG/Environments"
 
 [animation]
@@ -36,6 +35,10 @@ config/size/viewport_width=800
 
 buses/default_bus_layout="uid://cq2mfupdsh2tc"
 
+[autoload]
+
+AmbientCG="*uid://cnxneyd8ilml2"
+
 [debug_draw_3d]
 
 settings/addon_root_folder="res://addons/debug_draw_3d"
@@ -46,7 +49,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/func_godot/plugin.cfg")
+enabled=PackedStringArray("res://addons/ambientcg/plugin.cfg", "res://addons/func_godot/plugin.cfg")
 
 [filesystem]
 

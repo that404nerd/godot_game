@@ -44,7 +44,7 @@ void WeaponBobComponent::weapon_bob(double delta)
   float velocityMag = m_CharacterVel.length();
 
   // Simple fix to avoid bobbing of weapon during slide. Improve this later
-  m_WeaponBobTime += delta * velocityMag * onFloor * (velocityMag <= 10.0f ? 1.0f : 0.0f);
+  m_WeaponBobTime += delta * velocityMag * onFloor * (velocityMag <= 12.0f ? 1.0f : 0.0f);
 
   float x_bob = Math::cos(m_WeaponBobTime * m_WeaponBobFreq * 0.5f) * m_WeaponBobAmp;
   float y_bob = Math::sin(m_WeaponBobTime * m_WeaponBobFreq) * m_WeaponBobAmp;

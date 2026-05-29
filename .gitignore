@@ -12,8 +12,10 @@ assets/meshes/**/*.import
 
 # folders
 build/
+ambientcg/
+AmbientCG/
+temp_dta/
 trenchbroom/maps/autosave
-assets/blender_saves
 
 !assets/meshes/**/textures/*.png
 !assets/meshes/**/textures/*.jpg

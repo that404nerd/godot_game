@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dw0ktuwgbfpbx"]
+
+[ext_resource type="Texture2D" uid="uid://ci06m2qbm80eq" path="res://assets/textures/concrete/concrete_pillars.jpg" id="1_o0af3"]
+
+[resource]
+albedo_color = Color(1.705, 1.705, 1.705, 1)
+albedo_texture = ExtResource("1_o0af3")
+metallic_specular = 0.0
+uv1_scale = Vector3(5, 5, 5)
+texture_filter = 2

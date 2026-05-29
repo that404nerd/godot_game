@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cu5ccg3erws3a"]
+
+[ext_resource type="Texture2D" uid="uid://d1la06g86omda" path="res://assets/textures/concrete/concrete_albedo.jpg" id="1_bci2f"]
+[ext_resource type="Texture2D" uid="uid://bj8vwjnafqvqm" path="res://assets/textures/concrete/concrete_ao.jpg" id="2_d4rm3"]
+[ext_resource type="Texture2D" uid="uid://syv1gx6giui3" path="res://assets/textures/concrete/concrete_height.jpg" id="3_cffsb"]
+[ext_resource type="Texture2D" uid="uid://bd7ydjg1v2orr" path="res://assets/textures/concrete/concrete_normal.jpg" id="4_621ff"]
+[ext_resource type="Texture2D" uid="uid://chwc6ng7i6ani" path="res://assets/textures/concrete/concrete_roughness.jpg" id="5_j6myp"]
+
+[resource]
+albedo_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
+albedo_texture = ExtResource("1_bci2f")
+metallic_specular = 0.0
+roughness_texture = ExtResource("5_j6myp")
+normal_enabled = true
+normal_texture = ExtResource("4_621ff")
+ao_enabled = true
+ao_texture = ExtResource("2_d4rm3")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_cffsb")
+uv1_scale = Vector3(2, 2, 2)
+texture_filter = 5

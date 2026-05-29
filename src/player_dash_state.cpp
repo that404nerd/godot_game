@@ -20,8 +20,8 @@ void PlayerDashState::_physics_update(double delta)
   
   Vector3 playerVel = m_PlayerInst->get_velocity();
   
-  playerVel.x = m_DashDir.x * 50.0f;
-  playerVel.z = m_DashDir.z * 50.0f;
+  playerVel.x = m_DashDir.x * m_PlayerInst->get_dash_speed();
+  playerVel.z = m_DashDir.z * m_PlayerInst->get_dash_speed();
 
   m_PlayerInst->set_velocity(playerVel);
 

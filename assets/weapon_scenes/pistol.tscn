@@ -2,27 +2,23 @@
 
 [ext_resource type="Texture2D" uid="uid://dxl1wu2sxonbr" path="res://assets/meshes/weapons/pistol/gun_pistol_Image.png" id="1_b7cxp"]
 [ext_resource type="Texture2D" uid="uid://hr40dimpx3rj" path="res://assets/meshes/weapons/pistol/textures/armRoughness.png" id="1_macd0"]
+[ext_resource type="Texture2D" uid="uid://d2764wnjq1lhj" path="res://assets/meshes/weapons/pistol/textures/armColor.png" id="2_1f5yj"]
+[ext_resource type="Texture2D" uid="uid://decs7iem8kvms" path="res://assets/meshes/weapons/pistol/textures/armNormal.png" id="3_2d33d"]
 [ext_resource type="Texture2D" uid="uid://ddn1esjpp0bqb" path="res://assets/meshes/weapons/pistol/textures/pistolColor.png" id="3_7mp0o"]
 [ext_resource type="Texture2D" uid="uid://be667dnqpi03o" path="res://assets/meshes/weapons/pistol/textures/pistolMetallic.png" id="4_vk5ba"]
 [ext_resource type="Texture2D" uid="uid://ciu36tjshy2og" path="res://assets/meshes/weapons/pistol/textures/pistolNormal.png" id="5_1f5yj"]
 [ext_resource type="AnimationLibrary" uid="uid://bl0r8orfjnkvc" path="res://assets/weapon_resources/animations/pistol_anims.tres" id="5_q6rp4"]
 [ext_resource type="Texture2D" uid="uid://dh2ucvpfaucdq" path="res://assets/meshes/weapons/pistol/textures/pistolRoughness.png" id="6_2d33d"]
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_j6cvw"]
-load_path = "res://.godot/imported/armColor.png-2d85a6fdb85b30e505d819720160cc9c.s3tc.ctex"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_macd0"]
-load_path = "res://.godot/imported/armNormal.png-4fc921b3ed897fd3ec93fe16528d130a.s3tc.ctex"
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q6rp4"]
-albedo_texture = SubResource("CompressedTexture2D_j6cvw")
+albedo_texture = ExtResource("2_1f5yj")
 roughness_texture = ExtResource("1_macd0")
 normal_enabled = true
-normal_texture = SubResource("CompressedTexture2D_macd0")
+normal_texture = ExtResource("3_2d33d")
 use_z_clip_scale = true
 z_clip_scale = 0.65
 use_fov_override = true
-fov_override = 60.0
+fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iuafh"]
 resource_name = "arms"
@@ -202,7 +198,7 @@ normal_texture = ExtResource("5_1f5yj")
 use_z_clip_scale = true
 z_clip_scale = 0.65
 use_fov_override = true
-fov_override = 60.0
+fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jrtg2"]
 resource_name = "pistol"

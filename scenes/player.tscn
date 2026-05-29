@@ -24,8 +24,8 @@ font_size = 20
 
 [node name="Player" type="Player" unique_id=377799196]
 crouch_speed = 4.0
-slide_speed = 14.0
-dash_speed = 70.0
+slide_speed = 15.0
+dash_speed = 100.0
 jump_height = 4.0
 down_gravity = 20.0
 max_air_move_speed = 7.0
@@ -56,7 +56,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.11343908, -0.26044202)
 current = true
-fov = 90.0
+fov = 80.0
 near = 0.01
 
 [node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera" unique_id=1899973665]

@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dg5jgqkaclmx0"]
+
+[ext_resource type="Texture2D" uid="uid://plqaaja0fona" path="res://assets/textures/asphalt/asphalt_albedo.jpg" id="1_pqkuh"]
+[ext_resource type="Texture2D" uid="uid://dumrqxggg543j" path="res://assets/textures/asphalt/asphalt_ao.jpg" id="2_5sniu"]
+[ext_resource type="Texture2D" uid="uid://v7mi8oujwbjw" path="res://assets/textures/asphalt/asphalt_height.jpg" id="3_661ta"]
+[ext_resource type="Texture2D" uid="uid://byg82xchq2sse" path="res://assets/textures/asphalt/asphalt_normal.jpg" id="4_bxnpk"]
+[ext_resource type="Texture2D" uid="uid://d34l5r27840l4" path="res://assets/textures/asphalt/asphalt_roughness.jpg" id="5_2iqw7"]
+
+[resource]
+albedo_texture = ExtResource("1_pqkuh")
+metallic_specular = 0.0
+roughness_texture = ExtResource("5_2iqw7")
+normal_enabled = true
+normal_texture = ExtResource("4_bxnpk")
+ao_enabled = true
+ao_texture = ExtResource("2_5sniu")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_661ta")
+uv1_scale = Vector3(5, 5, 5)
+texture_filter = 2

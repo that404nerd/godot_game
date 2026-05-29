@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://d2exosj7ftmgi"]
+
+[ext_resource type="Texture2D" uid="uid://b2icdkyyfa0e1" path="res://assets/textures/bricks/bricks_bottom_floor.jpg" id="1_q7moe"]
+
+[resource]
+albedo_color = Color(0.46229059, 0.46229059, 0.46229059, 1)
+albedo_texture = ExtResource("1_q7moe")
+metallic_specular = 0.0
+uv1_scale = Vector3(5.5, 5.5, 5.5)
+texture_filter = 2

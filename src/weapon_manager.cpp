@@ -137,36 +137,42 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
   int ammoNeeded = max_mag_capacity - current_ammo;
   int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadStartAnimName()))
+  // make sure this only triggers for weapons with incremental reloads only!!!!!
+  if(m_CurrentWeapon->get_is_incremental_reload())
   {
-    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(),
-      m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
-  }  
 
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
-  {
-    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
-    m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - 1);
-
-    current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
-    current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
-    ammoNeeded = max_mag_capacity - current_ammo;
-    ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
-
-
-    if(ammoToBeReloaded == 0)
-    {
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadEndAnimName(),
-        m_CurrentWeapon->get_weapon_reload_end_anim_blend(), m_CurrentWeapon->get_weapon_reload_end_anim_speed());
-      m_WeaponStateCtx.IsReloading = false;
-    }
-
-    if(ammoToBeReloaded > 0)
+    if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadStartAnimName()))
     {
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(),
+      m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+    }  
+    
+    if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
+    {
+      print_line("set once!");
+      m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
+      m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - 1);
+      
+      current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
+      current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
+      ammoNeeded = max_mag_capacity - current_ammo;
+      ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
+      
+      
+      if(ammoToBeReloaded == 0)
+      {
+        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadEndAnimName(),
+        m_CurrentWeapon->get_weapon_reload_end_anim_blend(), m_CurrentWeapon->get_weapon_reload_end_anim_speed());
+        m_WeaponStateCtx.IsReloading = false;
+      }
+      
+      if(ammoToBeReloaded > 0)
+      {
+        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(),
         m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+      }
+      
     }
-
   }
 }
 
@@ -274,13 +280,15 @@ void WeaponManager::_reload_weapon()
     m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadStartAnimName(),
       m_CurrentWeapon->get_weapon_reload_start_anim_blend(), m_CurrentWeapon->get_weapon_reload_start_anim_speed());
   } else {
+    print_line("Reloading!");
+    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
+    m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
+
     m_CurrentWeaponAnimPlayer->play(
       m_CurrentWeapon->get_weaponReloadAnimName(), 
       m_CurrentWeapon->get_weapon_reload_anim_blend(), 
       m_CurrentWeapon->get_weapon_reload_anim_speed()
     );
-    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
-    m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
     m_WeaponStateCtx.IsReloading = false;
   }
   

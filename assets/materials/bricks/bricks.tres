@@ -1,0 +1,24 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://di6nqin18r3hx"]
+
+[ext_resource type="Texture2D" uid="uid://b7rp7fo3rrxbi" path="res://assets/textures/bricks/bricks_albedo.jpg" id="1_2dgsd"]
+[ext_resource type="Texture2D" uid="uid://sr77khtn8gpp" path="res://assets/textures/bricks/bricks_ao.jpg" id="2_1eyqh"]
+[ext_resource type="Texture2D" uid="uid://b7fdhvv8asi7v" path="res://assets/textures/bricks/bricks_height.jpg" id="3_rsiin"]
+[ext_resource type="Texture2D" uid="uid://de7rkm70uonm2" path="res://assets/textures/bricks/bricks_normal.jpg" id="4_sbyrd"]
+[ext_resource type="Texture2D" uid="uid://dhbpxnrd177pe" path="res://assets/textures/bricks/bricks_roughness.jpg" id="5_7aqqe"]
+
+[resource]
+albedo_texture = ExtResource("1_2dgsd")
+metallic_specular = 0.0
+roughness_texture = ExtResource("5_7aqqe")
+normal_enabled = true
+normal_texture = ExtResource("4_sbyrd")
+ao_enabled = true
+ao_texture = ExtResource("2_1eyqh")
+heightmap_enabled = true
+heightmap_scale = 1.5
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+heightmap_texture = ExtResource("3_rsiin")
+uv1_scale = Vector3(10, 10, 10)
+texture_filter = 5

@@ -18,6 +18,9 @@
 [ext_resource type="Texture2D" uid="uid://cnev0rxx1qp71" path="res://assets/meshes/weapons/rifle/textures/Pmag_roughness.jpeg" id="7_wo84q"]
 [ext_resource type="Texture2D" uid="uid://c1ybo4h80c3dy" path="res://assets/meshes/weapons/rifle/textures/Silencer_normal.jpeg" id="8_jbmx7"]
 [ext_resource type="Texture2D" uid="uid://d2ei7jsdcs8fs" path="res://assets/meshes/weapons/rifle/textures/Silencer_roughness.jpeg" id="9_lidcj"]
+[ext_resource type="Texture2D" uid="uid://d2764wnjq1lhj" path="res://assets/meshes/weapons/pistol/textures/armColor.png" id="18_4vvfw"]
+[ext_resource type="Texture2D" uid="uid://decs7iem8kvms" path="res://assets/meshes/weapons/pistol/textures/armNormal.png" id="19_jtb7r"]
+[ext_resource type="Texture2D" uid="uid://hr40dimpx3rj" path="res://assets/meshes/weapons/pistol/textures/armRoughness.png" id="20_jbmx7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d0pl5"]
 resource_name = "Rifle"
@@ -489,20 +492,11 @@ z_clip_scale = 0.65
 use_fov_override = true
 fov_override = 50.0
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4vvfw"]
-load_path = "res://.godot/imported/armColor.png-894bb8d0926cca381baa9d182fa1a47b.s3tc.ctex"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jtb7r"]
-load_path = "res://.godot/imported/armNormal.png-a04483883621c8c6a705acf9705d8504.s3tc.ctex"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jbmx7"]
-load_path = "res://.godot/imported/armRoughness.png-89e9369edaef3ff862e6f3cda98f3e6b.s3tc.ctex"
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lidcj"]
-albedo_texture = SubResource("CompressedTexture2D_4vvfw")
-roughness_texture = SubResource("CompressedTexture2D_jbmx7")
+albedo_texture = ExtResource("18_4vvfw")
+roughness_texture = ExtResource("20_jbmx7")
 normal_enabled = true
-normal_texture = SubResource("CompressedTexture2D_jtb7r")
+normal_texture = ExtResource("19_jtb7r")
 use_z_clip_scale = true
 z_clip_scale = 0.65
 use_fov_override = true
