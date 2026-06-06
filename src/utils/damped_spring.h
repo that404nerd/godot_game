@@ -14,7 +14,6 @@ using namespace godot;
 // ratio.
 //******************************************************************************
 
-// TODO: Check if DampedSpring inheriting from object is causing some memory leaks!
 class DampedSpring
 {
 public:
