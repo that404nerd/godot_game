@@ -118,9 +118,6 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
     m_WeaponDampedSpringRatio);
 
   m_DampedSpring.UpdateDampedSpringMotion(m_SwayOffset, sway_vel, equilibriumPos);
-
-  m_SwayOffset = m_DampedSpring.GetUpdatedPos();
-  sway_vel = m_DampedSpring.GetUpdatedVel();
 }
 
 WeaponSwayComponent::~WeaponSwayComponent()

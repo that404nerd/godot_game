@@ -87,7 +87,7 @@ void DampedSpring::CalcDampedSpringMotionParams(
 	}
 }
 
-void DampedSpring::UpdateDampedSpringMotion(Vector3 pos, Vector3 vel, const Vector3& eqPos)
+void DampedSpring::UpdateDampedSpringMotion(Vector3& pos, Vector3& vel, const Vector3& eqPos)
 {	
 	m_pPos = pos;
 	m_pVel = vel;

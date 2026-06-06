@@ -1,9 +1,9 @@
 #pragma once
 
-#include "godot_cpp/variant/vector3.hpp"
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/variant/vector3.hpp>
 
 using namespace godot;
 
@@ -41,7 +41,7 @@ public:
 	// binding system works. Don't forget to manually update your position and velocity
 	// variables using the get_pPos(), get_pVel() functions after calling this function!
 	//******************************************************************************
-	void UpdateDampedSpringMotion(Vector3 pos, Vector3 vel, const Vector3& eqPos);
+	void UpdateDampedSpringMotion(Vector3& pos, Vector3& vel, const Vector3& eqPos);
 
 	Vector3 GetUpdatedPos() { return m_pPos; }
 	Vector3 GetUpdatedVel() { return m_pVel; }
