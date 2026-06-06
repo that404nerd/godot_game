@@ -39,8 +39,8 @@ void PlayerFallingState::_physics_update(double delta)
   float targetZ = wishDir.z * m_PlayerInst->get_max_air_move_speed();
 
   if (wishDir.length() > 0.0f) {
-    playerVel.x = Utils::exp_decay(playerVel.x, targetX, 15.0f, delta);
-    playerVel.z = Utils::exp_decay(playerVel.z, targetZ, 15.0f, delta);
+    playerVel.x =  Utils::exp_decay(playerVel.x, targetX, 15.0f, delta);
+    playerVel.z =  Utils::exp_decay(playerVel.z, targetZ, 15.0f, delta);
   }
 
   if(m_PlayerInst->get_global_state().DashCooldown <= 0.0f)

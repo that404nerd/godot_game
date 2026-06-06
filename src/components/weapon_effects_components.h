@@ -4,7 +4,7 @@
 #include <godot_cpp/classes/character_body3d.hpp>
 #include <godot_cpp/variant/vector3.hpp>
 
-#include "../globals.h"
+#include "../utils/damped_spring.h"
 #include "character_component.h"
 #include "weapon_component.h"
 
@@ -48,7 +48,11 @@ public:
   Vector3 get_idle_offset() const { return m_IdleSwayOffset; }
   Vector3 get_sway_offset() const { return m_SwayOffset; }
 
+  ~WeaponSwayComponent();
+
 private:
+  DampedSpring m_DampedSpring;
+
   Vector3 m_IdleSwayOffset {};
   Vector3 m_SwayOffset {};
 
@@ -59,9 +63,7 @@ private:
   float m_IdleWeaponBobSmoothVal { 0.0f };
 
   float m_WeaponSpringAngFreq { 0.0f };
-  float m_WeaponSpringDampingRatio { 0.0f };
-
-  Utils::tDampedSpringMotionParams m_SwayParams;
+  float m_WeaponDampedSpringRatio { 0.0f };
 
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
@@ -83,4 +85,4 @@ private:
 
   WeaponBobComponent m_WeaponBobComponent;
   WeaponSwayComponent m_WeaponSwayComponent;
-};;
+};

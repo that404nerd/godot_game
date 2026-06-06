@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDSolidClass" format=3 uid="uid://h106c3w3i2cl"]
+
+[ext_resource type="Script" uid="uid://5cow84q03m6a" path="res://addons/func_godot/src/fgd/func_godot_fgd_solid_class.gd" id="1_efuqb"]
+[ext_resource type="Script" uid="uid://dipy1usoviuod" path="res://src/scripts/trenchbroom_scripts/mover.gd" id="2_8n7qd"]
+
+[resource]
+script = ExtResource("1_efuqb")
+script_class = ExtResource("2_8n7qd")
+classname = "func_mover"
+description = "Moving brush.
+"
+class_properties = Dictionary[String, Variant]({
+"rotation": Vector3(0, 0, 0),
+"scale": Vector3(0, 0, 0),
+"speed": 0.0
+})
+meta_properties = Dictionary[String, Variant]({})
+node_class = "Node3D"
+metadata/_custom_type_script = "uid://5cow84q03m6a"

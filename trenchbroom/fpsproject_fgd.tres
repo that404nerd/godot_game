@@ -2,9 +2,12 @@
 
 [ext_resource type="Resource" uid="uid://crgpdahjaj" path="res://addons/func_godot/fgd/func_godot_fgd.tres" id="1_egxrf"]
 [ext_resource type="Script" uid="uid://drlmgulwbjwqu" path="res://addons/func_godot/src/fgd/func_godot_fgd_file.gd" id="1_y4e8d"]
+[ext_resource type="Resource" uid="uid://dtjahtmbvrikj" path="res://trenchbroom/fgd/solid_entities/func_door.tres" id="2_j3lxe"]
+[ext_resource type="Resource" uid="uid://h106c3w3i2cl" path="res://trenchbroom/fgd/solid_entities/func_mover.tres" id="3_ftpks"]
 
 [resource]
 script = ExtResource("1_y4e8d")
 fgd_name = "FPSProject"
 base_fgd_files = Array[Resource]([ExtResource("1_egxrf")])
+entity_definitions = Array[Resource]([ExtResource("2_j3lxe"), ExtResource("3_ftpks")])
 metadata/_custom_type_script = "uid://drlmgulwbjwqu"

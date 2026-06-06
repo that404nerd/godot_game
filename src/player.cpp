@@ -66,13 +66,13 @@ void Player::_update_input()
   {
     if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
     {
-      playerVel.x = Utils::exp_decay(playerVel.x, m_WishDir.x, 15.0f, ground_accel);
-      playerVel.z = Utils::exp_decay(playerVel.z, m_WishDir.z, 15.0f, ground_accel);
+      playerVel.x =  Utils::exp_decay(playerVel.x, m_WishDir.x, 15.0f, ground_accel);
+      playerVel.z =  Utils::exp_decay(playerVel.z, m_WishDir.z, 15.0f, ground_accel);
     }
     else
     {
-      playerVel.x = Utils::exp_decay(playerVel.x, 0.0f, 1.0f, ground_decel);
-      playerVel.z = Utils::exp_decay(playerVel.z, 0.0f, 1.0f, ground_decel);
+      playerVel.x =  Utils::exp_decay(playerVel.x, 0.0f, 1.0f, ground_decel);
+      playerVel.z =  Utils::exp_decay(playerVel.z, 0.0f, 1.0f, ground_decel);
     }
   }
 

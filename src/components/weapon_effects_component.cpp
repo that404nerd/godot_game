@@ -1,3 +1,4 @@
+#include "godot_cpp/classes/global_constants.hpp"
 #include "weapon_effects_components.h"
 
 // TODO: Needs some rework
@@ -49,8 +50,8 @@ void WeaponBobComponent::weapon_bob(double delta)
   float x_bob = Math::cos(m_WeaponBobTime * m_WeaponBobFreq * 0.5f) * m_WeaponBobAmp;
   float y_bob = Math::sin(m_WeaponBobTime * m_WeaponBobFreq) * m_WeaponBobAmp;
 
-  m_BobOffset.x = Utils::exp_decay(m_BobOffset.x, x_bob, m_WeaponBobSmoothVal, (float)delta);
-  m_BobOffset.y = Utils::exp_decay(m_BobOffset.y, y_bob, m_WeaponBobSmoothVal, (float)delta);
+  m_BobOffset.x =  Utils::exp_decay(m_BobOffset.x, x_bob, m_WeaponBobSmoothVal, (float)delta);
+  m_BobOffset.y =  Utils::exp_decay(m_BobOffset.y, y_bob, m_WeaponBobSmoothVal, (float)delta);
   m_BobOffset.z = 0.0f;
 }
 
@@ -79,7 +80,8 @@ void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, Wea
   m_IdleWeaponBobSmoothVal = m_CurrentWeapon->get_idle_weapon_bob_smooth_val();
   
   m_WeaponSpringAngFreq = m_CurrentWeapon->get_angularFreq();
-  m_WeaponSpringDampingRatio = m_CurrentWeapon->get_dampingRatio();
+  m_WeaponDampedSpringRatio = m_CurrentWeapon->get_dampingRatio();
+
 }
 
 void WeaponSwayComponent::_update_sway_data(Ref<Weapon> currentWeapon)
@@ -89,7 +91,7 @@ void WeaponSwayComponent::_update_sway_data(Ref<Weapon> currentWeapon)
   m_IdleWeaponBobSmoothVal = currentWeapon->get_idle_weapon_bob_smooth_val();
   
   m_WeaponSpringAngFreq = currentWeapon->get_angularFreq();
-  m_WeaponSpringDampingRatio = currentWeapon->get_dampingRatio();
+  m_WeaponDampedSpringRatio = currentWeapon->get_dampingRatio();
 }
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
@@ -101,8 +103,8 @@ void WeaponSwayComponent::weapon_idle_sway(double delta)
   float x_bob = Math::cos(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.5f) * m_IdleWeaponBobAmp;
   float y_bob = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq) * m_IdleWeaponBobAmp;
 
-  m_IdleSwayOffset.x = Utils::exp_decay(m_IdleSwayOffset.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta);
-  m_IdleSwayOffset.y = Utils::exp_decay(m_IdleSwayOffset.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta);
+  m_IdleSwayOffset.x =  Utils::exp_decay(m_IdleSwayOffset.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta);
+  m_IdleSwayOffset.y =  Utils::exp_decay(m_IdleSwayOffset.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta);
 
 }
 
@@ -110,20 +112,19 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
 {
   Vector3 equilibriumPos {};
 
-  Utils::CalcDampedSpringMotionParams(
-      m_SwayParams,
-      (float)delta,
-      m_WeaponSpringAngFreq,
-      m_WeaponSpringDampingRatio);
+  m_DampedSpring.CalcDampedSpringMotionParams(
+    (float)delta,
+    m_WeaponSpringAngFreq,
+    m_WeaponDampedSpringRatio);
 
-  Utils::UpdateDampedSpringMotion(
-      m_SwayOffset,
-      sway_vel,
-      equilibriumPos,
-      m_SwayParams);
+  m_DampedSpring.UpdateDampedSpringMotion(m_SwayOffset, sway_vel, equilibriumPos);
 
-  m_SwayOffset.x = Math::clamp(m_SwayOffset.x, -0.03f, 0.03f);
-  m_SwayOffset.y = Math::clamp(m_SwayOffset.y, -0.03f, 0.03f);
+  m_SwayOffset = m_DampedSpring.GetUpdatedPos();
+  sway_vel = m_DampedSpring.GetUpdatedVel();
+}
+
+WeaponSwayComponent::~WeaponSwayComponent()
+{
 }
 
 void WeaponEffects::_init_data(Node3D* holdPointNode,
@@ -163,3 +164,4 @@ void WeaponEffects::_update(double delta, Vector3& sway_vel)
       m_WeaponSwayComponent.get_sway_offset() +
       m_WeaponBobComponent.get_weapon_bob_offset());
 }
+;

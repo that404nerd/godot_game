@@ -5,6 +5,7 @@
 #include "weapon.h"
 
 #include "event_bus.h"
+#include "utils/damped_spring.h"
 
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/random_number_generator.hpp>
@@ -21,10 +22,12 @@ public:
 
   void addWeaponRecoil(Ref<Weapon> currentWeapon);
 
+  ~CameraRecoilHolder();
 protected:
   static void _bind_methods();
 
 private:
-  Vector3 m_TargetRot {}, m_CurrentRot {};
-  Ref<RandomNumberGenerator> m_Rng;
+  Vector3 m_TargetRot {}, m_CurrentRot {}, m_RecoilVector {};
+  Ref<RandomNumberGenerator> m_Rng { nullptr };
+  DampedSpring m_DampedSpring;
 };

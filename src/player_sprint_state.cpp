@@ -35,7 +35,7 @@ void PlayerSprintState::_physics_update(double delta)
   m_PlayerInst->_update_velocity();
   
   Vector3 playerVel = m_PlayerInst->get_velocity();
-  playerVel = Utils::exp_decay(playerVel, m_PlayerInst->get_sprint_speed() * m_PlayerInst->get_wish_dir(), 15.0f, (float)delta);
+  playerVel =  Utils::exp_decay(playerVel, m_PlayerInst->get_sprint_speed() * m_PlayerInst->get_wish_dir(), 15.0f, (float)delta);
 
 
   if(m_PlayerInst->get_global_state().DashCooldown <= 0.0f)

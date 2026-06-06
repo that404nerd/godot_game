@@ -51,9 +51,9 @@ void PlayerCrouchState::_physics_update(double delta)
   if(m_PlayerStateMachine->get_prev_state() == static_cast<int8_t>(PlayerStates::SLIDE))
   {
     float finalCrouchPos = m_FinalPos - m_PlayerInst->get_player_head()->get_position().y;
-    playerHeadPos.y = Utils::exp_decay(playerHeadPos.y, finalCrouchPos, m_PlayerInst->get_crouch_translate_speed(), (float)delta);
+    playerHeadPos.y =  Utils::exp_decay(playerHeadPos.y, finalCrouchPos, m_PlayerInst->get_crouch_translate_speed(), (float)delta);
   } else {
-    playerHeadPos.y = Utils::exp_decay(playerHeadPos.y, m_FinalPos, m_PlayerInst->get_crouch_translate_speed(), (float)delta);
+    playerHeadPos.y =  Utils::exp_decay(playerHeadPos.y, m_FinalPos, m_PlayerInst->get_crouch_translate_speed(), (float)delta);
   }
 
   m_PlayerInst->get_player_head()->set_position(playerHeadPos);

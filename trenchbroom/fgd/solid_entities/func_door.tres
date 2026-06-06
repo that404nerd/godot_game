@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDSolidClass" format=3 uid="uid://dtjahtmbvrikj"]
+
+[ext_resource type="Script" uid="uid://5cow84q03m6a" path="res://addons/func_godot/src/fgd/func_godot_fgd_solid_class.gd" id="1_txy7f"]
+[ext_resource type="Script" uid="uid://ft2x36smcx2n" path="res://src/scripts/trenchbroom_scripts/door.gd" id="2_hau4e"]
+
+[resource]
+script = ExtResource("1_txy7f")
+script_class = ExtResource("2_hau4e")
+classname = "func_door"
+class_properties = Dictionary[String, Variant]({
+"rotate_vector": Vector3(0, 0, 0)
+})
+node_class = "RigidBody3D"
+metadata/_custom_type_script = "uid://5cow84q03m6a"

@@ -1,6 +1,4 @@
 #include "register_types.hpp"
-#include "components/muzzle_flash_component.h"
-#include "event_bus.h"
 #include "godot_cpp/core/memory.hpp"
 
 #include <godot_cpp/core/class_db.hpp>
@@ -10,7 +8,7 @@
 
 using namespace godot;
 
-static EventBus *s_EventBus = NULL;
+static EventBus *s_EventBus = nullptr;
 
 void initialize_module(ModuleInitializationLevel p_level) {
 
