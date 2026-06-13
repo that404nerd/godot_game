@@ -8,6 +8,7 @@ is_incremental_reload = true
 angularFreq = 45.0
 dampingRatio = 0.7
 weaponVerticalAngFreq = 30.0
+weaponVerticalDampingRatio = 0.3
 weaponEquipAnimName = "shotgun_equip"
 weaponUnequipAnimName = "shotgun_unequip"
 weaponShootingAnimName = "shotgun_shoot"

@@ -58,6 +58,6 @@ namespace Utils {
   template <typename T>
   inline T exp_decay(T a, T b, float decay, double dt)
   {
-      return b + (a - b) * Math::exp(-decay * dt);
+    return b + (a - b) * Math::exp(-decay * dt);
   }
 };

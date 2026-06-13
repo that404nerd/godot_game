@@ -40,7 +40,7 @@ public:
 	// binding system works. Don't forget to manually update your position and velocity
 	// variables using the get_pPos(), get_pVel() functions after calling this function!
 	//******************************************************************************
-	void UpdateDampedSpringMotion(Vector3& pos, Vector3& vel, const Vector3& eqPos);
+	void UpdateDampedSpringMotion(Vector3 pos, Vector3 vel, const Vector3& eqPos);
 
 	Vector3 GetUpdatedPos() { return m_pPos; }
 	Vector3 GetUpdatedVel() { return m_pVel; }

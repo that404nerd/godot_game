@@ -22,6 +22,39 @@
 [ext_resource type="Texture2D" uid="uid://decs7iem8kvms" path="res://assets/meshes/weapons/pistol/textures/armNormal.png" id="19_jtb7r"]
 [ext_resource type="Texture2D" uid="uid://hr40dimpx3rj" path="res://assets/meshes/weapons/pistol/textures/armRoughness.png" id="20_jbmx7"]
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_we1mk"]
+angle_min = -72.99999
+angle_max = 73.000015
+direction = Vector3(-1, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="Gradient" id="Gradient_7mp0o"]
+colors = PackedColorArray(0.9607843, 0.5686275, 0.11764706, 1, 0.73736477, 0.2950176, 0.017468479, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6qnol"]
+gradient = SubResource("Gradient_7mp0o")
+fill = 2
+fill_from = Vector2(0.4985755, 0.5099715)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vk5ba"]
+transparency = 1
+blend_mode = 1
+albedo_texture = SubResource("GradientTexture2D_6qnol")
+roughness = 0.0
+emission_enabled = true
+emission_energy_multiplier = 10.0
+emission_texture = SubResource("GradientTexture2D_6qnol")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_iehkx"]
+material = SubResource("StandardMaterial3D_vk5ba")
+size = Vector2(0.05, 0.05)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d0pl5"]
 resource_name = "Rifle"
 cull_mode = 2
@@ -530,55 +563,51 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_we1mk"]
-angle_min = -72.99999
-angle_max = 73.000015
-direction = Vector3(-1, 0, 0)
-initial_velocity_min = 1.0
-initial_velocity_max = 3.0
-gravity = Vector3(0, 0, 0)
-
-[sub_resource type="Gradient" id="Gradient_7mp0o"]
-colors = PackedColorArray(0.9607843, 0.5686275, 0.11764706, 1, 0.73736477, 0.2950176, 0.017468479, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6qnol"]
-gradient = SubResource("Gradient_7mp0o")
-fill = 2
-fill_from = Vector2(0.4985755, 0.5099715)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vk5ba"]
-transparency = 1
-blend_mode = 1
-albedo_texture = SubResource("GradientTexture2D_6qnol")
-roughness = 0.0
-emission_enabled = true
-emission_energy_multiplier = 10.0
-emission_texture = SubResource("GradientTexture2D_6qnol")
-billboard_mode = 3
-particles_anim_h_frames = 1
-particles_anim_v_frames = 1
-particles_anim_loop = false
-
-[sub_resource type="QuadMesh" id="QuadMesh_iehkx"]
-material = SubResource("StandardMaterial3D_vk5ba")
-size = Vector2(0.05, 0.05)
-
 [node name="Rifle" type="Node3D" unique_id=991172594]
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=894221757]
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=796484657 node_paths=PackedStringArray("muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
+muzzle_flash_component = NodePath("gun_rifle/MuzzleFlashComponent")
+armature_skeleton = NodePath("gun_rifle/Armature/Skeleton3D")
+weapon_anim_player = NodePath("AnimationPlayer")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="WeaponWrapper" unique_id=894221757]
 root_node = NodePath("../gun_rifle")
 libraries/ = ExtResource("2_1cw3a")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=809723060]
+[node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=809723060]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.011, -0.104)
 visible = false
 
-[node name="gun_rifle" type="Node3D" parent="." unique_id=490263074]
+[node name="gun_rifle" type="Node3D" parent="WeaponWrapper" unique_id=490263074]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.07, -0.282, -0.03)
 
-[node name="Armature" type="Node3D" parent="gun_rifle" unique_id=1750441366]
+[node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_rifle" unique_id=1714815641 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
+omni_light_inst = NodePath("OmniLight3D")
+gpu_particles_inst = NodePath("GPUParticles3D")
+unique_name_in_owner = true
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.16500008, 0.136, 0.787)
 
-[node name="Skeleton3D" type="Skeleton3D" parent="gun_rifle/Armature" unique_id=832015354]
+[node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_rifle/MuzzleFlashComponent" unique_id=129647094]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.235, -0.146, -0.817)
+visible = false
+light_color = Color(0.96862745, 0.7529412, 0.29803923, 1)
+light_indirect_energy = 2.236
+omni_range = 26.214
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="WeaponWrapper/gun_rifle/MuzzleFlashComponent" unique_id=61419485]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.235, -0.146, -0.817)
+emitting = false
+amount = 100
+lifetime = 0.05
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_we1mk")
+draw_pass_1 = SubResource("QuadMesh_iehkx")
+
+[node name="Armature" type="Node3D" parent="WeaponWrapper/gun_rifle" unique_id=1750441366]
+
+[node name="Skeleton3D" type="Skeleton3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=832015354]
+unique_name_in_owner = true
 bones/0/name = "Root"
 bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, 1, 1.2618366e-07, 0, -1.2618366e-07, 1, 0, 0, 0)
@@ -1140,7 +1169,7 @@ bones/79/position = Vector3(2.596335e-15, 0.22899696, -5.2386895e-09)
 bones/79/rotation = Quaternion(-1.880791e-37, -3.5589587e-14, 6.060167e-17, 1)
 bones/79/scale = Vector3(1, 0.9999999, 0.99999994)
 
-[node name="rifle" type="MeshInstance3D" parent="gun_rifle/Armature/Skeleton3D" unique_id=1848604789]
+[node name="rifle" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/Skeleton3D" unique_id=1848604789]
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_5qeg5")
 skin = SubResource("Skin_8cs3w")
@@ -1149,31 +1178,8 @@ surface_material_override/1 = SubResource("StandardMaterial3D_1hegd")
 surface_material_override/2 = SubResource("StandardMaterial3D_ah4op")
 surface_material_override/3 = SubResource("StandardMaterial3D_0jqf6")
 
-[node name="arms" type="MeshInstance3D" parent="gun_rifle/Armature/Skeleton3D" unique_id=1461394645]
+[node name="arms" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/Skeleton3D" unique_id=1461394645]
 material_override = SubResource("StandardMaterial3D_lidcj")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_mrsae")
 skin = SubResource("Skin_8cs3w")
-
-[node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="." unique_id=1714815641 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
-omni_light_inst = NodePath("OmniLight3D")
-gpu_particles_inst = NodePath("GPUParticles3D")
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.235, -0.146, -0.817)
-
-[node name="OmniLight3D" type="OmniLight3D" parent="MuzzleFlashComponent" unique_id=129647094]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.235, -0.146, -0.817)
-visible = false
-light_color = Color(0.96862745, 0.7529412, 0.29803923, 1)
-light_indirect_energy = 2.236
-omni_range = 26.214
-
-[node name="GPUParticles3D" type="GPUParticles3D" parent="MuzzleFlashComponent" unique_id=61419485]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.235, -0.146, -0.817)
-emitting = false
-amount = 100
-lifetime = 0.05
-one_shot = true
-explosiveness = 1.0
-process_material = SubResource("ParticleProcessMaterial_we1mk")
-draw_pass_1 = SubResource("QuadMesh_iehkx")

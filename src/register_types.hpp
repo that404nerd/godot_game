@@ -16,6 +16,7 @@
 #include "event_bus.h"
 
 #include "components/muzzle_flash_component.h"
+#include "components/weapon_wrapper.h"
 
 using namespace godot;
 

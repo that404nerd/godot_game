@@ -56,8 +56,10 @@ private:
   GD_DEFINE_PROPERTY(bool, is_incremental_reload, false); 
 
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
-
+  
   GD_DEFINE_PROPERTY(Vector3, recoil_vector, Vector3(0.0f, 0.0f, 0.0f));
+  GD_DEFINE_PROPERTY(float, recoil_ang_freq, 0.0f);
+  GD_DEFINE_PROPERTY(float, recoil_damping_ratio, 0.0f);
 
   GD_DEFINE_PROPERTY(WeaponType, weapon_type, WeaponType::MANUAL);
 

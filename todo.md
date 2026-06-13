@@ -18,9 +18,10 @@
 - Weapon State Machine [x]
 - Animations for different states [x]
 - ObjectDB and resource leak fix [x]
+- Fix head bobbing during slide and weapon idle during shooting states [x]
 
 ## Issues & TODO
-- Allow weapon animation groups to be in any order []
-- Fix head bobbing during slide and weapon idle during shooting states []
+- Make getting nodes from individual weapon scenes easier (Like AnimationPlayer, Skeleton3D, Custom Components, etc..) []
+- Rewrite the weapon effects class to support additive animations in a better way []
 - Transition to idle state when sliding into a world objects []
 - Allow sliding when crouch is toggled during falling state []

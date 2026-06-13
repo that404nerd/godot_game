@@ -38,6 +38,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("CharacterComponent")) GDREGISTER_CLASS(CharacterComponent);
   if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
   if(!ClassDB::class_exists("MuzzleFlashComponent")) GDREGISTER_CLASS(MuzzleFlashComponent);
+  if(!ClassDB::class_exists("WeaponWrapper")) GDREGISTER_CLASS(WeaponWrapper);
 }
 
 

@@ -4,18 +4,16 @@
 
 void WeaponManager::_ready()
 {
+  Node3D* weapon_node = nullptr;
+  AnimationPlayer* anim_player = nullptr;
+
   weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
   m_WeaponEffects._init_data(hold_point_node, character_component, weapon_component);
 
   /* NOTE: This took me 2 hours to find lol, i forgot that i was dealing with different animation
-  players for different weapon scene, this connects the _on_animation_finished to all animation players */
-
-  
+          players for different weapon scene, this connects the _on_animation_finished to all animation players */
   for(int i = 0; i < hold_point_node->get_children().size(); i++)
   {
-    Node3D* weapon_node = nullptr;
-    AnimationPlayer* anim_player = nullptr;
-    
     m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[i]));
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
     
@@ -29,12 +27,15 @@ void WeaponManager::_ready()
     anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
     
     anim_player->connect("animation_started", Callable(this, "_on_weapon_shoot"));
+    anim_player->connect("animation_started", Callable(this, "_on_weapon_reload"));
     
     /* I have seperate functions in both the weapon state machine and this class that connect to the same signal
     but the state machine's animation finished function only handles the state part only! */
     anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
     anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
+
   }
+
   
   m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
   m_MuzzleComp = m_WeaponNodes[m_WeaponIndex]->get_node<MuzzleFlashComponent>(NodePath("%MuzzleFlashComponent"));
@@ -54,6 +55,7 @@ void WeaponManager::_ready()
 void WeaponManager::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_weapon_shoot", "anim_name"), &WeaponManager::_on_weapon_shoot);
+  ClassDB::bind_method(D_METHOD("_on_weapon_reload", "anim_name"), &WeaponManager::_on_weapon_reload);
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
   
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -124,7 +126,15 @@ void WeaponManager::_on_weapon_shoot(const StringName& anim_name)
     m_MuzzleComp->_set_particles_status(true);
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
     generate_decal();
-    EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
+    EventBus::get_singleton()->emit_signal("weapon_fired");
+  }
+}
+
+void WeaponManager::_on_weapon_reload(const StringName& anim_name)
+{
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
+  {
+    EventBus::get_singleton()->emit_signal("weapon_reload_start");
   }
 }
 
@@ -149,7 +159,6 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
     
     if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
     {
-      print_line("set once!");
       m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
       m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - 1);
       
@@ -280,7 +289,6 @@ void WeaponManager::_reload_weapon()
     m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadStartAnimName(),
       m_CurrentWeapon->get_weapon_reload_start_anim_blend(), m_CurrentWeapon->get_weapon_reload_start_anim_speed());
   } else {
-    print_line("Reloading!");
     m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
     m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
 

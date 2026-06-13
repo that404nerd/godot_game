@@ -55,6 +55,7 @@ public:
 
   void _on_weapon_anim_finished(const StringName& anim_name);
   void _on_weapon_shoot(const StringName& anim_name);
+  void _on_weapon_reload(const StringName& anim_name);
   
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
@@ -66,14 +67,17 @@ public:
   int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
   StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
 
+  Vector<Node3D*> get_weapon_nodes() { return m_WeaponNodes; }
+
 protected:
   static void _bind_methods();
 
 private:
-  // Vector3 m_MouseInput {};
   Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
 
+  // TODO: Replace these two with probably an array or something else instead of vector.
+  // I have to perform some unnecessary setup for stuff to work
   Vector<AnimationPlayer*> m_WeaponAnims;
   Vector<Node3D*> m_WeaponNodes;
   

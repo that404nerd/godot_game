@@ -45,8 +45,6 @@ protected:
 private:
   GD_DEFINE_PROPERTY(Array, weapon_resource_list, Array());
 
-  Array m_WeaponNodeGroup;
-
   StringName m_NextWeaponName;
   Ref<Weapon> m_CurrentWeapon { nullptr };
   Ref<Weapon> m_NextWeapon { nullptr };
