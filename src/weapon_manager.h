@@ -21,6 +21,7 @@
 #include "components/muzzle_flash_component.h"
 #include "components/weapon_component.h"
 #include "components/weapon_effects_components.h"
+#include "components/weapon_wrapper.h"
 
 #include "globals.h"
 #include "event_bus.h"
@@ -54,8 +55,7 @@ public:
   void _weapon_switch();
 
   void _on_weapon_anim_finished(const StringName& anim_name);
-  void _on_weapon_shoot(const StringName& anim_name);
-  void _on_weapon_reload(const StringName& anim_name);
+  void _on_weapon_anim_started(const StringName& anim_name);
   
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
@@ -94,6 +94,7 @@ private:
   WeaponStateContext m_WeaponStateCtx;
   AmmoComponent m_AmmoComp;
   MuzzleFlashComponent* m_MuzzleComp;
+  WeaponWrapper* m_WeaponWrapperInst { nullptr };
   
   String m_NextWeaponName;
 

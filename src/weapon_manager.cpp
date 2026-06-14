@@ -4,8 +4,9 @@
 
 void WeaponManager::_ready()
 {
-  Node3D* weapon_node = nullptr;
   AnimationPlayer* anim_player = nullptr;
+  Node3D* weapon_node = nullptr;
+  WeaponWrapper* weapon_wrapper = nullptr;
 
   weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
   m_WeaponEffects._init_data(hold_point_node, character_component, weapon_component);
@@ -16,29 +17,20 @@ void WeaponManager::_ready()
   {
     m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[i]));
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
-    
-    if(i != m_WeaponIndex) // Check if the first weapon index is m_WeaponIndex (0 in this case)
-    {
-      // Hide the other weapons except the first weapon that's gonna be equipped
-      weapon_node->set_visible(false);
-    }
-    
-    m_WeaponAnims.push_back(weapon_node->get_node<AnimationPlayer>("AnimationPlayer"));
+    weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+   
+    m_WeaponAnims.push_back(weapon_wrapper->get_weapon_anim_player());
     anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
-    
-    anim_player->connect("animation_started", Callable(this, "_on_weapon_shoot"));
-    anim_player->connect("animation_started", Callable(this, "_on_weapon_reload"));
-    
+
+    anim_player->connect("animation_started", Callable(this, "_on_weapon_anim_started"));
+
     /* I have seperate functions in both the weapon state machine and this class that connect to the same signal
     but the state machine's animation finished function only handles the state part only! */
     anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
     anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
-
   }
 
-  
-  m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
-  m_MuzzleComp = m_WeaponNodes[m_WeaponIndex]->get_node<MuzzleFlashComponent>(NodePath("%MuzzleFlashComponent"));
+  m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
   
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
@@ -49,13 +41,12 @@ void WeaponManager::_ready()
   m_LoadScene = ResourceLoader::get_singleton()->load("res://assets/decals/bullet_decal.tscn");
 
   m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
+  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
 }
-
 
 void WeaponManager::_bind_methods()
 {
-  ClassDB::bind_method(D_METHOD("_on_weapon_shoot", "anim_name"), &WeaponManager::_on_weapon_shoot);
-  ClassDB::bind_method(D_METHOD("_on_weapon_reload", "anim_name"), &WeaponManager::_on_weapon_reload);
+  ClassDB::bind_method(D_METHOD("_on_weapon_anim_started", "anim_name"), &WeaponManager::_on_weapon_anim_started);
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
   
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -83,6 +74,9 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
+  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
@@ -118,7 +112,7 @@ void WeaponManager::generate_decal()
   }
 }
 
-void WeaponManager::_on_weapon_shoot(const StringName& anim_name)
+void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 {
   if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
   {
@@ -128,10 +122,7 @@ void WeaponManager::_on_weapon_shoot(const StringName& anim_name)
     generate_decal();
     EventBus::get_singleton()->emit_signal("weapon_fired");
   }
-}
-
-void WeaponManager::_on_weapon_reload(const StringName& anim_name)
-{
+  
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
     EventBus::get_singleton()->emit_signal("weapon_reload_start");
@@ -190,9 +181,9 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 ///////////////////////////////////////////////////////////////////////
 void WeaponManager::_equip_weapon()
 {
+  m_WeaponNodes[m_WeaponIndex]->set_visible(true);
   m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
-                           m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
-
+                            m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
 }
 
 void WeaponManager::_unequip_weapon()
@@ -203,6 +194,7 @@ void WeaponManager::_unequip_weapon()
     {
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
                             m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
+      m_WeaponNodes[m_WeaponIndex]->set_visible(false);
     } else {
       m_WeaponStateCtx.CanUnequip = false;
     }
@@ -326,7 +318,7 @@ void WeaponManager::_weapon_switch()
     m_WeaponEffects._update_data(nextWeapon);
 
     // TODO: This looks messy, fix it!
-    m_MuzzleComp = m_WeaponNodes[m_WeaponIndex]->get_node<MuzzleFlashComponent>(NodePath("%MuzzleFlashComponent"));
+    m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
   }
 }
 

@@ -8,8 +8,8 @@
 
 using namespace godot;
 
-class WeaponWrapper : public Node {
-  GDCLASS(WeaponWrapper, Node);
+class WeaponWrapper : public Node3D {
+  GDCLASS(WeaponWrapper, Node3D);
 
 public:
   void _ready() override

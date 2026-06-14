@@ -335,18 +335,6 @@ tracks/46/keys = PackedFloat32Array(0, 1, 0.7026997, 0.0788189, 0.078820504, 0.7
 
 [sub_resource type="Animation" id="Animation_y4psw"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("..:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
 
 [sub_resource type="Animation" id="Animation_huhjr"]
 resource_name = "Armature|Weild"
@@ -680,18 +668,6 @@ tracks/46/path = NodePath("Armature/Skeleton3D:slug")
 tracks/46/interp = 1
 tracks/46/loop_wrap = true
 tracks/46/keys = PackedFloat32Array(0, 1, 0.5802921, 0.3817257, -0.43077937, 0.5761733, 0.033333335, 1, 0.585047, 0.37568226, -0.42409727, 0.5802796, 0.06666667, 1, 0.6140604, 0.3358764, -0.37828025, 0.60582256, 0.1, 1, 0.6484356, 0.27947932, -0.3076344, 0.637796, 0.13333334, 1, 0.6687507, 0.23760948, -0.24198583, 0.6616322, 0.16666667, 1, 0.6341595, 0.2244831, -0.19605729, 0.71344984, 0.2, 1, 0.63046324, 0.14063649, -0.107818134, 0.7557201, 0.23333333, 1, 0.62295693, 0.1204828, -0.08372577, 0.76837397, 0.26666668, 1, 0.59564024, 0.15609285, -0.091737434, 0.7825804, 0.43333334, 1, 0.59611166, 0.1559557, -0.09158927, 0.782266, 0.46666667, 1, 0.5967368, 0.15516225, -0.09025577, 0.78210217, 0.5, 1, 0.598236, 0.15217872, -0.08653236, 0.7819639, 0.53333336, 1, 0.60127234, 0.14588282, -0.07929663, 0.78160214, 0.56666666, 1, 0.60698867, 0.13674404, -0.067655444, 0.77992857, 0.6, 1, 0.61658454, 0.12559381, -0.050742537, 0.77554816, 0.6333333, 1, 0.6311362, 0.11321434, -0.027643252, 0.76686734, 0.6666667, 1, 0.6515021, 0.10034054, 0.0025965555, 0.7519775, 0.7, 1, 0.67766505, 0.08801377, 0.04055082, 0.72895765, 0.73333335, 1, 0.6992164, 0.079995304, 0.07333906, 0.70662475, 0.75, 1, 0.7026997, 0.0788189, 0.078820504, 0.70270056)
-tracks/47/type = "value"
-tracks/47/imported = false
-tracks/47/enabled = true
-tracks/47/path = NodePath("..:visible")
-tracks/47/interp = 1
-tracks/47/loop_wrap = true
-tracks/47/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
 
 [sub_resource type="Animation" id="Animation_iumxd"]
 resource_name = "Armature|ReloadOne"
@@ -2357,18 +2333,6 @@ tracks/46/path = NodePath("Armature/Skeleton3D:slug")
 tracks/46/interp = 1
 tracks/46/loop_wrap = true
 tracks/46/keys = PackedFloat32Array(0, 1, 0.7026997, 0.0788189, 0.078820504, 0.70270056, 0.033333335, 1, 0.7034545, 0.08601646, 0.07153182, 0.7018805, 0.06666667, 1, 0.7067462, 0.13420235, 0.021041358, 0.6943031, 0.1, 1, 0.7050486, 0.2055069, -0.05940631, 0.67612445, 0.13333334, 1, 0.6933641, 0.27148232, -0.14556214, 0.65142554, 0.16666667, 1, 0.673564, 0.31881493, -0.22300307, 0.6284411, 0.2, 1, 0.6500159, 0.34995493, -0.28935924, 0.6093292, 0.23333333, 1, 0.6264116, 0.3684542, -0.34366494, 0.59476423, 0.26666668, 1, 0.6056414, 0.3778194, -0.38537955, 0.58475095, 0.3, 1, 0.5900129, 0.38128933, -0.41401252, 0.57887554, 0.33333334, 1, 0.5814316, 0.38177812, -0.42885828, 0.57642287, 0.35, 1, 0.5802921, 0.3817257, -0.43077937, 0.5761733)
-tracks/47/type = "value"
-tracks/47/imported = false
-tracks/47/enabled = true
-tracks/47/path = NodePath("..:visible")
-tracks/47/interp = 1
-tracks/47/loop_wrap = true
-tracks/47/keys = {
-"times": PackedFloat32Array(0.35),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
 
 [resource]
 _data = {

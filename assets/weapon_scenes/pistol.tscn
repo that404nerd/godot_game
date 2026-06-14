@@ -259,7 +259,8 @@ blend_shape_mode = 0
 
 [node name="Pistol" type="Node3D" unique_id=22962097]
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("weapon_node", "muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
+weapon_node = NodePath("..")
 muzzle_flash_component = NodePath("gun_pistol/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_pistol/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
@@ -278,7 +279,6 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.10
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_pistol" unique_id=219364471 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
 gpu_particles_inst = NodePath("GPUParticles3D")
-unique_name_in_owner = true
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.14299995, 0.15900001, 0.668)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_pistol/MuzzleFlashComponent" unique_id=601494058]
@@ -299,7 +299,6 @@ draw_pass_1 = SubResource("QuadMesh_7mp0o")
 [node name="Armature" type="Node3D" parent="WeaponWrapper/gun_pistol" unique_id=1688506177]
 
 [node name="Skeleton3D" type="Skeleton3D" parent="WeaponWrapper/gun_pistol/Armature" unique_id=1136034690]
-unique_name_in_owner = true
 bones/0/name = "root"
 bones/0/parent = -1
 bones/0/rest = Transform3D(-1, 4.5000235e-15, -1.5099577e-07, -4.5000247e-15, 0.9999997, 5.9604634e-08, 1.5099579e-07, 5.960462e-08, -0.99999994, 0, 0.077122115, -0.2904014)
