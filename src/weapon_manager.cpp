@@ -181,7 +181,6 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 ///////////////////////////////////////////////////////////////////////
 void WeaponManager::_equip_weapon()
 {
-  m_WeaponNodes[m_WeaponIndex]->set_visible(true);
   m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
                             m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
 }
@@ -194,7 +193,6 @@ void WeaponManager::_unequip_weapon()
     {
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
                             m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
-      m_WeaponNodes[m_WeaponIndex]->set_visible(false);
     } else {
       m_WeaponStateCtx.CanUnequip = false;
     }

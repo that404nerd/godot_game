@@ -565,8 +565,7 @@ blend_shape_mode = 0
 
 [node name="Rifle" type="Node3D" unique_id=991172594]
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=796484657 node_paths=PackedStringArray("weapon_node", "muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
-weapon_node = NodePath("..")
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=796484657 node_paths=PackedStringArray("muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
 muzzle_flash_component = NodePath("gun_rifle/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_rifle/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
@@ -696,7 +695,7 @@ bones/12/parent = 11
 bones/12/rest = Transform3D(0.9999999, 3.2689445e-07, -4.879432e-06, -3.26894e-07, 0.9999998, 9.965232e-08, 4.879432e-06, -9.965071e-08, 0.99999994, 2.9802322e-08, 0.09872753, 9.313226e-09)
 bones/12/enabled = true
 bones/12/position = Vector3(2.9802322e-08, 0.09872753, 9.313226e-09)
-bones/12/rotation = Quaternion(-2.542194e-08, 0.029411655, -1.2739444e-07, 0.99956745)
+bones/12/rotation = Quaternion(-2.542194e-08, 0.029411653, -1.2739446e-07, 0.9995674)
 bones/12/scale = Vector3(1, 0.9999998, 1)
 bones/13/name = "BoneTwist_01.R"
 bones/13/parent = 12
