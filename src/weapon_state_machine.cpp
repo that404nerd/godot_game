@@ -32,6 +32,12 @@ void WeaponStateMachine::_handle_state_machine_input(const Ref<InputEvent>& even
     String inputAction = "weapon_" + String::num(i + 1, 0); // INFO: Need to match the set input action in the editor
     if(Input::get_singleton()->is_action_just_pressed(inputAction))
     {
+      // This fixes an issue where if we switch the weapon while reloading the reload rotation doesn't reset gets stuck and jitters the camera
+      if(get_prev_state() == static_cast<int8_t>(WeaponStates::RELOAD))
+      {
+        EventBus::get_singleton()->emit_signal("weapon_reload_end");
+      }
+
       weapon_manager->_switch_weapon_data(i);
       _change_state(static_cast<int8_t>(WeaponStates::UNEQUIP));
     }

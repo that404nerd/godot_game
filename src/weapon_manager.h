@@ -25,6 +25,7 @@
 
 #include "globals.h"
 #include "event_bus.h"
+#include "godot_cpp/variant/quaternion.hpp"
 #include "weapon.h"
 #include "weapon_states.h"
 
@@ -96,7 +97,11 @@ private:
   MuzzleFlashComponent* m_MuzzleComp;
   WeaponWrapper* m_WeaponWrapperInst { nullptr };
   
-  String m_NextWeaponName;
+  StringName m_NextWeaponName;
+  StringName m_ReloadRootBoneName;
+
+  Skeleton3D* m_Skeleton3D { nullptr };
+  Transform3D m_BoneTransform {};
 
 private:
   CharacterBody3D* m_CharacterBody { nullptr };

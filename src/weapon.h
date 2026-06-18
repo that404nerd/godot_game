@@ -26,6 +26,7 @@ public:
 
 private:
   GD_DEFINE_PROPERTY(String, weaponName, "");
+  GD_DEFINE_PROPERTY(String, weaponReloadRootBoneName, "");
 
   GD_DEFINE_PROPERTY(float, weapon_equip_anim_speed, 1.0f);
   GD_DEFINE_PROPERTY(float, weapon_equip_anim_blend, -1.0f);
@@ -55,16 +56,18 @@ private:
   GD_DEFINE_PROPERTY(int, magAmmoCount, 0); 
   GD_DEFINE_PROPERTY(bool, is_incremental_reload, false); 
 
+  GD_DEFINE_PROPERTY(float, reloadShakeSpeedMultiplier, 1.0f); 
+  GD_DEFINE_PROPERTY(float, reloadShakeResetMultiplier, 10.0f); 
+
+  GD_DEFINE_PROPERTY(Vector3, recoil_vector, Vector3(0.0f, 0.0f, 0.0f)); 
+  GD_DEFINE_PROPERTY(float, weaponRecoilResetMultiplier, 7.0f); 
+
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
   
-  GD_DEFINE_PROPERTY(Vector3, recoil_vector, Vector3(0.0f, 0.0f, 0.0f));
-  GD_DEFINE_PROPERTY(float, recoil_ang_freq, 0.0f);
-  GD_DEFINE_PROPERTY(float, recoil_damping_ratio, 0.0f);
-
   GD_DEFINE_PROPERTY(WeaponType, weapon_type, WeaponType::MANUAL);
 
-  GD_DEFINE_PROPERTY(float, angularFreq, 0.0f);
-  GD_DEFINE_PROPERTY(float, dampingRatio, 0.0f);
+  GD_DEFINE_PROPERTY(float, weaponSwayAngularFreq, 0.0f);
+  GD_DEFINE_PROPERTY(float, weaponSwayDampingRatio, 0.0f);
   GD_DEFINE_PROPERTY(float, weaponVerticalAngFreq, 0.0f);
   GD_DEFINE_PROPERTY(float, weaponVerticalDampingRatio, 0.0f);
   GD_DEFINE_PROPERTY(float, weaponVerticalPush, 1.0f);

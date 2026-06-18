@@ -16,9 +16,10 @@ void Weapon::_bind_methods() {
   BIND_ENUM_CONSTANT(BOTH);
   GD_BIND_ENUM(Weapon, weapon_type, "Manual,Auto,Both");
 
-  ADD_GROUP("Weapon Spring Values", "");
-  GD_BIND_PROPERTY(Weapon, angularFreq, Variant::FLOAT);
-  GD_BIND_PROPERTY(Weapon, dampingRatio, Variant::FLOAT);
+  ADD_GROUP("Weapon Sway Values", "");
+  GD_BIND_PROPERTY(Weapon, weaponSwayAngularFreq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weaponSwayDampingRatio, Variant::FLOAT);
+
   GD_BIND_PROPERTY(Weapon, weaponVerticalPush, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponVerticalAngFreq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weaponVerticalDampingRatio, Variant::FLOAT);
@@ -50,8 +51,12 @@ void Weapon::_bind_methods() {
 
   ADD_GROUP("Weapon Recoil Values", "");
   GD_BIND_PROPERTY(Weapon, recoil_vector, Variant::VECTOR3);
-  GD_BIND_PROPERTY(Weapon, recoil_ang_freq, Variant::FLOAT);
-  GD_BIND_PROPERTY(Weapon, recoil_damping_ratio, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weaponRecoilResetMultiplier, Variant::FLOAT);
+
+  ADD_GROUP("Weapon Reload Properties", "");
+  GD_BIND_PROPERTY(Weapon, weaponReloadRootBoneName, Variant::STRING);
+  GD_BIND_PROPERTY(Weapon, reloadShakeSpeedMultiplier, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, reloadShakeResetMultiplier, Variant::FLOAT);
 
   ADD_GROUP("Weapon Bob And Range", "");
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_freq, Variant::FLOAT);

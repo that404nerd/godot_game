@@ -1,4 +1,5 @@
 #include "weapon_manager.h"
+#include "godot_cpp/variant/quaternion.hpp"
 #include "weapon_states.h"
 #include "weapon_state_machine.h"
 
@@ -31,6 +32,9 @@ void WeaponManager::_ready()
   }
 
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
   
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
@@ -42,6 +46,7 @@ void WeaponManager::_ready()
 
   m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+
 }
 
 void WeaponManager::_bind_methods()
@@ -74,11 +79,11 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
-  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
-  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
-
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
+
+  // NOTE: Temporary
+  m_ReloadRootBoneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
 
   m_WeaponEffects._update(delta, m_MouseVel);
 }
@@ -122,10 +127,10 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
     generate_decal();
     EventBus::get_singleton()->emit_signal("weapon_fired");
   }
-  
+
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
-    EventBus::get_singleton()->emit_signal("weapon_reload_start");
+    EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D, m_ReloadRootBoneName);
   }
 }
 
@@ -173,6 +178,11 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
       }
       
     }
+  }
+
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
+  {
+    EventBus::get_singleton()->emit_signal("weapon_reload_end");
   }
 }
 
@@ -317,6 +327,11 @@ void WeaponManager::_weapon_switch()
 
     // TODO: This looks messy, fix it!
     m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+    m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+    m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+    m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
+
+
   }
 }
 

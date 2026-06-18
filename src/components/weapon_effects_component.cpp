@@ -79,8 +79,8 @@ void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, Wea
   m_IdleWeaponBobAmp = m_CurrentWeapon->get_idle_weapon_bob_amp();
   m_IdleWeaponBobSmoothVal = m_CurrentWeapon->get_idle_weapon_bob_smooth_val();
   
-  m_WeaponSpringAngFreq = m_CurrentWeapon->get_angularFreq();
-  m_WeaponDampedSpringRatio = m_CurrentWeapon->get_dampingRatio();
+  m_WeaponSpringAngFreq = m_CurrentWeapon->get_weaponSwayAngularFreq();
+  m_WeaponDampedSpringRatio = m_CurrentWeapon->get_weaponSwayDampingRatio();
 
 }
 
@@ -90,8 +90,6 @@ void WeaponSwayComponent::_update_sway_data(Ref<Weapon> currentWeapon)
   m_IdleWeaponBobAmp = currentWeapon->get_idle_weapon_bob_amp();
   m_IdleWeaponBobSmoothVal = currentWeapon->get_idle_weapon_bob_smooth_val();
   
-  m_WeaponSpringAngFreq = currentWeapon->get_angularFreq();
-  m_WeaponDampedSpringRatio = currentWeapon->get_dampingRatio();
 }
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
@@ -105,6 +103,9 @@ void WeaponSwayComponent::weapon_idle_sway(double delta)
 
   m_IdleSwayOffset.x =  Utils::exp_decay(m_IdleSwayOffset.x, x_bob, m_IdleWeaponBobSmoothVal, (float)delta);
   m_IdleSwayOffset.y =  Utils::exp_decay(m_IdleSwayOffset.y, y_bob, m_IdleWeaponBobSmoothVal, (float)delta);
+
+  m_WeaponSpringAngFreq = m_CurrentWeapon->get_weaponSwayAngularFreq();
+  m_WeaponDampedSpringRatio = m_CurrentWeapon->get_weaponSwayDampingRatio();
 
 }
 

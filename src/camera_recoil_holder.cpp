@@ -3,7 +3,8 @@
 void CameraRecoilHolder::_ready()
 {
   EventBus::get_singleton()->connect("weapon_fired", Callable(this, "addWeaponRecoil"));
-  EventBus::get_singleton()->connect("weapon_reload_start", Callable(this, "reloadWeaponCameraEffect"));
+  EventBus::get_singleton()->connect("weapon_reload_start", Callable(this, "weaponReloadRotationHandler"));
+  EventBus::get_singleton()->connect("weapon_reload_end", Callable(this, "weaponReloadOver"));
   m_Rng.instantiate();
 }
 
@@ -12,6 +13,21 @@ void CameraRecoilHolder::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(CameraRecoilHolder, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ClassDB::bind_method(D_METHOD("addWeaponRecoil"), &CameraRecoilHolder::addWeaponRecoil);  
+  ClassDB::bind_method(D_METHOD("weaponReloadOver"), &CameraRecoilHolder::weaponReloadOver);  
+  ClassDB::bind_method(D_METHOD("weaponReloadRotationHandler", "skeleton3D"), &CameraRecoilHolder::weaponReloadRotationHandler);  
+}
+
+void CameraRecoilHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D, StringName reloadRootBoneName)
+{
+  m_IsReloading = true;
+
+  m_BoneID = skeleton3D->find_bone(reloadRootBoneName);
+  m_CurrentSkeleton = skeleton3D;
+}
+
+void CameraRecoilHolder::weaponReloadOver()
+{
+  m_IsReloading = false;
 }
 
 void CameraRecoilHolder::addWeaponRecoil()
@@ -32,10 +48,19 @@ void CameraRecoilHolder::_process(double delta)
   Vector3 eqPos {};
 
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
-  m_RecoilAngFreq = m_CurrentWeapon->get_recoil_ang_freq();
-  m_RecoilDampingRatio = m_CurrentWeapon->get_recoil_damping_ratio();
 
-  m_TargetRot = Utils::exp_decay(m_TargetRot, Vector3(0.0f, 0.0f, 0.0f), 7.0f, delta);
+  if(m_BoneID != -1)
+  {
+    m_ReloadBoneTransform = m_CurrentSkeleton->get_bone_pose(m_BoneID);
+  }
+  
+  if(m_IsReloading)
+  {
+    m_ReloadBoneRot = m_ReloadBoneTransform.basis.get_euler();
+  }
+
+  m_TargetRot = Utils::exp_decay(m_TargetRot, Vector3(0.0f, 0.0f, 0.0f), m_CurrentWeapon->get_weaponRecoilResetMultiplier(), delta);
+  m_ReloadBoneRot = Utils::exp_decay(m_ReloadBoneRot, Vector3(0.0f, 0.0f, 0.0f), m_CurrentWeapon->get_reloadShakeResetMultiplier(), delta);
 
   m_DampedSpring.CalcDampedSpringMotionParams(delta, 0.0f, 0.0f);
   m_DampedSpring.UpdateDampedSpringMotion(m_TargetRot, m_RecoilVel, eqPos);
@@ -43,8 +68,11 @@ void CameraRecoilHolder::_process(double delta)
   m_CurrentRot = m_DampedSpring.GetUpdatedPos();
   m_RecoilVel = m_DampedSpring.GetUpdatedVel();
 
-  set_rotation(m_CurrentRot);
+  m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
+
+  set_rotation(Utils::exp_decay(m_CurrentRot, m_CurrentRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier()), 15.0f, delta));
 }
+
 
 CameraRecoilHolder::~CameraRecoilHolder()
 {
