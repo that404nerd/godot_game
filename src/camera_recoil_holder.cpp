@@ -4,33 +4,22 @@ void CameraRecoilHolder::_ready()
 {
   EventBus::get_singleton()->connect("weapon_fired", Callable(this, "addWeaponRecoil"));
   EventBus::get_singleton()->connect("weapon_reload_start", Callable(this, "weaponReloadRotationHandler"));
-  EventBus::get_singleton()->connect("weapon_reload_end", Callable(this, "weaponReloadOver"));
   m_Rng.instantiate();
 }
 
 void CameraRecoilHolder::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(CameraRecoilHolder, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CameraRecoilHolder, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ClassDB::bind_method(D_METHOD("addWeaponRecoil"), &CameraRecoilHolder::addWeaponRecoil);
-  ClassDB::bind_method(D_METHOD("weaponReloadOver"), &CameraRecoilHolder::weaponReloadOver);
   ClassDB::bind_method(D_METHOD("weaponReloadRotationHandler", "skeleton3D", "reloadRootBoneName"), &CameraRecoilHolder::weaponReloadRotationHandler);  
 }
 
 void CameraRecoilHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D, StringName reloadRootBoneName)
 {
-  m_IsReloading = true;
-
   m_BoneID = skeleton3D->find_bone(reloadRootBoneName);
   m_CurrentSkeleton = skeleton3D;
-}
-
-void CameraRecoilHolder::weaponReloadOver(int currentAmmo)
-{
-  if((currentAmmo != m_CurrentWeapon->get_magAmmoCount() && m_CurrentWeapon->get_canSkipReload()) || currentAmmo == m_CurrentWeapon->get_magAmmoCount())
-  {
-    m_IsReloading = false;
-  }
 }
 
 void CameraRecoilHolder::addWeaponRecoil()
@@ -42,9 +31,9 @@ void CameraRecoilHolder::addWeaponRecoil()
 
 void CameraRecoilHolder::_process(double delta)
 {
-  if(weapon_component == nullptr)
+  if(weapon_component == nullptr || weapon_manager == nullptr)
   {
-    print_error("Weapon component is null!");
+    print_error("Weapon component or weapon manager is null!");
     return;
   }
 
@@ -57,7 +46,7 @@ void CameraRecoilHolder::_process(double delta)
     m_ReloadBoneTransform = m_CurrentSkeleton->get_bone_pose(m_BoneID);
   }
   
-  if(m_IsReloading)
+  if(weapon_manager->get_weapon_state_ctx().IsReloading)
   {
     // TODO: Maybe switch to quaternions
     m_ReloadBoneRot = m_ReloadBoneTransform.basis.get_euler();
@@ -74,7 +63,9 @@ void CameraRecoilHolder::_process(double delta)
 
   m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
 
-  set_rotation(Utils::exp_decay(m_CurrentRot, m_CurrentRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier()), 15.0f, delta));
+  Vector3 finalRot = Utils::exp_decay(m_CurrentRot, m_CurrentRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier()), 15.0f, delta);
+
+  set_rotation(finalRot);
 }
 
 

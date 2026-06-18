@@ -46,7 +46,7 @@ void WeaponStateMachine::_handle_state_machine_input(const Ref<InputEvent>& even
       // This fixes an issue where if we switch the weapon while reloading the reload rotation doesn't reset gets stuck and jitters the camera
       if(get_prev_state() == static_cast<int8_t>(WeaponStates::RELOAD))
       {
-        EventBus::get_singleton()->emit_signal("weapon_reload_end", weapon_manager->get_current_weapon_ammo());
+        weapon_manager->get_weapon_state_ctx().IsReloading = false;
       }
 
       weapon_manager->_switch_weapon_data(i);

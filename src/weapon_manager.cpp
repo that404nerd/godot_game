@@ -131,6 +131,7 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
+    m_WeaponStateCtx.IsReloading = true;
     EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D, m_ReloadRootBoneName);
   }
 }
@@ -138,6 +139,12 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
   // TODO: have a timer based reload i.e a gap between each reload (maybe 0.2s to 0.3s)
+  //
+  // If the reload animation is completely over set IsReloading to false and emit the weapon_reload_end signal
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
+  {
+    m_WeaponStateCtx.IsReloading = false;
+  }
 
   // For incremental reloads
   int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
@@ -172,7 +179,6 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
         m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadEndAnimName(),
           m_CurrentWeapon->get_weapon_reload_end_anim_blend(), m_CurrentWeapon->get_weapon_reload_end_anim_speed());
 
-        m_WeaponStateCtx.IsReloading = false;
       }
       
       if(ammoToBeReloaded > 0)
@@ -184,12 +190,7 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
     }
   }
   
-  // If the reload animation is completely over set IsReloading to false and emit the weapon_reload_end signal
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
-  {
-    EventBus::get_singleton()->emit_signal("weapon_reload_end", m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon));
-    m_WeaponStateCtx.IsReloading = false;
-  }
+
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -288,7 +289,6 @@ void WeaponManager::_reload_weapon()
   int ammoNeeded = max_mag_capacity - current_ammo;
   int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
-  m_WeaponStateCtx.IsReloading = true;
 
   if(m_CurrentWeapon->get_is_incremental_reload())
   {

@@ -52,8 +52,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715, 0)
 [node name="PlayerHead" type="Node3D" parent="CameraController" unique_id=1010004094]
 unique_name_in_owner = true
 
-[node name="CameraRecoilHolder" type="CameraRecoilHolder" parent="CameraController/PlayerHead" unique_id=44448943 node_paths=PackedStringArray("weapon_component")]
+[node name="CameraRecoilHolder" type="CameraRecoilHolder" parent="CameraController/PlayerHead" unique_id=44448943 node_paths=PackedStringArray("weapon_component", "weapon_manager")]
 weapon_component = NodePath("../../../WeaponComponent")
+weapon_manager = NodePath("../../../WeaponManager")
 
 [node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead/CameraRecoilHolder" unique_id=27902470]
 unique_name_in_owner = true
@@ -68,10 +69,8 @@ unique_name_in_owner = true
 [node name="Pistol" parent="CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 instance=ExtResource("1_dqkch")]
 
 [node name="Rifle" parent="CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint" unique_id=745645197 instance=ExtResource("2_qhqgy")]
-visible = false
 
 [node name="Shotgun" parent="CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint" unique_id=670607748 instance=ExtResource("3_ur7pv")]
-visible = false
 
 [node name="PlayerRaycasts" type="Node3D" parent="." unique_id=187939257]
 

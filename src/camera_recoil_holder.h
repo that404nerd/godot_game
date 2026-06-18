@@ -4,9 +4,10 @@
 #include <godot_cpp/classes/random_number_generator.hpp>
 #include <godot_cpp/classes/property_tweener.hpp>
 #include <godot_cpp/classes/node3d.hpp>
+#include <godot_cpp/classes/skeleton3d.hpp>
 
-#include "godot_cpp/classes/skeleton3d.hpp"
 #include "weapon_manager.h"
+#include "weapon_state_machine.h"
 #include "weapon.h"
 #include "event_bus.h"
 
@@ -24,7 +25,6 @@ public:
 
   void addWeaponRecoil();
   void weaponReloadRotationHandler(Skeleton3D* skeleton3D, StringName reloadRootBoneName);
-  void weaponReloadOver(int currentAmmo);
 
   ~CameraRecoilHolder();
 protected:
@@ -33,6 +33,8 @@ protected:
 private:
 
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
+  GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
+  
   int m_BoneID { -1 };
 
   Vector3 m_TargetRot {}, m_CurrentRot {}, m_RecoilVector {};
@@ -49,5 +51,4 @@ private:
 
 private:
   float m_RecoilAngFreq { 0.0f }, m_RecoilDampingRatio { 0.0f };
-  bool m_IsReloading { false };
 };
