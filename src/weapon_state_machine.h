@@ -42,5 +42,5 @@ private:
   GD_DEFINE_PROPERTY(float, shoot_time_before_idle, 0.3f);
 
   WeaponStateData m_WeaponStateData;
-
+  Ref<Weapon> m_CurrentWeapon { nullptr };
 };

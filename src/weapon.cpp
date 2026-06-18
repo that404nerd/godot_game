@@ -55,6 +55,7 @@ void Weapon::_bind_methods() {
 
   ADD_GROUP("Weapon Reload Properties", "");
   GD_BIND_PROPERTY(Weapon, weaponReloadRootBoneName, Variant::STRING);
+  GD_BIND_PROPERTY(Weapon, canSkipReload, Variant::BOOL);
   GD_BIND_PROPERTY(Weapon, reloadShakeSpeedMultiplier, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, reloadShakeResetMultiplier, Variant::FLOAT);
 

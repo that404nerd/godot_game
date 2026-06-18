@@ -167,9 +167,6 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
       ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
 
-      print_line(m_TimerBetweenReloads);
-      
-      
       if(ammoToBeReloaded == 0)
       {
         m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadEndAnimName(),
@@ -186,10 +183,12 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
       
     }
   }
-
+  
+  // If the reload animation is completely over set IsReloading to false and emit the weapon_reload_end signal
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
     EventBus::get_singleton()->emit_signal("weapon_reload_end", m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon));
+    m_WeaponStateCtx.IsReloading = false;
   }
 }
 
@@ -304,7 +303,6 @@ void WeaponManager::_reload_weapon()
       m_CurrentWeapon->get_weapon_reload_anim_blend(), 
       m_CurrentWeapon->get_weapon_reload_anim_speed()
     );
-    m_WeaponStateCtx.IsReloading = false;
   }
   
 }

@@ -68,6 +68,8 @@ public:
   int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
   StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
 
+  Ref<Weapon> get_current_weapon() { return m_CurrentWeapon; }
+
   Vector<Node3D*> get_weapon_nodes() { return m_WeaponNodes; }
 
 protected:

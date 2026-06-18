@@ -12,9 +12,9 @@ void CameraRecoilHolder::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(CameraRecoilHolder, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
-  ClassDB::bind_method(D_METHOD("addWeaponRecoil"), &CameraRecoilHolder::addWeaponRecoil);  
-  ClassDB::bind_method(D_METHOD("weaponReloadOver"), &CameraRecoilHolder::weaponReloadOver);  
-  ClassDB::bind_method(D_METHOD("weaponReloadRotationHandler", "skeleton3D"), &CameraRecoilHolder::weaponReloadRotationHandler);  
+  ClassDB::bind_method(D_METHOD("addWeaponRecoil"), &CameraRecoilHolder::addWeaponRecoil);
+  ClassDB::bind_method(D_METHOD("weaponReloadOver"), &CameraRecoilHolder::weaponReloadOver);
+  ClassDB::bind_method(D_METHOD("weaponReloadRotationHandler", "skeleton3D", "reloadRootBoneName"), &CameraRecoilHolder::weaponReloadRotationHandler);  
 }
 
 void CameraRecoilHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D, StringName reloadRootBoneName)
@@ -27,7 +27,7 @@ void CameraRecoilHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D, Str
 
 void CameraRecoilHolder::weaponReloadOver(int currentAmmo)
 {
-  if(currentAmmo == m_CurrentWeapon->get_magAmmoCount())
+  if((currentAmmo != m_CurrentWeapon->get_magAmmoCount() && m_CurrentWeapon->get_canSkipReload()) || currentAmmo == m_CurrentWeapon->get_magAmmoCount())
   {
     m_IsReloading = false;
   }
