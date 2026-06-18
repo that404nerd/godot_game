@@ -24,7 +24,7 @@ public:
 
   void addWeaponRecoil();
   void weaponReloadRotationHandler(Skeleton3D* skeleton3D, StringName reloadRootBoneName);
-  void weaponReloadOver();
+  void weaponReloadOver(int currentAmmo);
 
   ~CameraRecoilHolder();
 protected:

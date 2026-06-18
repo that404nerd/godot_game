@@ -112,6 +112,7 @@ private:
 
   float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.1f };
   float m_LightTimeout { 0.05f };
+  float m_TimerBetweenReloads { 0.1f };
 
   Vector3 m_TargetRot {}, m_CurrentRot {};
 

@@ -84,6 +84,7 @@ void WeaponManager::_process(double delta)
 
   // NOTE: Temporary
   m_ReloadRootBoneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
+  m_TimerBetweenReloads -= delta;
 
   m_WeaponEffects._update(delta, m_MouseVel);
 }
@@ -136,6 +137,8 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
+  // TODO: have a timer based reload i.e a gap between each reload (maybe 0.2s to 0.3s)
+
   // For incremental reloads
   int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
   int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
@@ -146,13 +149,13 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
   // make sure this only triggers for weapons with incremental reloads only!!!!!
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
-
     if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadStartAnimName()))
     {
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(),
-      m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
-    }  
-    
+        m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+
+    }
+
     if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
     {
       m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
@@ -162,19 +165,23 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
       current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
       ammoNeeded = max_mag_capacity - current_ammo;
       ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
+
+
+      print_line(m_TimerBetweenReloads);
       
       
       if(ammoToBeReloaded == 0)
       {
         m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadEndAnimName(),
-        m_CurrentWeapon->get_weapon_reload_end_anim_blend(), m_CurrentWeapon->get_weapon_reload_end_anim_speed());
+          m_CurrentWeapon->get_weapon_reload_end_anim_blend(), m_CurrentWeapon->get_weapon_reload_end_anim_speed());
+
         m_WeaponStateCtx.IsReloading = false;
       }
       
       if(ammoToBeReloaded > 0)
       {
         m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(),
-        m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+          m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
       }
       
     }
@@ -182,7 +189,7 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
-    EventBus::get_singleton()->emit_signal("weapon_reload_end");
+    EventBus::get_singleton()->emit_signal("weapon_reload_end", m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon));
   }
 }
 
@@ -330,8 +337,6 @@ void WeaponManager::_weapon_switch()
     m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
     m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
     m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
-
-
   }
 }
 

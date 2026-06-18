@@ -25,9 +25,12 @@ void CameraRecoilHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D, Str
   m_CurrentSkeleton = skeleton3D;
 }
 
-void CameraRecoilHolder::weaponReloadOver()
+void CameraRecoilHolder::weaponReloadOver(int currentAmmo)
 {
-  m_IsReloading = false;
+  if(currentAmmo == m_CurrentWeapon->get_magAmmoCount())
+  {
+    m_IsReloading = false;
+  }
 }
 
 void CameraRecoilHolder::addWeaponRecoil()
@@ -56,6 +59,7 @@ void CameraRecoilHolder::_process(double delta)
   
   if(m_IsReloading)
   {
+    // TODO: Maybe switch to quaternions
     m_ReloadBoneRot = m_ReloadBoneTransform.basis.get_euler();
   }
 
