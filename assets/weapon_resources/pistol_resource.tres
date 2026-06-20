@@ -14,6 +14,7 @@ weaponShootingAnimName = "pistol_shoot"
 weaponReloadAnimName = "pistol_reload"
 recoil_vector = Vector3(0.08, 0.04, 0.01)
 weaponReloadRootBoneName = "weapon"
+magEnteredTimestamp = 0.7
 reloadShakeSpeedMultiplier = 2.0
 idle_weapon_bob_freq = 0.5
 idle_weapon_bob_amp = 0.02

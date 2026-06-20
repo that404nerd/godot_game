@@ -261,7 +261,7 @@ armature_skeleton = NodePath("gun_shotgun/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
 
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=945955197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.011, -0.104)
+transform = Transform3D(0.052335616, -0.31686994, 0.947024, 0, 0.9483236, 0.3173048, -0.99862957, -0.016606342, 0.0496311, 1.4430943, 0.7668438, 1.5215209)
 visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="WeaponWrapper" unique_id=128986582]
@@ -611,9 +611,11 @@ material_override = SubResource("StandardMaterial3D_w8c57")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_kmunc")
 skin = SubResource("Skin_ljg5d")
+skeleton = NodePath("..")
 
 [node name="boomstick" type="MeshInstance3D" parent="WeaponWrapper/gun_shotgun/Armature/Skeleton3D" unique_id=1623077502]
 material_override = SubResource("StandardMaterial3D_oud13")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_psf7x")
 skin = SubResource("Skin_ljg5d")
+skeleton = NodePath("..")

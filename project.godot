@@ -13,15 +13,11 @@ config_version=5
 extract_path="res://assets/textures"
 environment_file_directory="res://AmbientCG/Environments"
 
-[animation]
-
-compatibility/default_parent_skeleton_in_mesh_instance_3d=true
-
 [application]
 
 config/name="FPSProject"
 run/main_scene="uid://dscvjpepl0ukv"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 run/max_fps=144
 boot_splash/stretch_mode=0
 boot_splash/use_filter=false

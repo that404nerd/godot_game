@@ -575,7 +575,7 @@ root_node = NodePath("../gun_rifle")
 libraries/ = ExtResource("2_1cw3a")
 
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=809723060]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.011, -0.104)
+transform = Transform3D(0.9876883, 0.019741898, -0.1551839, 0, 0.99200493, 0.12619905, 0.1564346, -0.12464533, 0.97979164, 0, -0.010999918, -0.10400009)
 visible = false
 
 [node name="gun_rifle" type="Node3D" parent="WeaponWrapper" unique_id=490263074]
@@ -1172,6 +1172,7 @@ bones/79/scale = Vector3(1, 0.9999999, 0.99999994)
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_5qeg5")
 skin = SubResource("Skin_8cs3w")
+skeleton = NodePath("..")
 surface_material_override/0 = SubResource("StandardMaterial3D_rl2xm")
 surface_material_override/1 = SubResource("StandardMaterial3D_1hegd")
 surface_material_override/2 = SubResource("StandardMaterial3D_ah4op")
@@ -1182,3 +1183,4 @@ material_override = SubResource("StandardMaterial3D_lidcj")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_mrsae")
 skin = SubResource("Skin_8cs3w")
+skeleton = NodePath("..")

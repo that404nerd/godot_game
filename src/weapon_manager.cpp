@@ -1,5 +1,4 @@
 #include "weapon_manager.h"
-#include "godot_cpp/variant/quaternion.hpp"
 #include "weapon_states.h"
 #include "weapon_state_machine.h"
 
@@ -79,12 +78,9 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
+  m_CurrentWeaponState = weapon_state_machine->get_current_state();
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
-
-  // NOTE: Temporary
-  m_ReloadRootBoneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
-  m_TimerBetweenReloads -= delta;
 
   m_WeaponEffects._update(delta, m_MouseVel);
 }
@@ -132,14 +128,14 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
     m_WeaponStateCtx.IsReloading = true;
-    EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D, m_ReloadRootBoneName);
+    EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D);
   }
 }
 
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
   // TODO: have a timer based reload i.e a gap between each reload (maybe 0.2s to 0.3s)
-  //
+  
   // If the reload animation is completely over set IsReloading to false and emit the weapon_reload_end signal
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
@@ -236,7 +232,7 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH
   )) 
   {
-    m_HoldCounter += delta;
+    m_HoldCounter += delta * 2.0f;
     m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
 
     if(m_HoldCounter > m_HoldMaxTime)
@@ -289,22 +285,27 @@ void WeaponManager::_reload_weapon()
   int ammoNeeded = max_mag_capacity - current_ammo;
   int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
-
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
     m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadStartAnimName(),
       m_CurrentWeapon->get_weapon_reload_start_anim_blend(), m_CurrentWeapon->get_weapon_reload_start_anim_speed());
-  } else {
-    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
-    m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
 
+  } else {
     m_CurrentWeaponAnimPlayer->play(
       m_CurrentWeapon->get_weaponReloadAnimName(), 
       m_CurrentWeapon->get_weapon_reload_anim_blend(), 
       m_CurrentWeapon->get_weapon_reload_anim_speed()
     );
+
+    // This will work for weapons that are not using incremental reloads
+    // The ammo won't be set if you change the weapon before the mag is entered
+    if(get_current_anim_length() >= m_CurrentWeapon->get_magEnteredTimestamp())
+    {
+      m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
+      m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
+    }
+    
   }
-  
 }
 
 void WeaponManager::_weapon_unequip_over()

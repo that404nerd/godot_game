@@ -56,7 +56,7 @@ private:
   GD_DEFINE_PROPERTY(int, magAmmoCount, 0); 
   GD_DEFINE_PROPERTY(bool, is_incremental_reload, false); 
 
-  GD_DEFINE_PROPERTY(bool, canSkipReload, false); 
+  GD_DEFINE_PROPERTY(float, magEnteredTimestamp, 0.0f); 
   GD_DEFINE_PROPERTY(float, reloadShakeSpeedMultiplier, 1.0f); 
   GD_DEFINE_PROPERTY(float, reloadShakeResetMultiplier, 10.0f); 
 

@@ -67,6 +67,7 @@ public:
   int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
   int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
   StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
+  double get_current_anim_length() { return m_CurrentWeaponAnimPlayer->get_current_animation_position(); }
 
   Ref<Weapon> get_current_weapon() { return m_CurrentWeapon; }
 
@@ -85,6 +86,7 @@ private:
   Vector<Node3D*> m_WeaponNodes;
   
   int m_WeaponIndex { 0 };
+  int8_t m_CurrentWeaponState { 0 };
 
   AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
   Ref<Weapon> m_CurrentWeapon;
@@ -112,7 +114,7 @@ private:
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
 
-  float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.1f };
+  float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.01f };
   float m_LightTimeout { 0.05f };
   float m_TimerBetweenReloads { 0.1f };
 

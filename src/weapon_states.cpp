@@ -146,12 +146,12 @@ void WeaponReloadState::_enter()
     return;
   }
 
-  m_WeaponManager->_reload_weapon();
-  
 }
 
 void WeaponReloadState::_update(double delta)
 {
+  m_WeaponManager->_reload_weapon();
+
   if(m_WeaponStateContext.IsReloading == false)
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
 }

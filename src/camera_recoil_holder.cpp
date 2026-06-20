@@ -13,12 +13,13 @@ void CameraRecoilHolder::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(CameraRecoilHolder, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ClassDB::bind_method(D_METHOD("addWeaponRecoil"), &CameraRecoilHolder::addWeaponRecoil);
-  ClassDB::bind_method(D_METHOD("weaponReloadRotationHandler", "skeleton3D", "reloadRootBoneName"), &CameraRecoilHolder::weaponReloadRotationHandler);  
+  ClassDB::bind_method(D_METHOD("weaponReloadRotationHandler", "skeleton3D"), &CameraRecoilHolder::weaponReloadRotationHandler);  
 }
 
-void CameraRecoilHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D, StringName reloadRootBoneName)
+void CameraRecoilHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D)
 {
-  m_BoneID = skeleton3D->find_bone(reloadRootBoneName);
+  StringName boneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
+  m_BoneID = skeleton3D->find_bone(boneName);
   m_CurrentSkeleton = skeleton3D;
 }
 

@@ -24,7 +24,7 @@ public:
   void _process(double delta) override;
 
   void addWeaponRecoil();
-  void weaponReloadRotationHandler(Skeleton3D* skeleton3D, StringName reloadRootBoneName);
+  void weaponReloadRotationHandler(Skeleton3D* skeleton3D);
 
   ~CameraRecoilHolder();
 protected:
