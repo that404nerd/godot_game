@@ -3,6 +3,8 @@ extends RigidBody3D
 
 var door_collision_layer = 3
 
+
+
 func _func_godot_apply_properties(entity_props: Dictionary) -> void:
 	pass
 

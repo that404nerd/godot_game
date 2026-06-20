@@ -38,6 +38,7 @@ AmbientCG="*uid://cnxneyd8ilml2"
 [debug_draw_3d]
 
 settings/addon_root_folder="res://addons/debug_draw_3d"
+settings/updates/check_for_updates=false
 
 [display]
 
@@ -45,7 +46,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/ambientcg/plugin.cfg", "res://addons/func_godot/plugin.cfg")
+enabled=PackedStringArray("res://addons/func_godot/plugin.cfg")
 
 [filesystem]
 

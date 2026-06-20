@@ -82,6 +82,8 @@ void WeaponManager::_process(double delta)
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
+  m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
+
   m_WeaponEffects._update(delta, m_MouseVel);
 }
 

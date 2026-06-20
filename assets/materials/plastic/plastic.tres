@@ -1,9 +1,9 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://pac3twxoyttf"]
 
-[ext_resource type="Texture2D" uid="uid://dh68col3cwyqq" path="res://assets/textures/plastic/plastic_albedo.jpg" id="1_df1xd"]
-[ext_resource type="Texture2D" uid="uid://drocjbtl3f4ni" path="res://assets/textures/plastic/plastic_height.jpg" id="2_c1dnu"]
-[ext_resource type="Texture2D" uid="uid://ddb0l5cbuh6cf" path="res://assets/textures/plastic/plastic_normal.jpg" id="3_4a27l"]
-[ext_resource type="Texture2D" uid="uid://bfsnc0xg4oj2x" path="res://assets/textures/plastic/plastic_roughness.jpg" id="4_8sf04"]
+[ext_resource type="Texture2D" uid="uid://c1hudqdbxikpl" path="res://assets/textures/plastic/plastic_albedo.jpg" id="1_df1xd"]
+[ext_resource type="Texture2D" uid="uid://bbvxai0nvx0mo" path="res://assets/textures/plastic/plastic_height.jpg" id="2_c1dnu"]
+[ext_resource type="Texture2D" uid="uid://o2fpphpj15fn" path="res://assets/textures/plastic/plastic_normal.jpg" id="3_4a27l"]
+[ext_resource type="Texture2D" uid="uid://2xidkcw5o1n4" path="res://assets/textures/plastic/plastic_roughness.jpg" id="4_8sf04"]
 
 [resource]
 albedo_color = Color(0.627451, 0.6666667, 0.25882354, 1)

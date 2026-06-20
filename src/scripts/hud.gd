@@ -17,7 +17,7 @@ var current_weapon_text : StringName
 var frames_per_second : StringName
 var player_state_name : StringName
 var weapon_state_name : StringName
-	
+
 func _process(_delta: float):
 	current_weapon_text = weapon_manager.get_current_weapon_name()
 	current_ammo_text = weapon_manager.get_current_weapon_ammo()

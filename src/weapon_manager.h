@@ -114,7 +114,7 @@ private:
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
 
-  float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.01f };
+  float m_HoldCounter { 0.0f }, m_HoldMaxTime;
   float m_LightTimeout { 0.05f };
   float m_TimerBetweenReloads { 0.1f };
 
