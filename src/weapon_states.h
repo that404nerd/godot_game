@@ -18,6 +18,7 @@ struct WeaponStateContext
   float ShootCooldown { 0.0f };
   bool IsReloading { false };
   bool IsKeyPressed { false }, IsKeyHeld { false }, CanUnequip { false };
+  float CurrentAnimTime { 0.0f };
 };
 
 struct WeaponStateData
@@ -83,6 +84,7 @@ private:
   WeaponManager* m_WeaponManager { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
   const WeaponStateContext& m_WeaponStateContext;
+  Ref<Weapon> m_CurrentWeapon { nullptr };
 };
 
 class WeaponUnequipState : public State {

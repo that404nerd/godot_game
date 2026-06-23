@@ -87,15 +87,11 @@ void DampedSpring::CalcDampedSpringMotionParams(
 	}
 }
 
-void DampedSpring::UpdateDampedSpringMotion(Vector3 pos, Vector3 vel, const Vector3& eqPos)
-{	
-	m_pPos = pos;
-	m_pVel = vel;
-	m_EquilibriumPos = eqPos;
-
-	const Vector3 oldPos = m_pPos - m_EquilibriumPos; // update in equilibrium relative space
-	const Vector3 oldVel = m_pVel;
+void DampedSpring::UpdateDampedSpringMotion(Vector3& pos, Vector3& vel, const Vector3& eqPos)
+{
+	const Vector3 oldPos = pos - eqPos; // update in equilibrium relative space
+	const Vector3 oldVel = vel;
 	
-	m_pPos = oldPos * m_posPosCoef + oldVel * m_posVelCoef + m_EquilibriumPos;
-	m_pVel = oldPos * m_velPosCoef + oldVel * m_velVelCoef;
+	pos = oldPos * m_posPosCoef + oldVel * m_posVelCoef + eqPos;
+	vel = oldPos * m_velPosCoef + oldVel * m_velVelCoef;
 }

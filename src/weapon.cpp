@@ -51,6 +51,7 @@ void Weapon::_bind_methods() {
   BIND_ENUM_CONSTANT(BOTH);
   GD_BIND_ENUM(Weapon, weapon_type, "Manual,Auto,Both");
 
+  GD_BIND_PROPERTY(Weapon, shoot_buffer_time, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, hold_max_time, Variant::FLOAT);
 
   ADD_GROUP("Weapon Recoil Values", "");

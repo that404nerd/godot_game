@@ -59,8 +59,7 @@ void CameraRecoilHolder::_process(double delta)
   m_DampedSpring.CalcDampedSpringMotionParams(delta, 0.0f, 0.0f);
   m_DampedSpring.UpdateDampedSpringMotion(m_TargetRot, m_RecoilVel, eqPos);
 
-  m_CurrentRot = m_DampedSpring.GetUpdatedPos();
-  m_RecoilVel = m_DampedSpring.GetUpdatedVel();
+  m_CurrentRot = m_TargetRot;
 
   m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
 

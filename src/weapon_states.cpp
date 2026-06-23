@@ -121,8 +121,6 @@ void WeaponShootState::_exit()
 
 }
 
-  
-   
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Weapon Reload State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,7 +133,6 @@ WeaponReloadState::WeaponReloadState(const WeaponStateData& weaponStateData)
 
 void WeaponReloadState::_handle_input(const Ref<InputEvent>& event)
 {
-
 }
 
 void WeaponReloadState::_enter()
@@ -145,11 +142,17 @@ void WeaponReloadState::_enter()
     print_error("Weapon Reload state data is null!");
     return;
   }
-
+  
+  m_CurrentWeapon = m_WeaponManager->get_current_weapon();
 }
 
 void WeaponReloadState::_update(double delta)
 {
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && m_WeaponStateContext.CurrentAnimTime >= m_CurrentWeapon->get_magEnteredTimestamp())
+  {
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::SHOOT));
+  }
+  
   m_WeaponManager->_reload_weapon();
 
   if(m_WeaponStateContext.IsReloading == false)

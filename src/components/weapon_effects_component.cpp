@@ -81,7 +81,6 @@ void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, Wea
   
   m_WeaponSpringAngFreq = m_CurrentWeapon->get_weaponSwayAngularFreq();
   m_WeaponDampedSpringRatio = m_CurrentWeapon->get_weaponSwayDampingRatio();
-
 }
 
 void WeaponSwayComponent::_update_sway_data(Ref<Weapon> currentWeapon)
@@ -89,7 +88,6 @@ void WeaponSwayComponent::_update_sway_data(Ref<Weapon> currentWeapon)
   m_IdleWeaponBobFreq = currentWeapon->get_idle_weapon_bob_freq();
   m_IdleWeaponBobAmp = currentWeapon->get_idle_weapon_bob_amp();
   m_IdleWeaponBobSmoothVal = currentWeapon->get_idle_weapon_bob_smooth_val();
-  
 }
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
@@ -119,9 +117,6 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
     m_WeaponDampedSpringRatio);
 
   m_DampedSpring.UpdateDampedSpringMotion(m_SwayOffset, sway_vel, equilibriumPos);
-
-  m_SwayOffset = m_DampedSpring.GetUpdatedPos();
-  sway_vel = m_DampedSpring.GetUpdatedVel();
 }
 
 WeaponSwayComponent::~WeaponSwayComponent()

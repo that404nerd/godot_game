@@ -81,6 +81,9 @@ void WeaponManager::_process(double delta)
   m_CurrentWeaponState = weapon_state_machine->get_current_state();
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
+  
+  if(weapon_state_machine->get_current_state() == static_cast<int8_t>(WeaponStates::RELOAD))
+    m_WeaponStateCtx.CurrentAnimTime = m_CurrentWeaponAnimPlayer->get_current_animation_position();
 
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
 
@@ -158,7 +161,6 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
     {
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(),
         m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
-
     }
 
     if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
@@ -244,12 +246,17 @@ void WeaponManager::_shoot_weapon(double delta)
   } 
  
   // Check whether we pressed the fire key (manual)
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && (
-    m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH
-  ))
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
+    (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
   {
     m_WeaponStateCtx.IsKeyPressed = true;
     m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
+
+    if(m_WeaponStateCtx.IsKeyPressed && m_WeaponStateCtx.CurrentAnimTime >= m_CurrentWeapon->get_shoot_buffer_time())
+    {
+      m_CurrentWeaponAnimPlayer->stop();
+    }
+    
   }
   
   if((m_WeaponStateCtx.IsKeyPressed || m_WeaponStateCtx.IsKeyHeld) && m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) > 0)
