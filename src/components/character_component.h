@@ -1,31 +1,130 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/character_body3d.hpp>
+#include <godot_cpp/classes/ray_cast3d.hpp>
+#include <godot_cpp/classes/collision_shape3d.hpp>
+#include <godot_cpp/classes/global_constants.hpp>
 
 #include "../globals.h"
 
 using namespace godot;
 
-class CharacterComponent : public Node {
-  GDCLASS(CharacterComponent, Node)
+class CharacterComponent : public CharacterBody3D {
+  GDCLASS(CharacterComponent, CharacterBody3D)
 
 public:
-  void _ready() override
+  Vector3 get_wish_dir() { return m_WishDir; }
+  Vector3 get_gravity_vec() { return m_GravityVec; }
+
+  void set_gravity_vec(Vector3 gravity_vec) { m_GravityVec = gravity_vec; }
+
+  Vector2 get_input_dir() { return m_InputDir; }
+
+public:
+  void _update_input() 
   {
-    if (!character_body_path.is_empty() && has_node(character_body_path)) {
-      Node* node = get_node<CharacterBody3D>(character_body_path);
-      character_body = Object::cast_to<CharacterBody3D>(node);
+    Vector3 playerVel = get_velocity();
+
+    m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
+    m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
+    
+    if (is_on_floor())
+    {
+      if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
+      {
+        playerVel.x = Utils::exp_decay(playerVel.x, m_WishDir.x, 15.0f, ground_accel);
+        playerVel.z = Utils::exp_decay(playerVel.z, m_WishDir.z, 15.0f, ground_accel);
+      }
+      else
+      {
+        playerVel.x = Utils::exp_decay(playerVel.x, 0.0f, 1.0f, ground_decel);
+        playerVel.z = Utils::exp_decay(playerVel.z, 0.0f, 1.0f, ground_decel);
+      }
     }
+
+    playerVel += m_GravityVec;
+
+    set_velocity(playerVel);
   }
+
+  void _update_velocity()
+  {
+    move_and_slide();
+  }
+
 
 protected:
   static void _bind_methods()
   {
-    GD_BIND_CUSTOM_PROPERTY(CharacterComponent, character_body_path, Variant::NODE_PATH, PROPERTY_HINT_NONE);
+    ADD_GROUP("Character Nodes", "");
+    GD_BIND_CUSTOM_PROPERTY(CharacterComponent, character_head, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(CharacterComponent, crouch_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(CharacterComponent, default_collision_shape, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(CharacterComponent, crouch_collision_shape, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    
+    ADD_GROUP("Speed Settings", "");
+    GD_BIND_PROPERTY(CharacterComponent, crouch_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, sprint_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, slide_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, dash_speed, Variant::FLOAT);
+
+    ADD_GROUP("Jump Settings", "");
+    GD_BIND_PROPERTY(CharacterComponent, jump_height, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, down_gravity, Variant::FLOAT);
+
+    ADD_GROUP("Air Strafe Settings", "");
+    GD_BIND_PROPERTY(CharacterComponent, max_air_move_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, mouse_sensitivity, Variant::FLOAT);
+
+    ADD_GROUP("Acceleration Settings", "");
+    GD_BIND_PROPERTY(CharacterComponent, ground_accel, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, ground_decel, Variant::FLOAT);
+
+    ADD_GROUP("Misc Settings", "");
+    GD_BIND_PROPERTY(CharacterComponent, slide_timer, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, crouch_translate_speed, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, dash_cooldown, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, crouch_translate, Variant::FLOAT);
+
+
   }
 
 private:
-  GD_DEFINE_PROPERTY(CharacterBody3D*, character_body, nullptr);
-  GD_DEFINE_PROPERTY(NodePath, character_body_path, NodePath());
+  Vector2 m_InputDir { Vector2(0.0f, 0.0f) };
+  Vector3 m_WishDir { Vector3(0.0f, 0.0f, 0.0f) };
+
+  Vector3 m_GravityVec = { Vector3(0.0f, 0.0f, 0.0f) };
+
+
+// These are the main settings that change how the character moves
+// TODO: Maybe move these settings into a custom resource file for swapping
+private:
+  GD_DEFINE_PROPERTY(Node3D*, character_head, nullptr);
+  GD_DEFINE_PROPERTY(RayCast3D*, crouch_raycast, nullptr);
+  GD_DEFINE_PROPERTY(CollisionShape3D*, default_collision_shape, nullptr);
+  GD_DEFINE_PROPERTY(CollisionShape3D*, crouch_collision_shape, nullptr);
+
+  GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
+  GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);
+  GD_DEFINE_PROPERTY(float, dash_speed, 50.0f);
+
+  GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
+  GD_DEFINE_PROPERTY(float, crouch_translate_speed, 10.0f);
+  
+  GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
+  GD_DEFINE_PROPERTY(float, slide_timer, 2.0f);
+
+  GD_DEFINE_PROPERTY(float, jump_height, 10.0f);
+  GD_DEFINE_PROPERTY(float, down_gravity, 15.0f);
+
+  GD_DEFINE_PROPERTY(float, max_air_move_speed, 10.0f);
+
+  GD_DEFINE_PROPERTY(float, mouse_sensitivity, 0.003f);
+
+  GD_DEFINE_PROPERTY(float, dash_cooldown, 1.0f);
+  GD_DEFINE_PROPERTY(float, ground_accel, 0.0f);
+  GD_DEFINE_PROPERTY(float, ground_decel, 0.2f);
+
 };

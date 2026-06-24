@@ -1,5 +1,6 @@
 #pragma once
 
+#include "components/character_component.h"
 #include "magic_enum/magic_enum.hpp"
 
 #include "movement_state_machine.h"
@@ -57,5 +58,5 @@ protected:
   static void _bind_methods();
 
 private:
-  GD_DEFINE_PROPERTY(Player*, player_inst, nullptr);
+  GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
 };

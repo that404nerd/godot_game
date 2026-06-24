@@ -1,5 +1,4 @@
 #include "camera_controller.h"
-#include "globals.h"
 
 CameraController::CameraController() 
 {
@@ -7,10 +6,8 @@ CameraController::CameraController()
 
 void CameraController::_ready()
 {
-  m_PlayerInst = Object::cast_to<Player>(get_parent());
-
+  m_PlayerHead = character_component->get_character_head();
   m_PlayerCamera = get_node<Camera3D>(NodePath("%PlayerCamera"));
-  m_PlayerHead = get_node<Node3D>(NodePath("%PlayerHead"));
 
   m_OriginalFOV = m_PlayerCamera->get_fov();
   sprint_fov = m_PlayerCamera->get_fov() + 10.0f;
@@ -22,8 +19,8 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
   Ref<InputEventMouseMotion> mouse_event = event;
   if(event->is_class("InputEventMouseMotion")) {
 
-    m_PlayerInst->rotate_y(-mouse_event->get_relative().x * m_PlayerInst->get_mouse_sensitivity());
-    m_PlayerCamera->rotate_x(-mouse_event->get_relative().y * m_PlayerInst->get_mouse_sensitivity());
+    character_component->rotate_y(-mouse_event->get_relative().x * character_component->get_mouse_sensitivity());
+    m_PlayerCamera->rotate_x(-mouse_event->get_relative().y * character_component->get_mouse_sensitivity());
 
     Vector3 camRot = m_PlayerCamera->get_rotation();
     camRot.x = Math::clamp(camRot.x, Math::deg_to_rad(-89.0f), Math::deg_to_rad(89.0f));
@@ -33,6 +30,7 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 
 void CameraController::_bind_methods() 
 {
+  GD_BIND_CUSTOM_PROPERTY(CameraController, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CameraController, movement_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CameraController, weapon_hold_point, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
@@ -59,27 +57,27 @@ void CameraController::_bind_methods()
 
 void CameraController::_headbob_effect(double delta)
 {
-  bool onFloor = m_PlayerInst->is_on_floor(); // so that bobbing doesn't occur during airborne states
+  bool onFloor = character_component->is_on_floor(); // so that bobbing doesn't occur during airborne states
 
-  float velocity = m_PlayerInst->get_velocity().length(); 
+  float velocity = character_component->get_velocity().length(); 
   m_HeadbobTime += velocity * onFloor * delta;
 
   float x_bob = Math::cos(m_HeadbobTime * sprint_headbob_freq * 0.5f) * sprint_headbob_amp; 
   float y_bob = Math::sin(m_HeadbobTime * sprint_headbob_freq) * sprint_headbob_amp;        
 
-  if(m_CurrentStateID == static_cast<int8_t>(MovementStates::CROUCH) && m_PlayerInst->get_velocity().length() > 0.001f) {
+  if(m_CurrentStateID == static_cast<int8_t>(MovementStates::CROUCH) && character_component->get_velocity().length() > 0.001f) {
     x_bob = Math::cos(m_HeadbobTime * crouch_headbob_freq * 0.5f) * crouch_headbob_amp; 
     y_bob = Math::sin(m_HeadbobTime * crouch_headbob_freq) * crouch_headbob_amp;        
   }
 
-  Vector3 currentPos = m_PlayerInst->get_player_head()->get_position();
+  Vector3 currentPos = m_PlayerHead->get_position();
   Vector3 newPos = Vector3(
     Utils::exp_decay(currentPos.x, x_bob, headbob_transition_value, (float)delta),
     Utils::exp_decay(currentPos.y, y_bob, headbob_transition_value, (float)delta), 
     0.0f
   );
   
-  m_PlayerInst->get_player_head()->set_position(newPos);
+  m_PlayerHead->set_position(newPos);
 }
 
 void CameraController::_tilt_player(double delta)
@@ -89,7 +87,7 @@ void CameraController::_tilt_player(double delta)
 
   if(m_CurrentStateID == static_cast<int8_t>(MovementStates::SPRINT))
   {
-    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -m_PlayerInst->get_input_dir().x, side_tilt_transition_value, (float)delta);
+    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -character_component->get_input_dir().x, side_tilt_transition_value, (float)delta);
 
   } else if(m_CurrentStateID == static_cast<int8_t>(MovementStates::SLIDE))
   {

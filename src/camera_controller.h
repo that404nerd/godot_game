@@ -33,8 +33,6 @@ public:
   void _headbob_effect(double delta);
 
 private:
-  Player* m_PlayerInst = nullptr;
-
   float m_OriginalFOV;
   float m_HeadbobTime;
 
@@ -63,6 +61,7 @@ private:
   Camera3D* m_PlayerCamera { nullptr };
   Node3D* m_PlayerHead { nullptr };
 
+  GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, weapon_hold_point, nullptr);
 };

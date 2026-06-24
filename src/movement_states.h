@@ -18,7 +18,7 @@ public:
   void _exit() override;
 
 private:
-  Player* m_PlayerInst { nullptr };
+  CharacterComponent* m_CharacterComp { nullptr };
   MovementStateMachine* m_MovementStateMachine { nullptr };
 };
 
@@ -33,7 +33,7 @@ public:
   void _exit() override;
 
 private:
-  Player* m_PlayerInst { nullptr };
+  CharacterComponent* m_CharacterComp { nullptr };
   MovementStateMachine* m_MovementStateMachine { nullptr };
 };
 
@@ -50,7 +50,7 @@ public:
   void _exit() override;
 
 private:
-  Player* m_PlayerInst { nullptr };
+  CharacterComponent* m_CharacterComp { nullptr };
   MovementStateMachine* m_MovementStateMachine { nullptr };
 };
 
@@ -69,7 +69,7 @@ private:
   bool m_IsJumpPressed { false };
 
 private:
-  Player* m_PlayerInst { nullptr };
+  CharacterComponent* m_CharacterComp { nullptr };
   MovementStateMachine* m_MovementStateMachine { nullptr };
 };
 
@@ -90,7 +90,7 @@ private:
   Ref<Tween> m_CrouchTween { nullptr };
 
 private:
-  Player* m_PlayerInst { nullptr };
+  CharacterComponent* m_CharacterComp { nullptr };
   MovementStateMachine* m_MovementStateMachine { nullptr };
 };
 
@@ -115,7 +115,7 @@ private:
   Ref<Tween> m_CrouchTween { nullptr };
 
 private:
-  Player* m_PlayerInst { nullptr };
+  CharacterComponent* m_CharacterComp { nullptr };
   MovementStateMachine* m_MovementStateMachine { nullptr };
 };
 
@@ -133,6 +133,6 @@ private:
   Vector3 m_DashDir { Vector3(0.0f, 0.0f, 0.0f )};
 
 private:
-  Player* m_PlayerInst { nullptr };
+  CharacterComponent* m_CharacterComp { nullptr };
   MovementStateMachine* m_MovementStateMachine { nullptr };
 };

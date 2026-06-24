@@ -15,7 +15,7 @@ void WeaponBobComponent::_init_data(CharacterComponent* characterComponent, Weap
     return;
   }
 
-  m_CharacterBody = characterComponent->get_character_body();
+  m_CharacterBody = characterComponent;
   m_CurrentWeapon = weaponComponent->get_current_weapon_data();
 
   if (!m_CurrentWeapon.is_valid()) {
@@ -67,7 +67,7 @@ void WeaponSwayComponent::_init_data(CharacterComponent* characterComponent, Wea
     return;
   }
 
-  m_CharacterBody = characterComponent->get_character_body();
+  m_CharacterBody = characterComponent;
   m_CurrentWeapon = weaponComponent->get_current_weapon_data();
 
   if(!m_CurrentWeapon.is_valid()) {

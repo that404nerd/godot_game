@@ -37,7 +37,7 @@ void WeaponManager::_ready()
   
   // Set the current weapon right here first!
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
-  m_CharacterBody = character_component->get_character_body();
+  m_CharacterBody = character_component;
 
   m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_ScreenCenter = get_viewport()->get_visible_rect().get_size() / 2.0f;

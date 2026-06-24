@@ -22,21 +22,26 @@ font_size = 20
 
 [sub_resource type="LabelSettings" id="LabelSettings_d2wvv"]
 
-[node name="Player" type="Player" unique_id=377799196]
+[node name="Player" type="Player" unique_id=1542459451 node_paths=PackedStringArray("character_head", "crouch_raycast", "default_collision_shape", "crouch_collision_shape")]
+character_head = NodePath("CameraController/PlayerHead")
+crouch_raycast = NodePath("CrouchColliderRay")
+default_collision_shape = NodePath("DefaultPlayerCollider")
+crouch_collision_shape = NodePath("CrouchingPlayerCollider")
 crouch_speed = 4.0
+sprint_speed = 12.0
 slide_speed = 15.0
 dash_speed = 100.0
 jump_height = 4.0
 down_gravity = 20.0
-max_air_move_speed = 7.0
-slide_timer = 1.5
-crouch_translate_speed = 15.0
-crouch_translate = 0.6
 collision_layer = 2
 collision_mask = 3
 velocity = Vector3(0, -689.29645, 0)
 
-[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("movement_state_machine", "weapon_hold_point")]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1085840622]
+mesh = SubResource("CapsuleMesh_ur7pv")
+
+[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("character_component", "movement_state_machine", "weapon_hold_point")]
+character_component = NodePath("..")
 movement_state_machine = NodePath("../MovementStateMachine")
 weapon_hold_point = NodePath("PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint")
 sprint_fov = 110.0
@@ -72,17 +77,12 @@ unique_name_in_owner = true
 
 [node name="Shotgun" parent="CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint" unique_id=670607748 instance=ExtResource("3_ur7pv")]
 
-[node name="PlayerRaycasts" type="Node3D" parent="." unique_id=187939257]
-
-[node name="PlayerColliderRay" type="RayCast3D" parent="PlayerRaycasts" unique_id=1414798151]
+[node name="CrouchColliderRay" type="RayCast3D" parent="." unique_id=1414798151]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5316644, 0)
 hit_from_inside = true
 debug_shape_custom_color = Color(1, 0, 0, 1)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1085840622]
-mesh = SubResource("CapsuleMesh_ur7pv")
-
-[node name="StandingPlayerCollider" type="CollisionShape3D" parent="." unique_id=1268338097]
+[node name="DefaultPlayerCollider" type="CollisionShape3D" parent="." unique_id=1268338097]
 shape = SubResource("CapsuleShape3D_u8vuu")
 
 [node name="CrouchingPlayerCollider" type="CollisionShape3D" parent="." unique_id=1389879870]
@@ -170,18 +170,14 @@ unique_name_in_owner = true
 layout_mode = 2
 label_settings = SubResource("LabelSettings_d2wvv")
 
-[node name="CharacterComponent" type="CharacterComponent" parent="." unique_id=1236826411]
-character_body_path = NodePath("..")
-unique_name_in_owner = true
-
-[node name="MovementStateMachine" type="MovementStateMachine" parent="." unique_id=1412789278 node_paths=PackedStringArray("player_inst")]
-player_inst = NodePath("..")
+[node name="MovementStateMachine" type="MovementStateMachine" parent="." unique_id=1412789278 node_paths=PackedStringArray("character_component")]
+character_component = NodePath("..")
 unique_name_in_owner = true
 
 [node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
-character_component = NodePath("../CharacterComponent")
+character_component = NodePath("..")
 hold_point_node = NodePath("../CameraController/PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint")
 unique_name_in_owner = true
 
