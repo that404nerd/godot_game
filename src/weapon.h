@@ -71,6 +71,8 @@ private:
 
   GD_DEFINE_PROPERTY(float, magEnteredTimestamp, 0.0f); 
   GD_DEFINE_PROPERTY(float, shoot_buffer_time, 0.0f);
+
+  GD_DEFINE_PROPERTY(bool, auto_reload, false);
   GD_DEFINE_PROPERTY(float, reloadShakeSpeedMultiplier, 1.0f); 
   GD_DEFINE_PROPERTY(float, reloadShakeResetMultiplier, 10.0f); 
 

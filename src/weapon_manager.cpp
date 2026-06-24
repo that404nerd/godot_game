@@ -145,19 +145,12 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
-    m_WeaponStateCtx.IsReloading = true;
     EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D);
   }
 }
 
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
-  // If the reload animation is completely over set IsReloading to false and emit the weapon_reload_end signal
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
-  {
-    m_WeaponStateCtx.IsReloading = false;
-  }
-
   // For incremental reloads
   int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
   int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
@@ -190,6 +183,8 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
         m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadEndAnimName(),
           m_CurrentWeapon->get_weapon_reload_end_anim_blend(), m_CurrentWeapon->get_weapon_reload_end_anim_speed());
 
+        m_WeaponStateCtx.IsReloading = false;
+        m_WeaponStateCtx.IsReloadStarted = false;
       }
       
       if(ammoToBeReloaded > 0)
@@ -199,6 +194,7 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
       }
       
     }
+
   }
   
 
@@ -231,11 +227,13 @@ void WeaponManager::_unequip_weapon()
 
 void WeaponManager::_shoot_weapon(double delta)
 {
-  // Don't even shoot, just exit
+  // Don't even shoot, just switch to the idle state instead
   if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
   {
     m_MuzzleComp->_enable_light_status(false);
-    return;
+    m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
+    m_WeaponStateCtx.IsKeyHeld = false;
+    m_WeaponStateCtx.IsKeyPressed = false;
   }
 
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
@@ -311,10 +309,25 @@ void WeaponManager::_reload_weapon()
   int ammoNeeded = max_mag_capacity - current_ammo;
   int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
+  
+  m_WeaponStateCtx.IsReloading = true;
+  
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
-    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadStartAnimName(),
+    // If we shoot mid-reload just cancel the entire reload
+    if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
+    {
+      m_WeaponStateCtx.IsReloading = false;
+      m_WeaponStateCtx.IsReloadStarted = false;
+      return;
+    }
+
+    if(m_WeaponStateCtx.IsReloadStarted == false)
+    {
+      m_WeaponStateCtx.IsReloadStarted = true;
+      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadStartAnimName(),
       m_CurrentWeapon->get_weapon_reload_start_anim_blend(), m_CurrentWeapon->get_weapon_reload_start_anim_speed());
+    }
 
   } else {
     m_CurrentWeaponAnimPlayer->play(

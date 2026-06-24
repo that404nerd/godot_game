@@ -103,10 +103,16 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponShootState::_enter()
 {
+  m_CurrentWeapon = m_WeaponManager->get_current_weapon();
 }
 
 void WeaponShootState::_update(double delta)
 {
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && m_WeaponManager->get_current_weapon_ammo() == 0 && m_CurrentWeapon->get_auto_reload())
+  {
+    m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::RELOAD));
+  }
+
   m_WeaponManager->_shoot_weapon(delta);
 
   if(m_WeaponStateContext.ShootTimeBeforeIdle <= 0.0f &&
@@ -156,7 +162,9 @@ void WeaponReloadState::_update(double delta)
   m_WeaponManager->_reload_weapon();
 
   if(m_WeaponStateContext.IsReloading == false)
+  {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
+  }
 }
 
 void WeaponReloadState::_exit()

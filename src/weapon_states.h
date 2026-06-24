@@ -16,7 +16,7 @@ struct WeaponStateContext
   Weapon::WeaponType CurrentWeaponType { Weapon::WeaponType::NONE };
   float ShootTimeBeforeIdle { 1.0f };
   float ShootCooldown { 0.0f };
-  bool IsReloading { false };
+  bool IsReloading { false }, IsReloadStarted { false };
   bool IsKeyPressed { false }, IsKeyHeld { false }, CanUnequip { false };
   float CurrentAnimTime { 0.0f };
 };
@@ -64,6 +64,9 @@ public:
   void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
   void _exit() override;
+
+private:
+  Ref<Weapon> m_CurrentWeapon { nullptr };
 
 private:
   WeaponManager* m_WeaponManager { nullptr };
