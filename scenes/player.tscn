@@ -36,8 +36,8 @@ collision_layer = 2
 collision_mask = 3
 velocity = Vector3(0, -689.29645, 0)
 
-[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("player_state_machine", "weapon_hold_point")]
-player_state_machine = NodePath("../PlayerStateMachine")
+[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("movement_state_machine", "weapon_hold_point")]
+movement_state_machine = NodePath("../MovementStateMachine")
 weapon_hold_point = NodePath("PlayerHead/CameraRecoilHolder/PlayerCamera/WeaponHoldPoint")
 sprint_fov = 110.0
 slide_fov = 120.0
@@ -174,7 +174,7 @@ label_settings = SubResource("LabelSettings_d2wvv")
 character_body_path = NodePath("..")
 unique_name_in_owner = true
 
-[node name="PlayerStateMachine" type="PlayerStateMachine" parent="." unique_id=602236311 node_paths=PackedStringArray("player_inst")]
+[node name="MovementStateMachine" type="MovementStateMachine" parent="." unique_id=1412789278 node_paths=PackedStringArray("player_inst")]
 player_inst = NodePath("..")
 unique_name_in_owner = true
 

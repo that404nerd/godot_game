@@ -9,7 +9,7 @@
 #include "weapon.h"
 
 #include "state_machine.h"
-#include "player_state_machine.h"
+#include "movement_state_machine.h"
 #include "weapon_state_machine.h"
 #include "weapon_manager.h"
 #include "camera_recoil_holder.h"

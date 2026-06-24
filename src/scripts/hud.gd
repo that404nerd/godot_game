@@ -1,7 +1,7 @@
 extends Control
 
 @onready var weapon_manager: WeaponManager = %WeaponManager
-@onready var playerStateMachine : PlayerStateMachine = %PlayerStateMachine
+@onready var movementStateMachine: MovementStateMachine = %MovementStateMachine
 @onready var weaponStateMachine : WeaponStateMachine = %WeaponStateMachine
 @onready var weaponComponent : WeaponComponent = %WeaponComponent
 
@@ -24,7 +24,7 @@ func _process(_delta: float):
 	reserve_ammo_text = weapon_manager.get_current_reserve_ammo()
 	
 	frames_per_second = str(Engine.get_frames_per_second())
-	player_state_name = playerStateMachine.get_current_state_name()
+	player_state_name = movementStateMachine.get_current_state_name()
 	weapon_state_name = weaponStateMachine.get_current_state_name()
 	
 	weapon_name_label.set_text("Weapon: " + current_weapon_text)

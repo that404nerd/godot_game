@@ -41,7 +41,7 @@ void WeaponManager::_ready()
 
   m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_ScreenCenter = get_viewport()->get_visible_rect().get_size() / 2.0f;
-  m_LoadScene = ResourceLoader::get_singleton()->load("res://assets/decals/bullet_decal.tscn");
+  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
 
   m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
@@ -82,7 +82,7 @@ void WeaponManager::_process(double delta)
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
   
-  if(weapon_state_machine->get_current_state() == static_cast<int8_t>(WeaponStates::RELOAD))
+  if(weapon_state_machine->get_current_state() != static_cast<int8_t>(WeaponStates::NONE))
     m_WeaponStateCtx.CurrentAnimTime = m_CurrentWeaponAnimPlayer->get_current_animation_position();
 
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
@@ -100,19 +100,32 @@ void WeaponManager::_physics_process(double delta)
 
   m_SpaceState = m_CharacterBody->get_world_3d()->get_direct_space_state();
   m_Query = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
+
   m_Query->set_collide_with_bodies(true);
 
   m_Result = m_SpaceState->intersect_ray(m_Query);
 }
 
+// Runs when you switch a weapon (Only once)
+void WeaponManager::_update_weapon_data()
+{
+  m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
+  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
+}
 
 void WeaponManager::generate_decal()
 {
   if(!m_Result.is_empty())
   {
-    Node* instance = m_LoadScene->instantiate();
+    Node* instance = m_DecalScene->instantiate();
     Decal* bulletDecal = Object::cast_to<Decal>(instance);
-    add_child(bulletDecal);
+
+    CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
+
+    colliderBody->add_child(bulletDecal);
     bulletDecal->set_global_position(m_Result["position"]);
     bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, -1.0f, 0.0f));
     bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
@@ -139,8 +152,6 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
-  // TODO: have a timer based reload i.e a gap between each reload (maybe 0.2s to 0.3s)
-  
   // If the reload animation is completely over set IsReloading to false and emit the weapon_reload_end signal
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
@@ -220,6 +231,13 @@ void WeaponManager::_unequip_weapon()
 
 void WeaponManager::_shoot_weapon(double delta)
 {
+  // Don't even shoot, just exit
+  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
+  {
+    m_MuzzleComp->_enable_light_status(false);
+    return;
+  }
+
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
   if(m_WeaponStateCtx.ShootTimeBeforeIdle >= 0.0f)
   {
@@ -236,7 +254,7 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH
   )) 
   {
-    m_HoldCounter += delta * 2.0f;
+    m_HoldCounter += delta * 4.0f;
     m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
 
     if(m_HoldCounter > m_HoldMaxTime)
@@ -252,7 +270,7 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.IsKeyPressed = true;
     m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
 
-    if(m_WeaponStateCtx.IsKeyPressed && m_WeaponStateCtx.CurrentAnimTime >= m_CurrentWeapon->get_shoot_buffer_time())
+    if(m_WeaponStateCtx.CurrentAnimTime >= m_CurrentWeapon->get_shoot_buffer_time())
     {
       m_CurrentWeaponAnimPlayer->stop();
     }
@@ -272,7 +290,6 @@ void WeaponManager::_shoot_weapon(double delta)
 
   if(m_LightTimeout <= 0.0f)
     m_MuzzleComp->_enable_light_status(false);
-
   
   // Set the key held to false and reset the hold counter 
   if(Input::get_singleton()->is_action_just_released("shoot_weapon")) 
@@ -323,6 +340,7 @@ void WeaponManager::_weapon_unequip_over()
   weapon_component->set_current_weapon(weapon_component->get_next_weapon_data());
 }
 
+
 void WeaponManager::_weapon_switch()
 {
   for (int i = 0; i < weapon_component->get_weapon_resource_list().size(); i++) {
@@ -339,12 +357,8 @@ void WeaponManager::_weapon_switch()
     Ref<Weapon> nextWeapon = weapon_component->get_weapon_resource_list()[m_WeaponIndex];
     weapon_component->set_current_weapon(nextWeapon);
     m_WeaponEffects._update_data(nextWeapon);
-
-    // TODO: This looks messy, fix it!
-    m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
-    m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
-    m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
-    m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
+    
+    _update_weapon_data();
   }
 }
 

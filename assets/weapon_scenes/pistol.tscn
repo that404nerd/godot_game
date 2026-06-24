@@ -269,7 +269,6 @@ root_node = NodePath("../gun_pistol")
 libraries/ = ExtResource("5_q6rp4")
 
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=1788948957]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.011, -0.104)
 visible = false
 
 [node name="gun_pistol" type="Node3D" parent="WeaponWrapper" unique_id=571869154]

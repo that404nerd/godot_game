@@ -1,5 +1,7 @@
 [gd_resource type="Weapon" format=3 uid="uid://c6bcoxa876t4a"]
 
+[ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_bdfqo"]
+
 [resource]
 weaponName = "Rifle"
 totalAmmoCount = 180
@@ -15,6 +17,7 @@ weapon_shoot_anim_speed = 2.0
 weaponShootingAnimName = "rifle_shoot"
 weaponReloadAnimName = "rifle_reload"
 weapon_type = 2
+weaponDecalResource = ExtResource("1_bdfqo")
 hold_max_time = 0.05
 recoil_vector = Vector3(0.02, 0.02, 0.01)
 weaponReloadRootBoneName = "IK_Hand_Cntrl_R"
@@ -24,3 +27,5 @@ idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.6
 weapon_bob_amp = 0.04
 gun_range = 100.0
+state_enum = 0
+test_float = 0.0

@@ -1,21 +1,14 @@
 #pragma once
 
+#include <memory>
+
+#include "magic_enum/magic_enum.hpp"
+
+#include "weapon_states.h"
 #include "components/weapon_component.h"
-#include "godot_cpp/classes/animation_player.hpp"
 #include "state_machine.h"
 #include "weapon_states.h"
 
-#include "magic_enum/magic_enum.hpp"
-#include <memory>
-
-class WeaponManager;
-class WeaponIdleState;
-class WeaponEquipState;
-class WeaponShootState;
-class WeaponReloadState;
-class WeaponUnequipState;
-class WeaponSwitchState;
- 
 enum class WeaponStates : int8_t {
   NONE = -1, IDLE, EQUIP, SHOOT, RELOAD, UNEQUIP, WEAPON_SWITCH
 };

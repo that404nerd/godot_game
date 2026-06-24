@@ -575,7 +575,6 @@ root_node = NodePath("../gun_rifle")
 libraries/ = ExtResource("2_1cw3a")
 
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=809723060]
-transform = Transform3D(0.9876883, 0.019741898, -0.1551839, 0, 0.99200493, 0.12619905, 0.1564346, -0.12464533, 0.97979164, 0, -0.010999918, -0.10400009)
 visible = false
 
 [node name="gun_rifle" type="Node3D" parent="WeaponWrapper" unique_id=490263074]
@@ -584,22 +583,21 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.07
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_rifle" unique_id=1714815641 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
 gpu_particles_inst = NodePath("GPUParticles3D")
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.16500008, 0.136, 0.787)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.121, 0.144, 0.604)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_rifle/MuzzleFlashComponent" unique_id=129647094]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.235, -0.146, -0.817)
 visible = false
 light_color = Color(0.96862745, 0.7529412, 0.29803923, 1)
 light_indirect_energy = 2.236
 omni_range = 26.214
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="WeaponWrapper/gun_rifle/MuzzleFlashComponent" unique_id=61419485]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.235, -0.146, -0.817)
 emitting = false
-amount = 100
+amount = 300
 lifetime = 0.05
 one_shot = true
 explosiveness = 1.0
+fixed_fps = 60
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_we1mk")
 draw_pass_1 = SubResource("QuadMesh_iehkx")

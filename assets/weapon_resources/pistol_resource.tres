@@ -1,5 +1,7 @@
 [gd_resource type="Weapon" format=3 uid="uid://ct4xiq7b5h3b0"]
 
+[ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_eol0p"]
+
 [resource]
 weaponName = "Pistol"
 totalAmmoCount = 120
@@ -14,6 +16,7 @@ weaponUnequipAnimName = "pistol_unequip"
 weaponShootingAnimName = "pistol_shoot"
 weaponReloadAnimName = "pistol_reload"
 weapon_type = 2
+weaponDecalResource = ExtResource("1_eol0p")
 shoot_buffer_time = 0.25
 hold_max_time = 0.2
 recoil_vector = Vector3(0.08, 0.04, 0.01)

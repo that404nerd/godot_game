@@ -63,6 +63,8 @@ private:
 
   GD_DEFINE_PROPERTY(float, hold_max_time, 0.5f);
 
+  GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponDecalResource, nullptr);
+
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(int, magAmmoCount, 0); 
   GD_DEFINE_PROPERTY(bool, is_incremental_reload, false); 

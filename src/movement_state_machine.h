@@ -2,31 +2,24 @@
 
 #include "magic_enum/magic_enum.hpp"
 
+#include "movement_state_machine.h"
 #include "state_machine.h"
 #include "globals.h"
 
-class PlayerIdleState;
-class PlayerSprintState;
-class PlayerJumpState;
-class PlayerFallingState;
-class PlayerCrouchState;
-class PlayerSlideState;
-class PlayerDashState;
-
-enum class PlayerStates : int8_t {
+enum class MovementStates : int8_t {
   NONE = -1, IDLE, SPRINT, JUMP, FALL, CROUCH, SLIDE, DASH
 };
 
-class PlayerStateMachine : public StateMachine 
+class MovementStateMachine : public StateMachine 
 {
-  GDCLASS(PlayerStateMachine, StateMachine);
+  GDCLASS(MovementStateMachine, StateMachine);
 
 public:
   void _init_data() override;
 
   StringName get_current_state_name()
   {
-    auto none_name = magic_enum::enum_name(PlayerStates::NONE);
+    auto none_name = magic_enum::enum_name(MovementStates::NONE);
     StringName noneString = std::string(none_name).c_str();
     if(m_CurrentState == nullptr)
     {
@@ -34,7 +27,7 @@ public:
       return noneString;
     }
 
-    auto state = magic_enum::enum_cast<PlayerStates>(m_CurrentState->get_current_state());
+    auto state = magic_enum::enum_cast<MovementStates>(m_CurrentState->get_current_state());
     auto stateName = magic_enum::enum_name(state.value());
     StringName finalStateName = std::string(stateName).c_str();
 
@@ -43,16 +36,16 @@ public:
 
   StringName get_prev_state_name()
   {
-    auto none_name = magic_enum::enum_name(PlayerStates::NONE);
+    auto none_name = magic_enum::enum_name(MovementStates::NONE);
     StringName noneString = std::string(none_name).c_str();
 
     if(m_PrevState == nullptr)
     {
       print_error("Prev state doesn't exist!");
       return noneString;
-    }  
-    
-    auto state = magic_enum::enum_cast<PlayerStates>(m_PrevState->get_current_state());
+    }
+
+    auto state = magic_enum::enum_cast<MovementStates>(m_PrevState->get_current_state());
     auto stateName = magic_enum::enum_name(state.value());
     StringName finalStateName = std::string(stateName).c_str();
 

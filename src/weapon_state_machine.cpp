@@ -1,5 +1,4 @@
 #include "weapon_state_machine.h"
-#include "weapon_states.h"
 
 void WeaponStateMachine::_init_data()
 {

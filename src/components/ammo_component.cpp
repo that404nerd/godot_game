@@ -11,6 +11,14 @@ void AmmoComponent::_init_data(Array weaponList)
   }
 }
 
+bool AmmoComponent::is_ammo_empty(Ref<Weapon> currentWeapon)
+{
+  if(m_WeaponAmmoMap[currentWeapon].CurrentAmmo == 0)
+    return true;
+  
+  return false;
+}
+
 void AmmoComponent::consume_ammo(Ref<Weapon> currentWeapon, int ammoCount)
 {
   m_WeaponAmmoMap[currentWeapon].CurrentAmmo -= ammoCount;

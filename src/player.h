@@ -17,7 +17,7 @@
 
 using namespace godot;
 
-class PlayerStateMachine;
+class movementStateMachine;
 
 class Player : public CharacterBody3D {
 

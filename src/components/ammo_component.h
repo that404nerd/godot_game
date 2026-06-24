@@ -34,8 +34,9 @@ public:
       m_WeaponAmmoMap[currentWeapon].ReserveAmmo = ammo; // Subtracts the reserve ammo by the give ammo count
   }
 
-  int get_current_weapon_ammo(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].CurrentAmmo; }
+  bool is_ammo_empty(Ref<Weapon> currentWeapon);
 
+  int get_current_weapon_ammo(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].CurrentAmmo; }
   int get_current_weapon_reserve_ammo(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].ReserveAmmo; }
 
 private:

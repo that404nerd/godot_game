@@ -60,6 +60,7 @@ public:
   
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
+  void _update_weapon_data();
   
   void generate_decal();
 
@@ -90,7 +91,7 @@ private:
 
   AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
   Ref<Weapon> m_CurrentWeapon;
-  Ref<PackedScene> m_LoadScene;
+  Ref<PackedScene> m_DecalScene;
   PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
 
   WeaponEffects m_WeaponEffects;

@@ -16,7 +16,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-  GDREGISTER_CLASS(EventBus);
+  if(!ClassDB::class_exists("EventBus")) GDREGISTER_CLASS(EventBus);
   s_EventBus = memnew(EventBus);
   Engine::get_singleton()->register_singleton("EventBus", s_EventBus);
 
@@ -29,7 +29,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
 
   if(!ClassDB::class_exists("StateMachine")) GDREGISTER_RUNTIME_CLASS(StateMachine);
-  if(!ClassDB::class_exists("PlayerStateMachine")) GDREGISTER_RUNTIME_CLASS(PlayerStateMachine);
+  if(!ClassDB::class_exists("MovementStateMachine")) GDREGISTER_RUNTIME_CLASS(MovementStateMachine);
   if(!ClassDB::class_exists("WeaponStateMachine")) GDREGISTER_RUNTIME_CLASS(WeaponStateMachine);
   if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager);
   if(!ClassDB::class_exists("CameraRecoilHolder")) GDREGISTER_RUNTIME_CLASS(CameraRecoilHolder);

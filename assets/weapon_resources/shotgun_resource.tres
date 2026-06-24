@@ -1,5 +1,7 @@
 [gd_resource type="Weapon" format=3 uid="uid://g6nbobyu2ifd"]
 
+[ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_lvpox"]
+
 [resource]
 weaponName = "Shotgun"
 totalAmmoCount = 48
@@ -15,6 +17,7 @@ weaponShootingAnimName = "shotgun_shoot"
 weaponReloadStartAnimName = "shotgun_reload_start"
 weaponReloadAnimName = "shotgun_reload"
 weaponReloadEndAnimName = "shotgun_reload_end"
+weaponDecalResource = ExtResource("1_lvpox")
 shoot_buffer_time = 0.6
 recoil_vector = Vector3(0.3, 0.1, 0.03)
 weaponReloadRootBoneName = "weapon"
@@ -26,4 +29,3 @@ idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.5
 weapon_bob_amp = 0.04
 gun_range = 40.0
-state_enum = 2

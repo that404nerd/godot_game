@@ -8,7 +8,7 @@
 #include <godot_cpp/classes/camera3d.hpp>
 
 #include "globals.h"
-#include "player_state_machine.h"
+#include "movement_state_machine.h"
 #include "player.h"
 
 using namespace godot;
@@ -63,6 +63,6 @@ private:
   Camera3D* m_PlayerCamera { nullptr };
   Node3D* m_PlayerHead { nullptr };
 
-  GD_DEFINE_PROPERTY(PlayerStateMachine*, player_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, weapon_hold_point, nullptr);
 };
