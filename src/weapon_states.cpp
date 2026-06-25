@@ -194,12 +194,13 @@ void WeaponUnequipState::_enter()
     return;
   }
 
-  m_WeaponManager->_unequip_weapon();
 }
 
 void WeaponUnequipState::_update(double delta)
 {
-  if(m_WeaponStateContext.CanUnequip == false)
+  m_WeaponManager->_unequip_weapon();
+
+  if(m_WeaponStateContext.IsUnequipped)
   {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::IDLE));
   }

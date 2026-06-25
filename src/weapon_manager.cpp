@@ -87,6 +87,7 @@ void WeaponManager::_process(double delta)
 
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
 
+  print_line(m_WeaponStateCtx.IsUnequipped);
   m_WeaponEffects._update(delta, m_MouseVel);
 }
 
@@ -151,7 +152,21 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
-  // For incremental reloads
+  // Make sure the reload state is over for any type of reload once the animation ends
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
+  {
+    m_WeaponStateCtx.IsReloading = false;
+  }
+
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponUnequipAnimName()))
+  {
+    m_WeaponStateCtx.IsUnequipped = true;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  //////////////////// For incremental reloads ///////////////////
+  ////////////////////////////////////////////////////////////////
+
   int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
   int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
   int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
@@ -205,6 +220,7 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 ///////////////////////////////////////////////////////////////////////
 void WeaponManager::_equip_weapon()
 {
+  m_WeaponStateCtx.IsUnequipped = false;
   m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
                             m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
 }
@@ -216,10 +232,8 @@ void WeaponManager::_unequip_weapon()
     if(m_CurrentWeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
     {
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
-                            m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
-    } else {
-      m_WeaponStateCtx.CanUnequip = false;
-    }
+        m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
+    } 
   }
 }
 
