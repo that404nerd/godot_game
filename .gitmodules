@@ -1,6 +1,7 @@
 [submodule "addons/magic_enum"]
 	path = addons/magic_enum
 	url = https://github.com/Neargye/magic_enum
+
 [submodule "addons/godot-cpp"]
 	path = addons/godot-cpp
 	url = https://github.com/godotengine/godot-cpp

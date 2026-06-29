@@ -154,7 +154,7 @@ void WeaponReloadState::_enter()
 
 void WeaponReloadState::_update(double delta)
 {
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && m_WeaponStateContext.CurrentAnimTime >= m_CurrentWeapon->get_magEnteredTimestamp())
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
   {
     m_WeaponStateMachine->_change_state(static_cast<int8_t>(WeaponStates::SHOOT));
   }

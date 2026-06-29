@@ -14,11 +14,10 @@ class WeaponStateMachine;
 struct WeaponStateContext
 {
   Weapon::WeaponType CurrentWeaponType { Weapon::WeaponType::NONE };
-  float ShootTimeBeforeIdle { 1.0f }, ShootCooldown { 0.0f };
+  float ShootTimeBeforeIdle { 1.0f };
   bool IsReloading { false }, IsReloadStarted { false };
   bool IsKeyPressed { false }, IsKeyHeld { false };
   bool IsUnequipped { false };
-  float CurrentAnimTime { 0.0f };
 };
 
 struct WeaponStateData

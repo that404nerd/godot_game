@@ -82,12 +82,10 @@ void WeaponManager::_process(double delta)
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
   
-  if(weapon_state_machine->get_current_state() != static_cast<int8_t>(WeaponStates::NONE))
-    m_WeaponStateCtx.CurrentAnimTime = m_CurrentWeaponAnimPlayer->get_current_animation_position();
-
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
+  
+  m_TimeBetweenShots -= delta;
 
-  print_line(m_WeaponStateCtx.IsUnequipped);
   m_WeaponEffects._update(delta, m_MouseVel);
 }
 
@@ -119,17 +117,22 @@ void WeaponManager::_update_weapon_data()
 
 void WeaponManager::generate_decal()
 {
-  if(!m_Result.is_empty())
+  // TODO: Use a path2d for the patterns
+  for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
   {
-    Node* instance = m_DecalScene->instantiate();
-    Decal* bulletDecal = Object::cast_to<Decal>(instance);
+    if(!m_Result.is_empty())
+    {
+      Node* instance = m_DecalScene->instantiate();
+      Decal* bulletDecal = Object::cast_to<Decal>(instance);
 
-    CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
+      CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
 
-    colliderBody->add_child(bulletDecal);
-    bulletDecal->set_global_position(m_Result["position"]);
-    bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, -1.0f, 0.0f));
-    bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+      colliderBody->add_child(bulletDecal);
+      Vector3 position = Vector3(m_Result["position"]);
+      bulletDecal->set_global_position(Vector3(position.x + (i * 0.1f), position.y + (i * 0.2f), position.z));
+      bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, -1.0f, 0.0f));
+      bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+    }
   }
 }
 
@@ -248,6 +251,8 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
     m_WeaponStateCtx.IsKeyHeld = false;
     m_WeaponStateCtx.IsKeyPressed = false;
+
+    return;
   }
 
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
@@ -255,47 +260,39 @@ void WeaponManager::_shoot_weapon(double delta)
   {
     m_WeaponStateCtx.ShootTimeBeforeIdle -= delta;
   }
-
-  if(m_WeaponStateCtx.ShootCooldown > 0.0)
-  {
-    m_WeaponStateCtx.ShootCooldown -= delta;
-  }
   
-  // Check whether the fire key is held or not (for automatic weapons)
-  if(Input::get_singleton()->is_action_pressed("shoot_weapon") && (
-    m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH
-  )) 
+  if(m_TimeBetweenShots <= 0.0f)
   {
-    m_HoldCounter += delta * 4.0f;
-    m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
-
-    if(m_HoldCounter > m_HoldMaxTime)
+    // Check whether the fire key is held or not (for automatic weapons)
+    if(Input::get_singleton()->is_action_pressed("shoot_weapon") && (
+          m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
-      m_WeaponStateCtx.IsKeyHeld = true;
-    }
-  } 
- 
-  // Check whether we pressed the fire key (manual)
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
-    (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
-  {
-    m_WeaponStateCtx.IsKeyPressed = true;
-    m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
+      m_HoldCounter += delta;
 
-    if(m_WeaponStateCtx.CurrentAnimTime >= m_CurrentWeapon->get_shoot_buffer_time())
+      if(m_HoldCounter > m_HoldMaxTime)
+      {
+        m_WeaponStateCtx.IsKeyHeld = true;
+      }
+    }
+
+    // Check whether we pressed the fire key (manual)
+    if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
+      (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
-      m_CurrentWeaponAnimPlayer->stop();
+      m_WeaponStateCtx.IsKeyPressed = true;
     }
-    
-  }
-  
-  if((m_WeaponStateCtx.IsKeyPressed || m_WeaponStateCtx.IsKeyHeld) && m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon) > 0)
-  {
-    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-        m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
 
-    m_MuzzleComp->_enable_light_status(true);
-    m_WeaponStateCtx.IsKeyPressed = false;
+    if(m_WeaponStateCtx.IsKeyHeld || m_WeaponStateCtx.IsKeyPressed)
+    {
+      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+          m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+
+      m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
+
+      m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
+      m_WeaponStateCtx.IsKeyPressed = false;
+      m_MuzzleComp->_enable_light_status(true);
+    }
   }
 
   m_LightTimeout -= delta;

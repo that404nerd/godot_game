@@ -78,6 +78,9 @@ protected:
   static void _bind_methods();
 
 private:
+  float m_TimeBetweenShots { 0.0f };
+
+private:
   Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
 
@@ -115,7 +118,7 @@ private:
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
 
-  float m_HoldCounter { 0.0f }, m_HoldMaxTime;
+  float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.0f };
   float m_LightTimeout { 0.05f };
   float m_TimerBetweenReloads { 0.1f };
 

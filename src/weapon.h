@@ -70,7 +70,8 @@ private:
   GD_DEFINE_PROPERTY(bool, is_incremental_reload, false); 
 
   GD_DEFINE_PROPERTY(float, magEnteredTimestamp, 0.0f); 
-  GD_DEFINE_PROPERTY(float, shoot_buffer_time, 0.0f);
+  GD_DEFINE_PROPERTY(float, time_between_shots, 0.0f);
+  GD_DEFINE_PROPERTY(int, noOfProjectilesAtSameTime, 1);
 
   GD_DEFINE_PROPERTY(bool, auto_reload, false);
   GD_DEFINE_PROPERTY(float, reloadShakeSpeedMultiplier, 1.0f); 

@@ -1,5 +1,6 @@
 #include "weapon.h"
 #include "godot_cpp/variant/dictionary.hpp"
+#include "godot_cpp/variant/variant.hpp"
 
 using namespace godot;
 
@@ -53,7 +54,8 @@ void Weapon::_bind_methods() {
 
   GD_BIND_CUSTOM_PROPERTY(Weapon, weaponDecalResource, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
 
-  GD_BIND_PROPERTY(Weapon, shoot_buffer_time, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, time_between_shots, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, noOfProjectilesAtSameTime, Variant::INT);
   GD_BIND_PROPERTY(Weapon, hold_max_time, Variant::FLOAT);
 
   ADD_GROUP("Weapon Recoil Values", "");
