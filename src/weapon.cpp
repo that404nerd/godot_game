@@ -1,6 +1,6 @@
 #include "weapon.h"
-#include "godot_cpp/variant/dictionary.hpp"
-#include "godot_cpp/variant/variant.hpp"
+#include "godot_cpp/classes/global_constants.hpp"
+#include "magic_enum/magic_enum.hpp"
 
 using namespace godot;
 
@@ -12,6 +12,7 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, magAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, is_incremental_reload, Variant::BOOL);
+  GD_BIND_PROPERTY(Weapon, weaponFOV, Variant::FLOAT);
   
   ADD_GROUP("Weapon Sway Values", "");
   GD_BIND_PROPERTY(Weapon, weaponSwayAngularFreq, Variant::FLOAT);
@@ -81,51 +82,74 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weapon_bob_smooth_val, Variant::FLOAT);
 }
 
-void Weapon::_get_property_list(List<PropertyInfo> *p_list) const 
+/*
+* This is the function that pushes the properties into the list
+*/
+void Weapon::_get_property_list(List<PropertyInfo> *p_list)
 {
-  p_list->push_back(PropertyInfo(Variant::INT, "state_enum", PROPERTY_HINT_ENUM, "IDLE,WALK,RUN"));
-  if(m_CurrentState == States::IDLE)
-    p_list->push_back(PropertyInfo(Variant::FLOAT, "test_float"));
+  Utils::add_property_cond(p_list, { 
+    .PropertyName="state_enum", 
+    .VariantType=Variant::INT, 
+    .PropHint=PROPERTY_HINT_ENUM, 
+    .EnumValues="IDLE,WALK,RUN",
+    .PropertyVariable=static_cast<int>(m_CurrentState)
+  });
+
+  Utils::add_property_cond(p_list, { 
+    .PropertyName="test_float", 
+    .VariantType=Variant::FLOAT, 
+    .PropHint=PROPERTY_HINT_NONE, 
+    .EnumValues="",
+    .PropertyVariable=test_float
+  },
+  [this](){ return m_CurrentState == States::IDLE; });
+  
 }
 
+/*
+* The _set function takes the property name as the first parameter,
+* The p_value is like a template parameter. It accepts any standard godot types. It stores the value of the property pushed into the list
+* This function just sets the value to the property, we are setting a custom class's properties to the p_value
+*/
 bool Weapon::_set(const StringName &p_name, const Variant &p_value) {
-	String name = p_name;
 
-	if (name == "state_enum") {
-		m_CurrentState = p_value;
-    
-    if(m_CurrentState == 0)
-      m_CurrentState = States::IDLE;
-    else if(m_CurrentState == 1)
-      m_CurrentState = States::WALK;
-    else
-      m_CurrentState = States::RUN;
+  Utils::set_properties(p_name, p_value, test_float);
 
-    notify_property_list_changed();
-		return true;
-	}
+  auto states = magic_enum::enum_values<States>();
 
-  if(name == "test_float")
-  {
-    test_float = p_value; 
-    return true;
-  }
+  Utils::set_properties(p_name, p_value, m_CurrentState, states);
+  int state = static_cast<int>(m_CurrentState);
+
+	// if (p_name == StringName("state_enum")) {
+	// 	state = p_value;
+	//
+	//    if(state == 0)
+	//      m_CurrentState = States::IDLE;
+	//    else if(state == 1)
+	//      m_CurrentState = States::WALK;
+	//    else
+	//      m_CurrentState = States::RUN;
+	//
+	//    notify_property_list_changed();
+	// 	return true;
+	// }
 
 	return false;
 }
 
-bool Weapon::_get(const StringName &p_name, Variant &r_ret) const {
+bool Weapon::_get(const StringName &p_name, Variant &r_ret) 
+{
   String name = p_name;
 
   if (name == "state_enum") {
-    if(m_CurrentState == 0)
+    if(m_CurrentState == States::IDLE)
     {
       r_ret = static_cast<int>(States::IDLE);
     }
-    else if(m_CurrentState == 1)
-      r_ret = static_cast<int>(States::RUN);
-    else 
+    else if(m_CurrentState == States::WALK)
       r_ret = static_cast<int>(States::WALK);
+    else 
+      r_ret = static_cast<int>(States::RUN);
 
     return true;
   }

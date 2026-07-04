@@ -259,9 +259,10 @@ blend_shape_mode = 0
 muzzle_flash_component = NodePath("gun_shotgun/Armature/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_shotgun/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
+mesh_instances = [NodePath("gun_shotgun/Armature/Skeleton3D/arm"), NodePath("gun_shotgun/Armature/Skeleton3D/boomstick")]
 
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=945955197]
-transform = Transform3D(0.10019077, 0.26589414, -0.95878154, 0, 0.9636303, 0.26723883, 0.99496824, -0.026774865, 0.096546866, -0.590616, 0.078231156, -0.41368815)
+transform = Transform3D(0.10019077, 0.26589417, -0.95878154, 0, 0.9636303, 0.26723886, 0.99496824, -0.026774868, 0.096546866, -0.59061575, 0.078231156, -0.41368815)
 visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="WeaponWrapper" unique_id=128986582]

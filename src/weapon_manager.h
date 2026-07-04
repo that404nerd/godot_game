@@ -15,6 +15,7 @@
 #include <godot_cpp/classes/gpu_particles3d.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
 #include <godot_cpp/classes/omni_light3d.hpp>
+#include <godot_cpp/classes/standard_material3d.hpp>
 
 #include "components/ammo_component.h"
 #include "components/character_component.h"
@@ -83,6 +84,8 @@ private:
 private:
   Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
+
+  Ref<StandardMaterial3D> m_StdMaterial { nullptr };
 
   // TODO: Replace these two with probably an array or something else instead of vector.
   // I have to perform some unnecessary setup for stuff to work

@@ -569,6 +569,7 @@ blend_shape_mode = 0
 muzzle_flash_component = NodePath("gun_rifle/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_rifle/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
+mesh_instances = [NodePath("gun_rifle/Armature/Skeleton3D/rifle"), NodePath("gun_rifle/Armature/Skeleton3D/arms")]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="WeaponWrapper" unique_id=894221757]
 root_node = NodePath("../gun_rifle")

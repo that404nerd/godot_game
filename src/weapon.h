@@ -9,6 +9,8 @@
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/engine.hpp>
 
+#include <magic_enum/magic_enum.hpp>
+
 #include "globals.h"
 
 using namespace godot;
@@ -18,10 +20,7 @@ class Weapon : public Resource {
   
 protected:
   static void _bind_methods();
-
-  void _get_property_list(List<PropertyInfo> *p_list) const;
-  bool _set(const StringName &p_name, const Variant &p_value);
-	bool _get(const StringName &p_name, Variant &r_ret) const;
+  GD_DEFINE_COND_FUNCS();
 
 public:
 
@@ -31,11 +30,15 @@ public:
   };
 
 
-  enum States { IDLE, WALK, RUN };
+  enum class States { IDLE, WALK, RUN };
+
 
 private:
+
   GD_DEFINE_PROPERTY(String, weaponName, "");
   GD_DEFINE_PROPERTY(String, weaponReloadRootBoneName, "");
+
+  GD_DEFINE_PROPERTY(float, weaponFOV, 50.0f);
 
   GD_DEFINE_PROPERTY(float, weapon_equip_anim_speed, 1.0f);
   GD_DEFINE_PROPERTY(float, weapon_equip_anim_blend, -1.0f);
@@ -100,7 +103,7 @@ private:
   GD_DEFINE_PROPERTY(float, weapon_bob_smooth_val, 1.5f);
 
 private:
-  int m_CurrentState;
+  States m_CurrentState { States::IDLE };
   float test_float { 0.0f };
 };
 

@@ -1,10 +1,19 @@
 #pragma once
 
-#include "godot_cpp/core/class_db.hpp"
+#include "godot_cpp/core/print_string.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
+#include "godot_cpp/variant/string_name.hpp"
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/core/property_info.hpp>
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/core/math.hpp>
 
+#include <magic_enum/magic_enum.hpp>
+
+#include <iostream>
+#include <functional>
 #include <array>
+#include <unordered_map>
 
 using namespace godot;
 
@@ -34,6 +43,13 @@ public:                                                  \
     }                                                    \
     struct _CAT(__semicolon_place, __LINE__)
 
+#define GD_DEFINE_COND_FUNCS() \
+protected:                                                \
+    void _get_property_list(List<PropertyInfo> *p_list);  \
+    bool _set(const StringName &p_name, const Variant &p_value); \
+    bool _get(const StringName &p_name, Variant &r_ret); \
+
+
 // For binding a general property
 #define GD_BIND_PROPERTY(p_class, p_name, p_type) \
         ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name); \
@@ -52,8 +68,72 @@ public:                                                  \
         ADD_PROPERTY(PropertyInfo(Variant::INT, #p_name, PROPERTY_HINT_ENUM, p_enum_values), \
                     "set_"#p_name, "get_"#p_name);
 
+
+
 namespace Utils {
 
+  struct PropertyParams {
+    StringName PropertyName;
+    Variant::Type VariantType;
+    PropertyHint PropHint;
+    StringName EnumValues;
+    Variant PropertyVariable;
+  };
+  
+  inline LocalVector<StringName> PropertyNames;
+
+  inline void add_property_cond(List<PropertyInfo> *p_list, const PropertyParams& propertyParams, std::function<bool()> condition=[](){ return true; })
+  {
+    bool result = condition();
+
+    if(result)
+    {
+      if(propertyParams.PropHint != PROPERTY_HINT_NONE && propertyParams.EnumValues.is_empty())
+      {
+        p_list->push_back(PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, propertyParams.PropHint));
+      }
+      else if(propertyParams.PropHint == PROPERTY_HINT_ENUM && !propertyParams.EnumValues.is_empty())
+      {
+        p_list->push_back(PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, godot::PROPERTY_HINT_ENUM, propertyParams.EnumValues));
+      } else
+      {
+        p_list->push_back(PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName));
+      }
+    }
+
+    for(auto data : *p_list)
+    {
+      PropertyNames.push_back(data.name);
+    }
+
+  }
+  
+  template <typename T>
+  inline bool set_properties(const StringName& p_name, const Variant& p_value, T& propVariable)
+  {
+    if(PropertyNames.find(p_name))
+    {
+      propVariable = p_value;
+      return true;
+    }
+
+    return false;
+  }
+
+  template <typename T, std::size_t N>
+  inline bool set_properties(const StringName& p_name, const Variant& p_value, T& propVariable, const std::array<T, N>& enums={})
+  {
+    int enumValue = static_cast<int>(propVariable);
+    
+    if(PropertyNames.find(p_name))
+    {
+      enumValue = p_value;
+      return true;
+    }
+
+    return false;
+  }
+  
   // Exponential decay function
   template <typename T>
   inline T exp_decay(T a, T b, float decay, double dt)

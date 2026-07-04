@@ -6,6 +6,7 @@
 weaponName = "Rifle"
 totalAmmoCount = 180
 magAmmoCount = 30
+weaponFOV = 120.0
 weaponSwayAngularFreq = 40.0
 weaponSwayDampingRatio = 0.9
 weaponVerticalPush = 0.1
@@ -28,3 +29,4 @@ idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.6
 weapon_bob_amp = 0.04
 gun_range = 100.0
+test_float = 120.0

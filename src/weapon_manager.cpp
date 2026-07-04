@@ -8,9 +8,6 @@ void WeaponManager::_ready()
   Node3D* weapon_node = nullptr;
   WeaponWrapper* weapon_wrapper = nullptr;
 
-  weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
-  m_WeaponEffects._init_data(hold_point_node, character_component, weapon_component);
-
   /* NOTE: This took me 2 hours to find lol, i forgot that i was dealing with different animation
           players for different weapon scene, this connects the _on_animation_finished to all animation players */
   for(int i = 0; i < hold_point_node->get_children().size(); i++)
@@ -36,16 +33,76 @@ void WeaponManager::_ready()
   m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
   
   // Set the current weapon right here first!
-  m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_CharacterBody = character_component;
 
   m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
   m_ScreenCenter = get_viewport()->get_visible_rect().get_size() / 2.0f;
-  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
 
   m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
 
+  for(int weaponCount = 0; weaponCount < hold_point_node->get_children().size(); weaponCount++)
+  { 
+    m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[weaponCount]));
+    weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[weaponCount]);
+    weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+
+    weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[weaponCount]);
+    m_CurrentWeapon = weapon_component->get_current_weapon_data();
+
+    
+    for(int meshes = 0; meshes < weapon_wrapper->get_mesh_instances().size(); meshes++)
+    {
+      NodePath meshNodePath = weapon_wrapper->get_mesh_instances()[meshes];
+      MeshInstance3D* mesh = weapon_wrapper->get_node<MeshInstance3D>(meshNodePath);
+
+      /*
+        NOTE: This is for future me, just in case. 
+
+        Godot basically has two ways of setting materials. Surface overrides materials and just material overrides. 
+        By default every mesh has 1 empty surface override materials, this is for setting materials for individual meshes and it depends on how the model is imported and structured.
+        Then there's the Material Overrides, which is a single material that is applied to the entire mesh instead of individual parts/meshes.
+
+      */
+      if(mesh->get_surface_override_material_count() > 1)
+      {
+        /*
+          If the mesh has surface override materials then loop through all the available ones.
+        */
+        for(int surfaceMaterials = 0; surfaceMaterials < mesh->get_surface_override_material_count(); surfaceMaterials++)
+        {
+          Ref<Material> material = mesh->get_active_material(surfaceMaterials);
+         
+          /*
+            First we set the existing material to the mesh before we hold another reference to material (References basically).
+            Also, just in case. If a material is shared between two meshes then setting the override later on will affect the material of the other mesh since both hold a reference to the same object.
+            I have unique meshes so i didn't duplicate it before setting the m_StdMaterial to the duplicated material and then setting the fov_override. 
+          */
+          mesh->set_surface_override_material(surfaceMaterials, material);
+          
+          m_StdMaterial = material;
+          if (m_StdMaterial.is_valid()) {
+            m_StdMaterial->set_fov_override(m_CurrentWeapon->get_weaponFOV());
+          }
+        }
+      }
+      else {
+        // Here, just get the one material override (p_surface is 0 for these types of meshes).
+        Ref<Material> material = mesh->get_material_override();
+        mesh->set_surface_override_material(0, material);
+        
+        m_StdMaterial = material;
+        if(m_StdMaterial.is_valid())
+          m_StdMaterial->set_fov_override(m_CurrentWeapon->get_weaponFOV());
+      }
+    }
+  }
+
+  weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
+  m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
+
+  m_WeaponEffects._init_data(hold_point_node, character_component, weapon_component);
 }
 
 void WeaponManager::_bind_methods()
@@ -78,6 +135,7 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
+
   m_CurrentWeaponState = weapon_state_machine->get_current_state();
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
@@ -268,6 +326,9 @@ void WeaponManager::_shoot_weapon(double delta)
           m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
       m_HoldCounter += delta;
+      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+          m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+
 
       if(m_HoldCounter > m_HoldMaxTime)
       {
@@ -279,14 +340,15 @@ void WeaponManager::_shoot_weapon(double delta)
     if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
+      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+          m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+
+
       m_WeaponStateCtx.IsKeyPressed = true;
     }
 
     if(m_WeaponStateCtx.IsKeyHeld || m_WeaponStateCtx.IsKeyPressed)
     {
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-          m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
-
       m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
 
       m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
