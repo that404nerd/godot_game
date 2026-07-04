@@ -61,14 +61,15 @@ void Weapon::_bind_methods() {
 
   ADD_GROUP("Weapon Recoil Values", "");
   GD_BIND_PROPERTY(Weapon, recoil_vector, Variant::VECTOR3);
-  GD_BIND_PROPERTY(Weapon, weaponRecoilResetMultiplier, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, reloadShakeResetMultiplier, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, recoil_ang_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, recoil_damping_ratio, Variant::FLOAT);
 
   ADD_GROUP("Weapon Reload Properties", "");
   GD_BIND_PROPERTY(Weapon, weaponReloadRootBoneName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, auto_reload, Variant::BOOL);
   GD_BIND_PROPERTY(Weapon, magEnteredTimestamp, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, reloadShakeSpeedMultiplier, Variant::FLOAT);
-  GD_BIND_PROPERTY(Weapon, reloadShakeResetMultiplier, Variant::FLOAT);
 
   ADD_GROUP("Weapon Bob And Range", "");
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_freq, Variant::FLOAT);

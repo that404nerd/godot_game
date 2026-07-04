@@ -37,8 +37,8 @@ private:
   
   int m_BoneID { -1 };
 
-  Vector3 m_TargetRot {}, m_CurrentRot {}, m_RecoilVector {};
-  Vector3 m_RecoilVel {}, m_FinalRotVector {};
+  Vector3 m_RecoilRot {}, m_RecoilSpringRot {};
+  Vector3 m_RecoilVel {};
   Vector3 m_ReloadBoneRot {};
 
   Ref<RandomNumberGenerator> m_Rng { nullptr };
@@ -48,7 +48,4 @@ private:
   Transform3D m_ReloadBoneTransform {};
 
   DampedSpring m_DampedSpring;
-
-private:
-  float m_RecoilAngFreq { 0.0f }, m_RecoilDampingRatio { 0.0f };
 };

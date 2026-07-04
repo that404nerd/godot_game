@@ -26,8 +26,7 @@ void CameraRecoilHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D)
 void CameraRecoilHolder::addWeaponRecoil()
 {
   Vector3 recoilVec = m_CurrentWeapon->get_recoil_vector();
-  m_RecoilVector = recoilVec;
-  m_TargetRot += Vector3(recoilVec.x, m_Rng->randf_range(-recoilVec.y, recoilVec.y), recoilVec.z);
+  m_RecoilVel = recoilVec;
 }
 
 void CameraRecoilHolder::_process(double delta)
@@ -52,18 +51,16 @@ void CameraRecoilHolder::_process(double delta)
     // TODO: Maybe switch to quaternions
     m_ReloadBoneRot = m_ReloadBoneTransform.basis.get_euler();
   }
-
-  m_TargetRot = Utils::exp_decay(m_TargetRot, Vector3(0.0f, 0.0f, 0.0f), m_CurrentWeapon->get_weaponRecoilResetMultiplier(), delta);
   m_ReloadBoneRot = Utils::exp_decay(m_ReloadBoneRot, Vector3(0.0f, 0.0f, 0.0f), m_CurrentWeapon->get_reloadShakeResetMultiplier(), delta);
 
-  m_DampedSpring.CalcDampedSpringMotionParams(delta, 0.0f, 0.0f);
-  m_DampedSpring.UpdateDampedSpringMotion(m_TargetRot, m_RecoilVel, eqPos);
+  m_DampedSpring.CalcDampedSpringMotionParams(delta, m_CurrentWeapon->get_recoil_ang_freq(), m_CurrentWeapon->get_recoil_damping_ratio());
+  m_DampedSpring.UpdateDampedSpringMotion(m_RecoilSpringRot, m_RecoilVel, eqPos);
 
-  m_CurrentRot = m_TargetRot;
+  m_RecoilRot = m_RecoilSpringRot;
 
   m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
 
-  Vector3 finalRot = Utils::exp_decay(m_CurrentRot, m_CurrentRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier()), 15.0f, delta);
+  Vector3 finalRot = Utils::exp_decay(m_RecoilRot, m_RecoilRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier()), 15.0f, delta);
 
   set_rotation(finalRot);
 }

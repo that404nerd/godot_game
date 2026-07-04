@@ -79,9 +79,10 @@ private:
   GD_DEFINE_PROPERTY(bool, auto_reload, false);
   GD_DEFINE_PROPERTY(float, reloadShakeSpeedMultiplier, 1.0f); 
   GD_DEFINE_PROPERTY(float, reloadShakeResetMultiplier, 10.0f); 
-
+  
   GD_DEFINE_PROPERTY(Vector3, recoil_vector, Vector3(0.0f, 0.0f, 0.0f)); 
-  GD_DEFINE_PROPERTY(float, weaponRecoilResetMultiplier, 7.0f); 
+  GD_DEFINE_PROPERTY(float, recoil_ang_freq, 30.0f); 
+  GD_DEFINE_PROPERTY(float, recoil_damping_ratio, 0.5f); 
 
   GD_DEFINE_PROPERTY(float, gun_range, 0.0f);
   

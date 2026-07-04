@@ -40,7 +40,7 @@ void WeaponManager::_ready()
 
   m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
-
+  
   for(int weaponCount = 0; weaponCount < hold_point_node->get_children().size(); weaponCount++)
   { 
     m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[weaponCount]));
