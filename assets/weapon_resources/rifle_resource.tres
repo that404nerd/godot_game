@@ -29,3 +29,5 @@ idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.6
 weapon_bob_amp = 0.04
 gun_range = 100.0
+state_enum = null
+test_float = null

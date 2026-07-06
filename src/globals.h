@@ -77,10 +77,7 @@ namespace Utils {
     Variant::Type VariantType;
     PropertyHint PropHint;
     StringName EnumValues;
-    Variant PropertyVariable;
   };
-  
-  inline LocalVector<StringName> PropertyNames;
 
   inline void add_property_cond(List<PropertyInfo> *p_list, const PropertyParams& propertyParams, std::function<bool()> condition=[](){ return true; })
   {
@@ -101,17 +98,12 @@ namespace Utils {
       }
     }
 
-    for(auto data : *p_list)
-    {
-      PropertyNames.push_back(data.name);
-    }
-
   }
   
   template <typename T>
-  inline bool set_properties(const StringName& p_name, const Variant& p_value, T& propVariable)
+  inline bool set_properties(const StringName& p_name, const StringName& targetPropName, const Variant& p_value, T& propVariable)
   {
-    if(PropertyNames.find(p_name))
+    if(p_name == targetPropName)
     {
       propVariable = p_value;
       return true;
@@ -120,14 +112,49 @@ namespace Utils {
     return false;
   }
 
-  template <typename T, std::size_t N>
-  inline bool set_properties(const StringName& p_name, const Variant& p_value, T& propVariable, const std::array<T, N>& enums={})
+  template <typename EnumType, typename T>
+  inline bool set_properties_enum(const StringName& p_name, const StringName& targetPropName, const Variant& p_value, T& propVariable)
   {
-    int enumValue = static_cast<int>(propVariable);
-    
-    if(PropertyNames.find(p_name))
-    {
-      enumValue = p_value;
+    int enumIntValue = static_cast<int>(propVariable);
+
+    constexpr auto enumArray = magic_enum::enum_values<EnumType>();
+    constexpr std::size_t enumCount = magic_enum::enum_count<EnumType>();
+
+    if (p_name == targetPropName) {
+      enumIntValue = p_value;
+
+      if((enumIntValue > static_cast<int>(enumCount) - 1)) // Subtract 1 because the enumCount doesn't start from 0 instead starts from 1
+      {
+        print_error("The selected enum is missing in the enum class.");
+        return false;
+      }
+
+      propVariable = enumArray[p_value];
+      return true;
+    }
+
+
+    return false;
+  }
+
+  template <typename T>
+  inline bool get_property_enum(const StringName& p_name, const StringName& targetPropName, Variant& r_ret, T& propVariable)
+  {
+    if (p_name == targetPropName) {
+      r_ret = static_cast<int>(propVariable);
+
+      return true;
+    }
+
+
+    return false;
+  }
+
+  template <typename T>
+  inline bool get_property(const StringName& p_name, const StringName& targetPropName, Variant& r_ret, T& propVariable)
+  {
+    if(p_name == targetPropName)  {
+      r_ret = propVariable;
       return true;
     }
 

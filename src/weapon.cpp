@@ -1,6 +1,5 @@
 #include "weapon.h"
-#include "godot_cpp/classes/global_constants.hpp"
-#include "magic_enum/magic_enum.hpp"
+#include "globals.h"
 
 using namespace godot;
 
@@ -92,8 +91,7 @@ void Weapon::_get_property_list(List<PropertyInfo> *p_list)
     .PropertyName="state_enum", 
     .VariantType=Variant::INT, 
     .PropHint=PROPERTY_HINT_ENUM, 
-    .EnumValues="IDLE,WALK,RUN",
-    .PropertyVariable=static_cast<int>(m_CurrentState)
+    .EnumValues="IDLE,WALK,RUN,JUMP",
   });
 
   Utils::add_property_cond(p_list, { 
@@ -101,7 +99,6 @@ void Weapon::_get_property_list(List<PropertyInfo> *p_list)
     .VariantType=Variant::FLOAT, 
     .PropHint=PROPERTY_HINT_NONE, 
     .EnumValues="",
-    .PropertyVariable=test_float
   },
   [this](){ return m_CurrentState == States::IDLE; });
   
@@ -114,52 +111,25 @@ void Weapon::_get_property_list(List<PropertyInfo> *p_list)
 */
 bool Weapon::_set(const StringName &p_name, const Variant &p_value) {
 
-  Utils::set_properties(p_name, p_value, test_float);
+  Utils::set_properties(p_name, "test_float", p_value, test_float);
+  Utils::set_properties_enum<States>(p_name, "state_enum", p_value, m_CurrentState);
 
-  auto states = magic_enum::enum_values<States>();
-
-  Utils::set_properties(p_name, p_value, m_CurrentState, states);
-  int state = static_cast<int>(m_CurrentState);
-
-	// if (p_name == StringName("state_enum")) {
-	// 	state = p_value;
-	//
-	//    if(state == 0)
-	//      m_CurrentState = States::IDLE;
-	//    else if(state == 1)
-	//      m_CurrentState = States::WALK;
-	//    else
-	//      m_CurrentState = States::RUN;
-	//
-	//    notify_property_list_changed();
-	// 	return true;
-	// }
+  notify_property_list_changed();
 
 	return false;
 }
 
+/*
+  This function gets the value set by the user (which is performed by the _set() above) and then set it to r_ret which then updates the value in the editor
+*/
 bool Weapon::_get(const StringName &p_name, Variant &r_ret) 
 {
-  String name = p_name;
-
-  if (name == "state_enum") {
-    if(m_CurrentState == States::IDLE)
-    {
-      r_ret = static_cast<int>(States::IDLE);
-    }
-    else if(m_CurrentState == States::WALK)
-      r_ret = static_cast<int>(States::WALK);
-    else 
-      r_ret = static_cast<int>(States::RUN);
-
+  // This is weird, the _get() ABSOLUTELY requires you to check and then manually return true for it to update the value in the editor. _set() didn't require that.
+  if(Utils::get_property_enum(p_name, "state_enum", r_ret, m_CurrentState))
     return true;
-  }
 
-  if(name == "test_float")
-  {
-    r_ret = test_float;
+  if(Utils::get_property(p_name, "test_float", r_ret, test_float))
     return true;
-  }
-
+  
   return false;
 }

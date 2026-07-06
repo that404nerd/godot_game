@@ -30,7 +30,7 @@ public:
   };
 
 
-  enum class States { IDLE, WALK, RUN };
+  enum class States { IDLE, WALK, RUN, JUMP };
 
 
 private:
