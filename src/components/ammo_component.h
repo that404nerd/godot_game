@@ -5,7 +5,7 @@
 #include <godot_cpp/templates/a_hash_map.hpp>
 
 #include "../globals.h"
-#include "../weapon.h"
+#include "../resources/weapon.h"
 
 using namespace godot;
 

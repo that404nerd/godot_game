@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d.hpp>
 #include <godot_cpp/classes/decal.hpp>
@@ -25,13 +26,12 @@
 #include "components/weapon_wrapper.h"
 
 #include "globals.h"
-#include "event_bus.h"
+#include "singletons/event_bus.h"
 #include "godot_cpp/variant/quaternion.hpp"
-#include "weapon.h"
-#include "weapon_states.h"
-
-class StateMachine;
-class WeaponStateMachine;
+#include "movement_state_machine.h"
+#include "resources/weapon.h"
+#include "states/weapon_states.h"
+#include "weapon_state_machine.h"
 
 using namespace godot;
 
@@ -73,6 +73,8 @@ public:
 
   Ref<Weapon> get_current_weapon() { return m_CurrentWeapon; }
 
+  Node3D* get_weapon_armature_node() { return m_WeaponWrapperInst->get_armature_node(); }
+
   Vector<Node3D*> get_weapon_nodes() { return m_WeaponNodes; }
 
 protected:
@@ -87,8 +89,7 @@ private:
 
   Ref<StandardMaterial3D> m_StdMaterial { nullptr };
 
-  // TODO: Replace these two with probably an array or something else instead of vector.
-  // I have to perform some unnecessary setup for stuff to work
+ 
   Vector<AnimationPlayer*> m_WeaponAnims;
   Vector<Node3D*> m_WeaponNodes;
   
@@ -128,6 +129,7 @@ private:
   Vector3 m_TargetRot {}, m_CurrentRot {};
 
 private:
+  GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);

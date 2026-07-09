@@ -1,6 +1,4 @@
 #include "weapon_manager.h"
-#include "weapon_states.h"
-#include "weapon_state_machine.h"
 
 void WeaponManager::_ready()
 {
@@ -102,7 +100,7 @@ void WeaponManager::_ready()
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
 
-  m_WeaponEffects._init_data(hold_point_node, character_component, weapon_component);
+  m_WeaponEffects._init_data(movement_state_machine, hold_point_node, character_component, weapon_component);
 }
 
 void WeaponManager::_bind_methods()
@@ -110,6 +108,7 @@ void WeaponManager::_bind_methods()
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_started", "anim_name"), &WeaponManager::_on_weapon_anim_started);
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
   
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, movement_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -175,7 +174,6 @@ void WeaponManager::_update_weapon_data()
 
 void WeaponManager::generate_decal()
 {
-  // TODO: Use a path2d for the patterns
   for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
   {
     if(!m_Result.is_empty())
@@ -295,7 +293,7 @@ void WeaponManager::_unequip_weapon()
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
         m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
     } 
-  }
+  } else m_WeaponStateCtx.IsUnequipped = true;
 }
 
 

@@ -9,13 +9,8 @@
 #include <memory>
 #include <unordered_map>
 
-#include "global_state_handler.h"
-#include "godot_cpp/core/binder_common.hpp"
-#include "godot_cpp/core/memory.hpp"
-#include "state.h"
-#include "player.h"
+#include "states/state.h"
 #include "globals.h"
-#include "weapon_manager.h"
 
 using namespace godot;
 
@@ -25,8 +20,10 @@ class StateMachine : public Node {
   
 public:
   void _ready() override;
+
   virtual void _init_data() {};
   virtual void _handle_state_machine_input(const Ref<InputEvent>& event) {};
+  virtual void _handle_state_machine_process(double delta) {};
 
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _physics_process(double delta) override;

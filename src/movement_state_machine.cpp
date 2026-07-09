@@ -1,4 +1,5 @@
-#include "movement_states.h"
+#include "movement_state_machine.h"
+#include "states/movement_states.h"
 
 void MovementStateMachine::_init_data()
 {
@@ -18,4 +19,15 @@ void MovementStateMachine::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(MovementStateMachine, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   ClassDB::bind_method(D_METHOD("get_current_state_name"), &MovementStateMachine::get_current_state_name);
   ClassDB::bind_method(D_METHOD("get_prev_state_name"), &MovementStateMachine::get_prev_state_name);
+}
+
+void MovementStateMachine::_handle_state_machine_process(double delta)
+{
+  // if(!m_MovementStateCtx.CanDash)
+  // {
+  //   m_PlayerInst->get_global_state().DashCooldown -= delta * 1.2f;
+
+  //   if(m_PlayerInst->get_global_state().DashCooldown < 0.0f)
+  //     return;
+  // }
 }

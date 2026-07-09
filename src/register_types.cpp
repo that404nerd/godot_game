@@ -1,5 +1,4 @@
 #include "register_types.hpp"
-#include "godot_cpp/core/memory.hpp"
 
 #include <godot_cpp/core/class_db.hpp>
 #include <gdextension_interface.h>
@@ -38,7 +37,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("MovementStateMachine")) GDREGISTER_RUNTIME_CLASS(MovementStateMachine);
   if(!ClassDB::class_exists("WeaponStateMachine")) GDREGISTER_RUNTIME_CLASS(WeaponStateMachine);
   if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager);
-  if(!ClassDB::class_exists("CameraRecoilHolder")) GDREGISTER_RUNTIME_CLASS(CameraRecoilHolder);
+  if(!ClassDB::class_exists("CameraWeaponEffects")) GDREGISTER_RUNTIME_CLASS(CameraWeaponEffects);
 
   // Components
   if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);

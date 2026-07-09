@@ -54,6 +54,8 @@ public:
     return finalStateName;
   }
 
+  void _handle_state_machine_process(double delta) override;
+
 protected:
   static void _bind_methods();
 

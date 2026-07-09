@@ -17,15 +17,14 @@ class CharacterComponent : public CharacterBody3D {
 public:
   Vector3 get_wish_dir() { return m_WishDir; }
   Vector3 get_gravity_vec() { return m_GravityVec; }
+  Vector2 get_input_dir() { return m_InputDir; }
 
   void set_gravity_vec(Vector3 gravity_vec) { m_GravityVec = gravity_vec; }
-
-  Vector2 get_input_dir() { return m_InputDir; }
 
 public:
   void _update_input() 
   {
-    Vector3 playerVel = get_velocity();
+    Vector3 characterVel = get_velocity();
 
     m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
     m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
@@ -34,19 +33,19 @@ public:
     {
       if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
       {
-        playerVel.x = Utils::exp_decay(playerVel.x, m_WishDir.x, 15.0f, ground_accel);
-        playerVel.z = Utils::exp_decay(playerVel.z, m_WishDir.z, 15.0f, ground_accel);
+        characterVel.x = Utils::exp_decay(characterVel.x, m_WishDir.x, 15.0f, ground_accel);
+        characterVel.z = Utils::exp_decay(characterVel.z, m_WishDir.z, 15.0f, ground_accel);
       }
       else
       {
-        playerVel.x = Utils::exp_decay(playerVel.x, 0.0f, 1.0f, ground_decel);
-        playerVel.z = Utils::exp_decay(playerVel.z, 0.0f, 1.0f, ground_decel);
+        characterVel.x = Utils::exp_decay(characterVel.x, 0.0f, 1.0f, ground_decel);
+        characterVel.z = Utils::exp_decay(characterVel.z, 0.0f, 1.0f, ground_decel);
       }
     }
 
-    playerVel += m_GravityVec;
+    characterVel += m_GravityVec;
 
-    set_velocity(playerVel);
+    set_velocity(characterVel);
   }
 
   void _update_velocity()
@@ -99,7 +98,6 @@ private:
 
 
 // These are the main settings that change how the character moves
-// TODO: Maybe move these settings into a custom resource file for swapping
 private:
   GD_DEFINE_PROPERTY(Node3D*, character_head, nullptr);
   GD_DEFINE_PROPERTY(RayCast3D*, crouch_raycast, nullptr);

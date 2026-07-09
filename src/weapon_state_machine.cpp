@@ -1,4 +1,5 @@
 #include "weapon_state_machine.h"
+#include "weapon_manager.h"
 
 void WeaponStateMachine::_init_data()
 {
@@ -18,7 +19,6 @@ void WeaponStateMachine::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(WeaponStateMachine, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponStateMachine, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_PROPERTY(WeaponStateMachine, shoot_time_before_idle, Variant::FLOAT);
 
   ClassDB::bind_method(D_METHOD("_on_animation_finished", "anim_name"), &WeaponStateMachine::_on_animation_finished);
   ClassDB::bind_method(D_METHOD("get_current_state_name"), &WeaponStateMachine::get_current_state_name);

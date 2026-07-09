@@ -32,7 +32,10 @@ void StateMachine::_physics_process(double delta)
 
 void StateMachine::_process(double delta)
 {
-  m_CurrentState->_update(delta);  
+  _handle_state_machine_process(delta);
+
+  if(m_CurrentState)
+    m_CurrentState->_update(delta);  
 }
 
 void StateMachine::_change_state(int8_t stateID)

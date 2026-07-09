@@ -32,11 +32,13 @@ public:
   void _tilt_player(double delta);
   void _headbob_effect(double delta);
 
-private:
-  float m_OriginalFOV;
-  float m_HeadbobTime;
+  void _apply_slide_tilt(double delta);
 
-  int8_t m_CurrentStateID;
+private:
+  float m_OriginalFOV { 0.0f };
+  float m_HeadbobTime { 0.0f };
+
+  int8_t m_CurrentStateID { 0 };
 
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_out_transition_value, 20.0f);
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_in_transition_value, 10.0f);
@@ -61,6 +63,9 @@ private:
   Camera3D* m_PlayerCamera { nullptr };
   Node3D* m_PlayerHead { nullptr };
 
+  DampedSpring m_DampedSpring {};
+
+private:
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, weapon_hold_point, nullptr);

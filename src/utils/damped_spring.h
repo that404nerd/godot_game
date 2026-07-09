@@ -36,9 +36,6 @@ public:
 	//******************************************************************************
 	// This function will update the supplied position and velocity values over
 	// according to the motion parameters. 
-	// This doesn't take a non-const reference or a pointer because of the way godot's 
-	// binding system works. Don't forget to manually update your position and velocity
-	// variables using the get_pPos(), get_pVel() functions after calling this function!
 	//******************************************************************************
 	void UpdateDampedSpringMotion(Vector3& pos, Vector3& vel, const Vector3& eqPos);
 

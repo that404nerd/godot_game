@@ -89,9 +89,6 @@ add_custom_command(
 # Warnings
 include( CompilerWarnings )
 
-# Create and include version info file from git
-include( GitVersionInfo )
-
 add_subdirectory( src )
 
 # Install library, extension file, and support files in ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
@@ -112,7 +109,7 @@ install( DIRECTORY "${CMAKE_SOURCE_DIR}/support_files/"
 	PATTERN ".*" EXCLUDE
 )
 
-add_subdirectory( templates )
+add_subdirectory(templates)
 
 # ccache
 # Turns on ccache if found

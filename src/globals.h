@@ -1,19 +1,18 @@
 #pragma once
 
-#include "godot_cpp/core/print_string.hpp"
-#include "godot_cpp/variant/dictionary.hpp"
-#include "godot_cpp/variant/string_name.hpp"
+#include <godot_cpp/core/math.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/property_info.hpp>
+#include <godot_cpp/core/print_string.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/godot.hpp>
-#include <godot_cpp/core/math.hpp>
+#include <godot_cpp/templates/list.hpp>
 
 #include <magic_enum/magic_enum.hpp>
 
 #include <iostream>
 #include <functional>
-#include <array>
-#include <unordered_map>
 
 using namespace godot;
 
@@ -24,12 +23,6 @@ using namespace godot;
 #define _CONCAT(x, y) #x "" #y
 #define _TOKEN_PASTE(x, y) x##y
 #define _CAT(x, y) _TOKEN_PASTE(x, y)
-#define GD_CLASS(p_class, p_inherits) \
-private:                              \
-    typedef p_inherits Super;         \
-    typedef p_class CurrentClass;     \
-    GDCLASS(p_class, p_inherits);     \
-    struct _CAT(__semicolon_place, __LINE__) // Forces semicolon use
 
 #define GD_DEFINE_PROPERTY(p_type, p_name, p_default_value) \
 private:                                                 \
@@ -41,14 +34,24 @@ public:                                                  \
     p_type get_##p_name() {                              \
         return p_name;                                   \
     }                                                    \
-    struct _CAT(__semicolon_place, __LINE__)
+
+// Basically the same as the GD_DEFINE_PROPERTY macro but just for seperating the normal properties and condition based properties
+#define GD_DEFINE_PROPERTY_COND(p_type, p_name, p_default_value) \
+private:                                                 \
+    p_type p_name = p_default_value;                     \
+public:                                                  \
+    void set_##p_name(p_type value) {                    \
+        p_name = value;                                  \
+    }                                                    \
+    p_type get_##p_name() {                              \
+        return p_name;                                   \
+    }                                                    \
 
 #define GD_DEFINE_COND_FUNCS() \
 protected:                                                \
     void _get_property_list(List<PropertyInfo> *p_list);  \
     bool _set(const StringName &p_name, const Variant &p_value); \
     bool _get(const StringName &p_name, Variant &r_ret); \
-
 
 // For binding a general property
 #define GD_BIND_PROPERTY(p_class, p_name, p_type) \
@@ -68,41 +71,55 @@ protected:                                                \
         ADD_PROPERTY(PropertyInfo(Variant::INT, #p_name, PROPERTY_HINT_ENUM, p_enum_values), \
                     "set_"#p_name, "get_"#p_name);
 
-
-
 namespace Utils {
 
   struct PropertyParams {
     StringName PropertyName;
     Variant::Type VariantType;
-    PropertyHint PropHint;
-    StringName EnumValues;
+    PropertyHint PropHint = PROPERTY_HINT_NONE;
+    StringName EnumValues = "";
+    // List<PropertyInfo>::Element* AfterOrBeforeElement;
+    std::function<bool()> Condition = []() { return true; };
   };
 
-  inline void add_property_cond(List<PropertyInfo> *p_list, const PropertyParams& propertyParams, std::function<bool()> condition=[](){ return true; })
-  {
-    bool result = condition();
+  inline LocalVector<StringName> propertyNames;
 
+  inline void add_property_cond(List<PropertyInfo> *p_list, const PropertyParams& propertyParams)
+  {
+    bool result = propertyParams.Condition();
+    PropertyInfo propInfo {};
+    
     if(result)
     {
       if(propertyParams.PropHint != PROPERTY_HINT_NONE && propertyParams.EnumValues.is_empty())
       {
-        p_list->push_back(PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, propertyParams.PropHint));
+        propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, propertyParams.PropHint);
       }
       else if(propertyParams.PropHint == PROPERTY_HINT_ENUM && !propertyParams.EnumValues.is_empty())
       {
-        p_list->push_back(PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, godot::PROPERTY_HINT_ENUM, propertyParams.EnumValues));
+        propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, godot::PROPERTY_HINT_ENUM, propertyParams.EnumValues);
       } else
       {
-        p_list->push_back(PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName));
+        propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName);
       }
+      
+      // p_list->insert_after(propertyParams.AfterOrBeforeElement, propInfo);
+      // p_list->push_back(propInfo);
+      
     }
-
+   
   }
   
-  template <typename T>
-  inline bool set_properties(const StringName& p_name, const StringName& targetPropName, const Variant& p_value, T& propVariable)
+  template <typename T, typename ClassInstance>
+  inline bool set_properties(const StringName& p_name, const StringName& targetPropName, const Variant& p_value, T& propVariable, ClassInstance* cInstance)
   {
+    Array props = cInstance->get_property_list();
+
+    for (int i = 0; i < props.size(); i++) {
+      Dictionary d = props[i];
+      propertyNames.push_back(d["name"]);
+    }
+
     if(p_name == targetPropName)
     {
       propVariable = p_value;
@@ -118,7 +135,7 @@ namespace Utils {
     int enumIntValue = static_cast<int>(propVariable);
 
     constexpr auto enumArray = magic_enum::enum_values<EnumType>();
-    constexpr std::size_t enumCount = magic_enum::enum_count<EnumType>();
+    constexpr size_t enumCount = magic_enum::enum_count<EnumType>();
 
     if (p_name == targetPropName) {
       enumIntValue = p_value;

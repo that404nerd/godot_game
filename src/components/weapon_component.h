@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../weapon.h"
+#include "../resources/weapon.h"
 
 #include <magic_enum/magic_enum.hpp>
 

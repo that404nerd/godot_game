@@ -259,9 +259,10 @@ blend_shape_mode = 0
 
 [node name="Pistol" type="Node3D" unique_id=22962097]
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("muzzle_flash_component", "armature_skeleton", "armature_node", "weapon_anim_player")]
 muzzle_flash_component = NodePath("gun_pistol/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_pistol/Armature/Skeleton3D")
+armature_node = NodePath("gun_pistol/Armature")
 weapon_anim_player = NodePath("AnimationPlayer")
 mesh_instances = [NodePath("gun_pistol/Armature/Skeleton3D/arm"), NodePath("gun_pistol/Armature/Skeleton3D/pistol")]
 

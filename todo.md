@@ -1,4 +1,14 @@
-## FSM Movement System
+## TODO
+- Add a movement manager and move the core state functionality into it like the Weapon Manager []
+- Refactor the Weapon Effects Manager (Bobbing, Idle Sway, Sway) and clean it up []
+- Switch the reload rotation from normal euler angles to quaternions []
+- Make slide detection work for objects like boxes, crates and etc.. []
+- Move the CharacterComponent properties into a custom resource file for swapping between multiple profiles quickly []
+- Replace the two Vector<> with an array when setting up weapon anims and weapon nodes in the Weapon Manager []
+- Use a Path2D for the patterns []
+- Rewrite the weapon effects class to support additive animations in a better way []
+- Transition to idle state when sliding into a world objects []
+- Allow sliding when crouch is toggled during falling state []
 
 ## DONE:
 - Sideways movement when falling [x]
@@ -10,8 +20,6 @@
 - Rewrite of the entire movement system using godot signals (Everything is becoming too verbose and unstable) [x] 
 - Fix spamming the crouch key during slide state (causes the collision shape to glitch into the floor) [x]
 - Fix un-crouching when there's an object above the player [x]
-- Have a function for setting state strings in emit_signal() to avoid naming issues [x]
-- Singletons for accessing player and state machine instances [x]
 - Fix head position after sliding [x]
 - Fix incorrect idle check in sprint state [x]
 - Make the side tilt smoothly lerp back [x]
@@ -19,9 +27,4 @@
 - Animations for different states [x]
 - ObjectDB and resource leak fix [x]
 - Fix head bobbing during slide and weapon idle during shooting states [x]
-
-## Issues & TODO
-- Make getting nodes from individual weapon scenes easier (Like AnimationPlayer, Skeleton3D, Custom Components, etc..) []
-- Rewrite the weapon effects class to support additive animations in a better way []
-- Transition to idle state when sliding into a world objects []
-- Allow sliding when crouch is toggled during falling state []
+- Make getting nodes from individual weapon scenes easier (Like AnimationPlayer, Skeleton3D, Custom Components, etc..) [x]

@@ -28,6 +28,7 @@ protected:
   {
     GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, muzzle_flash_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
     GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, armature_skeleton, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, armature_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
     GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, weapon_anim_player, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
     GD_BIND_PROPERTY(WeaponWrapper, mesh_instances, Variant::ARRAY);
   }
@@ -36,6 +37,7 @@ protected:
 private:
   GD_DEFINE_PROPERTY(MuzzleFlashComponent*, muzzle_flash_component, nullptr);
   GD_DEFINE_PROPERTY(Skeleton3D*, armature_skeleton, nullptr);
+  GD_DEFINE_PROPERTY(Node3D*, armature_node, nullptr);
   GD_DEFINE_PROPERTY(AnimationPlayer*, weapon_anim_player, nullptr);
   GD_DEFINE_PROPERTY(Array, mesh_instances, Array());
 };

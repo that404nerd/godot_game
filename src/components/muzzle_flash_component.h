@@ -6,7 +6,7 @@
 #include <godot_cpp/classes/gpu_particles3d.hpp>
 
 #include "../globals.h"
-#include "../weapon.h"
+#include "../resources/weapon.h"
 
 using namespace godot;
 

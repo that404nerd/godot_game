@@ -91,6 +91,7 @@ void CameraController::_tilt_player(double delta)
 
   } else if(m_CurrentStateID == static_cast<int8_t>(MovementStates::SLIDE))
   {
+    _apply_slide_tilt(delta);
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle), side_tilt_transition_value, (float)delta);
     weaponHoldPointRot.z = Utils::exp_decay(weaponHoldPointRot.z, Math::deg_to_rad(slide_tilt_rotation), slide_tilt_rotation_transition, (float)delta);
 
@@ -101,6 +102,19 @@ void CameraController::_tilt_player(double delta)
 
   weapon_hold_point->set_rotation(weaponHoldPointRot);
   set_rotation(camControllerRot);
+}
+
+void CameraController::_apply_slide_tilt(double delta)
+{
+  // Vector3 weaponHoldPointRot = weapon_hold_point->get_rotation();
+  // Vector3 velocity = Vector3(10.0f, 10.0f, 10.0f);
+  // Vector3 eqPos {};
+
+  // m_DampedSpring.CalcDampedSpringMotionParams(delta, 50.0f, 0.5f);
+  // m_DampedSpring.UpdateDampedSpringMotion(weaponHoldPointRot, velocity, eqPos);
+
+  // print_line(weaponHoldPointRot);
+  // weapon_hold_point->set_rotation(weaponHoldPointRot);
 }
 
 void CameraController::_apply_fov(double delta)
