@@ -8,7 +8,7 @@ using namespace godot;
 class State {
 public:
 
-  State(int8_t stateID) : m_StateId(stateID) {};
+  State(int stateID) : m_StateId(stateID) {};
 
   virtual void _enter() = 0;
   virtual void _handle_input(const Ref<InputEvent>& event) = 0;
@@ -19,8 +19,8 @@ public:
   virtual ~State() {};
 
 public:
-  int8_t get_current_state() { return m_StateId; }
+  int get_current_state() { return m_StateId; }
 
 private:
-  int8_t m_StateId;
+  int m_StateId;
 };

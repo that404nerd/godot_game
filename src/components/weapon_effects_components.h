@@ -31,10 +31,10 @@ private:
   float m_WeaponBobSmoothVal { 0.0f };
 
   Node3D* m_HoldPointNode { nullptr };
+  MovementStateMachine* m_MovementStateMachine { nullptr };
 
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
-  MovementStateMachine* m_MovementStateMachine { nullptr };
 };
 
 class WeaponSwayComponent

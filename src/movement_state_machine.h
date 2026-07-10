@@ -1,13 +1,23 @@
 #pragma once
 
-#include "components/character_component.h"
 #include "magic_enum/magic_enum.hpp"
 
-#include "movement_state_machine.h"
-#include "state_machine.h"
 #include "globals.h"
 
-enum class MovementStates : int8_t {
+#include "movement_state_machine.h"
+#include "movement_manager.h"
+#include "state_machine.h"
+
+#include "components/character_component.h"
+
+struct MovementStateData
+{
+  MovementManager* MovementManagerInst;
+  MovementStateMachine* MovementStateMachineInst;
+};
+
+
+enum class MovementStates {
   NONE = -1, IDLE, SPRINT, JUMP, FALL, CROUCH, SLIDE, DASH
 };
 
@@ -54,11 +64,13 @@ public:
     return finalStateName;
   }
 
-  void _handle_state_machine_process(double delta) override;
-
 protected:
   static void _bind_methods();
 
 private:
+
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
+  GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
+
+  MovementStateData m_MovementStateData;
 };

@@ -4,14 +4,20 @@
 
 #include "magic_enum/magic_enum.hpp"
 
-#include "states/weapon_states.h"
 #include "components/weapon_component.h"
 #include "state_machine.h"
 
 class WeaponManager;
 
-enum class WeaponStates : int8_t {
+enum class WeaponStates {
   NONE = -1, IDLE, EQUIP, SHOOT, RELOAD, UNEQUIP, WEAPON_SWITCH
+};
+
+class WeaponStateMachine;
+struct WeaponStateData
+{
+  WeaponManager* weaponManager;
+  WeaponStateMachine* weaponStateMachine;
 };
 
 class WeaponStateMachine : public StateMachine {

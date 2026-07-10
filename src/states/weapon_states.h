@@ -4,13 +4,14 @@
 #include <godot_cpp/classes/scene_tree.hpp>
 
 #include "../components/ammo_component.h"
+#include "../weapon_state_machine.h"
 
 #include "state.h"
-
-using namespace godot;
+#include "../weapon_state_machine.h"
 
 class WeaponManager;
-class WeaponStateMachine;
+
+using namespace godot;
 
 struct WeaponStateContext
 {
@@ -19,12 +20,6 @@ struct WeaponStateContext
   bool IsReloading { false }, IsReloadStarted { false };
   bool IsKeyPressed { false }, IsKeyHeld { false };
   bool IsUnequipped { false };
-};
-
-struct WeaponStateData
-{
-  WeaponManager* weaponManager;
-  WeaponStateMachine* weaponStateMachine;
 };
 
 class WeaponIdleState : public State {

@@ -65,7 +65,7 @@ void CameraController::_headbob_effect(double delta)
   float x_bob = Math::cos(m_HeadbobTime * sprint_headbob_freq * 0.5f) * sprint_headbob_amp; 
   float y_bob = Math::sin(m_HeadbobTime * sprint_headbob_freq) * sprint_headbob_amp;        
 
-  if(m_CurrentStateID == static_cast<int8_t>(MovementStates::CROUCH) && character_component->get_velocity().length() > 0.001f) {
+  if(m_CurrentStateID == static_cast<int>(MovementStates::CROUCH) && character_component->get_velocity().length() > 0.001f) {
     x_bob = Math::cos(m_HeadbobTime * crouch_headbob_freq * 0.5f) * crouch_headbob_amp; 
     y_bob = Math::sin(m_HeadbobTime * crouch_headbob_freq) * crouch_headbob_amp;        
   }
@@ -85,11 +85,11 @@ void CameraController::_tilt_player(double delta)
   Vector3 camControllerRot = get_rotation();
   Vector3 weaponHoldPointRot = weapon_hold_point->get_rotation();
 
-  if(m_CurrentStateID == static_cast<int8_t>(MovementStates::SPRINT))
+  if(m_CurrentStateID == static_cast<int>(MovementStates::SPRINT))
   {
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -character_component->get_input_dir().x, side_tilt_transition_value, (float)delta);
 
-  } else if(m_CurrentStateID == static_cast<int8_t>(MovementStates::SLIDE))
+  } else if(m_CurrentStateID == static_cast<int>(MovementStates::SLIDE))
   {
     _apply_slide_tilt(delta);
     camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle), side_tilt_transition_value, (float)delta);
@@ -119,10 +119,10 @@ void CameraController::_apply_slide_tilt(double delta)
 
 void CameraController::_apply_fov(double delta)
 {
-  if(m_CurrentStateID == static_cast<int8_t>(MovementStates::SPRINT))
+  if(m_CurrentStateID == static_cast<int>(MovementStates::SPRINT))
   {
     m_PlayerCamera->set_fov(Math::lerp(m_OriginalFOV, sprint_fov, sprint_fov_zoom_out_transition_value * (float)delta));
-  } else if(m_CurrentStateID == static_cast<int8_t>(MovementStates::SLIDE))
+  } else if(m_CurrentStateID == static_cast<int>(MovementStates::SLIDE))
   {
     m_PlayerCamera->set_fov(Math::lerp(m_PlayerCamera->get_fov(), slide_fov, slide_fov_zoom_in_transition_value * (float)delta));
   } else {
@@ -138,7 +138,7 @@ void CameraController::_physics_process(double delta)
    
   _tilt_player(delta);
   
-  if(m_CurrentStateID == static_cast<int8_t>(MovementStates::SPRINT) || m_CurrentStateID == static_cast<int8_t>(MovementStates::CROUCH))
+  if(m_CurrentStateID == static_cast<int>(MovementStates::SPRINT) || m_CurrentStateID == static_cast<int>(MovementStates::CROUCH))
   {
     _headbob_effect(delta);
   }

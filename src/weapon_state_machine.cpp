@@ -5,14 +5,14 @@ void WeaponStateMachine::_init_data()
 {
   m_WeaponStateData = { weapon_manager, this };
 
-  m_States[static_cast<int8_t>(WeaponStates::IDLE)] = std::make_unique<WeaponIdleState>(m_WeaponStateData);
-  m_States[static_cast<int8_t>(WeaponStates::EQUIP)] = std::make_unique<WeaponEquipState>(m_WeaponStateData);
-  m_States[static_cast<int8_t>(WeaponStates::SHOOT)] = std::make_unique<WeaponShootState>(m_WeaponStateData);
-  m_States[static_cast<int8_t>(WeaponStates::RELOAD)] = std::make_unique<WeaponReloadState>(m_WeaponStateData);
-  m_States[static_cast<int8_t>(WeaponStates::UNEQUIP)] = std::make_unique<WeaponUnequipState>(m_WeaponStateData);
-  m_States[static_cast<int8_t>(WeaponStates::WEAPON_SWITCH)] = std::make_unique<WeaponSwitchState>(m_WeaponStateData);
+  m_States[static_cast<int>(WeaponStates::IDLE)] = std::make_unique<WeaponIdleState>(m_WeaponStateData);
+  m_States[static_cast<int>(WeaponStates::EQUIP)] = std::make_unique<WeaponEquipState>(m_WeaponStateData);
+  m_States[static_cast<int>(WeaponStates::SHOOT)] = std::make_unique<WeaponShootState>(m_WeaponStateData);
+  m_States[static_cast<int>(WeaponStates::RELOAD)] = std::make_unique<WeaponReloadState>(m_WeaponStateData);
+  m_States[static_cast<int>(WeaponStates::UNEQUIP)] = std::make_unique<WeaponUnequipState>(m_WeaponStateData);
+  m_States[static_cast<int>(WeaponStates::WEAPON_SWITCH)] = std::make_unique<WeaponSwitchState>(m_WeaponStateData);
   
-  m_InitialState = m_States.at(static_cast<int8_t>(WeaponStates::EQUIP)).get();
+  m_InitialState = m_States.at(static_cast<int>(WeaponStates::EQUIP)).get();
 }
 
 void WeaponStateMachine::_bind_methods()
@@ -35,7 +35,7 @@ void WeaponStateMachine::_handle_state_machine_input(const Ref<InputEvent>& even
     {
       weapon_manager->get_weapon_state_ctx().IsReloading = false;
       weapon_manager->_switch_weapon_data(i);
-      _change_state(static_cast<int8_t>(WeaponStates::UNEQUIP));
+      _change_state(static_cast<int>(WeaponStates::UNEQUIP));
     }
   }
 }
@@ -62,6 +62,6 @@ void WeaponStateMachine::_on_animation_finished(const StringName& anim_name)
   if(anim_name == weapon_component->get_current_weapon_data()->get_weaponUnequipAnimName())
   {
     weapon_manager->_weapon_unequip_over();
-    _change_state(static_cast<uint8_t>(WeaponStates::WEAPON_SWITCH));
+    _change_state(static_cast<uint>(WeaponStates::WEAPON_SWITCH));
   }
 }

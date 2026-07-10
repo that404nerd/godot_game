@@ -38,7 +38,7 @@ void StateMachine::_process(double delta)
     m_CurrentState->_update(delta);  
 }
 
-void StateMachine::_change_state(int8_t stateID)
+void StateMachine::_change_state(int stateID)
 {
   State* newState = m_States.at(stateID).get();
 
@@ -56,7 +56,7 @@ void StateMachine::_change_state(int8_t stateID)
   m_CurrentState = newState;
 }
 
-int8_t StateMachine::get_current_state()
+int StateMachine::get_current_state()
 {
   if(m_CurrentState == nullptr)
   {
@@ -67,9 +67,9 @@ int8_t StateMachine::get_current_state()
   return m_CurrentState->get_current_state();
 }
 
-int8_t StateMachine::get_prev_state()
+int StateMachine::get_prev_state()
 {
-  uint8_t prev_state_id;
+  uint prev_state_id;
   if(m_PrevState == nullptr) {
     print_error("Prev State doesn't exist!");
     return -1;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <godot_cpp/godot.hpp>
-#include <godot_cpp/templates/vector.hpp>
 
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
@@ -17,6 +16,7 @@
 #include <godot_cpp/variant/typed_array.hpp>
 #include <godot_cpp/classes/omni_light3d.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/templates/vector.hpp>
 
 #include "components/ammo_component.h"
 #include "components/character_component.h"
@@ -46,8 +46,6 @@ public:
   void _physics_process(double delta) override;
   
   WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
-  
-  ~WeaponManager();
   
 public:
   void _equip_weapon();
@@ -81,20 +79,13 @@ protected:
   static void _bind_methods();
 
 private:
-  float m_TimeBetweenShots { 0.0f };
-
-private:
   Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
 
   Ref<StandardMaterial3D> m_StdMaterial { nullptr };
 
- 
   Vector<AnimationPlayer*> m_WeaponAnims;
   Vector<Node3D*> m_WeaponNodes;
-  
-  int m_WeaponIndex { 0 };
-  int8_t m_CurrentWeaponState { 0 };
 
   AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
   Ref<Weapon> m_CurrentWeapon;
@@ -121,6 +112,10 @@ private:
 
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
+
+  float m_TimeBetweenShots { 0.0f };
+  int m_WeaponIndex { 0 };
+  int m_CurrentWeaponState { 0 };
 
   float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.0f };
   float m_LightTimeout { 0.05f };

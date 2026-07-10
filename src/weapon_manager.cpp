@@ -456,7 +456,3 @@ void WeaponManager::_switch_weapon_data(int weaponIndex)
   weapon_component->set_next_weapon_name(next_weapon->get_weaponName());
   m_WeaponIndex = weaponIndex;
 }
-
-WeaponManager::~WeaponManager()
-{
-}

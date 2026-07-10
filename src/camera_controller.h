@@ -38,7 +38,7 @@ private:
   float m_OriginalFOV { 0.0f };
   float m_HeadbobTime { 0.0f };
 
-  int8_t m_CurrentStateID { 0 };
+  int m_CurrentStateID { 0 };
 
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_out_transition_value, 20.0f);
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_in_transition_value, 10.0f);

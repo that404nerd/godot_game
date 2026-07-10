@@ -1,40 +1,46 @@
 #include "movement_states.h"
+#include "../movement_state_machine.h"
+#include "../movement_manager.h"
+
+BaseMovementState::BaseMovementState(MovementStates movementState, const MovementStateData& movementStateData)
+    : State(static_cast<int>(movementState)), m_MovementStateMachine(movementStateData.MovementStateMachineInst),
+      m_MovementManager(movementStateData.MovementManagerInst),
+      m_MovementStateCtx(movementStateData.MovementManagerInst->get_movement_state_ctx()) {};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Idle Movement State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+IdleMovementState::IdleMovementState(const MovementStateData& movementStateData) :
+    BaseMovementState(MovementStates::IDLE, movementStateData) {};
+
 void IdleMovementState::_enter()
 { 
-  m_CharacterComp = m_MovementStateMachine->get_character_component();
 }
 
 void IdleMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(Input::get_singleton()->is_action_just_pressed("jump") && m_CharacterComp->is_on_floor()) {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::JUMP));
+  if(Input::get_singleton()->is_action_just_pressed("jump") && m_MovementStateCtx.IsOnFloor) {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_CharacterComp->is_on_floor())
+  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_MovementStateCtx.IsOnFloor)
   {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::CROUCH));
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
   }
 
 }
 
 void IdleMovementState::_physics_update(double delta) 
 {
-  m_CharacterComp->_update_input();
-  m_CharacterComp->_update_velocity();
+  m_MovementManager->_idle(delta);
   
-  Vector3 playerVel = m_CharacterComp->get_velocity();
-
-  if(m_CharacterComp->get_input_dir() != Vector2(0.0f, 0.0f) && m_CharacterComp->is_on_floor()) {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::SPRINT));
+  if(m_MovementStateCtx.CharacterInputDir != Vector2(0.0f, 0.0f) && m_MovementStateCtx.IsOnFloor) {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
   }
 
-  if(playerVel.y < -1.0f || !m_CharacterComp->is_on_floor()) {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::FALL));
+  if(m_MovementStateCtx.CharacterVelocity.y < -1.0f || !m_MovementStateCtx.IsOnFloor) {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
 
@@ -46,57 +52,48 @@ void IdleMovementState::_exit() {};
 ///////////////////////////////// Sprint Movement State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+SprintMovementState::SprintMovementState(const MovementStateData& movementStateData) :
+  BaseMovementState(MovementStates::SPRINT, movementStateData) {};
+
 void SprintMovementState::_enter()
 { 
-  m_CharacterComp = m_MovementStateMachine->get_character_component();
 }
 
 void SprintMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
   if(Input::get_singleton()->is_action_just_pressed("jump")) {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::JUMP));
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_CharacterComp->is_on_floor())
+  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_MovementStateCtx.IsOnFloor)
   {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::CROUCH));
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
   }
   
-  if(m_CharacterComp->get_velocity().length() > (m_CharacterComp->get_sprint_speed() * 0.8f) && Input::get_singleton()->is_action_just_pressed("crouch"))
+  if(m_MovementStateCtx.CharacterVelocity.length() > (m_MovementStateCtx.CharacterSprintSpeed * 0.9f) && Input::get_singleton()->is_action_just_pressed("crouch"))
   {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::SLIDE));
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SLIDE));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("dash") /* && m_CharacterComp->get_global_state().CanDash*/)
+  if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
   {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::DASH));
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
   }
 
 }
 
 void SprintMovementState::_physics_update(double delta) 
 {
-  m_CharacterComp->_update_input();
-  m_CharacterComp->_update_velocity();
+  m_MovementManager->_sprint(delta);
   
-  Vector3 playerVel = m_CharacterComp->get_velocity();
-  playerVel =  Utils::exp_decay(playerVel, m_CharacterComp->get_sprint_speed() * m_CharacterComp->get_wish_dir(), 15.0f, (float)delta);
+  Vector3 characterVel = m_MovementStateCtx.CharacterVelocity;
 
-
-  // if(m_CharacterComp->get_global_state().DashCooldown <= 0.0f)
-  // {
-  //   m_CharacterComp->get_global_state().CanDash = true;
-  //   m_CharacterComp->get_global_state().DashCooldown = m_CharacterComp->get_dash_cooldown();
-  // }
-
-  m_CharacterComp->set_velocity(playerVel);
-
-  if(m_CharacterComp->get_velocity().length() < 1.0f && m_CharacterComp->is_on_floor()) {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::IDLE));
+  if(characterVel.length() < 1.0f && m_MovementStateCtx.IsOnFloor) {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
 
-  if(playerVel.y < -1.0f || !m_CharacterComp->is_on_floor()) {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::FALL));
+  if(characterVel.y < -1.0f || !m_MovementStateCtx.IsOnFloor) {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
 
@@ -109,196 +106,128 @@ void SprintMovementState::_exit()
 ///////////////////////////////// Jump Movement State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+JumpMovementState::JumpMovementState(const MovementStateData& movementStateData) :
+    BaseMovementState(MovementStates::JUMP, movementStateData) {};
+
 void JumpMovementState::_enter()
 { 
-  m_CharacterComp = m_MovementStateMachine->get_character_component();
-  
-  _jump();
+  m_MovementManager->_jump();
 }
 
 void JumpMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
 }
 
-void JumpMovementState::_jump()
-{
-  Vector3 playerVel = m_CharacterComp->get_velocity();
-
-  playerVel.y = m_CharacterComp->get_jump_height();
-  
-  Vector3 gravity_vec = (m_CharacterComp->get_floor_normal() + Vector3(0.0f, 1.0f, 0.0f)).normalized() * m_CharacterComp->get_jump_height();
-  m_CharacterComp->set_gravity_vec(gravity_vec);
-
-  m_CharacterComp->set_velocity(playerVel);
-}
-
 void JumpMovementState::_physics_update(double delta) 
 {
-  m_CharacterComp->_update_input();
-  m_CharacterComp->_update_velocity();
+  Vector3 characterVel = m_MovementStateCtx.CharacterVelocity;
 
-  Vector3 playerVel = m_CharacterComp->get_velocity();
-
-  if(playerVel.y < -1.0f || !m_CharacterComp->is_on_floor()) {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::FALL));
+  if(characterVel.y < -1.0f || !m_MovementStateCtx.IsOnFloor) {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
   
-  if (m_CharacterComp->is_on_floor()) {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::IDLE));
+  if (m_MovementStateCtx.IsOnFloor) {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
 }
 
 
 void JumpMovementState::_exit() 
 {
-  m_CharacterComp->set_gravity_vec(Vector3(0.0f, 0.0f, 0.0f));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Fall Movement State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+FallMovementState::FallMovementState(const MovementStateData& movementStateData) :
+  BaseMovementState(MovementStates::FALL, movementStateData) {};
+
 void FallMovementState::_enter()
 { 
-  m_CharacterComp = m_MovementStateMachine->get_character_component();
 }
 
 void FallMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if (!m_IsJumpPressed && Input::get_singleton()->is_action_just_pressed("jump")) 
+  if (Input::get_singleton()->is_action_just_pressed("jump") && m_MovementStateCtx.IsJumpPressed == false) 
   {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::JUMP));
-    m_IsJumpPressed = true;
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
+    m_MovementManager->set_jump_pressed(true);
   }
 
-  // if(Input::get_singleton()->is_action_just_pressed("dash") && m_CharacterComp->get_global_state().CanDash)
-  // {
-  //   m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::DASH));
-  // }
-
-  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_IsCrouchPressed == false)
+  if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
   {
-    m_IsCrouchPressed = true;
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
+  }
+
+  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_MovementStateCtx.IsCrouchPressed == false)
+  {
+    m_MovementManager->set_crouch_pressed(true);
   }
 }
 
 void FallMovementState::_physics_update(double delta) 
 {
-  m_CharacterComp->_update_input();
-  m_CharacterComp->_update_velocity();
+  m_MovementManager->_fall(delta);
 
-  Vector3 playerVel = m_CharacterComp->get_velocity();
-  Vector3 wishDir = m_CharacterComp->get_wish_dir().normalized();
-
-  Vector3 gravity_vec = Vector3(0.0f, -1.0f, 0.0f) * m_CharacterComp->get_down_gravity() * delta;
-  m_CharacterComp->set_gravity_vec(gravity_vec);
-  
-  float targetX = wishDir.x * m_CharacterComp->get_max_air_move_speed();
-  float targetZ = wishDir.z * m_CharacterComp->get_max_air_move_speed();
-
-  if (wishDir.length() > 0.0f) {
-    playerVel.x =  Utils::exp_decay(playerVel.x, targetX, 15.0f, delta);
-    playerVel.z =  Utils::exp_decay(playerVel.z, targetZ, 15.0f, delta);
-  }
-
-  // if(m_CharacterComp->get_global_state().DashCooldown <= 0.0f)
-  // {
-  //   m_CharacterComp->get_global_state().CanDash = true;
-  //   m_CharacterComp->get_global_state().DashCooldown = m_CharacterComp->get_dash_cooldown();
-  // }
-
-  m_CharacterComp->set_velocity(playerVel);
-
-  if(m_CharacterComp->is_on_floor())
+  if(m_MovementStateCtx.IsOnFloor)
   {
-    if(m_IsCrouchPressed == true)
+    if(m_MovementStateCtx.IsCrouchPressed == true)
     {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::CROUCH));
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
     } else {
-      m_IsJumpPressed = false;
-      m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::IDLE));
+      m_MovementManager->set_jump_pressed(false);
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
     }
   }
 }
 
 void FallMovementState::_exit() 
 {
-  m_CharacterComp->set_gravity_vec(Vector3(0.0f, 0.0f, 0.0f));
-  m_IsCrouchPressed = false;
+  m_MovementManager->set_gravity_vec(Vector3(0.0f, 0.0f, 0.0f));
+  m_MovementManager->set_crouch_pressed(false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Crouch Movement State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+CrouchMovementState::CrouchMovementState(const MovementStateData& movementStateData) :
+  BaseMovementState(MovementStates::CROUCH, movementStateData) {};
+
 void CrouchMovementState::_enter()
 { 
-  m_CharacterComp = m_MovementStateMachine->get_character_component();
-
-  m_FinalPos = m_CharacterComp->get_character_head()->get_position().y - m_CharacterComp->get_crouch_translate();
 }
 
 void CrouchMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  
-  if (Input::get_singleton()->is_action_just_pressed("crouch") && !m_CharacterComp->get_crouch_raycast()->is_colliding()) {
-    _on_crouch_finished();
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::IDLE));
+  if (Input::get_singleton()->is_action_just_pressed("crouch") && !m_MovementStateCtx.IsCrouchRayCastColliding) {
+    m_MovementManager->_on_crouch_finished();
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_CharacterComp->get_crouch_raycast()->is_colliding()) 
+  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_MovementStateCtx.IsCrouchRayCastColliding)
   {
-    _on_crouch_finished();
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::JUMP));
+    m_MovementManager->_on_crouch_finished();
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
   }
 }
 
-void CrouchMovementState::_on_crouch_finished()
-{
-  m_CharacterComp->get_crouch_collision_shape()->set_disabled(true);
-  m_CharacterComp->get_default_collision_shape()->set_disabled(false);
-
-  if(m_CrouchTween != nullptr)
-  {
-    m_CrouchTween->kill();
-  }
-
-  m_CrouchTween = m_CharacterComp->create_tween();
-  m_CrouchTween->tween_property(m_CharacterComp->get_character_head(), "position:y", 0.0f, 0.1f);
-}
 
 void CrouchMovementState::_physics_update(double delta) 
 {
-  m_CharacterComp->_update_input();    
-  m_CharacterComp->_update_velocity();
+  m_MovementManager->_crouch(delta);
 
-  Vector3 playerVel = m_CharacterComp->get_velocity();
-  Vector3 playerHeadPos = m_CharacterComp->get_character_head()->get_position();
+  Vector3 characterVel = m_MovementStateCtx.CharacterVelocity;
 
-  m_CharacterComp->get_crouch_collision_shape()->set_disabled(false);
-  m_CharacterComp->get_default_collision_shape()->set_disabled(true);
-
-  if(m_MovementStateMachine->get_prev_state() == static_cast<int8_t>(MovementStates::SLIDE))
+  if(m_MovementStateMachine->get_prev_state() == static_cast<int>(MovementStates::FALL))
   {
-    float finalCrouchPos = m_FinalPos - m_CharacterComp->get_character_head()->get_position().y;
-    playerHeadPos.y =  Utils::exp_decay(playerHeadPos.y, finalCrouchPos, m_CharacterComp->get_crouch_translate_speed(), (float)delta);
-  } else {
-    playerHeadPos.y =  Utils::exp_decay(playerHeadPos.y, m_FinalPos, m_CharacterComp->get_crouch_translate_speed(), (float)delta);
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
   }
 
-  m_CharacterComp->get_character_head()->set_position(playerHeadPos);
-
-  playerVel = m_CharacterComp->get_crouch_speed() * m_CharacterComp->get_wish_dir();
-  m_CharacterComp->set_velocity(playerVel);
-
-  if(m_MovementStateMachine->get_prev_state() == static_cast<int8_t>(MovementStates::FALL))
+  if(characterVel.y < -1.0f || !m_MovementStateCtx.IsOnFloor) 
   {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::CROUCH));
-  }
-
-  if(playerVel.y < -1.0f || !m_CharacterComp->is_on_floor()) 
-  {
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::FALL));
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
 
@@ -310,89 +239,44 @@ void CrouchMovementState::_exit()
 ///////////////////////////////// Slide Movement State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+SlideMovementState::SlideMovementState(const MovementStateData& movementStateData) :
+  BaseMovementState(MovementStates::SLIDE, movementStateData) {};
+
 void SlideMovementState::_enter()
 { 
-  m_CharacterComp = m_MovementStateMachine->get_character_component();
-  m_SlideVector = m_CharacterComp->get_wish_dir();
-
-  m_OriginalHeadPosition = m_CharacterComp->get_character_head()->get_position();
-  m_FinalPos = m_CharacterComp->get_character_head()->get_position().y - m_CharacterComp->get_crouch_translate();
-  m_SlideTimer = m_CharacterComp->get_slide_timer();
+  m_MovementManager->init_slide_timer();
+  m_MovementManager->set_slide_vector(m_MovementStateCtx.CharacterWishDir);
 }
-
 
 void SlideMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_CharacterComp->get_crouch_raycast()->is_colliding()) {
-    _on_slide_finished();
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::JUMP));
+  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_MovementStateCtx.IsCrouchRayCastColliding) {
+    m_MovementManager->_on_slide_finished();
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
   }
-
-}
-
-void SlideMovementState::_on_slide_finished()
-{ 
-  m_CharacterComp->get_crouch_collision_shape()->set_disabled(true);
-  m_CharacterComp->get_default_collision_shape()->set_disabled(false);
-  if(m_CrouchTween != nullptr)
-  {
-    m_CrouchTween->kill();
-  }
-
-  m_CrouchTween = m_CharacterComp->create_tween();
-  m_CrouchTween->tween_property(m_CharacterComp->get_character_head(), "position:y", m_OriginalHeadPosition.y, 0.1f);
-}
-
-void SlideMovementState::_crouch_player()
-{
-  if(m_CrouchTween != nullptr) {
-    m_CrouchTween->kill();
-  }
-  // Set collider states
-  m_CharacterComp->get_crouch_collision_shape()->set_disabled(false);
-  m_CharacterComp->get_default_collision_shape()->set_disabled(true);
-
-  m_CrouchTween = m_CharacterComp->create_tween();
-  m_CrouchTween->tween_property(m_CharacterComp->get_character_head(), "position:y", m_FinalPos, 0.1f);
 }
 
 void SlideMovementState::_physics_update(double delta) 
 {
-  m_CharacterComp->_update_input();    
-  m_CharacterComp->_update_velocity();
-  
-  Vector3 playerVel = m_CharacterComp->get_velocity();
-  Vector3 horizVel = Vector3(playerVel.x, 0.0f, playerVel.z);
+  Vector3 characterVel = m_MovementStateCtx.CharacterVelocity;
 
-  _crouch_player();
+  m_MovementManager->_slide(delta);
 
-  m_SlideTimer -= delta;
-
-  horizVel.x = m_SlideVector.x * m_CharacterComp->get_slide_speed() * m_SlideTimer;
-  horizVel.z = m_SlideVector.z * m_CharacterComp->get_slide_speed() * m_SlideTimer;
-  
-  // if(m_CharacterComp->test_move(m_CharacterComp->get_transform(), Vector3(m_SlideVector.x, 0.0f, m_SlideVector.z))) {
-  //   _on_slide_finished();
-  //   // emit_signal("state_changed", "Idle");
-  // }
-  playerVel = Vector3(horizVel.x, playerVel.y, horizVel.z);
-  m_CharacterComp->set_velocity(playerVel);
-
-  if(m_SlideTimer <= 0.0f) {
-    if(m_CharacterComp->get_crouch_raycast()->is_colliding())
+  if(m_MovementStateCtx.SlideTimer <= 0.0f) {
+    if(m_MovementStateCtx.IsCrouchRayCastColliding)
     {
-      _on_slide_finished();
-      m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::CROUCH));
+      m_MovementManager->_on_slide_finished();
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
     } else {
-      _on_slide_finished();
-      m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::IDLE));
+      m_MovementManager->_on_slide_finished();
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
     }
   }
 
-  if(playerVel.y < -1.0f || !m_CharacterComp->is_on_floor()) 
+  if(characterVel.y < -1.0f || !m_MovementStateCtx.IsOnFloor) 
   {
-    _on_slide_finished();
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::FALL));
+    m_MovementManager->_on_slide_finished();
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
 
@@ -404,10 +288,11 @@ void SlideMovementState::_exit()
 ///////////////////////////////// Dash Movement State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+DashMovementState::DashMovementState(const MovementStateData& movementStateData) :
+    BaseMovementState(MovementStates::DASH, movementStateData) {};
+
 void DashMovementState::_enter()
 { 
-  m_CharacterComp = m_MovementStateMachine->get_character_component();
-  m_DashDir = m_CharacterComp->get_wish_dir();
 }
 
 void DashMovementState::_handle_input(const Ref<InputEvent>& event) 
@@ -416,22 +301,12 @@ void DashMovementState::_handle_input(const Ref<InputEvent>& event)
 
 void DashMovementState::_physics_update(double delta) 
 {
-  m_CharacterComp->_update_input();    
-  m_CharacterComp->_update_velocity();
+  m_MovementManager->_dash(delta);
 
-  // m_CharacterComp->get_global_state().CanDash = false;
-  
-  Vector3 playerVel = m_CharacterComp->get_velocity();
-  
-  playerVel.x = m_DashDir.x * m_CharacterComp->get_dash_speed();
-  playerVel.z = m_DashDir.z * m_CharacterComp->get_dash_speed();
-
-  m_CharacterComp->set_velocity(playerVel);
-
-  if(m_CharacterComp->get_velocity().length() > 0.0f)
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::SPRINT));
+  if(m_MovementStateCtx.CharacterVelocity.length() > 0.0f)
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
   else
-    m_MovementStateMachine->_change_state(static_cast<int8_t>(MovementStates::IDLE));
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   
 }
 

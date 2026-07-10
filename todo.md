@@ -1,5 +1,8 @@
 ## TODO
 - Add a movement manager and move the core state functionality into it like the Weapon Manager []
+- Move repeated pointer declarations in Weapon States into another BaseWeaponState class and make them inherit from the base weapon state []
+- Hook the weapon resources to the actual weapon scenes to reorder them in any way []
+- Rewrite the way weapons are ordered and hide the rest of the weapons during the start []
 - Refactor the Weapon Effects Manager (Bobbing, Idle Sway, Sway) and clean it up []
 - Switch the reload rotation from normal euler angles to quaternions []
 - Make slide detection work for objects like boxes, crates and etc.. []
@@ -9,6 +12,7 @@
 - Rewrite the weapon effects class to support additive animations in a better way []
 - Transition to idle state when sliding into a world objects []
 - Allow sliding when crouch is toggled during falling state []
+- Write a command system to replace hardcoded inputs to a command to support any entity in states (like the player or any AI entity) []
 
 ## DONE:
 - Sideways movement when falling [x]
