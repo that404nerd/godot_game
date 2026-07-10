@@ -19,6 +19,7 @@ struct MovementStateCtx
   Vector3 CharacterWishDir = Vector3(0.0f, 0.0f, 0.0f);
   Vector2 CharacterInputDir = Vector2(0.0f, 0.0f);
   Vector3 CharacterSlideVector = Vector3(0.0f, 0.0f, 0.0f);
+  Vector3 CharacterHeadPos = Vector3(0.0f, 0.0f, 0.0f);
 
   float CharacterSprintSpeed = 0.0f;
   float SlideTimer = 0.0f;
@@ -72,6 +73,8 @@ public:
   void _physics_update(double delta) override;
   void _exit() override;
 
+private:
+  CharacterComponent* m_CharacterComponent { nullptr };
 };
 
 class FallMovementState : public BaseMovementState {

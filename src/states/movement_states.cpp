@@ -107,7 +107,7 @@ void SprintMovementState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 JumpMovementState::JumpMovementState(const MovementStateData& movementStateData) :
-    BaseMovementState(MovementStates::JUMP, movementStateData) {};
+    BaseMovementState(MovementStates::JUMP, movementStateData), m_CharacterComponent(movementStateData.MovementManagerInst->get_character_component()) {};
 
 void JumpMovementState::_enter()
 { 

@@ -4,7 +4,8 @@
 
 void MovementManager::_ready()
 {
-  m_FinalPos = character_component->get_character_head()->get_position().y - character_component->get_crouch_translate();
+  m_CharacterHead = character_component->get_character_head();
+  m_FinalPos = m_CharacterHead->get_position().y - character_component->get_crouch_translate();
 }
 
 void MovementManager::_bind_methods()
@@ -20,6 +21,7 @@ void MovementManager::_process(double delta)
   m_MovementStateCtx.CharacterInputDir = character_component->get_input_dir();
   m_MovementStateCtx.IsOnFloor = character_component->is_on_floor();
   m_MovementStateCtx.CharacterSprintSpeed = character_component->get_sprint_speed();
+  m_MovementStateCtx.CharacterHeadPos = m_CharacterHead->get_position();
 
   m_DashDir = character_component->get_wish_dir();
 
@@ -33,7 +35,8 @@ void MovementManager::_process(double delta)
 
 void MovementManager::_physics_process(double delta)
 {
- 
+  character_component->_update_input();
+  character_component->_update_velocity();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -42,15 +45,11 @@ void MovementManager::_physics_process(double delta)
 
 void MovementManager::_idle(double delta)
 {
-  character_component->_update_input();
-  character_component->_update_velocity();
+
 }
 
 void MovementManager::_sprint(double delta)
 {
-  character_component->_update_input();
-  character_component->_update_velocity();
-
   Vector3 characterVel = character_component->get_velocity();
 
   if(m_MovementStateCtx.DashCooldown <= 0.0f)
@@ -65,9 +64,6 @@ void MovementManager::_sprint(double delta)
 
 void MovementManager::_jump()
 {
-  character_component->_update_input();
-  character_component->_update_velocity();
-
   Vector3 characterVel = character_component->get_velocity();
 
   characterVel.y = character_component->get_jump_height();
@@ -80,9 +76,6 @@ void MovementManager::_jump()
 
 void MovementManager::_fall(double delta)
 {
-  character_component->_update_input();
-  character_component->_update_velocity();
-
   Vector3 characterVel = character_component->get_velocity();
   Vector3 wishDir = character_component->get_wish_dir().normalized();
 
@@ -118,29 +111,26 @@ void MovementManager::_on_crouch_finished()
   }
 
   m_CrouchTween = character_component->create_tween();
-  m_CrouchTween->tween_property(character_component->get_character_head(), "position:y", 0.0f, 0.1f);
+  m_CrouchTween->tween_property(m_CharacterHead, "position:y", 0.0f, 0.1f);
 }
 
 void MovementManager::_crouch(double delta)
 {
-  character_component->_update_input();
-  character_component->_update_velocity();
-
   Vector3 characterVel = character_component->get_velocity();
-  Vector3 characterHeadPos = character_component->get_character_head()->get_position();
+  Vector3 characterHeadPos = m_MovementStateCtx.CharacterHeadPos;
 
   character_component->get_crouch_collision_shape()->set_disabled(false);
   character_component->get_default_collision_shape()->set_disabled(true);
 
   if(movement_state_machine->get_prev_state() == static_cast<int>(MovementStates::SLIDE))
   {
-    float finalCrouchPos = m_FinalPos - character_component->get_character_head()->get_position().y;
+    float finalCrouchPos = m_FinalPos - characterHeadPos.y;
     characterHeadPos.y = Utils::exp_decay(characterHeadPos.y, finalCrouchPos, character_component->get_crouch_translate_speed(), (float)delta);
   } else {
     characterHeadPos.y = Utils::exp_decay(characterHeadPos.y, m_FinalPos, character_component->get_crouch_translate_speed(), (float)delta);
   }
 
-  character_component->get_character_head()->set_position(characterHeadPos);
+  m_CharacterHead->set_position(characterHeadPos);
 
   characterVel = character_component->get_crouch_speed() * character_component->get_wish_dir();
   character_component->set_velocity(characterVel);
@@ -148,9 +138,6 @@ void MovementManager::_crouch(double delta)
 
 void MovementManager::_slide(double delta)
 {
-  character_component->_update_input();
-  character_component->_update_velocity();
-
   Vector3 characterVel = character_component->get_velocity();
   Vector3 horizVel = Vector3(characterVel.x, 0.0f, characterVel.z);
 
@@ -180,14 +167,11 @@ void MovementManager::_on_slide_finished()
   }
 
   m_CrouchTween = character_component->create_tween();
-  m_CrouchTween->tween_property(character_component->get_character_head(), "position:y", m_OriginalHeadPosition.y, 0.1f);
+  m_CrouchTween->tween_property(m_CharacterHead, "position:y", m_OriginalHeadPosition.y, 0.1f);
 }
 
 void MovementManager::_dash(double delta)
 {
-  character_component->_update_input();
-  character_component->_update_velocity();
-
   m_MovementStateCtx.CanDash = false;
   Vector3 characterVel = character_component->get_velocity();
   

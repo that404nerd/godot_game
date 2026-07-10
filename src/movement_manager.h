@@ -53,6 +53,7 @@ private:
 
 private:
   Ref<Tween> m_CrouchTween { nullptr };
+  Node3D* m_CharacterHead { nullptr };
 
 private:
   MovementStateCtx m_MovementStateCtx;

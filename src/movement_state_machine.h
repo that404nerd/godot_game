@@ -16,7 +16,6 @@ struct MovementStateData
   MovementStateMachine* MovementStateMachineInst;
 };
 
-
 enum class MovementStates {
   NONE = -1, IDLE, SPRINT, JUMP, FALL, CROUCH, SLIDE, DASH
 };
