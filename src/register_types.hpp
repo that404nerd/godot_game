@@ -12,7 +12,7 @@
 #include "movement_state_machine.h"
 #include "weapon_state_machine.h"
 #include "weapon_manager.h"
-#include "camera_weapon_effects.h"
+#include "weapon_effects_holder.h"
 
 #include "singletons/event_bus.h"
 #include "resources/weapon.h"

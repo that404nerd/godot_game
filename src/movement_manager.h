@@ -5,6 +5,7 @@
 
 #include "components/character_component.h"
 #include "states/movement_states.h"
+#include "utils/damped_spring.h"
 
 using namespace godot;
 
@@ -30,17 +31,21 @@ public:
   void _on_crouch_finished();
   void _crouch(double delta);
 
-  void _on_slide_finished();
+  void _slide_crouch_effect(double delta);
+  void _on_slide_start();
   void _slide(double delta);
+  void _on_slide_finished();
+
   void _dash(double delta);
 
 protected:
   static void _bind_methods();
 
 public:
-  void init_slide_timer() { m_MovementStateCtx.SlideTimer = character_component->get_slide_timer(); }
 
-  void set_slide_vector(Vector3 slide_vector) { m_MovementStateCtx.CharacterSlideVector = slide_vector; }
+  bool IsSliding() { return m_MovementStateCtx.IsSlideStarted; }
+  Vector3& GetCharacterVel() { return m_MovementStateCtx.CharacterVelocity; }
+
   void set_gravity_vec(Vector3 gravity_vec) { character_component->set_gravity_vec(gravity_vec); }
   void set_jump_pressed(bool status) { m_MovementStateCtx.IsJumpPressed = status; }
   void set_crouch_pressed(bool status) { m_MovementStateCtx.IsCrouchPressed = status; }
@@ -57,6 +62,8 @@ private:
 
 private:
   MovementStateCtx m_MovementStateCtx;
+  DampedSpring m_DampedSpring {};
+  Vector3 m_CrouchTranslateVel {};
 
   float m_FinalPos { 0.0f };
   Vector3 m_DashDir { Vector3(0.0f, 0.0f, 0.0f) };

@@ -73,6 +73,16 @@ protected:
     GD_BIND_PROPERTY(CharacterComponent, jump_height, Variant::FLOAT);
     GD_BIND_PROPERTY(CharacterComponent, down_gravity, Variant::FLOAT);
 
+    ADD_GROUP("Crouch Settings", "");
+    GD_BIND_PROPERTY(CharacterComponent, crouch_translate, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, crouch_ang_freq, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, crouch_damping_ratio, Variant::FLOAT);
+
+    ADD_GROUP("Crouch Settings", "");
+    GD_BIND_PROPERTY(CharacterComponent, slide_timer, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, slide_ang_freq, Variant::FLOAT);
+    GD_BIND_PROPERTY(CharacterComponent, slide_damping_ratio, Variant::FLOAT);
+
     ADD_GROUP("Air Strafe Settings", "");
     GD_BIND_PROPERTY(CharacterComponent, max_air_move_speed, Variant::FLOAT);
     GD_BIND_PROPERTY(CharacterComponent, mouse_sensitivity, Variant::FLOAT);
@@ -82,12 +92,7 @@ protected:
     GD_BIND_PROPERTY(CharacterComponent, ground_decel, Variant::FLOAT);
 
     ADD_GROUP("Misc Settings", "");
-    GD_BIND_PROPERTY(CharacterComponent, slide_timer, Variant::FLOAT);
-    GD_BIND_PROPERTY(CharacterComponent, crouch_translate_speed, Variant::FLOAT);
     GD_BIND_PROPERTY(CharacterComponent, dash_cooldown, Variant::FLOAT);
-    GD_BIND_PROPERTY(CharacterComponent, crouch_translate, Variant::FLOAT);
-
-
   }
 
 private:
@@ -108,10 +113,13 @@ private:
   GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);
   GD_DEFINE_PROPERTY(float, dash_speed, 50.0f);
 
-  GD_DEFINE_PROPERTY(float, crouch_translate, 0.8f);
-  GD_DEFINE_PROPERTY(float, crouch_translate_speed, 10.0f);
+  GD_DEFINE_PROPERTY(float, crouch_translate, 0.5f);
+  GD_DEFINE_PROPERTY(float, crouch_ang_freq, 30.0f);
+  GD_DEFINE_PROPERTY(float, crouch_damping_ratio, 0.9f);
   
   GD_DEFINE_PROPERTY(float, slide_speed, 10.0f);
+  GD_DEFINE_PROPERTY(float, slide_ang_freq, 35.0f);
+  GD_DEFINE_PROPERTY(float, slide_damping_ratio, 0.3f);
   GD_DEFINE_PROPERTY(float, slide_timer, 2.0f);
 
   GD_DEFINE_PROPERTY(float, jump_height, 10.0f);

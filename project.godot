@@ -34,6 +34,7 @@ buses/default_bus_layout="uid://cq2mfupdsh2tc"
 [autoload]
 
 AmbientCG="*uid://cnxneyd8ilml2"
+SignalLens="*uid://85rkx60vm7a7"
 
 [debug_draw_3d]
 
@@ -46,7 +47,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/func_godot/plugin.cfg")
+enabled=PackedStringArray("res://addons/func_godot/plugin.cfg", "res://addons/signal_lens/plugin.cfg")
 
 [filesystem]
 

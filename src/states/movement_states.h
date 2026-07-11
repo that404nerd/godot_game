@@ -5,6 +5,7 @@
 
 #include "state.h"
 #include "../components/character_component.h"
+#include "../singletons/event_bus.h"
 
 using namespace godot;
 
@@ -24,6 +25,9 @@ struct MovementStateCtx
   float CharacterSprintSpeed = 0.0f;
   float SlideTimer = 0.0f;
   float DashCooldown { 0.0f };
+
+  bool IsSlideStarted = false;
+  bool IsSlideEnded = false;
 
   bool IsOnFloor = false;
   bool IsJumpPressed = false;

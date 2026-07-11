@@ -32,7 +32,8 @@ public:
   void _tilt_player(double delta);
   void _headbob_effect(double delta);
 
-  void _apply_slide_tilt(double delta);
+  void _slide_tilt(double delta);
+
 
 private:
   float m_OriginalFOV { 0.0f };
@@ -45,6 +46,7 @@ private:
   GD_DEFINE_PROPERTY(float, slide_fov_zoom_in_transition_value, 10.0f);
   GD_DEFINE_PROPERTY(float, sprint_fov, 0.0f);
   GD_DEFINE_PROPERTY(float, slide_fov, 0.0f);
+  GD_DEFINE_PROPERTY(float, slide_start_timer, 0.1f);
   
   GD_DEFINE_PROPERTY(float, slide_tilt_angle, 2.0f);
   GD_DEFINE_PROPERTY(float, side_tilt_angle, 2.0f);
@@ -56,17 +58,22 @@ private:
   GD_DEFINE_PROPERTY(float, crouch_headbob_amp, 0.04f);
   GD_DEFINE_PROPERTY(float, crouch_headbob_freq, 2.0f);
 
-  GD_DEFINE_PROPERTY(float, slide_tilt_rotation, 10.0f);
   GD_DEFINE_PROPERTY(float, slide_tilt_rotation_transition, 10.0f);
 
 private:
-  Camera3D* m_PlayerCamera { nullptr };
-  Node3D* m_PlayerHead { nullptr };
+  Node3D* m_CharacterHead { nullptr };
 
   DampedSpring m_DampedSpring {};
 
+  Vector3 m_SlideTilt {}, m_SlideTiltVel {};
+  Vector3 m_SlideTiltEnd {}, m_SlideTiltEndVel {};
+  Vector3 m_OriginalControllerPos {};
+
+  float m_SlideStartTimer { slide_start_timer };
+
 private:
+  GD_DEFINE_PROPERTY(Camera3D*, character_camera, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
-  GD_DEFINE_PROPERTY(Node3D*, weapon_hold_point, nullptr);
+  GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
 };

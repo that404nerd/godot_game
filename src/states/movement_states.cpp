@@ -16,6 +16,7 @@ IdleMovementState::IdleMovementState(const MovementStateData& movementStateData)
 
 void IdleMovementState::_enter()
 { 
+
 }
 
 void IdleMovementState::_handle_input(const Ref<InputEvent>& event) 
@@ -243,9 +244,8 @@ SlideMovementState::SlideMovementState(const MovementStateData& movementStateDat
   BaseMovementState(MovementStates::SLIDE, movementStateData) {};
 
 void SlideMovementState::_enter()
-{ 
-  m_MovementManager->init_slide_timer();
-  m_MovementManager->set_slide_vector(m_MovementStateCtx.CharacterWishDir);
+{
+  m_MovementManager->_on_slide_start(); 
 }
 
 void SlideMovementState::_handle_input(const Ref<InputEvent>& event) 

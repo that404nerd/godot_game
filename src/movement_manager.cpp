@@ -122,13 +122,8 @@ void MovementManager::_crouch(double delta)
   character_component->get_crouch_collision_shape()->set_disabled(false);
   character_component->get_default_collision_shape()->set_disabled(true);
 
-  if(movement_state_machine->get_prev_state() == static_cast<int>(MovementStates::SLIDE))
-  {
-    float finalCrouchPos = m_FinalPos - characterHeadPos.y;
-    characterHeadPos.y = Utils::exp_decay(characterHeadPos.y, finalCrouchPos, character_component->get_crouch_translate_speed(), (float)delta);
-  } else {
-    characterHeadPos.y = Utils::exp_decay(characterHeadPos.y, m_FinalPos, character_component->get_crouch_translate_speed(), (float)delta);
-  }
+  m_DampedSpring.CalcDampedSpringMotionParams(delta, character_component->get_crouch_ang_freq(), character_component->get_crouch_damping_ratio());
+  m_DampedSpring.UpdateDampedSpringMotion(characterHeadPos, m_CrouchTranslateVel, Vector3(0.0f, m_FinalPos, 0.0f));
 
   m_CharacterHead->set_position(characterHeadPos);
 
@@ -136,12 +131,42 @@ void MovementManager::_crouch(double delta)
   character_component->set_velocity(characterVel);
 }
 
+void MovementManager::_slide_crouch_effect(double delta)
+{
+  Vector3 characterVel = character_component->get_velocity();
+  Vector3 characterHeadPos = m_MovementStateCtx.CharacterHeadPos;
+
+  character_component->get_crouch_collision_shape()->set_disabled(false);
+  character_component->get_default_collision_shape()->set_disabled(true);
+
+  m_DampedSpring.CalcDampedSpringMotionParams(delta, character_component->get_slide_ang_freq(), character_component->get_slide_damping_ratio());
+  m_DampedSpring.UpdateDampedSpringMotion(characterHeadPos, m_CrouchTranslateVel, Vector3(0.0f, m_FinalPos, 0.0f));
+
+  m_CharacterHead->set_position(characterHeadPos);
+
+  if(characterHeadPos.y >= m_FinalPos)
+  {
+    m_MovementStateCtx.IsSlideStarted = true;
+    m_MovementStateCtx.IsSlideEnded = false;
+  }
+
+  characterVel = character_component->get_crouch_speed() * character_component->get_wish_dir();
+  character_component->set_velocity(characterVel);
+}
+
+void MovementManager::_on_slide_start()
+{
+  m_MovementStateCtx.SlideTimer = character_component->get_slide_timer();
+  m_MovementStateCtx.CharacterSlideVector = m_MovementStateCtx.CharacterWishDir;
+
+}
+
 void MovementManager::_slide(double delta)
 {
   Vector3 characterVel = character_component->get_velocity();
   Vector3 horizVel = Vector3(characterVel.x, 0.0f, characterVel.z);
 
-  _crouch(delta);
+  _slide_crouch_effect(delta);
 
   m_MovementStateCtx.SlideTimer -= delta;
 
@@ -168,6 +193,11 @@ void MovementManager::_on_slide_finished()
 
   m_CrouchTween = character_component->create_tween();
   m_CrouchTween->tween_property(m_CharacterHead, "position:y", m_OriginalHeadPosition.y, 0.1f);
+
+  EventBus::get_singleton()->emit_signal("slide_end");
+
+  m_MovementStateCtx.IsSlideStarted = false;
+  m_MovementStateCtx.IsSlideEnded = true;
 }
 
 void MovementManager::_dash(double delta)

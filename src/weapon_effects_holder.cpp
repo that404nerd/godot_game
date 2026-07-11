@@ -1,6 +1,7 @@
-#include "camera_weapon_effects.h"
+#include "weapon_effects_holder.h"
+#include "godot_cpp/core/math.hpp"
 
-void CameraWeaponEffects::_ready()
+void WeaponEffectsHolder::_ready()
 {
   EventBus::get_singleton()->connect("weapon_fired", Callable(this, "addWeaponRecoil"));
   EventBus::get_singleton()->connect("weapon_reload_start", Callable(this, "weaponReloadRotationHandler"));
@@ -8,30 +9,48 @@ void CameraWeaponEffects::_ready()
 
 }
 
-void CameraWeaponEffects::_bind_methods()
+void WeaponEffectsHolder::_bind_methods()
 {
-  GD_BIND_CUSTOM_PROPERTY(CameraWeaponEffects, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CameraWeaponEffects, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CameraWeaponEffects, movement_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffectsHolder, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffectsHolder, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffectsHolder, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
-  ClassDB::bind_method(D_METHOD("addWeaponRecoil"), &CameraWeaponEffects::addWeaponRecoil);
-  ClassDB::bind_method(D_METHOD("weaponReloadRotationHandler", "skeleton3D"), &CameraWeaponEffects::weaponReloadRotationHandler);  
+  ClassDB::bind_method(D_METHOD("addWeaponRecoil"), &WeaponEffectsHolder::addWeaponRecoil);
+  ClassDB::bind_method(D_METHOD("weaponReloadRotationHandler", "skeleton3D"), &WeaponEffectsHolder::weaponReloadRotationHandler);  
 }
 
-void CameraWeaponEffects::weaponReloadRotationHandler(Skeleton3D* skeleton3D)
+void WeaponEffectsHolder::weaponReloadRotationHandler(Skeleton3D* skeleton3D)
 {
   StringName boneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
   m_BoneID = skeleton3D->find_bone(boneName);
   m_CurrentSkeleton = skeleton3D;
 }
 
-void CameraWeaponEffects::addWeaponRecoil()
+void WeaponEffectsHolder::addWeaponRecoil()
 {
   Vector3 recoilVec = m_CurrentWeapon->get_recoil_vector();
   m_RecoilVel = recoilVec;
 }
 
-void CameraWeaponEffects::_process(double delta)
+void WeaponEffectsHolder::_weapon_slide_effect(double delta)
+{
+  m_SlideWeaponRot = m_WeaponArmatureNode->get_rotation();
+  Vector3 slide_tilt_rotation = Vector3(2.0f, 2.0f, -5.0f);
+
+  Vector3 bobVector = Vector3(0.0f, 0.0f, 0.0f);
+  bobVector.z = Math::deg_to_rad(slide_tilt_rotation.z);
+
+  m_SlideWeaponRot = Vector3(
+    Utils::exp_decay(m_SlideWeaponRot.x, bobVector.x, 
+                      5.0f, (float)delta),
+    Utils::exp_decay(m_SlideWeaponRot.y, bobVector.y,
+                    5.0f, (float)delta), 
+    Utils::exp_decay(m_SlideWeaponRot.z, Math::deg_to_rad(slide_tilt_rotation.z), 
+                      5.0f, (float)delta)
+  );
+}
+
+void WeaponEffectsHolder::_process(double delta)
 {
   if(weapon_component == nullptr || weapon_manager == nullptr)
   {
@@ -56,6 +75,11 @@ void CameraWeaponEffects::_process(double delta)
     m_ReloadBoneTransform = m_CurrentSkeleton->get_bone_pose(m_BoneID);
   }
 
+  if(movement_manager->IsSliding())
+  {
+    _weapon_slide_effect(delta);
+  }
+
   // if(movement_state_machine->get_current_state() == static_cast<int>(MovementStates::FALL))
   // {
   //   m_DampedSpring.CalcDampedSpringMotionParams(delta, 40.0f, 0.4f);
@@ -67,6 +91,9 @@ void CameraWeaponEffects::_process(double delta)
     m_ReloadBoneRot = m_ReloadBoneTransform.basis.get_euler();
   }
 
+  
+  m_SlideWeaponRot = Utils::exp_decay(m_SlideWeaponRot, Vector3(0.0f, 0.0f, 0.0f), 5.0f, delta);
+  m_WeaponArmatureNode->set_rotation(m_SlideWeaponRot);
 
   m_ReloadBoneRot = Utils::exp_decay(m_ReloadBoneRot, Vector3(0.0f, 0.0f, 0.0f), m_CurrentWeapon->get_reloadShakeResetMultiplier(), delta);
   m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
@@ -78,5 +105,5 @@ void CameraWeaponEffects::_process(double delta)
   Vector3 finalRot = Utils::exp_decay(m_RecoilRot, m_RecoilRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier()), 15.0f, delta);
 
   set_rotation(finalRot);
-  // m_WeaponArmatureNode->set_rotation(armatureRot);
+  m_WeaponArmatureNode->set_rotation(m_SlideWeaponRot);
 }

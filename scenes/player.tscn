@@ -15,8 +15,6 @@ font_size = 20
 
 [sub_resource type="LabelSettings" id="LabelSettings_d2wvv"]
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_ur7pv"]
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u8vuu"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
@@ -32,6 +30,7 @@ sprint_speed = 12.0
 dash_speed = 100.0
 jump_height = 2.0
 down_gravity = 20.0
+slide_damping_ratio = 0.9
 collision_layer = 2
 collision_mask = 3
 velocity = Vector3(0, -689.29645, 0)
@@ -116,16 +115,15 @@ unique_name_in_owner = true
 layout_mode = 2
 label_settings = SubResource("LabelSettings_d2wvv")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1085840622]
-mesh = SubResource("CapsuleMesh_ur7pv")
-
-[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("character_component", "movement_state_machine", "weapon_hold_point")]
+[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("movement_manager", "character_camera", "character_component", "movement_state_machine")]
+movement_manager = NodePath("../MovementManager")
+character_camera = NodePath("PlayerHead/WeaponEffectsHolder/PlayerCamera")
 character_component = NodePath("..")
 movement_state_machine = NodePath("../MovementStateMachine")
-weapon_hold_point = NodePath("PlayerHead/CameraWeaponEffects/PlayerCamera/WeaponHoldPoint")
 sprint_fov = 110.0
 slide_fov = 120.0
 sprint_fov_zoom_out_transition_value = 4.0
+slide_tilt_angle = 5.0
 sprint_headbob_amp = 0.3
 sprint_headbob_freq = 1.3
 crouch_headbob_amp = 0.08
@@ -135,24 +133,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715, 0)
 
 [node name="PlayerHead" type="Node3D" parent="CameraController" unique_id=1010004094]
 
-[node name="CameraWeaponEffects" type="CameraWeaponEffects" parent="CameraController/PlayerHead" unique_id=318708119 node_paths=PackedStringArray("weapon_component", "weapon_manager", "movement_state_machine")]
+[node name="WeaponEffectsHolder" type="WeaponEffectsHolder" parent="CameraController/PlayerHead" unique_id=160150294 node_paths=PackedStringArray("weapon_component", "weapon_manager", "movement_manager")]
 weapon_component = NodePath("../../../WeaponComponent")
 weapon_manager = NodePath("../../../WeaponManager")
-movement_state_machine = NodePath("../../../MovementStateMachine")
+movement_manager = NodePath("../../../MovementManager")
 
-[node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead/CameraWeaponEffects" unique_id=27902470]
+[node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead/WeaponEffectsHolder" unique_id=27902470]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.11343908, -0.26044202)
 current = true
 near = 0.001
 
-[node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/CameraWeaponEffects/PlayerCamera" unique_id=1899973665]
+[node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera" unique_id=1899973665]
 
-[node name="Pistol" parent="CameraController/PlayerHead/CameraWeaponEffects/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 instance=ExtResource("1_dqkch")]
+[node name="Pistol" parent="CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 instance=ExtResource("1_dqkch")]
 
-[node name="Rifle" parent="CameraController/PlayerHead/CameraWeaponEffects/PlayerCamera/WeaponHoldPoint" unique_id=745645197 instance=ExtResource("2_qhqgy")]
+[node name="Rifle" parent="CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera/WeaponHoldPoint" unique_id=745645197 instance=ExtResource("2_qhqgy")]
 
-[node name="Shotgun" parent="CameraController/PlayerHead/CameraWeaponEffects/PlayerCamera/WeaponHoldPoint" unique_id=670607748 instance=ExtResource("3_ur7pv")]
+[node name="Shotgun" parent="CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera/WeaponHoldPoint" unique_id=670607748 instance=ExtResource("3_ur7pv")]
 
 [node name="CrouchColliderRay" type="RayCast3D" parent="." unique_id=1414798151]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5316644, 0)
@@ -182,7 +180,7 @@ movement_state_machine = NodePath("../MovementStateMachine")
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
 character_component = NodePath("..")
-hold_point_node = NodePath("../CameraController/PlayerHead/CameraWeaponEffects/PlayerCamera/WeaponHoldPoint")
+hold_point_node = NodePath("../CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera/WeaponHoldPoint")
 unique_name_in_owner = true
 
 [node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=29975295 node_paths=PackedStringArray("weapon_manager", "weapon_component")]

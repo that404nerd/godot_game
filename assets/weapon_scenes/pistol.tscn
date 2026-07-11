@@ -260,7 +260,7 @@ blend_shape_mode = 0
 [node name="Pistol" type="Node3D" unique_id=22962097]
 
 [node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("muzzle_flash_component", "armature_skeleton", "armature_node", "weapon_anim_player")]
-muzzle_flash_component = NodePath("gun_pistol/MuzzleFlashComponent")
+muzzle_flash_component = NodePath("gun_pistol/Armature/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_pistol/Armature/Skeleton3D")
 armature_node = NodePath("gun_pistol/Armature")
 weapon_anim_player = NodePath("AnimationPlayer")
@@ -276,18 +276,20 @@ visible = false
 [node name="gun_pistol" type="Node3D" parent="WeaponWrapper" unique_id=571869154]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.105, -0.244, -0.182)
 
-[node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_pistol" unique_id=219364471 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
+[node name="Armature" type="Node3D" parent="WeaponWrapper/gun_pistol" unique_id=1688506177]
+
+[node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_pistol/Armature" unique_id=219364471 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
 gpu_particles_inst = NodePath("GPUParticles3D")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.14299995, 0.15900001, 0.668)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_pistol/MuzzleFlashComponent" unique_id=601494058]
+[node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_pistol/Armature/MuzzleFlashComponent" unique_id=601494058]
 visible = false
 light_color = Color(0.96862745, 0.7529412, 0.29803923, 1)
 light_indirect_energy = 2.236
 omni_range = 26.214
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="WeaponWrapper/gun_pistol/MuzzleFlashComponent" unique_id=496056986]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="WeaponWrapper/gun_pistol/Armature/MuzzleFlashComponent" unique_id=496056986]
 emitting = false
 amount = 100
 lifetime = 0.05
@@ -296,8 +298,6 @@ explosiveness = 1.0
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_7mp0o")
 draw_pass_1 = SubResource("QuadMesh_7mp0o")
-
-[node name="Armature" type="Node3D" parent="WeaponWrapper/gun_pistol" unique_id=1688506177]
 
 [node name="Skeleton3D" type="Skeleton3D" parent="WeaponWrapper/gun_pistol/Armature" unique_id=1136034690]
 bones/0/name = "root"

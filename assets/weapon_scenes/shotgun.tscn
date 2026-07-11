@@ -278,7 +278,6 @@ transform = Transform3D(-0.7, 0, 6.119594e-08, 0, 0.7, 0, -6.119594e-08, 0, -0.7
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_shotgun/Armature" unique_id=1747293851 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
 gpu_particles_inst = NodePath("GPUParticles3D")
-unique_name_in_owner = true
 transform = Transform3D(-1.4285715, 0, -1.2488968e-07, 0, 1.4285715, 0, 1.2488968e-07, 0, -1.4285715, -0.20714277, 0.014285713, 1.0114286)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_shotgun/Armature/MuzzleFlashComponent" unique_id=1252502553]
@@ -298,7 +297,6 @@ process_material = SubResource("ParticleProcessMaterial_trrci")
 draw_pass_1 = SubResource("QuadMesh_hnpij")
 
 [node name="Skeleton3D" type="Skeleton3D" parent="WeaponWrapper/gun_shotgun/Armature" unique_id=94016212]
-unique_name_in_owner = true
 bones/0/name = "root"
 bones/0/parent = -1
 bones/0/rest = Transform3D(-1, -1.8112698e-16, -1.509958e-07, 1.8905735e-14, 1, -1.2640656e-07, 1.509958e-07, -1.2640656e-07, -1, 0, 0.07712208, -0.2904014)

@@ -13,6 +13,7 @@
 - Transition to idle state when sliding into a world objects []
 - Allow sliding when crouch is toggled during falling state []
 - Write a command system to replace hardcoded inputs to a command to support any entity in states (like the player or any AI entity) []
+- Move the HUD from the player to the main game scene and let the main scene have the player reference []
 
 ## DONE:
 - Add a movement manager and move the core state functionality into it like the Weapon Manager [x]

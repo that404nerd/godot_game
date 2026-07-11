@@ -16,8 +16,8 @@
 
 using namespace godot;
 
-class CameraWeaponEffects : public Node3D {
-  GDCLASS(CameraWeaponEffects, Node3D);
+class WeaponEffectsHolder : public Node3D {
+  GDCLASS(WeaponEffectsHolder, Node3D);
 
 public:
   void _ready() override;
@@ -26,18 +26,20 @@ public:
   void addWeaponRecoil();
   void weaponReloadRotationHandler(Skeleton3D* skeleton3D);
 
+  void _weapon_slide_effect(double delta);
+
 protected:
   static void _bind_methods();
 
 private:
 
-  GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
   
   int m_BoneID { -1 };
 
-  Vector3 m_RecoilRot {}, m_RecoilSpringRot {};
+  Vector3 m_RecoilRot {}, m_RecoilSpringRot {}, m_SlideWeaponRot {};
   Vector3 m_RecoilVel {};
   Vector3 m_ReloadBoneRot {};
 
