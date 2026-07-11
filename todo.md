@@ -1,5 +1,4 @@
 ## TODO
-- Emit signals depending on your movement state for procedural animations []
 - Move repeated pointer declarations in Weapon States into another BaseWeaponState class and make them inherit from the base weapon state []
 - Hook the weapon resources to the actual weapon scenes to reorder them in any way []
 - Rewrite the way weapons are ordered and hide the rest of the weapons during the start []
