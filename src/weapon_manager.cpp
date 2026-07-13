@@ -164,7 +164,6 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
-
   m_CurrentWeaponState = weapon_state_machine->get_current_state();
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
@@ -331,13 +330,12 @@ void WeaponManager::_unequip_weapon()
 void WeaponManager::_shoot_weapon(double delta)
 {
   // Don't even shoot, just switch to the idle state instead
-  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
+  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon) || (m_AmmoComp.is_ammo_empty(m_CurrentWeapon) && m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon) == 0))
   {
     m_MuzzleComp->_enable_light_status(false);
     m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
     m_WeaponStateCtx.IsKeyHeld = false;
     m_WeaponStateCtx.IsKeyPressed = false;
-
     return;
   }
 
