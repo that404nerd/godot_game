@@ -5,7 +5,7 @@
 BaseMovementState::BaseMovementState(MovementStates movementState, const MovementStateData& movementStateData)
     : State(static_cast<int>(movementState)), m_MovementStateMachine(movementStateData.MovementStateMachineInst),
       m_MovementManager(movementStateData.MovementManagerInst),
-      m_MovementStateCtx(movementStateData.MovementManagerInst->get_movement_state_ctx()) {};
+      m_MovementStateCtx(m_MovementManager->get_movement_state_ctx()) {};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Idle Movement State ///////////////////////////////////////
@@ -100,6 +100,7 @@ void SprintMovementState::_physics_update(double delta)
 
 void SprintMovementState::_exit() 
 {
+  m_MovementManager->_sprint_end();
 }
 
 
@@ -108,7 +109,7 @@ void SprintMovementState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 JumpMovementState::JumpMovementState(const MovementStateData& movementStateData) :
-    BaseMovementState(MovementStates::JUMP, movementStateData), m_CharacterComponent(movementStateData.MovementManagerInst->get_character_component()) {};
+    BaseMovementState(MovementStates::JUMP, movementStateData) {};
 
 void JumpMovementState::_enter()
 { 

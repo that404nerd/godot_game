@@ -1,9 +1,11 @@
 [gd_resource type="Weapon" format=3 uid="uid://ct4xiq7b5h3b0"]
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_eol0p"]
+[ext_resource type="PackedScene" uid="uid://b7khe2s865pte" path="res://assets/weapon_scenes/pistol.tscn" id="2_8ypwr"]
 
 [resource]
 weaponName = "Pistol"
+weaponScene = ExtResource("2_8ypwr")
 totalAmmoCount = 120
 magAmmoCount = 10
 weaponFOV = 70.0

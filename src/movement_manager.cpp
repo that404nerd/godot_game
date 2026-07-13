@@ -1,6 +1,5 @@
 #include "movement_manager.h"
-#include "movement_state_machine.h"
-#include "states/movement_states.h"
+#include "globals.h"
 
 void MovementManager::_ready()
 {
@@ -11,7 +10,6 @@ void MovementManager::_ready()
 void MovementManager::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(MovementManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(MovementManager, movement_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
 void MovementManager::_process(double delta)
@@ -50,6 +48,7 @@ void MovementManager::_idle(double delta)
 
 void MovementManager::_sprint(double delta)
 {
+  m_MovementStateCtx.IsSprinting = true;
   Vector3 characterVel = character_component->get_velocity();
 
   if(m_MovementStateCtx.DashCooldown <= 0.0f)
@@ -60,6 +59,11 @@ void MovementManager::_sprint(double delta)
 
   characterVel = Utils::exp_decay(characterVel, character_component->get_sprint_speed() * character_component->get_wish_dir(), 15.0f, (float)delta);
   character_component->set_velocity(characterVel);
+}
+
+void MovementManager::_sprint_end()
+{
+  m_MovementStateCtx.IsSprinting = false;
 }
 
 void MovementManager::_jump()
@@ -99,6 +103,24 @@ void MovementManager::_fall(double delta)
   character_component->set_velocity(characterVel);
 }
 
+void MovementManager::_crouch(double delta)
+{
+  m_MovementStateCtx.IsCrouching = true;
+
+  Vector3 characterVel = character_component->get_velocity();
+  Vector3 characterHeadPos = m_MovementStateCtx.CharacterHeadPos;
+  
+  character_component->get_crouch_collision_shape()->set_disabled(false);
+  character_component->get_default_collision_shape()->set_disabled(true);
+  
+  m_DampedSpring.CalcDampedSpringMotionParams(delta, character_component->get_crouch_ang_freq(), character_component->get_crouch_damping_ratio());
+  m_DampedSpring.UpdateDampedSpringMotion(characterHeadPos, m_CrouchTranslateVel, Vector3(0.0f, m_FinalPos, 0.0f));
+  
+  m_CharacterHead->set_position(characterHeadPos);
+  
+  characterVel = character_component->get_crouch_speed() * character_component->get_wish_dir();
+  character_component->set_velocity(characterVel);
+}
 
 void MovementManager::_on_crouch_finished()
 {
@@ -112,23 +134,8 @@ void MovementManager::_on_crouch_finished()
 
   m_CrouchTween = character_component->create_tween();
   m_CrouchTween->tween_property(m_CharacterHead, "position:y", 0.0f, 0.1f);
-}
 
-void MovementManager::_crouch(double delta)
-{
-  Vector3 characterVel = character_component->get_velocity();
-  Vector3 characterHeadPos = m_MovementStateCtx.CharacterHeadPos;
-
-  character_component->get_crouch_collision_shape()->set_disabled(false);
-  character_component->get_default_collision_shape()->set_disabled(true);
-
-  m_DampedSpring.CalcDampedSpringMotionParams(delta, character_component->get_crouch_ang_freq(), character_component->get_crouch_damping_ratio());
-  m_DampedSpring.UpdateDampedSpringMotion(characterHeadPos, m_CrouchTranslateVel, Vector3(0.0f, m_FinalPos, 0.0f));
-
-  m_CharacterHead->set_position(characterHeadPos);
-
-  characterVel = character_component->get_crouch_speed() * character_component->get_wish_dir();
-  character_component->set_velocity(characterVel);
+  m_MovementStateCtx.IsCrouching = false;
 }
 
 void MovementManager::_slide_crouch_effect(double delta)
@@ -146,8 +153,7 @@ void MovementManager::_slide_crouch_effect(double delta)
 
   if(characterHeadPos.y >= m_FinalPos)
   {
-    m_MovementStateCtx.IsSlideStarted = true;
-    m_MovementStateCtx.IsSlideEnded = false;
+    m_MovementStateCtx.IsSliding = true;
   }
 
   characterVel = character_component->get_crouch_speed() * character_component->get_wish_dir();
@@ -196,8 +202,7 @@ void MovementManager::_on_slide_finished()
 
   EventBus::get_singleton()->emit_signal("slide_end");
 
-  m_MovementStateCtx.IsSlideStarted = false;
-  m_MovementStateCtx.IsSlideEnded = true;
+  m_MovementStateCtx.IsSliding = false;
 }
 
 void MovementManager::_dash(double delta)

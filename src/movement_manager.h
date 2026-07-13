@@ -23,7 +23,10 @@ public:
 
 public:
   void _idle(double delta);
+
   void _sprint(double delta);
+  void _sprint_end();
+
   void _jump();
   void _fall(double delta);
 
@@ -43,7 +46,10 @@ protected:
 
 public:
 
-  bool IsSliding() { return m_MovementStateCtx.IsSlideStarted; }
+  bool IsSliding() { return m_MovementStateCtx.IsSliding; }
+  bool IsCrouching() { return m_MovementStateCtx.IsCrouching; }
+  bool IsSprinting() { return m_MovementStateCtx.IsSprinting; }
+
   Vector3& GetCharacterVel() { return m_MovementStateCtx.CharacterVelocity; }
 
   void set_gravity_vec(Vector3 gravity_vec) { character_component->set_gravity_vec(gravity_vec); }
@@ -54,7 +60,6 @@ public:
  
 private:
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
-  GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
 
 private:
   Ref<Tween> m_CrouchTween { nullptr };

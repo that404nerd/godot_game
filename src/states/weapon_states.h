@@ -22,7 +22,19 @@ struct WeaponStateContext
   bool IsUnequipped { false };
 };
 
-class WeaponIdleState : public State {
+
+class BaseWeaponState : public State {
+public:
+  BaseWeaponState(WeaponStates movementState, const WeaponStateData& weaponStateData);
+
+protected:
+  WeaponManager* m_WeaponManager { nullptr };
+  WeaponStateMachine* m_WeaponStateMachine { nullptr };
+  const WeaponStateContext& m_WeaponStateContext;
+};
+
+///////////////////////////// Weapon States Declaration //////////////////////////////////
+class WeaponIdleState : public BaseWeaponState {
 public:
   WeaponIdleState(const WeaponStateData& weaponStateData);
 
@@ -30,14 +42,9 @@ public:
   void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
   void _exit() override;
-
-private:
-  WeaponManager* m_WeaponManager { nullptr };
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  WeaponStateContext& m_WeaponStateContext;
 };
 
-class WeaponEquipState : public State {
+class WeaponEquipState : public BaseWeaponState {
 public:
   WeaponEquipState(const WeaponStateData& weaponStateData);
 
@@ -45,13 +52,9 @@ public:
   void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
   void _exit() override;
-
-private:
-  WeaponManager* m_WeaponManager { nullptr };
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
 };
 
-class WeaponShootState : public State {
+class WeaponShootState : public BaseWeaponState {
 public:
   WeaponShootState(const WeaponStateData& weaponStateData);
 
@@ -60,16 +63,9 @@ public:
   void _update(double delta) override;
   void _exit() override;
 
-private:
-  Ref<Weapon> m_CurrentWeapon { nullptr };
-
-private:
-  WeaponManager* m_WeaponManager { nullptr };
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  const WeaponStateContext& m_WeaponStateContext;
 };
 
-class WeaponReloadState : public State {
+class WeaponReloadState : public BaseWeaponState {
 public:
   WeaponReloadState(const WeaponStateData& weaponStateData);
 
@@ -78,14 +74,9 @@ public:
   void _update(double delta) override;
   void _exit() override;
 
-private:
-  WeaponManager* m_WeaponManager { nullptr };
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  const WeaponStateContext& m_WeaponStateContext;
-  Ref<Weapon> m_CurrentWeapon { nullptr };
 };
 
-class WeaponUnequipState : public State {
+class WeaponUnequipState : public BaseWeaponState {
 public:
   WeaponUnequipState(const WeaponStateData& weaponStateData);
 
@@ -94,13 +85,9 @@ public:
   void _update(double delta) override;
   void _exit() override;
 
-private:
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  WeaponManager* m_WeaponManager { nullptr };
-  const WeaponStateContext& m_WeaponStateContext;
 };
 
-class WeaponSwitchState : public State {
+class WeaponSwitchState : public BaseWeaponState {
 public:
   WeaponSwitchState(const WeaponStateData& weaponStateData);
 
@@ -108,8 +95,4 @@ public:
   void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
   void _exit() override;
-
-private:
-  WeaponManager* m_WeaponManager { nullptr };
-  WeaponStateMachine* m_WeaponStateMachine { nullptr };
 };

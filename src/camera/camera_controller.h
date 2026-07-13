@@ -7,9 +7,8 @@
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 
-#include "globals.h"
-#include "movement_state_machine.h"
-#include "player.h"
+#include "../globals.h"
+#include "../movement_state_machine.h"
 
 using namespace godot;
 
@@ -39,18 +38,21 @@ private:
   float m_OriginalFOV { 0.0f };
   float m_HeadbobTime { 0.0f };
 
-  int m_CurrentStateID { 0 };
-
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_out_transition_value, 20.0f);
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_in_transition_value, 10.0f);
   GD_DEFINE_PROPERTY(float, slide_fov_zoom_in_transition_value, 10.0f);
   GD_DEFINE_PROPERTY(float, sprint_fov, 0.0f);
   GD_DEFINE_PROPERTY(float, slide_fov, 0.0f);
-  GD_DEFINE_PROPERTY(float, slide_start_timer, 0.1f);
   
-  GD_DEFINE_PROPERTY(float, slide_tilt_angle, 2.0f);
   GD_DEFINE_PROPERTY(float, side_tilt_angle, 2.0f);
   GD_DEFINE_PROPERTY(float, side_tilt_transition_value, 15.0f);
+
+  GD_DEFINE_PROPERTY(float, slide_start_timer, 0.1f);
+  GD_DEFINE_PROPERTY(float, slide_tilt_angle, 2.0f);
+  GD_DEFINE_PROPERTY(float, slide_tilt_start_ang_freq, 25.0f);
+  GD_DEFINE_PROPERTY(float, slide_tilt_start_damping_ratio, 0.3f);
+  GD_DEFINE_PROPERTY(float, slide_tilt_end_ang_freq, 25.0f);
+  GD_DEFINE_PROPERTY(float, slide_tilt_end_damping_ratio, 0.4f);
 
   GD_DEFINE_PROPERTY(float, sprint_headbob_amp, 0.04f);
   GD_DEFINE_PROPERTY(float, sprint_headbob_freq, 2.0f);
@@ -58,22 +60,23 @@ private:
   GD_DEFINE_PROPERTY(float, crouch_headbob_amp, 0.04f);
   GD_DEFINE_PROPERTY(float, crouch_headbob_freq, 2.0f);
 
-  GD_DEFINE_PROPERTY(float, slide_tilt_rotation_transition, 10.0f);
-
 private:
-  Node3D* m_CharacterHead { nullptr };
-
-  DampedSpring m_DampedSpring {};
-
-  Vector3 m_SlideTilt {}, m_SlideTiltVel {};
-  Vector3 m_SlideTiltEnd {}, m_SlideTiltEndVel {};
-  Vector3 m_OriginalControllerPos {};
-
   float m_SlideStartTimer { slide_start_timer };
 
+  Node3D* m_CharacterHead { nullptr };
+  DampedSpring m_DampedSpring {};
+
+  Vector3 m_BasePos, m_BaseRot {};
+  Vector3 m_HeadBobPos {};
+
+  Vector3 m_SideTiltRot {};
+
+  Vector3 m_SlideTiltRot {}, m_SlideTiltRotVel {};
+
+  Vector3 m_FinalPos {}, m_FinalRot {};
+  
 private:
   GD_DEFINE_PROPERTY(Camera3D*, character_camera, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
-  GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
   GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
 };

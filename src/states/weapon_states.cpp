@@ -1,14 +1,18 @@
 #include "weapon_states.h"
 #include "../weapon_manager.h"
 
+BaseWeaponState::BaseWeaponState(WeaponStates movementState, const WeaponStateData& weaponStateData)
+  : State(static_cast<int>(movementState)), m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
+    m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx())
+{
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Weapon Idle State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponIdleState::WeaponIdleState(const WeaponStateData& weaponStateData)
-  : State(static_cast<int>(WeaponStates::IDLE)), m_WeaponManager(weaponStateData.weaponManager),
-    m_WeaponStateMachine(weaponStateData.weaponStateMachine),
-    m_WeaponStateContext(m_WeaponManager->get_weapon_state_ctx())
+  : BaseWeaponState(WeaponStates::IDLE, weaponStateData)
 {
 }
 
@@ -16,7 +20,7 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
   if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
   {
-    m_WeaponStateContext.IsKeyPressed = true;
+    m_WeaponManager->set_key_pressed(true);
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
 
@@ -48,8 +52,7 @@ void WeaponIdleState::_exit()
 ///////////////////////////////// Weapon Equip State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponEquipState::WeaponEquipState(const WeaponStateData& weaponStateData)
-  : State(static_cast<int>(WeaponStates::EQUIP)), m_WeaponManager(weaponStateData.weaponManager),
-    m_WeaponStateMachine(weaponStateData.weaponStateMachine)
+  : BaseWeaponState(WeaponStates::EQUIP, weaponStateData)
 {
 }
 
@@ -86,9 +89,7 @@ void WeaponEquipState::_exit()
 ///////////////////////////////// Weapon Shoot State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponShootState::WeaponShootState(const WeaponStateData& weaponStateData)
-  : State(static_cast<int>(WeaponStates::SHOOT)), m_WeaponManager(weaponStateData.weaponManager),
-    m_WeaponStateMachine(weaponStateData.weaponStateMachine),
-    m_WeaponStateContext(m_WeaponManager->get_weapon_state_ctx())
+  : BaseWeaponState(WeaponStates::SHOOT, weaponStateData)
 {
 }
 
@@ -103,23 +104,22 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponShootState::_enter()
 {
-  m_CurrentWeapon = m_WeaponManager->get_current_weapon();
 }
 
 void WeaponShootState::_update(double delta)
 {
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && m_WeaponManager->get_current_weapon_ammo() == 0 && m_CurrentWeapon->get_auto_reload())
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload())
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
+
+  } else if(m_WeaponStateContext.ShootTimeBeforeIdle <= 0.0f &&
+            m_WeaponStateContext.IsKeyPressed == false && m_WeaponStateContext.IsKeyHeld == false)
+  {
+    m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::IDLE));
   }
 
   m_WeaponManager->_shoot_weapon(delta);
 
-  if(m_WeaponStateContext.ShootTimeBeforeIdle <= 0.0f &&
-     m_WeaponStateContext.IsKeyPressed == false && m_WeaponStateContext.IsKeyHeld == false)
-  {
-    m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::IDLE));
-  }
 }
 
 void WeaponShootState::_exit()
@@ -131,9 +131,7 @@ void WeaponShootState::_exit()
 ///////////////////////////////// Weapon Reload State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponReloadState::WeaponReloadState(const WeaponStateData& weaponStateData)
-  : State(static_cast<int>(WeaponStates::RELOAD)), m_WeaponManager(weaponStateData.weaponManager),
-    m_WeaponStateMachine(weaponStateData.weaponStateMachine),
-    m_WeaponStateContext(m_WeaponManager->get_weapon_state_ctx())
+  : BaseWeaponState(WeaponStates::RELOAD, weaponStateData)
 {
 }
 
@@ -149,7 +147,6 @@ void WeaponReloadState::_enter()
     return;
   }
   
-  m_CurrentWeapon = m_WeaponManager->get_current_weapon();
 }
 
 void WeaponReloadState::_update(double delta)
@@ -176,8 +173,7 @@ void WeaponReloadState::_exit()
 ///////////////////////////////// Weapon Unequip State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponUnequipState::WeaponUnequipState(const WeaponStateData& weaponStateData)
-  : State(static_cast<int>(WeaponStates::UNEQUIP)), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
-    m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateContext(m_WeaponManager->get_weapon_state_ctx())
+  : BaseWeaponState(WeaponStates::UNEQUIP, weaponStateData)
 {
 }
 
@@ -215,8 +211,7 @@ void WeaponUnequipState::_exit()
 ///////////////////////////////// Weapon Switch State ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponSwitchState::WeaponSwitchState(const WeaponStateData& weaponStateData)
-  : State(static_cast<int>(WeaponStates::WEAPON_SWITCH)), m_WeaponManager(weaponStateData.weaponManager),
-    m_WeaponStateMachine(weaponStateData.weaponStateMachine)
+  : BaseWeaponState(WeaponStates::WEAPON_SWITCH, weaponStateData)
 {
 }
 

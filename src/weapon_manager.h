@@ -48,6 +48,11 @@ public:
   WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
   
 public:
+
+  void _init_weapons();
+  void _init_weapon_anim_connections(Node3D* weapon_node, WeaponWrapper* weapon_wrapper, AnimationPlayer* anim_player);
+  void _change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper);
+
   void _equip_weapon();
   void _unequip_weapon();
   void _shoot_weapon(double delta);
@@ -64,6 +69,14 @@ public:
   void generate_decal();
 
 public:
+
+  bool current_weapon_has_auto_reload() {
+    Ref<Weapon> currentWeapon = get_current_weapon();
+    return currentWeapon->get_auto_reload();
+  }
+
+  void set_key_pressed(bool status) { m_WeaponStateCtx.IsKeyPressed = status; }
+
   int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
   int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
   StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
@@ -86,6 +99,7 @@ private:
 
   Vector<AnimationPlayer*> m_WeaponAnims;
   Vector<Node3D*> m_WeaponNodes;
+  Vector<Node3D*> m_WeaponSceneNodes;
 
   AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
   Ref<Weapon> m_CurrentWeapon;
@@ -124,7 +138,7 @@ private:
   Vector3 m_TargetRot {}, m_CurrentRot {};
 
 private:
-  GD_DEFINE_PROPERTY(MovementStateMachine*, movement_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);

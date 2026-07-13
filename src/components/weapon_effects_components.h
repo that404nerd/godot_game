@@ -3,6 +3,7 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/character_body3d.hpp>
 #include <godot_cpp/variant/vector3.hpp>
+#include <godot_cpp/classes/skeleton3d.hpp>
 
 #include "../utils/damped_spring.h"
 #include "../movement_state_machine.h"
@@ -11,10 +12,18 @@
 
 using namespace godot;
 
+struct WeaponEffectsData 
+{
+  Node3D* HoldPointNode;
+  MovementManager* MovementManagerInst;
+  CharacterComponent* CharacterCompInst;
+  WeaponComponent* WeaponCompInst;
+};
+
 class WeaponBobComponent
 {
 public:
-  void _init_data(Node3D* hold_point_node, MovementStateMachine* movementStateMachine, CharacterComponent* characterComponent, WeaponComponent* weaponComponent);
+  void _init_data(const WeaponEffectsData& weaponEffectsData);
 
   void _update_bob_data(Ref<Weapon> currentWeapon);
   void weapon_bob(double delta);
@@ -31,7 +40,7 @@ private:
   float m_WeaponBobSmoothVal { 0.0f };
 
   Node3D* m_HoldPointNode { nullptr };
-  MovementStateMachine* m_MovementStateMachine { nullptr };
+  MovementManager* m_MovementManager { nullptr };
 
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
@@ -40,7 +49,7 @@ private:
 class WeaponSwayComponent
 {
 public:
-  void _init_data(MovementStateMachine* movementStateMachine, CharacterComponent* characterComponent, WeaponComponent* weaponComponent);
+  void _init_data(const WeaponEffectsData& weaponEffectsData);
   void _update_sway_data(Ref<Weapon> currentWeapon);
 
   void weapon_idle_sway(double delta);
@@ -67,15 +76,14 @@ private:
 
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
-  MovementStateMachine* m_MovementStateMachine { nullptr };
+  MovementManager* m_MovementManager { nullptr };
 };
+
 
 class WeaponEffects
 {
 public:
-  void _init_data(MovementStateMachine* movementStateMachine, Node3D* holdPointNode,
-                  CharacterComponent* characterComponent,
-                  WeaponComponent* weaponComponent);
+  void _init_data(const WeaponEffectsData& weaponEffectsData);
 
   void _update_data(Ref<Weapon> currentWeapon);
   void _update(double delta, Vector3& sway_vel);

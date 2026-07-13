@@ -1,8 +1,5 @@
 [gd_scene format=3 uid="uid://2c0bf6m5ugct"]
 
-[ext_resource type="PackedScene" uid="uid://b7khe2s865pte" path="res://assets/weapon_scenes/pistol.tscn" id="1_dqkch"]
-[ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="2_qhqgy"]
-[ext_resource type="PackedScene" uid="uid://lfo3x6xjd6h3" path="res://assets/weapon_scenes/shotgun.tscn" id="3_ur7pv"]
 [ext_resource type="Script" uid="uid://cu33kq028l77c" path="res://src/scripts/hud.gd" id="4_d2wvv"]
 [ext_resource type="Theme" uid="uid://607bfwn0648t" path="res://assets/ui/debug_panel_theme.tres" id="4_dqkch"]
 [ext_resource type="Weapon" uid="uid://ct4xiq7b5h3b0" path="res://assets/weapon_resources/pistol_resource.tres" id="6_tuyoq"]
@@ -30,6 +27,9 @@ sprint_speed = 12.0
 dash_speed = 100.0
 jump_height = 2.0
 down_gravity = 20.0
+crouch_translate = 0.7
+crouch_ang_freq = 25.0
+crouch_damping_ratio = 0.8
 slide_damping_ratio = 0.9
 collision_layer = 2
 collision_mask = 3
@@ -115,13 +115,12 @@ unique_name_in_owner = true
 layout_mode = 2
 label_settings = SubResource("LabelSettings_d2wvv")
 
-[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("movement_manager", "character_camera", "character_component", "movement_state_machine")]
+[node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("movement_manager", "character_camera", "character_component")]
 movement_manager = NodePath("../MovementManager")
-character_camera = NodePath("PlayerHead/WeaponEffectsHolder/PlayerCamera")
+character_camera = NodePath("PlayerHead/WeaponActionEffects/PlayerCamera")
 character_component = NodePath("..")
-movement_state_machine = NodePath("../MovementStateMachine")
-sprint_fov = 110.0
-slide_fov = 120.0
+sprint_fov = 80.0
+slide_fov = 110.0
 sprint_fov_zoom_out_transition_value = 4.0
 slide_tilt_angle = 5.0
 sprint_headbob_amp = 0.3
@@ -133,24 +132,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715, 0)
 
 [node name="PlayerHead" type="Node3D" parent="CameraController" unique_id=1010004094]
 
-[node name="WeaponEffectsHolder" type="WeaponEffectsHolder" parent="CameraController/PlayerHead" unique_id=160150294 node_paths=PackedStringArray("weapon_component", "weapon_manager", "movement_manager")]
+[node name="WeaponActionEffects" type="WeaponActionEffects" parent="CameraController/PlayerHead" unique_id=1073464857 node_paths=PackedStringArray("weapon_component", "weapon_manager", "movement_manager")]
 weapon_component = NodePath("../../../WeaponComponent")
 weapon_manager = NodePath("../../../WeaponManager")
 movement_manager = NodePath("../../../MovementManager")
 
-[node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead/WeaponEffectsHolder" unique_id=27902470]
+[node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead/WeaponActionEffects" unique_id=27902470]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.11343908, -0.26044202)
 current = true
 near = 0.001
 
-[node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera" unique_id=1899973665]
-
-[node name="Pistol" parent="CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera/WeaponHoldPoint" unique_id=1800753288 instance=ExtResource("1_dqkch")]
-
-[node name="Rifle" parent="CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera/WeaponHoldPoint" unique_id=745645197 instance=ExtResource("2_qhqgy")]
-
-[node name="Shotgun" parent="CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera/WeaponHoldPoint" unique_id=670607748 instance=ExtResource("3_ur7pv")]
+[node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/WeaponActionEffects/PlayerCamera" unique_id=1899973665]
 
 [node name="CrouchColliderRay" type="RayCast3D" parent="." unique_id=1414798151]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5316644, 0)
@@ -165,9 +158,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
 
-[node name="MovementManager" type="MovementManager" parent="." unique_id=1615799341 node_paths=PackedStringArray("character_component", "movement_state_machine")]
+[node name="MovementManager" type="MovementManager" parent="." unique_id=1615799341 node_paths=PackedStringArray("character_component")]
 character_component = NodePath("..")
-movement_state_machine = NodePath("../MovementStateMachine")
 unique_name_in_owner = true
 
 [node name="MovementStateMachine" type="MovementStateMachine" parent="." unique_id=1412789278 node_paths=PackedStringArray("character_component", "movement_manager")]
@@ -175,19 +167,19 @@ character_component = NodePath("..")
 movement_manager = NodePath("../MovementManager")
 unique_name_in_owner = true
 
-[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("movement_state_machine", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
-movement_state_machine = NodePath("../MovementStateMachine")
+[node name="WeaponComponent" type="WeaponComponent" parent="." unique_id=1645035038]
+weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("8_ur7pv"), ExtResource("7_smehm")]
+unique_name_in_owner = true
+
+[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("movement_manager", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
+movement_manager = NodePath("../MovementManager")
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
 character_component = NodePath("..")
-hold_point_node = NodePath("../CameraController/PlayerHead/WeaponEffectsHolder/PlayerCamera/WeaponHoldPoint")
+hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionEffects/PlayerCamera/WeaponHoldPoint")
 unique_name_in_owner = true
 
 [node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=29975295 node_paths=PackedStringArray("weapon_manager", "weapon_component")]
 weapon_manager = NodePath("../WeaponManager")
 weapon_component = NodePath("../WeaponComponent")
-unique_name_in_owner = true
-
-[node name="WeaponComponent" type="WeaponComponent" parent="." unique_id=1645035038]
-weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("8_ur7pv"), ExtResource("7_smehm")]
 unique_name_in_owner = true

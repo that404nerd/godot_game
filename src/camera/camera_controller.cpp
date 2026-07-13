@@ -1,4 +1,5 @@
 #include "camera_controller.h"
+#include "godot_cpp/variant/variant.hpp"
 
 CameraController::CameraController() 
 {
@@ -7,12 +8,9 @@ CameraController::CameraController()
 void CameraController::_ready()
 {
   m_CharacterHead = character_component->get_character_head();
-  m_OriginalControllerPos = get_position();
 
   m_OriginalFOV = character_camera->get_fov();
-  sprint_fov = character_camera->get_fov() + 10.0f;
-  slide_fov = character_camera->get_fov() + 20.0f;
-
+  m_BaseRot = get_rotation();
 }
 
 void CameraController::_unhandled_input(const Ref<InputEvent>& event)
@@ -31,11 +29,9 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 
 void CameraController::_bind_methods() 
 {
-
   GD_BIND_CUSTOM_PROPERTY(CameraController, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CameraController, character_camera, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CameraController, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CameraController, movement_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_GROUP("FOV Settings", "");
   GD_BIND_PROPERTY(CameraController, sprint_fov, Variant::FLOAT);
@@ -44,11 +40,16 @@ void CameraController::_bind_methods()
   GD_BIND_PROPERTY(CameraController, sprint_fov_zoom_out_transition_value, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, sprint_fov_zoom_in_transition_value, Variant::FLOAT);
 
-  ADD_GROUP("Side Tilt Settings", "");
+  ADD_GROUP("Side Tilt Rot Settings", "");
   GD_BIND_PROPERTY(CameraController, slide_tilt_angle, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, side_tilt_transition_value, Variant::FLOAT);
-  GD_BIND_PROPERTY(CameraController, slide_tilt_rotation_transition, Variant::FLOAT);
+
+  ADD_GROUP("Side Tilt Rot Settings", "");
   GD_BIND_PROPERTY(CameraController, slide_start_timer, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, slide_tilt_start_ang_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, slide_tilt_start_damping_ratio, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, slide_tilt_end_ang_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(CameraController, slide_tilt_end_damping_ratio, Variant::FLOAT);
 
   ADD_GROUP("Headbob Settings", "");
   GD_BIND_PROPERTY(CameraController, sprint_headbob_amp, Variant::FLOAT);
@@ -68,33 +69,34 @@ void CameraController::_headbob_effect(double delta)
   float x_bob = Math::cos(m_HeadbobTime * sprint_headbob_freq * 0.5f) * sprint_headbob_amp; 
   float y_bob = Math::sin(m_HeadbobTime * sprint_headbob_freq) * sprint_headbob_amp;        
 
-  if(m_CurrentStateID == static_cast<int>(MovementStates::CROUCH) && character_component->get_velocity().length() > 0.001f) {
+  if(movement_manager->IsCrouching() && character_component->get_velocity().length() > 0.001f) {
     x_bob = Math::cos(m_HeadbobTime * crouch_headbob_freq * 0.5f) * crouch_headbob_amp; 
     y_bob = Math::sin(m_HeadbobTime * crouch_headbob_freq) * crouch_headbob_amp;        
   }
 
   Vector3 currentPos = m_CharacterHead->get_position();
-  Vector3 newPos = Vector3(
+  m_HeadBobPos = Vector3(
     Utils::exp_decay(currentPos.x, x_bob, headbob_transition_value, (float)delta),
     Utils::exp_decay(currentPos.y, y_bob, headbob_transition_value, (float)delta), 
     0.0f
   );
   
-  m_CharacterHead->set_position(newPos);
 }
 
 void CameraController::_tilt_player(double delta)
 {
-  Vector3 camControllerRot = get_rotation();
+  m_SideTiltRot = get_rotation();
 
-  if(m_CurrentStateID == static_cast<int>(MovementStates::SPRINT))
+  if(!movement_manager->IsSprinting())
   {
-    camControllerRot.z = Utils::exp_decay(camControllerRot.z, Math::deg_to_rad(side_tilt_angle) * -character_component->get_input_dir().x, side_tilt_transition_value, (float)delta);
-  } else if(movement_manager->IsSliding())
-  {
+    m_SideTiltRot = Vector3(0.0f, 0.0f, 0.0f);
+    return;
   }
 
-  set_rotation(camControllerRot);
+  if(movement_manager->IsSprinting())
+  {
+    m_SideTiltRot.z = Utils::exp_decay(m_SideTiltRot.z, Math::deg_to_rad(side_tilt_angle) * -character_component->get_input_dir().x, side_tilt_transition_value, (float)delta);
+  }
 }
 
 void CameraController::_slide_tilt(double delta)
@@ -106,50 +108,49 @@ void CameraController::_slide_tilt(double delta)
   
     if(m_SlideStartTimer <= 0.0f)
     {
-      m_DampedSpring.CalcDampedSpringMotionParams(delta, 25.0f, 0.3f);
-      m_DampedSpring.UpdateDampedSpringMotion(m_SlideTilt, m_SlideTiltVel, Vector3(0.0f, 0.0f, Math::deg_to_rad(slide_tilt_angle)));
+      m_DampedSpring.CalcDampedSpringMotionParams(delta, slide_tilt_start_ang_freq, slide_tilt_start_damping_ratio);
+      m_DampedSpring.UpdateDampedSpringMotion(m_SlideTiltRot, m_SlideTiltRotVel, Vector3(0.0f, 0.0f, Math::deg_to_rad(slide_tilt_angle)));
     }
   }
 
   if(!movement_manager->IsSliding())
   {
-    m_SlideTilt = Vector3(0.0f, 0.0f, 0.0f);
-    set_rotation(m_SlideTilt);
-    set_position(m_OriginalControllerPos);
+    m_DampedSpring.CalcDampedSpringMotionParams(delta, slide_tilt_end_ang_freq, slide_tilt_end_damping_ratio);
+    m_DampedSpring.UpdateDampedSpringMotion(m_SlideTiltRot, m_SlideTiltRotVel, Vector3(0.0f, 0.0f, 0.0f));
+
     m_SlideStartTimer = slide_start_timer;
   }
-
-  set_rotation(m_SlideTilt);
 }
 
 void CameraController::_apply_fov(double delta)
 {
-  if(m_CurrentStateID == static_cast<int>(MovementStates::SPRINT))
+  float camFov = 0.0f;
+
+  if(movement_manager->IsSprinting() && Math::abs(character_component->get_input_dir().x) != 1.0f)
   {
-    character_camera->set_fov(Math::lerp(m_OriginalFOV, sprint_fov, sprint_fov_zoom_out_transition_value * (float)delta));
-  } else if(m_CurrentStateID == static_cast<int>(MovementStates::SLIDE))
+    camFov = sprint_fov;
+  } else if(movement_manager->IsSliding())
   {
-    character_camera->set_fov(Math::lerp(character_camera->get_fov(), slide_fov, slide_fov_zoom_in_transition_value * (float)delta));
+    camFov = slide_fov;
   } else {
-    character_camera->set_fov(Math::lerp(character_camera->get_fov(), m_OriginalFOV, sprint_fov_zoom_out_transition_value * (float)delta));
+    camFov = m_OriginalFOV;
   }
+
+  character_camera->set_fov(Utils::exp_decay(character_camera->get_fov(), camFov, sprint_fov_zoom_out_transition_value, (float)delta));
 }
 
 void CameraController::_physics_process(double delta) 
 {
-  m_CurrentStateID = movement_state_machine->get_current_state();
-
   _apply_fov(delta);
-   
   _tilt_player(delta);
-
   _slide_tilt(delta); 
+  _headbob_effect(delta);
 
-  if(m_CurrentStateID == static_cast<int>(MovementStates::SPRINT) || m_CurrentStateID == static_cast<int>(MovementStates::CROUCH))
-  {
-    _headbob_effect(delta);
-  }
+  m_FinalPos = m_BasePos + m_HeadBobPos;
+  m_FinalRot = m_BaseRot + m_SideTiltRot + m_SlideTiltRot;
 
+  m_CharacterHead->set_position(m_FinalPos);
+  set_rotation(m_FinalRot);
 }
 
 CameraController::~CameraController() {}

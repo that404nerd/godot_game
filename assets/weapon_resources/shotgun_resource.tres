@@ -1,9 +1,11 @@
 [gd_resource type="Weapon" format=3 uid="uid://g6nbobyu2ifd"]
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_lvpox"]
+[ext_resource type="PackedScene" uid="uid://lfo3x6xjd6h3" path="res://assets/weapon_scenes/shotgun.tscn" id="2_niypt"]
 
 [resource]
 weaponName = "Shotgun"
+weaponScene = ExtResource("2_niypt")
 totalAmmoCount = 48
 magAmmoCount = 6
 is_incremental_reload = true

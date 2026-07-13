@@ -6,14 +6,61 @@ void WeaponManager::_ready()
   Node3D* weapon_node = nullptr;
   WeaponWrapper* weapon_wrapper = nullptr;
 
-  /* NOTE: This took me 2 hours to find lol, i forgot that i was dealing with different animation
-          players for different weapon scene, this connects the _on_animation_finished to all animation players */
+  _init_weapons();
+  _init_weapon_anim_connections(weapon_node, weapon_wrapper, anim_player);
+
+  // Init the weapon wrapper instance nodes
+  m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
+
+  m_CharacterBody = character_component;
+
+  m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
+  m_ScreenCenter = get_viewport()->get_visible_rect().get_size() / 2.0f;
+
+  m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
+
+  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+  
+  _change_fov(weapon_node, weapon_wrapper);
+
+  weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
+  m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
+
+  m_WeaponEffects._init_data({ 
+    .HoldPointNode = hold_point_node,
+    .MovementManagerInst = movement_manager,
+    .CharacterCompInst = character_component,
+    .WeaponCompInst = weapon_component });
+}
+
+void WeaponManager::_init_weapons()
+{
+  for(int i = 0; i < weapon_component->get_weapon_resource_list().size(); i++)
+  {
+    weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[i]);
+    m_CurrentWeapon = weapon_component->get_current_weapon_data();
+
+    Ref<PackedScene> packedScene = m_CurrentWeapon->get_weaponScene();
+    hold_point_node->add_child(packedScene->instantiate());
+  }
+}
+
+void WeaponManager::_init_weapon_anim_connections(Node3D* weapon_node, WeaponWrapper* weapon_wrapper, AnimationPlayer* anim_player)
+{
+  /* This took me 2 hours to find lol, i forgot that i was dealing with different animation
+      players for different weapon scene, this connects the _on_animation_finished to all animation players */
   for(int i = 0; i < hold_point_node->get_children().size(); i++)
   {
     m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[i]));
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
     weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
-   
+
+    weapon_node->set_visible(false);
+
     m_WeaponAnims.push_back(weapon_wrapper->get_weapon_anim_player());
     anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
 
@@ -24,21 +71,10 @@ void WeaponManager::_ready()
     anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
     anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
   }
+}
 
-  m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
-  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
-  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
-  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
-  
-  // Set the current weapon right here first!
-  m_CharacterBody = character_component;
-
-  m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
-  m_ScreenCenter = get_viewport()->get_visible_rect().get_size() / 2.0f;
-
-  m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
-  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
-  
+void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
+{
   for(int weaponCount = 0; weaponCount < hold_point_node->get_children().size(); weaponCount++)
   { 
     m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[weaponCount]));
@@ -95,12 +131,6 @@ void WeaponManager::_ready()
       }
     }
   }
-
-  weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
-  m_CurrentWeapon = weapon_component->get_current_weapon_data();
-  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
-
-  m_WeaponEffects._init_data(movement_state_machine, hold_point_node, character_component, weapon_component);
 }
 
 void WeaponManager::_bind_methods()
@@ -108,7 +138,7 @@ void WeaponManager::_bind_methods()
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_started", "anim_name"), &WeaponManager::_on_weapon_anim_started);
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
   
-  GD_BIND_CUSTOM_PROPERTY(WeaponManager, movement_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);

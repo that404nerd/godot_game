@@ -1,9 +1,11 @@
 [gd_resource type="Weapon" format=3 uid="uid://c6bcoxa876t4a"]
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_bdfqo"]
+[ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="2_ck3av"]
 
 [resource]
 weaponName = "Rifle"
+weaponScene = ExtResource("2_ck3av")
 totalAmmoCount = 180
 magAmmoCount = 30
 weaponSwayAngularFreq = 40.0

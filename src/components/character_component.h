@@ -78,7 +78,7 @@ protected:
     GD_BIND_PROPERTY(CharacterComponent, crouch_ang_freq, Variant::FLOAT);
     GD_BIND_PROPERTY(CharacterComponent, crouch_damping_ratio, Variant::FLOAT);
 
-    ADD_GROUP("Crouch Settings", "");
+    ADD_GROUP("Slide Settings", "");
     GD_BIND_PROPERTY(CharacterComponent, slide_timer, Variant::FLOAT);
     GD_BIND_PROPERTY(CharacterComponent, slide_ang_freq, Variant::FLOAT);
     GD_BIND_PROPERTY(CharacterComponent, slide_damping_ratio, Variant::FLOAT);

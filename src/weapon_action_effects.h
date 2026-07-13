@@ -16,8 +16,8 @@
 
 using namespace godot;
 
-class WeaponEffectsHolder : public Node3D {
-  GDCLASS(WeaponEffectsHolder, Node3D);
+class WeaponActionEffects : public Node3D {
+  GDCLASS(WeaponActionEffects, Node3D);
 
 public:
   void _ready() override;

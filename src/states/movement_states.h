@@ -26,8 +26,9 @@ struct MovementStateCtx
   float SlideTimer = 0.0f;
   float DashCooldown { 0.0f };
 
-  bool IsSlideStarted = false;
-  bool IsSlideEnded = false;
+  bool IsSliding = false;
+  bool IsSprinting = false;
+  bool IsCrouching = false;
 
   bool IsOnFloor = false;
   bool IsJumpPressed = false;
@@ -77,8 +78,6 @@ public:
   void _physics_update(double delta) override;
   void _exit() override;
 
-private:
-  CharacterComponent* m_CharacterComponent { nullptr };
 };
 
 class FallMovementState : public BaseMovementState {

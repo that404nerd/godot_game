@@ -4,7 +4,7 @@
 #include <godot_cpp/classes/engine.hpp>
 
 #include "game.h"
-#include "camera_controller.h"
+#include "camera/camera_controller.h"
 #include "player.h"
 
 #include "state_machine.h"
@@ -12,7 +12,7 @@
 #include "movement_state_machine.h"
 #include "weapon_state_machine.h"
 #include "weapon_manager.h"
-#include "weapon_effects_holder.h"
+#include "weapon_action_effects.h"
 
 #include "singletons/event_bus.h"
 #include "resources/weapon.h"

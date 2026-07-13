@@ -7,6 +7,7 @@ void Weapon::_bind_methods() {
   ADD_GROUP("General Weapon Properties", "");
 
   GD_BIND_PROPERTY(Weapon, weaponName, Variant::STRING);
+  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponScene, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
   GD_BIND_PROPERTY(Weapon, totalAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, magAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, is_incremental_reload, Variant::BOOL);

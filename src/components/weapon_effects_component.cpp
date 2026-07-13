@@ -1,27 +1,21 @@
 #include "weapon_effects_components.h"
 
-void WeaponBobComponent::_init_data(Node3D* hold_point_node, MovementStateMachine* movementStateMachine, CharacterComponent* characterComponent, WeaponComponent* weaponComponent)
+void WeaponBobComponent::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
-  if (!characterComponent) {
-    print_error("Character component is null!");
+  m_CharacterBody = weaponEffectsData.CharacterCompInst;
+  m_MovementManager = weaponEffectsData.MovementManagerInst;
+  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_data();
+  m_HoldPointNode = weaponEffectsData.HoldPointNode;
+
+  if (!weaponEffectsData.CharacterCompInst || !weaponEffectsData.WeaponCompInst) {
+    print_error("Character component or Weapon component is null!");
     return;
   }
-
-  if (!weaponComponent) {
-    print_error("Weapon component is null!");
-    return;
-  }
-
-  m_CharacterBody = characterComponent;
-  m_MovementStateMachine = movementStateMachine;
-  m_CurrentWeapon = weaponComponent->get_current_weapon_data();
 
   if (!m_CurrentWeapon.is_valid()) {
     print_error("Current weapon is not valid!");
     return;
   }
-
-  m_HoldPointNode = hold_point_node;
 
   m_WeaponBobFreq = m_CurrentWeapon->get_weapon_bob_freq();
   m_WeaponBobAmp = m_CurrentWeapon->get_weapon_bob_amp();
@@ -46,8 +40,7 @@ void WeaponBobComponent::weapon_bob(double delta)
   bool onFloor = m_CharacterBody->is_on_floor();
   float velocityMag = m_CharacterVel.length();
 
-  if(m_MovementStateMachine->get_current_state() != static_cast<int>(MovementStates::SPRINT) &&
-     m_MovementStateMachine->get_current_state() != static_cast<int>(MovementStates::CROUCH))
+  if(!m_MovementManager->IsSprinting() && !m_MovementManager->IsCrouching())
   {
     Vector3 currentHoldPoint = m_HoldPointNode->get_position();
     m_BobOffset = m_BobOffset.lerp(currentHoldPoint, (float)delta);
@@ -67,22 +60,16 @@ void WeaponBobComponent::weapon_bob(double delta)
   m_BobOffset.z = 0.0f;
 }
 
-void WeaponSwayComponent::_init_data(MovementStateMachine* movementStateMachine, CharacterComponent* characterComponent, WeaponComponent* weaponComponent)
+void WeaponSwayComponent::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
-  if(!characterComponent) {
+  m_CharacterBody = weaponEffectsData.CharacterCompInst;
+  m_MovementManager = weaponEffectsData.MovementManagerInst;
+  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_data();
+
+  if(!weaponEffectsData.CharacterCompInst || !weaponEffectsData.WeaponCompInst) {
     print_error("Character component is null!");
     return;
   }
-
-  if(!weaponComponent) {
-    print_error("Weapon component is null!");
-    return;
-  }
-
-  m_MovementStateMachine = movementStateMachine;
-
-  m_CharacterBody = characterComponent;
-  m_CurrentWeapon = weaponComponent->get_current_weapon_data();
 
   if(!m_CurrentWeapon.is_valid()) {
     print_error("Current weapon is not valid!");
@@ -112,7 +99,7 @@ void WeaponSwayComponent::weapon_idle_sway(double delta)
 
   m_CharacterVel = m_CharacterBody->get_velocity();
 
-  if(m_CharacterVel.length() > 0.1f || m_MovementStateMachine->get_current_state() == static_cast<int>(MovementStates::SLIDE))
+  if(m_CharacterVel.length() > 0.1f || m_MovementManager->IsSliding())
   {
     m_IdleSwayOffset = m_IdleSwayOffset.lerp(Vector3(0.0f, 0.0f, 0.0f), (float)delta);
     return;
@@ -139,16 +126,14 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
   m_DampedSpring.UpdateDampedSpringMotion(m_SwayOffset, sway_vel, equilibriumPos);
 }
 
-void WeaponEffects::_init_data(MovementStateMachine* movementStateMachine, Node3D* holdPointNode,
-                               CharacterComponent* characterComponent,
-                               WeaponComponent* weaponComponent)
+void WeaponEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
-  m_HoldPointNode = holdPointNode;
+  m_HoldPointNode = weaponEffectsData.HoldPointNode;
   m_BasePos = m_HoldPointNode->get_position();
   m_BaseRot = m_HoldPointNode->get_rotation();
 
-  m_WeaponBobComponent._init_data(holdPointNode, movementStateMachine, characterComponent, weaponComponent);
-  m_WeaponSwayComponent._init_data(movementStateMachine, characterComponent, weaponComponent);
+  m_WeaponBobComponent._init_data(weaponEffectsData);
+  m_WeaponSwayComponent._init_data(weaponEffectsData);
 }
 
 void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
