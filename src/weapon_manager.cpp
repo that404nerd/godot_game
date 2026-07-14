@@ -18,7 +18,10 @@ void WeaponManager::_ready()
   m_CharacterBody = character_component;
 
   m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
-  m_ScreenCenter = get_viewport()->get_visible_rect().get_size() / 2.0f;
+  m_Viewport = get_viewport();
+  m_ScreenCenter = m_Viewport->get_visible_rect().get_size() / 2.0f;
+
+  m_Viewport->connect("size_changed", Callable(this, "_on_window_size_changed"));
 
   m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
 
@@ -139,10 +142,16 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
   }
 }
 
+void WeaponManager::_on_window_size_changed()
+{
+  m_ScreenCenter = m_Viewport->get_visible_rect().get_size() / 2.0f;
+}
+
 void WeaponManager::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_started", "anim_name"), &WeaponManager::_on_weapon_anim_started);
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
+  ClassDB::bind_method(D_METHOD("_on_window_size_changed"), &WeaponManager::_on_window_size_changed);
   
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -215,19 +224,19 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
 
 void WeaponManager::generate_decal()
 {
-  for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
+  // for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
   {
     if(!m_Result.is_empty())
     {
       Node* instance = m_DecalScene->instantiate();
       Decal* bulletDecal = Object::cast_to<Decal>(instance);
 
-      CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
+      // CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
 
-      colliderBody->add_child(bulletDecal);
+      add_child(bulletDecal);
       Vector3 position = Vector3(m_Result["position"]);
-      bulletDecal->set_global_position(Vector3(position.x, position.y, position.z));
-      bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, -1.0f, 0.0f));
+      bulletDecal->set_global_position(position);
+      bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
       bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
     }
   }

@@ -66,6 +66,8 @@ public:
 
   void _on_weapon_anim_finished(const StringName& anim_name);
   void _on_weapon_anim_started(const StringName& anim_name);
+
+  void _on_window_size_changed();
   
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
@@ -120,6 +122,8 @@ private:
   Ref<Weapon> m_CurrentWeapon;
   Ref<PackedScene> m_DecalScene;
   PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
+
+  Viewport* m_Viewport {};
 
   WeaponEffects m_WeaponEffects;
   WeaponBobComponent m_WeaponBobComponent;
