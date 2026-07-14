@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_eol0p"]
 [ext_resource type="PackedScene" uid="uid://b7khe2s865pte" path="res://assets/weapon_scenes/pistol.tscn" id="2_8ypwr"]
+[ext_resource type="PackedScene" uid="uid://bjay2uwmx34gd" path="res://assets/weapon_resources/recoil_patterns/recoil_pistol.tscn" id="2_akjpj"]
 
 [resource]
 weaponName = "Pistol"
@@ -19,11 +20,12 @@ weaponUnequipAnimName = "pistol_unequip"
 weaponShootingAnimName = "pistol_shoot"
 weaponReloadAnimName = "pistol_reload"
 weapon_type = 2
+weaponRecoilPatternResource = ExtResource("2_akjpj")
 weaponDecalResource = ExtResource("1_eol0p")
+time_between_shots = 0.1
 hold_max_time = 0.2
-recoil_vector = Vector3(6, 2, 1)
-recoil_ang_freq = 35.0
-recoil_damping_ratio = 0.8
+recoil_ang_freq = 20.0
+recoil_damping_ratio = 0.4
 weaponReloadRootBoneName = "weapon"
 auto_reload = true
 magEnteredTimestamp = 0.7

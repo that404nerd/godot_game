@@ -8,6 +8,7 @@
 
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/curve.hpp>
 
 #include <magic_enum/magic_enum.hpp>
 
@@ -68,20 +69,21 @@ private:
 
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponDecalResource, nullptr);
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
-
+  GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponRecoilPatternResource, nullptr);
+  
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(int, magAmmoCount, 0); 
   GD_DEFINE_PROPERTY(bool, is_incremental_reload, false); 
-
+  
   GD_DEFINE_PROPERTY(float, magEnteredTimestamp, 0.0f); 
   GD_DEFINE_PROPERTY(float, time_between_shots, 0.0f);
   GD_DEFINE_PROPERTY(int, noOfProjectilesAtSameTime, 1);
-
+  
   GD_DEFINE_PROPERTY(bool, auto_reload, false);
   GD_DEFINE_PROPERTY(float, reloadShakeSpeedMultiplier, 1.0f); 
   GD_DEFINE_PROPERTY(float, reloadShakeResetMultiplier, 10.0f); 
   
-  GD_DEFINE_PROPERTY(Vector3, recoil_vector, Vector3(0.0f, 0.0f, 0.0f)); 
+  GD_DEFINE_PROPERTY(float, recoilMultiplier, 0.005f);
   GD_DEFINE_PROPERTY(float, recoil_ang_freq, 30.0f); 
   GD_DEFINE_PROPERTY(float, recoil_damping_ratio, 0.5f); 
 

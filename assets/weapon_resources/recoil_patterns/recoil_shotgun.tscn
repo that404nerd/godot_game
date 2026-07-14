@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://crnx1wupyx76k"]
+
+[sub_resource type="Curve2D" id="Curve2D_qv6s5"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, -4)
+}
+point_count = 2
+
+[node name="Path2D" type="Path2D" unique_id=89708364]
+curve = SubResource("Curve2D_qv6s5")

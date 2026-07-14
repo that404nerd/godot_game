@@ -11,6 +11,8 @@
 #include <godot_cpp/classes/decal.hpp>
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/path2d.hpp>
+#include <godot_cpp/classes/curve2d.hpp>
 #include <godot_cpp/classes/animation_player.hpp>
 #include <godot_cpp/classes/gpu_particles3d.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
@@ -55,7 +57,10 @@ public:
 
   void _equip_weapon();
   void _unequip_weapon();
+
   void _shoot_weapon(double delta);
+  void _shoot_weapon_over();
+
   void _reload_weapon();
   void _weapon_switch();
 
@@ -64,16 +69,22 @@ public:
   
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
-  void _update_weapon_data();
+  void _update_weapon_data(Ref<Weapon> nextWeapon);
   
   void generate_decal();
 
 public:
 
+  // NOTE: This function really doesn't reflect the actual weapon's shoot state. 
+  // IsWeaponFiring is false as soon as the player leaves the input which is different from how the actual state is handled
+  bool IsWeaponFiring() { return m_WeaponStateCtx.IsWeaponFiring; }
+
   bool current_weapon_has_auto_reload() {
     Ref<Weapon> currentWeapon = get_current_weapon();
     return currentWeapon->get_auto_reload();
   }
+
+  Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
 
   void set_key_pressed(bool status) { m_WeaponStateCtx.IsKeyPressed = status; }
 
@@ -92,10 +103,14 @@ protected:
   static void _bind_methods();
 
 private:
+  float m_ShootTimer { 0.0f };
+
   Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
 
   Ref<StandardMaterial3D> m_StdMaterial { nullptr };
+  Ref<PackedScene> m_RecoilResource { nullptr };
+  Ref<Curve2D> m_RecoilCurve { nullptr };
 
   Vector<AnimationPlayer*> m_WeaponAnims;
   Vector<Node3D*> m_WeaponNodes;
@@ -129,11 +144,9 @@ private:
 
   float m_TimeBetweenShots { 0.0f };
   int m_WeaponIndex { 0 };
-  int m_CurrentWeaponState { 0 };
 
+  float m_MuzzleLightTimeout { 0.0f };
   float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.0f };
-  float m_LightTimeout { 0.05f };
-  float m_TimerBetweenReloads { 0.1f };
 
   Vector3 m_TargetRot {}, m_CurrentRot {};
 

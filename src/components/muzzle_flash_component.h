@@ -18,6 +18,9 @@ public:
   void _set_particles_status(bool status) { gpu_particles_inst->set_emitting(status); }
   void _enable_light_status(bool status) { omni_light_inst->set_visible(status); }
 
+  bool get_light_status() { return omni_light_inst->is_visible(); }
+  float get_particle_lifetime() { return gpu_particles_inst->get_lifetime(); }
+
 protected:
   static void _bind_methods();
 

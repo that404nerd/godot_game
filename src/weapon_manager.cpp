@@ -29,6 +29,12 @@ void WeaponManager::_ready()
   weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
+  m_RecoilResource = m_CurrentWeapon->get_weaponRecoilPatternResource();
+
+  Node* pathNode = m_RecoilResource->instantiate();
+  Path2D* path = Object::cast_to<Path2D>(pathNode);
+
+  m_RecoilCurve = path->get_curve();
 
   m_WeaponEffects._init_data({ 
     .HoldPointNode = hold_point_node,
@@ -164,7 +170,6 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_process(double delta)
 {
-  m_CurrentWeaponState = weapon_state_machine->get_current_state();
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
   
@@ -192,13 +197,20 @@ void WeaponManager::_physics_process(double delta)
 }
 
 // Runs when you switch a weapon (Only once)
-void WeaponManager::_update_weapon_data()
+void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
 {
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
   m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
   m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
-  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
+
+  m_DecalScene = nextWeapon->get_weaponDecalResource();
+  m_RecoilResource = nextWeapon->get_weaponRecoilPatternResource();
+
+  Node* pathNode = m_RecoilResource->instantiate();
+  Path2D* path = Object::cast_to<Path2D>(pathNode);
+
+  m_RecoilCurve = path->get_curve();
 }
 
 void WeaponManager::generate_decal()
@@ -214,7 +226,7 @@ void WeaponManager::generate_decal()
 
       colliderBody->add_child(bulletDecal);
       Vector3 position = Vector3(m_Result["position"]);
-      bulletDecal->set_global_position(Vector3(position.x + (i * 0.1f), position.y + (i * 0.2f), position.z));
+      bulletDecal->set_global_position(Vector3(position.x, position.y, position.z));
       bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, -1.0f, 0.0f));
       bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
     }
@@ -225,11 +237,12 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 {
   if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
   {
-    m_LightTimeout = 0.05f;
     m_MuzzleComp->_set_particles_status(true);
+    m_MuzzleLightTimeout = m_MuzzleComp->get_particle_lifetime();
+
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
     generate_decal();
-    EventBus::get_singleton()->emit_signal("weapon_fired");
+    EventBus::get_singleton()->emit_signal("weapon_fired", m_RecoilCurve);
   }
 
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
@@ -249,6 +262,11 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
   if(anim_name == StringName(m_CurrentWeapon->get_weaponUnequipAnimName()))
   {
     m_WeaponStateCtx.IsUnequipped = true;
+  }
+
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
+  {
+    m_MuzzleComp->_set_particles_status(false);
   }
 
   ////////////////////////////////////////////////////////////////
@@ -330,7 +348,8 @@ void WeaponManager::_unequip_weapon()
 void WeaponManager::_shoot_weapon(double delta)
 {
   // Don't even shoot, just switch to the idle state instead
-  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon) || (m_AmmoComp.is_ammo_empty(m_CurrentWeapon) && m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon) == 0))
+  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon) ||
+    (m_AmmoComp.is_ammo_empty(m_CurrentWeapon) && m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon) == 0))
   {
     m_MuzzleComp->_enable_light_status(false);
     m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
@@ -338,6 +357,11 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.IsKeyPressed = false;
     return;
   }
+
+  m_WeaponStateCtx.IsWeaponFiring = true;
+
+  m_ShootTimer += delta;
+  m_ShootTimer = Math::clamp(m_ShootTimer, 0.0f, 1.0f);
 
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
   if(m_WeaponStateCtx.ShootTimeBeforeIdle >= 0.0f)
@@ -352,15 +376,19 @@ void WeaponManager::_shoot_weapon(double delta)
           m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
       m_HoldCounter += delta;
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-          m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
-
-
+      
       if(m_HoldCounter > m_HoldMaxTime)
       {
         m_WeaponStateCtx.IsKeyHeld = true;
       }
-    }
+      
+      if(m_WeaponStateCtx.IsKeyHeld)
+      {
+        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+          m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+      }
+
+    }  
 
     // Check whether we pressed the fire key (manual)
     if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
@@ -375,29 +403,43 @@ void WeaponManager::_shoot_weapon(double delta)
 
     if(m_WeaponStateCtx.IsKeyHeld || m_WeaponStateCtx.IsKeyPressed)
     {
+      m_MuzzleComp->_enable_light_status(true);
       m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
 
       m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
       m_WeaponStateCtx.IsKeyPressed = false;
-      m_MuzzleComp->_enable_light_status(true);
     }
+
   }
 
-  m_LightTimeout -= delta;
+  m_MuzzleLightTimeout -= delta;
+  if(m_MuzzleLightTimeout >= 0.0f)
+  {
+    m_MuzzleComp->_enable_light_status(true);
+  }
 
-  if(m_LightTimeout <= 0.0f)
+  if(m_MuzzleLightTimeout <= 0.0f)
     m_MuzzleComp->_enable_light_status(false);
-  
+
   // Set the key held to false and reset the hold counter 
   if(Input::get_singleton()->is_action_just_released("shoot_weapon")) 
   {
+    m_WeaponStateCtx.IsWeaponFiring = false;
     m_WeaponStateCtx.IsKeyHeld = false;
     m_HoldCounter = 0.0f;
   }
 }
+
+void WeaponManager::_shoot_weapon_over()
+{
+  m_ShootTimer = 0.0f;
+  m_WeaponStateCtx.IsWeaponFiring = false;
+  m_MuzzleComp->_enable_light_status(false);
+}
   
 void WeaponManager::_reload_weapon()
 {
+
   int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
   int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
   int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
@@ -470,7 +512,7 @@ void WeaponManager::_weapon_switch()
     weapon_component->set_current_weapon(nextWeapon);
     m_WeaponEffects._update_data(nextWeapon);
     
-    _update_weapon_data();
+    _update_weapon_data(nextWeapon);
   }
 }
 

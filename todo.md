@@ -1,10 +1,9 @@
 ## TODO
+- Fix Weapon Action affects when sliding and clean it up []
 - Add effects like slide ending shake, landing on floor shake etc... []
 - Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
 - Replace the two Vector<> with an array when setting up weapon anims and weapon nodes in the Weapon Manager []
 - Move the CharacterComponent properties into a custom resource file for swapping between multiple profiles quickly []
-- Use a Path2D for the patterns []
-- Switch the reload rotation from normal euler angles to quaternions []
 
 - Make slide detection work for objects like boxes, crates and etc.. []
 - Transition to idle state when sliding into world objects []
@@ -20,6 +19,8 @@
 - Use movement manager's functions instead of using movement state machine [x]
 - Refactor the Weapon Effects Manager (Bobbing, Idle Sway, Sway) and clean it up [x]
 - Rewrite the camera controller class to use additive animations [x]
+- Fix the muzzle light issue [x]
+- Use a Path2D for the recoil patterns [x]
 
 - Sideways movement when falling [x]
 - Add 3 points to the jump arc (Jump, Peak, Landing like a parabola) [x]

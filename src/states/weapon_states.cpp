@@ -5,7 +5,11 @@ BaseWeaponState::BaseWeaponState(WeaponStates movementState, const WeaponStateDa
   : State(static_cast<int>(movementState)), m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
     m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx())
 {
-
+  if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
+  {
+    print_error("Base weapon state data is null!");
+    return;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +134,7 @@ void WeaponShootState::_update(double delta)
 
 void WeaponShootState::_exit()
 {
-
+  m_WeaponManager->_shoot_weapon_over();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,11 +151,6 @@ void WeaponReloadState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponReloadState::_enter()
 {
-  if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
-  {
-    print_error("Weapon Reload state data is null!");
-    return;
-  }
   
 }
 
@@ -190,11 +189,7 @@ void WeaponUnequipState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponUnequipState::_enter()
 {
-  if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
-  {
-    print_error("Weapon Unequip state data is null!");
-    return;
-  }
+
   
 }
 
@@ -228,12 +223,6 @@ void WeaponSwitchState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponSwitchState::_enter()
 {
-  if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
-  {
-    print_error("Weapon Switch state data is null!");
-    return;
-  }
-  
   m_WeaponManager->_weapon_switch();
 }
 

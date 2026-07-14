@@ -9,7 +9,7 @@ EventBus::EventBus()
 
 void EventBus::_bind_methods()
 {
-  ADD_SIGNAL(MethodInfo("weapon_fired", PropertyInfo(Variant::STRING, "nextWeaponName")));
+  ADD_SIGNAL(MethodInfo("weapon_fired", PropertyInfo(Variant::OBJECT, "recoilPatternResource")));
   ADD_SIGNAL(MethodInfo("weapon_reload_start", PropertyInfo(Variant::OBJECT, "skeleton")));
 
   ADD_SIGNAL(MethodInfo("slide_end"));

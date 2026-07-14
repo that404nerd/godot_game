@@ -1,6 +1,7 @@
 [gd_resource type="Weapon" format=3 uid="uid://c6bcoxa876t4a"]
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_bdfqo"]
+[ext_resource type="PackedScene" uid="uid://dvwi6iu4xe710" path="res://assets/weapon_resources/recoil_patterns/recoil_rifle.tscn" id="2_687w1"]
 [ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="2_ck3av"]
 
 [resource]
@@ -19,10 +20,12 @@ weapon_shoot_anim_speed = 2.0
 weaponShootingAnimName = "rifle_shoot"
 weaponReloadAnimName = "rifle_reload"
 weapon_type = 2
+weaponRecoilPatternResource = ExtResource("2_687w1")
 weaponDecalResource = ExtResource("1_bdfqo")
-hold_max_time = 0.2
-recoil_vector = Vector3(0.5, 0.5, 0.5)
-recoil_ang_freq = 35.0
+time_between_shots = 0.1
+hold_max_time = 0.1
+recoil_ang_freq = 20.0
+recoil_damping_ratio = 0.7
 weaponReloadRootBoneName = "IK_Hand_Cntrl_R"
 auto_reload = true
 magEnteredTimestamp = 1.0
