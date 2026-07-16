@@ -59,6 +59,29 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, noOfProjectilesAtSameTime, Variant::INT);
   GD_BIND_PROPERTY(Weapon, hold_max_time, Variant::FLOAT);
 
+  ADD_GROUP("Weapon Slide Tilt Values", "");
+  GD_BIND_PROPERTY(Weapon, slide_armature_tilt_rot, Variant::VECTOR3);
+  GD_BIND_PROPERTY(Weapon, slide_armature_dip, Variant::VECTOR3);
+  
+  GD_BIND_PROPERTY(Weapon, slide_armature_dip_reset_timer, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, slide_armature_dip_transition_value, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, slide_armature_dip_reset_ang_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, slide_armature_dip_reset_damping_ratio, Variant::FLOAT);
+
+  GD_BIND_PROPERTY(Weapon, slide_armature_tilt_ang_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, slide_armature_tilt_damping_ratio, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, slide_armature_tilt_end_ang_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, slide_armature_tilt_end_damping_ratio, Variant::FLOAT);
+
+  ADD_GROUP("Weapon Jump Tilt Values", "");
+  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rise_ang_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rise_damping_ratio, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rot_ang_freq, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rot_damping_ratio, Variant::FLOAT);
+
+  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rise_pos, Variant::VECTOR3);
+  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rot, Variant::VECTOR3);
+
   ADD_GROUP("Weapon Recoil Values", "");
   GD_BIND_PROPERTY(Weapon, recoilMultiplier, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, reloadShakeResetMultiplier, Variant::FLOAT);

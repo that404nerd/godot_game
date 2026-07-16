@@ -31,9 +31,6 @@ public:
   void _tilt_player(double delta);
   void _headbob_effect(double delta);
 
-  void _slide_tilt(double delta);
-
-
 private:
   float m_OriginalFOV { 0.0f };
   float m_HeadbobTime { 0.0f };
@@ -61,8 +58,6 @@ private:
   GD_DEFINE_PROPERTY(float, crouch_headbob_freq, 2.0f);
 
 private:
-  float m_SlideStartTimer { slide_start_timer };
-
   Node3D* m_CharacterHead { nullptr };
   DampedSpring m_DampedSpring {};
 
@@ -70,8 +65,6 @@ private:
   Vector3 m_HeadBobPos {};
 
   Vector3 m_SideTiltRot {};
-
-  Vector3 m_SlideTiltRot {}, m_SlideTiltRotVel {};
 
   Vector3 m_FinalPos {}, m_FinalRot {};
   

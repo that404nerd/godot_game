@@ -70,6 +70,28 @@ private:
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponDecalResource, nullptr);
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponRecoilPatternResource, nullptr);
+
+  GD_DEFINE_PROPERTY(Vector3, slide_armature_tilt_rot, Vector3(2.0f, 2.0f, -30.0f));
+  GD_DEFINE_PROPERTY(Vector3, slide_armature_dip, Vector3(-3.0f, 0.0f, 0.0f));
+
+  GD_DEFINE_PROPERTY(float, slide_armature_dip_reset_timer, 0.4f);
+
+  GD_DEFINE_PROPERTY(float, slide_armature_dip_transition_value, 10.0f);
+  GD_DEFINE_PROPERTY(float, slide_armature_dip_reset_ang_freq, 20.0f);
+  GD_DEFINE_PROPERTY(float, slide_armature_dip_reset_damping_ratio, 0.5f);
+
+  GD_DEFINE_PROPERTY(float, slide_armature_tilt_ang_freq, 25.0f);
+  GD_DEFINE_PROPERTY(float, slide_armature_tilt_damping_ratio, 0.5f);
+  GD_DEFINE_PROPERTY(float, slide_armature_tilt_end_ang_freq, 20.0f);
+  GD_DEFINE_PROPERTY(float, slide_armature_tilt_end_damping_ratio, 0.5f);
+
+  GD_DEFINE_PROPERTY(float, jump_armature_weapon_rise_ang_freq, 20.0f);
+  GD_DEFINE_PROPERTY(float, jump_armature_weapon_rise_damping_ratio, 0.5f);
+  GD_DEFINE_PROPERTY(float, jump_armature_weapon_rot_ang_freq, 20.0f);
+  GD_DEFINE_PROPERTY(float, jump_armature_weapon_rot_damping_ratio, 0.5f);
+
+  GD_DEFINE_PROPERTY(Vector3, jump_armature_weapon_rise_pos, Vector3(0.0f, 0.02f, 0.0f));
+  GD_DEFINE_PROPERTY(Vector3, jump_armature_weapon_rot, Vector3(0.0f, 0.0f, 0.0f));
   
   GD_DEFINE_PROPERTY(int, totalAmmoCount, 0); 
   GD_DEFINE_PROPERTY(int, magAmmoCount, 0); 
@@ -96,7 +118,6 @@ private:
   GD_DEFINE_PROPERTY(float, weaponVerticalAngFreq, 0.0f);
   GD_DEFINE_PROPERTY(float, weaponVerticalDampingRatio, 0.0f);
   GD_DEFINE_PROPERTY(float, weaponVerticalPush, 1.0f);
-
   
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_freq, 0.0f);
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_amp, 0.0f);

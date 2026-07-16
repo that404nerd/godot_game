@@ -28,8 +28,10 @@ public:
   void _sprint_end();
 
   void _jump();
-  void _fall(double delta);
+  void _jump_end();
 
+  void _fall(double delta);
+  void _fall_end();
 
   void _on_crouch_finished();
   void _crouch(double delta);
@@ -46,13 +48,19 @@ protected:
 
 public:
 
+  bool IsSlideStarted() { return m_MovementStateCtx.IsSlideStarted; }
   bool IsSliding() { return m_MovementStateCtx.IsSliding; }
+  bool IsSlideOver() { return m_MovementStateCtx.IsSlideOver; }
+
   bool IsCrouching() { return m_MovementStateCtx.IsCrouching; }
   bool IsSprinting() { return m_MovementStateCtx.IsSprinting; }
 
+  bool IsJumping() { return m_MovementStateCtx.IsJumping; }
+  bool IsJumpLanded() { return m_MovementStateCtx.IsJumpLanded; }
+  bool IsFalling() { return m_MovementStateCtx.IsFalling; }
+
   Vector3& GetCharacterVel() { return m_MovementStateCtx.CharacterVelocity; }
 
-  void set_gravity_vec(Vector3 gravity_vec) { character_component->set_gravity_vec(gravity_vec); }
   void set_jump_pressed(bool status) { m_MovementStateCtx.IsJumpPressed = status; }
   void set_crouch_pressed(bool status) { m_MovementStateCtx.IsCrouchPressed = status; }
 

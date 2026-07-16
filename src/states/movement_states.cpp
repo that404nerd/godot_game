@@ -40,7 +40,7 @@ void IdleMovementState::_physics_update(double delta)
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
   }
 
-  if(m_MovementStateCtx.CharacterVelocity.y < -1.0f || !m_MovementStateCtx.IsOnFloor) {
+  if(m_MovementStateCtx.CharacterVelocity.y < 0.0f || !m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
@@ -93,7 +93,7 @@ void SprintMovementState::_physics_update(double delta)
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
 
-  if(characterVel.y < -1.0f || !m_MovementStateCtx.IsOnFloor) {
+  if(characterVel.y < 0.0f || !m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
@@ -124,11 +124,11 @@ void JumpMovementState::_physics_update(double delta)
 {
   Vector3 characterVel = m_MovementStateCtx.CharacterVelocity;
 
-  if(characterVel.y < -1.0f || !m_MovementStateCtx.IsOnFloor) {
+  if(characterVel.y < 0.0f) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
   
-  if (m_MovementStateCtx.IsOnFloor) {
+  if (characterVel.y < 0.0f && m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
 }
@@ -136,6 +136,7 @@ void JumpMovementState::_physics_update(double delta)
 
 void JumpMovementState::_exit() 
 {
+  m_MovementManager->_jump_end();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,12 +152,6 @@ void FallMovementState::_enter()
 
 void FallMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if (Input::get_singleton()->is_action_just_pressed("jump") && m_MovementStateCtx.IsJumpPressed == false) 
-  {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
-    m_MovementManager->set_jump_pressed(true);
-  }
-
   if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
   {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
@@ -186,8 +181,7 @@ void FallMovementState::_physics_update(double delta)
 
 void FallMovementState::_exit() 
 {
-  m_MovementManager->set_gravity_vec(Vector3(0.0f, 0.0f, 0.0f));
-  m_MovementManager->set_crouch_pressed(false);
+  m_MovementManager->_fall_end();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,7 +221,7 @@ void CrouchMovementState::_physics_update(double delta)
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
   }
 
-  if(characterVel.y < -1.0f || !m_MovementStateCtx.IsOnFloor) 
+  if(characterVel.y < 0.0f || !m_MovementStateCtx.IsOnFloor) 
   {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
@@ -274,7 +268,7 @@ void SlideMovementState::_physics_update(double delta)
     }
   }
 
-  if(characterVel.y < -1.0f || !m_MovementStateCtx.IsOnFloor) 
+  if(characterVel.y < 0.0f || !m_MovementStateCtx.IsOnFloor) 
   {
     m_MovementManager->_on_slide_finished();
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));

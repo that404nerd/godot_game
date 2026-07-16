@@ -25,10 +25,15 @@ public:
   void _ready() override;
   void _process(double delta) override;
 
-  void addWeaponRecoil(Ref<Curve2D> recoilCurve);
-  void weaponReloadRotationHandler(Skeleton3D* skeleton3D);
+  void _on_weapon_fired(Ref<Curve2D> recoilCurve);
+  void _on_weapon_reload_start(Skeleton3D* skeleton3D);
 
   void _weapon_slide_effect(double delta);
+  void _weapon_recoil_effect(double delta);
+  void _weapon_reload_effect(double delta);
+  void _weapon_jump_effect(double delta);
+
+  void _update_data();
 
 protected:
   static void _bind_methods();
@@ -39,17 +44,28 @@ private:
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
   
+  float m_SlideDipResetTimer { 0.0f };
+
   int m_BoneID { -1 };
   int m_Count { 0 };
+
+  bool m_Jumped { false };
 
   Vector2 m_CurveOrigin {};
 
   Vector2 m_RecoilEqPos {};
-  Vector3 m_RecoilSpringRot {}, m_SlideWeaponRot {};
-  Vector3 m_RecoilVel {};
+  Vector3 m_RecoilSpringRot {}, m_RecoilVel {};
+
+  Vector3 m_JumpWeaponArmatureTilt {}, m_JumpWeaponArmatureTiltVel {};
+  Vector3 m_JumpWeaponArmatureTiltRot {}, m_JumpWeaponArmatureTiltRotVel {};
+
+  Vector3 m_SlideWeaponArmaturePos {}, m_SlideWeaponArmaturePosVel {};
+  Vector3 m_SlideWeaponRot {}, m_SlideWeaponRotVel {};
+
   Vector3 m_ReloadBoneRot {};
 
-  Ref<RandomNumberGenerator> m_Rng { nullptr };
+  Vector3 m_ArmaturePos {}, m_ArmatureRot {}, m_CurrentNodeRot {};
+
   Ref<Weapon> m_CurrentWeapon { nullptr };
   Ref<PackedScene> m_RecoilPatternResource { nullptr };
   Ref<Curve2D> m_Curve { nullptr };
@@ -58,6 +74,5 @@ private:
   Node3D* m_WeaponArmatureNode { nullptr };
 
   Transform3D m_ReloadBoneTransform {};
-
   DampedSpring m_DampedSpring;
 };

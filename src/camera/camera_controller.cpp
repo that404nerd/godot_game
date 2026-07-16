@@ -1,5 +1,4 @@
 #include "camera_controller.h"
-#include "godot_cpp/variant/variant.hpp"
 
 CameraController::CameraController() 
 {
@@ -99,29 +98,6 @@ void CameraController::_tilt_player(double delta)
   }
 }
 
-void CameraController::_slide_tilt(double delta)
-{
-  if(movement_manager->IsSliding())
-  {
-    if(m_SlideStartTimer >= 0.0f)
-      m_SlideStartTimer -= delta;
-  
-    if(m_SlideStartTimer <= 0.0f)
-    {
-      m_DampedSpring.CalcDampedSpringMotionParams(delta, slide_tilt_start_ang_freq, slide_tilt_start_damping_ratio);
-      m_DampedSpring.UpdateDampedSpringMotion(m_SlideTiltRot, m_SlideTiltRotVel, Vector3(0.0f, 0.0f, Math::deg_to_rad(slide_tilt_angle)));
-    }
-  }
-
-  if(!movement_manager->IsSliding())
-  {
-    m_DampedSpring.CalcDampedSpringMotionParams(delta, slide_tilt_end_ang_freq, slide_tilt_end_damping_ratio);
-    m_DampedSpring.UpdateDampedSpringMotion(m_SlideTiltRot, m_SlideTiltRotVel, Vector3(0.0f, 0.0f, 0.0f));
-
-    m_SlideStartTimer = slide_start_timer;
-  }
-}
-
 void CameraController::_apply_fov(double delta)
 {
   float camFov = 0.0f;
@@ -143,11 +119,10 @@ void CameraController::_physics_process(double delta)
 {
   _apply_fov(delta);
   _tilt_player(delta);
-  _slide_tilt(delta); 
   _headbob_effect(delta);
 
   m_FinalPos = m_BasePos + m_HeadBobPos;
-  m_FinalRot = m_BaseRot + m_SideTiltRot + m_SlideTiltRot;
+  m_FinalRot = m_BaseRot + m_SideTiltRot;
 
   m_CharacterHead->set_position(m_FinalPos);
   set_rotation(m_FinalRot);

@@ -81,6 +81,8 @@ public:
   // IsWeaponFiring is false as soon as the player leaves the input which is different from how the actual state is handled
   bool IsWeaponFiring() { return m_WeaponStateCtx.IsWeaponFiring; }
 
+  bool IsReloading() { return m_WeaponStateCtx.IsReloading; }
+
   bool current_weapon_has_auto_reload() {
     Ref<Weapon> currentWeapon = get_current_weapon();
     return currentWeapon->get_auto_reload();

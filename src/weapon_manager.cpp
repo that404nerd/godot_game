@@ -224,16 +224,16 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
 
 void WeaponManager::generate_decal()
 {
-  // for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
+  for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
   {
     if(!m_Result.is_empty())
     {
       Node* instance = m_DecalScene->instantiate();
       Decal* bulletDecal = Object::cast_to<Decal>(instance);
 
-      // CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
+      CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
 
-      add_child(bulletDecal);
+      colliderBody->add_child(bulletDecal);
       Vector3 position = Vector3(m_Result["position"]);
       bulletDecal->set_global_position(position);
       bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));

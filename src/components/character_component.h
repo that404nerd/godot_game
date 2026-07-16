@@ -16,15 +16,17 @@ class CharacterComponent : public CharacterBody3D {
 
 public:
   Vector3 get_wish_dir() { return m_WishDir; }
-  Vector3 get_gravity_vec() { return m_GravityVec; }
   Vector2 get_input_dir() { return m_InputDir; }
 
-  void set_gravity_vec(Vector3 gravity_vec) { m_GravityVec = gravity_vec; }
-
 public:
-  void _update_input() 
+  void _update_input(double delta) 
   {
     Vector3 characterVel = get_velocity();
+
+    if(!is_on_floor())
+    {
+      characterVel.y -= down_gravity * delta;
+    }
 
     m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
     m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
@@ -42,8 +44,6 @@ public:
         characterVel.z = Utils::exp_decay(characterVel.z, 0.0f, 1.0f, ground_decel);
       }
     }
-
-    characterVel += m_GravityVec;
 
     set_velocity(characterVel);
   }
@@ -98,8 +98,6 @@ protected:
 private:
   Vector2 m_InputDir { Vector2(0.0f, 0.0f) };
   Vector3 m_WishDir { Vector3(0.0f, 0.0f, 0.0f) };
-
-  Vector3 m_GravityVec = { Vector3(0.0f, 0.0f, 0.0f) };
 
 
 // These are the main settings that change how the character moves

@@ -1,5 +1,4 @@
 #include "movement_manager.h"
-#include "globals.h"
 
 void MovementManager::_ready()
 {
@@ -25,15 +24,16 @@ void MovementManager::_process(double delta)
 
   if(m_MovementStateCtx.CanDash == false)
   {
-    m_MovementStateCtx.DashCooldown -= delta * 1.2f;
+    m_MovementStateCtx.DashCooldown -= delta;
     if(m_MovementStateCtx.DashCooldown < 0.0f)
       return;
   }
+
 }
 
 void MovementManager::_physics_process(double delta)
 {
-  character_component->_update_input();
+  character_component->_update_input(delta);
   character_component->_update_velocity();
 }
 
@@ -69,22 +69,29 @@ void MovementManager::_sprint_end()
 void MovementManager::_jump()
 {
   Vector3 characterVel = character_component->get_velocity();
+  m_MovementStateCtx.IsJumping = true;
+  m_MovementStateCtx.IsJumpLanded = false;
 
   characterVel.y = character_component->get_jump_height();
-  
-  Vector3 gravity_vec = (character_component->get_floor_normal() + Vector3(0.0f, 1.0f, 0.0f)).normalized() * character_component->get_jump_height();
 
-  character_component->set_gravity_vec(gravity_vec);
   character_component->set_velocity(characterVel);
+}
+
+void MovementManager::_jump_end()
+{
+  m_MovementStateCtx.IsJumping = false;
+  m_MovementStateCtx.IsJumpLanded = true;
 }
 
 void MovementManager::_fall(double delta)
 {
+  m_MovementStateCtx.IsFalling = true;
+
   Vector3 characterVel = character_component->get_velocity();
   Vector3 wishDir = character_component->get_wish_dir().normalized();
 
-  Vector3 gravity_vec = Vector3(0.0f, -1.0f, 0.0f) * character_component->get_down_gravity() * delta;
-  character_component->set_gravity_vec(gravity_vec);
+  // Vector3 gravity_vec = Vector3(0.0f, -1.0f, 0.0f) * character_component->get_down_gravity() * delta;
+  // character_component->set_gravity_vec(gravity_vec);
   
   float targetX = wishDir.x * character_component->get_max_air_move_speed();
   float targetZ = wishDir.z * character_component->get_max_air_move_speed();
@@ -101,6 +108,12 @@ void MovementManager::_fall(double delta)
   }
 
   character_component->set_velocity(characterVel);
+}
+
+void MovementManager::_fall_end()
+{
+  m_MovementStateCtx.IsFalling = false;
+  m_MovementStateCtx.IsCrouchPressed = false;
 }
 
 void MovementManager::_crouch(double delta)
@@ -162,9 +175,10 @@ void MovementManager::_slide_crouch_effect(double delta)
 
 void MovementManager::_on_slide_start()
 {
+  m_MovementStateCtx.IsSlideStarted = true;
+  m_MovementStateCtx.IsSlideOver = false;
   m_MovementStateCtx.SlideTimer = character_component->get_slide_timer();
   m_MovementStateCtx.CharacterSlideVector = m_MovementStateCtx.CharacterWishDir;
-
 }
 
 void MovementManager::_slide(double delta)
@@ -200,9 +214,9 @@ void MovementManager::_on_slide_finished()
   m_CrouchTween = character_component->create_tween();
   m_CrouchTween->tween_property(m_CharacterHead, "position:y", m_OriginalHeadPosition.y, 0.1f);
 
-  EventBus::get_singleton()->emit_signal("slide_end");
-
+  m_MovementStateCtx.IsSlideStarted = false;
   m_MovementStateCtx.IsSliding = false;
+  m_MovementStateCtx.IsSlideOver = true;
 }
 
 void MovementManager::_dash(double delta)
