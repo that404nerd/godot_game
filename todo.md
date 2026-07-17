@@ -1,5 +1,4 @@
 ## TODO
-- Move slide effect and jump related effects to WeaponEffects class []
 - Add effects like slide ending shake, landing on floor shake etc... []
 - Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
 - Move the CharacterComponent properties into a custom resource file for swapping between multiple profiles quickly []
@@ -21,6 +20,7 @@
 - Fix the muzzle light issue [x]
 - Use a Path2D for the recoil patterns [x]
 - Fix Weapon Action affects when sliding [x]
+- Move slide effect and jump related effects to WeaponEffects class [x]
 
 - Sideways movement when falling [x]
 - Add 3 points to the jump arc (Jump, Peak, Landing like a parabola) [x]

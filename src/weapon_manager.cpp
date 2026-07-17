@@ -42,6 +42,7 @@ void WeaponManager::_ready()
   m_WeaponEffects._init_data({ 
     .HoldPointNode = hold_point_node,
     .MovementManagerInst = movement_manager,
+    .WeaponManagerInst = this,
     .CharacterCompInst = character_component,
     .WeaponCompInst = weapon_component });
 }

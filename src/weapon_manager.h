@@ -29,7 +29,6 @@
 
 #include "globals.h"
 #include "singletons/event_bus.h"
-#include "godot_cpp/variant/quaternion.hpp"
 #include "movement_state_machine.h"
 #include "resources/weapon.h"
 #include "states/weapon_states.h"

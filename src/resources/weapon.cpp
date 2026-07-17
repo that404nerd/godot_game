@@ -74,13 +74,13 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, slide_armature_tilt_end_damping_ratio, Variant::FLOAT);
 
   ADD_GROUP("Weapon Jump Tilt Values", "");
+  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rise_pos, Variant::VECTOR3);
+  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rot, Variant::VECTOR3);
+
   GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rise_ang_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rise_damping_ratio, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rot_ang_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rot_damping_ratio, Variant::FLOAT);
-
-  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rise_pos, Variant::VECTOR3);
-  GD_BIND_PROPERTY(Weapon, jump_armature_weapon_rot, Variant::VECTOR3);
 
   ADD_GROUP("Weapon Recoil Values", "");
   GD_BIND_PROPERTY(Weapon, recoilMultiplier, Variant::FLOAT);
