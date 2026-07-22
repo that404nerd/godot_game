@@ -76,10 +76,10 @@ void SprintMovementState::_handle_input(const Ref<InputEvent>& event)
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SLIDE));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
-  {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
-  }
+  // if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
+  // {
+  //   m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
+  // }
 
 }
 
@@ -152,10 +152,10 @@ void FallMovementState::_enter()
 
 void FallMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
-  {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
-  }
+  // if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
+  // {
+  //   m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
+  // }
 
   if(Input::get_singleton()->is_action_just_pressed("crouch") && m_MovementStateCtx.IsCrouchPressed == false)
   {

@@ -29,6 +29,7 @@ public:
   
   void _apply_fov(double delta);
   void _tilt_player(double delta);
+  void _land_shake(double delta);
   void _headbob_effect(double delta);
 
 private:
@@ -38,7 +39,6 @@ private:
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_out_transition_value, 20.0f);
   GD_DEFINE_PROPERTY(float, sprint_fov_zoom_in_transition_value, 10.0f);
   GD_DEFINE_PROPERTY(float, slide_fov_zoom_in_transition_value, 10.0f);
-  GD_DEFINE_PROPERTY(float, sprint_fov, 0.0f);
   GD_DEFINE_PROPERTY(float, slide_fov, 0.0f);
   
   GD_DEFINE_PROPERTY(float, side_tilt_angle, 2.0f);
@@ -62,8 +62,9 @@ private:
   DampedSpring m_DampedSpring {};
 
   Vector3 m_BasePos, m_BaseRot {};
-  Vector3 m_HeadBobPos {};
 
+  Vector3 m_LandShakePos {}, m_LandShakePosVel {};
+  Vector3 m_HeadBobPos {};
   Vector3 m_SideTiltRot {};
 
   Vector3 m_FinalPos {}, m_FinalRot {};

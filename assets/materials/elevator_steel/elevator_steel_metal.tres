@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ckq0wc3pbtgcp"]
+
+[ext_resource type="Texture2D" uid="uid://cjfjth2q3fo5s" path="res://assets/textures/elevator_steel/elevator_steel_metal.jpg" id="1_ok2r8"]
+
+[resource]
+albedo_texture = ExtResource("1_ok2r8")
+metallic_specular = 0.0
+texture_filter = 2

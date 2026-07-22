@@ -70,7 +70,7 @@ void MovementManager::_jump()
 {
   Vector3 characterVel = character_component->get_velocity();
   m_MovementStateCtx.IsJumping = true;
-  m_MovementStateCtx.IsJumpLanded = false;
+  m_MovementStateCtx.IsJumpEnded = false;
 
   characterVel.y = character_component->get_jump_height();
 
@@ -80,7 +80,7 @@ void MovementManager::_jump()
 void MovementManager::_jump_end()
 {
   m_MovementStateCtx.IsJumping = false;
-  m_MovementStateCtx.IsJumpLanded = true;
+  m_MovementStateCtx.IsJumpEnded = true;
 }
 
 void MovementManager::_fall(double delta)

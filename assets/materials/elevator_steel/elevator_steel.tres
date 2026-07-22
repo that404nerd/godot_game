@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ym0vy0rvr730"]
+
+[ext_resource type="Texture2D" uid="uid://b2ta5jdcefxk7" path="res://assets/textures/elevator_steel/elevator_steel_albedo.jpg" id="1_2o4ns"]
+[ext_resource type="Texture2D" uid="uid://cm8lgdgrqsaid" path="res://assets/textures/elevator_steel/elevator_steel_height.jpg" id="2_2gmnn"]
+[ext_resource type="Texture2D" uid="uid://c2y1ye070gjng" path="res://assets/textures/elevator_steel/elevator_steel_normal.jpg" id="3_wvpan"]
+[ext_resource type="Texture2D" uid="uid://2025qd4x3j0b" path="res://assets/textures/elevator_steel/elevator_steel_roughness.jpg" id="4_75gtb"]
+
+[resource]
+albedo_color = Color(0.66656864, 0.6665687, 0.66656864, 1)
+albedo_texture = ExtResource("1_2o4ns")
+metallic = 1.0
+metallic_specular = 0.0
+roughness = 0.7
+roughness_texture = ExtResource("4_75gtb")
+normal_enabled = true
+normal_texture = ExtResource("3_wvpan")
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_2gmnn")
+uv1_scale = Vector3(5, 5, 5)
+texture_filter = 2

@@ -209,6 +209,8 @@ void WeaponManager::_physics_process(double delta)
 // Runs when you switch a weapon (Only once)
 void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
 {
+  m_WeaponEffects._update_data(nextWeapon);
+
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
   m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
@@ -520,7 +522,6 @@ void WeaponManager::_weapon_switch()
   {
     Ref<Weapon> nextWeapon = weapon_component->get_weapon_resource_list()[m_WeaponIndex];
     weapon_component->set_current_weapon(nextWeapon);
-    m_WeaponEffects._update_data(nextWeapon);
     
     _update_weapon_data(nextWeapon);
   }

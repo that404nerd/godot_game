@@ -7,7 +7,8 @@
 
 [resource]
 albedo_texture = ExtResource("1_bc11m")
-metallic = 1.0
+metallic = 0.8
+metallic_specular = 0.0
 roughness = 0.1
 roughness_texture = ExtResource("4_1sd3p")
 normal_enabled = true

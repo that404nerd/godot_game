@@ -56,7 +56,7 @@ public:
   bool IsSprinting() { return m_MovementStateCtx.IsSprinting; }
 
   bool IsJumping() { return m_MovementStateCtx.IsJumping; }
-  bool IsJumpLanded() { return m_MovementStateCtx.IsJumpLanded; }
+  bool IsJumpEnded() { return m_MovementStateCtx.IsJumpEnded; }
   bool IsFalling() { return m_MovementStateCtx.IsFalling; }
 
   Vector3& GetCharacterVel() { return m_MovementStateCtx.CharacterVelocity; }

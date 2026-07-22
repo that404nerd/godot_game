@@ -189,7 +189,7 @@ void WeaponJumpEffect::_weapon_jump_effect(double delta)
     m_DampedSpring.UpdateDampedSpringMotion(m_JumpWeaponArmatureTiltRot, m_JumpWeaponArmatureTiltRotVel, weaponJumpRot);
   }
   
-  if(m_MovementManager->IsJumpLanded())
+  if(m_MovementManager->IsJumpEnded())
   {
     m_Jumped = false;
 
@@ -329,7 +329,7 @@ void WeaponEffects::_update(double delta, Vector3& sway_vel)
     m_WeaponBobComponent.get_weapon_bob_offset());
 
   m_WeaponArmatureNode->set_position(
-    m_WeaponJumpComponent.get_jump_armature_tilt_offset() +
+    m_WeaponJumpComponent.get_jump_armature_tilt_pos_offset() +
     m_WeaponSlideComponent.get_slide_armature_pos_offset()
   );
 

@@ -122,7 +122,6 @@ label_settings = SubResource("LabelSettings_d2wvv")
 movement_manager = NodePath("../MovementManager")
 character_camera = NodePath("PlayerHead/WeaponActionEffects/PlayerCamera")
 character_component = NodePath("..")
-sprint_fov = 80.0
 slide_fov = 85.0
 sprint_fov_zoom_out_transition_value = 4.0
 sprint_headbob_amp = 0.3

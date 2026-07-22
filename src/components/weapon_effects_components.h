@@ -106,7 +106,6 @@ private:
   MovementManager* m_MovementManager { nullptr };
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
-
   WeaponManager* m_WeaponManager { nullptr };
 
   DampedSpring m_DampedSpring {};
@@ -119,7 +118,7 @@ public:
   void _update_jump_data(Ref<Weapon> currentWeapon);
   void _weapon_jump_effect(double delta);
 
-  Vector3 get_jump_armature_tilt_offset() { return m_JumpWeaponArmatureTiltPos; }
+  Vector3 get_jump_armature_tilt_pos_offset() { return m_JumpWeaponArmatureTiltPos; }
   Vector3 get_jump_armature_tilt_rot_offset() { return m_JumpWeaponArmatureTiltRot; }
 private:
 

@@ -1,7 +1,9 @@
 ## TODO
-- Add effects like slide ending shake, landing on floor shake etc... []
+- Add effects like landing on floor shake etc... []
 - Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
-- Move the CharacterComponent properties into a custom resource file for swapping between multiple profiles quickly []
+- Move the CharacterComponent properties into a custom resource file to swap between multiple profiles quickly []
+- Clean up weapon manager and weapon effects component []
+- (Still not decided) Move weapon effects component from a pure C++ to a reusable godot node/component []
 
 - Make slide detection work for objects like boxes, crates and etc.. []
 - Transition to idle state when sliding into world objects []

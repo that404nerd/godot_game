@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDSolidClass" format=3 uid="uid://dkk8u30gamtct"]
+
+[ext_resource type="Script" uid="uid://5cow84q03m6a" path="res://addons/func_godot/src/fgd/func_godot_fgd_solid_class.gd" id="1_55yxg"]
+[ext_resource type="Script" uid="uid://dipy1usoviuod" path="res://src/scripts/trenchbroom_scripts/func_elevator_door.gd" id="2_1fdq5"]
+
+[resource]
+script = ExtResource("1_55yxg")
+script_class = ExtResource("2_1fdq5")
+classname = "func_elevator_door"
+description = "Moving elevator door"
+class_properties = Dictionary[String, Variant]({
+"move_direction": Vector3(0, 0, 0),
+"move_distance": 0.0,
+"move_speed": 0.0
+})
+node_class = "AnimatableBody3D"
+metadata/_custom_type_script = "uid://5cow84q03m6a"

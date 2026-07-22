@@ -33,7 +33,6 @@ void CameraController::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(CameraController, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_GROUP("FOV Settings", "");
-  GD_BIND_PROPERTY(CameraController, sprint_fov, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, slide_fov, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, slide_fov_zoom_in_transition_value, Variant::FLOAT);
   GD_BIND_PROPERTY(CameraController, sprint_fov_zoom_out_transition_value, Variant::FLOAT);
@@ -102,10 +101,7 @@ void CameraController::_apply_fov(double delta)
 {
   float camFov = 0.0f;
 
-  if(movement_manager->IsSprinting() && Math::abs(character_component->get_input_dir().x) != 1.0f)
-  {
-    camFov = sprint_fov;
-  } else if(movement_manager->IsSliding())
+  if(movement_manager->IsSliding())
   {
     camFov = slide_fov;
   } else {
@@ -115,11 +111,17 @@ void CameraController::_apply_fov(double delta)
   character_camera->set_fov(Utils::exp_decay(character_camera->get_fov(), camFov, sprint_fov_zoom_out_transition_value, (float)delta));
 }
 
+void CameraController::_land_shake(double delta)
+{
+
+}
+
 void CameraController::_physics_process(double delta) 
 {
-  _apply_fov(delta);
+  // _apply_fov(delta);
   _tilt_player(delta);
   _headbob_effect(delta);
+  _land_shake(delta);
 
   m_FinalPos = m_BasePos + m_HeadBobPos;
   m_FinalRot = m_BaseRot + m_SideTiltRot;

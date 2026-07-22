@@ -38,7 +38,7 @@ struct MovementStateCtx
 
   bool IsJumpPressed = false;
   bool IsJumping = false;
-  bool IsJumpLanded = false;
+  bool IsJumpEnded = false;
 
   bool IsCrouchPressed = false;
   bool IsCrouchRayCastColliding = false;

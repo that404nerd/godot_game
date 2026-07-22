@@ -12,6 +12,7 @@ config_version=5
 
 extract_path="res://assets/textures"
 environment_file_directory="res://AmbientCG/Environments"
+material_file_directory="res://AmbientCG/Materials"
 
 [application]
 
@@ -35,6 +36,10 @@ buses/default_bus_layout="uid://cq2mfupdsh2tc"
 
 AmbientCG="*uid://cnxneyd8ilml2"
 SignalLens="*uid://85rkx60vm7a7"
+AmbientAPI="*uid://cmbh88h6yljhy"
+AmbientParser="*uid://dcdrqnwmpgvk4"
+AmbientFileHandler="*uid://dnh8sqjyu74hs"
+AmbientMaterialMaker="*uid://nig0lamfd3mv"
 
 [debug_draw_3d]
 
