@@ -34,12 +34,7 @@ buses/default_bus_layout="uid://cq2mfupdsh2tc"
 
 [autoload]
 
-AmbientCG="*uid://cnxneyd8ilml2"
 SignalLens="*uid://85rkx60vm7a7"
-AmbientAPI="*uid://cmbh88h6yljhy"
-AmbientParser="*uid://dcdrqnwmpgvk4"
-AmbientFileHandler="*uid://dnh8sqjyu74hs"
-AmbientMaterialMaker="*uid://nig0lamfd3mv"
 
 [debug_draw_3d]
 
@@ -52,11 +47,15 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/func_godot/plugin.cfg", "res://addons/signal_lens/plugin.cfg")
+enabled=PackedStringArray("res://addons/cyclops_level_builder/plugin.cfg", "res://addons/func_godot/plugin.cfg", "res://addons/signal_lens/plugin.cfg", "res://addons/skydome/plugin.cfg")
 
 [filesystem]
 
 import/blender/enabled=false
+
+[func_godot]
+
+model_point_class_save_path="trenchbroom/models"
 
 [input]
 

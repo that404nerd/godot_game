@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDModelPointClass" format=3 uid="uid://cf24488mcm3ka"]
+
+[ext_resource type="Script" uid="uid://d1nwwgcrner8b" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class_display_descriptor.gd" id="1_dblef"]
+[ext_resource type="PackedScene" uid="uid://c0xhn0wckw525" path="res://scenes/asset_scenes/worn_metal_rack.tscn" id="2_sc73f"]
+[ext_resource type="Script" uid="uid://ldfqjtq0br35" path="res://addons/func_godot/src/fgd/func_godot_fgd_model_point_class.gd" id="2_yvffg"]
+
+[resource]
+script = ExtResource("2_yvffg")
+target_map_editor = 1
+scene_file = ExtResource("2_sc73f")
+apply_rotation_on_map_build = false
+classname = "func_worn_metal_rack"
+meta_properties = Dictionary[String, Variant]({
+"color": Color(0.8, 0.8, 0.8, 1),
+"model": "{\"path\": \"trenchbroom/models/func_worn_metal_rack.glb\", \"scale\": 32.0 }"
+})
+metadata/_custom_type_script = "uid://ldfqjtq0br35"

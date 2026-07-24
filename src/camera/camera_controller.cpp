@@ -123,9 +123,10 @@ void CameraController::_physics_process(double delta)
   _headbob_effect(delta);
   _land_shake(delta);
 
+  
   m_FinalPos = m_BasePos + m_HeadBobPos;
   m_FinalRot = m_BaseRot + m_SideTiltRot;
-
+  
   m_CharacterHead->set_position(m_FinalPos);
   set_rotation(m_FinalRot);
 }

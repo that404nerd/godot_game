@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b3v4hoxs73tlr"]
+
+[ext_resource type="PackedScene" uid="uid://ur01d4ub3qe1" path="res://assets/meshes/caged_hanging_light/caged_hanging_light.glb" id="1_ip0xa"]
+
+[node name="caged_hanging_light" unique_id=1993525191 instance=ExtResource("1_ip0xa")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)

@@ -21,5 +21,6 @@ func _ready() -> void:
 		_start_movement()
 		
 func _start_movement() -> void:
-	door_tween = create_tween()
+	pass
+	#door_tween = create_tween()
 	#door_tween.tween_property(self, "global_position", end_position, move_speed)

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDModelPointClass" format=3 uid="uid://jbhpprlsihii"]
+
+[ext_resource type="Script" uid="uid://d1nwwgcrner8b" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class_display_descriptor.gd" id="1_idn4t"]
+[ext_resource type="PackedScene" uid="uid://cosnsoarirsee" path="res://scenes/asset_scenes/trash_can.tscn" id="2_arr2k"]
+[ext_resource type="Script" uid="uid://ldfqjtq0br35" path="res://addons/func_godot/src/fgd/func_godot_fgd_model_point_class.gd" id="2_xiwqs"]
+
+[resource]
+script = ExtResource("2_xiwqs")
+target_map_editor = 1
+scene_file = ExtResource("2_arr2k")
+classname = "func_trash_can"
+meta_properties = Dictionary[String, Variant]({
+"color": Color(0.8, 0.8, 0.8, 1),
+"model": "{\"path\": \"trenchbroom/models/func_trash_can.glb\", \"scale\": 32.0 }"
+})
+metadata/_custom_type_script = "uid://ldfqjtq0br35"

@@ -60,6 +60,8 @@ protected:
     ADD_GROUP("Character Nodes", "");
     GD_BIND_CUSTOM_PROPERTY(CharacterComponent, character_head, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
     GD_BIND_CUSTOM_PROPERTY(CharacterComponent, crouch_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(CharacterComponent, stairs_ahead_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(CharacterComponent, stairs_below_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
     GD_BIND_CUSTOM_PROPERTY(CharacterComponent, default_collision_shape, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
     GD_BIND_CUSTOM_PROPERTY(CharacterComponent, crouch_collision_shape, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
     
@@ -104,6 +106,8 @@ private:
 private:
   GD_DEFINE_PROPERTY(Node3D*, character_head, nullptr);
   GD_DEFINE_PROPERTY(RayCast3D*, crouch_raycast, nullptr);
+  GD_DEFINE_PROPERTY(RayCast3D*, stairs_below_raycast, nullptr);
+  GD_DEFINE_PROPERTY(RayCast3D*, stairs_ahead_raycast, nullptr);
   GD_DEFINE_PROPERTY(CollisionShape3D*, default_collision_shape, nullptr);
   GD_DEFINE_PROPERTY(CollisionShape3D*, crouch_collision_shape, nullptr);
 

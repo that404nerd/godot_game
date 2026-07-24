@@ -698,11 +698,6 @@ func _apply_cloud_light_response(light: DirectionalLight3D) -> void:
 	var soften_start := minf(clouds_shadow_soften_start, clouds_shadow_soften_end)
 	var soften_end := maxf(clouds_shadow_soften_start, clouds_shadow_soften_end)
 	var shadow_soften := smoothstep(soften_start, soften_end, final_cloud_density)
-	light.light_angular_distance = lerpf(
-		clouds_shadow_angular_distance_clear,
-		clouds_shadow_angular_distance_overcast,
-		shadow_soften
-	)
 	light.shadow_opacity = lerpf(
 		clouds_shadow_opacity_clear,
 		clouds_shadow_opacity_overcast,
@@ -1099,13 +1094,11 @@ func _update_sun_transform() -> void:
 		if light:
 			light.global_transform.basis = dir_to_basis.call(sun_dir)
 			light.light_color = day_light_color.lerp(sunset_light_color, _sunset_blend)
-			light.light_energy = sun_energy
 		_is_daytime = true
 	else:
 		if light:
 			light.global_transform.basis = dir_to_basis.call(moon_dir)
 			light.light_color = night_light_color
-			light.light_energy = moon_energy
 		_is_daytime = false
 
 	_set_shader_param("gi_tint", gi_night_tint.lerp(gi_day_tint, _day_blend))
@@ -1113,8 +1106,6 @@ func _update_sun_transform() -> void:
 
 	if _environment:
 		var env = _environment
-		env.ambient_light_color =  night_ambient_color.lerp( day_ambient_color, _day_blend)
-		env.ambient_light_energy = lerp( night_ambient_energy,  day_ambient_energy, pow(_day_blend, 0.5)) + _sunset_blend * 0.8
 
 		var fog_day_mix =  night_fog_color.lerp( day_fog_color, _day_blend)
 		env.fog_light_color = fog_day_mix.lerp(sunset_light_color, _sunset_blend * 0.5)
@@ -1169,16 +1160,8 @@ func _apply_state_params(env: Environment, light: DirectionalLight3D) -> void:
 	_set_shader_param("moon_size", lerpf(moon_size, moon_size * 0.72, cloud_mix * 0.85))
 	_set_shader_param("moon_glow_strength", maxf(0.0, moon_glow_strength * (1.0 - cloud_mix * 0.96)))
 
-	if light:
-		light.light_energy += current_lightning_flash * lerpf(storm_flash_light_energy_clear, storm_flash_light_energy_overcast, sky_overcast)
-		light.light_color = light.light_color.lerp(Color(0.58, 0.62, 0.68, 1.0), overcast_cooling * 0.94)
-		light.light_color = light.light_color.lerp(storm_flash_light_color, current_lightning_flash * 0.8)
-
 	if env == null:
 		return
-
-	env.ambient_light_color = env.ambient_light_color.lerp(Color(0.38, 0.41, 0.46, 1.0), overcast_cooling * 0.82)
-	env.ambient_light_energy *= maxf(0.18, 1.0 - (sky_overcast * 0.24))
 
 	env.fog_density = current_fog_density
 	env.fog_sky_affect = lerpf(env.fog_sky_affect, 1.0, fog_sky_affect_intensity * fog_density_boost)
@@ -1195,8 +1178,6 @@ func _apply_state_params(env: Environment, light: DirectionalLight3D) -> void:
 	env.volumetric_fog_emission = volumetric_emission
 
 	if current_lightning_flash > 0.0:
-		env.ambient_light_color = env.ambient_light_color.lerp(storm_flash_ambient_color, current_lightning_flash * storm_flash_ambient_blend)
-		env.ambient_light_energy += current_lightning_flash * (storm_flash_ambient_energy_base + sky_overcast * storm_flash_ambient_energy_overcast_boost)
 		env.fog_light_color = env.fog_light_color.lerp(storm_flash_fog_color, current_lightning_flash * 0.7)
 		env.volumetric_fog_albedo = env.volumetric_fog_albedo.lerp(storm_flash_volumetric_color, current_lightning_flash * storm_flash_volumetric_blend)
 

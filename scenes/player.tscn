@@ -17,9 +17,11 @@ font_size = 20
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 height = 1.2
 
-[node name="Player" type="Player" unique_id=1542459451 node_paths=PackedStringArray("character_head", "crouch_raycast", "default_collision_shape", "crouch_collision_shape")]
+[node name="Player" type="Player" unique_id=1542459451 node_paths=PackedStringArray("character_head", "crouch_raycast", "stairs_ahead_raycast", "stairs_below_raycast", "default_collision_shape", "crouch_collision_shape")]
 character_head = NodePath("CameraController/PlayerHead")
 crouch_raycast = NodePath("CrouchColliderRay")
+stairs_ahead_raycast = NodePath("StairsAheadRayCast3D")
+stairs_below_raycast = NodePath("StairsBelowRayCast3D")
 default_collision_shape = NodePath("DefaultPlayerCollider")
 crouch_collision_shape = NodePath("CrouchingPlayerCollider")
 crouch_speed = 4.0
@@ -124,12 +126,12 @@ character_camera = NodePath("PlayerHead/WeaponActionEffects/PlayerCamera")
 character_component = NodePath("..")
 slide_fov = 85.0
 sprint_fov_zoom_out_transition_value = 4.0
-sprint_headbob_amp = 0.3
+sprint_headbob_amp = 0.08
 sprint_headbob_freq = 1.3
 crouch_headbob_amp = 0.08
 crouch_headbob_freq = 3.0
 headbob_transition_value = 5.0
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
 
 [node name="PlayerHead" type="Node3D" parent="CameraController" unique_id=1010004094]
 
@@ -147,15 +149,23 @@ near = 0.001
 [node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/WeaponActionEffects/PlayerCamera" unique_id=1899973665]
 
 [node name="CrouchColliderRay" type="RayCast3D" parent="." unique_id=1414798151]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5316644, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 hit_from_inside = true
 debug_shape_custom_color = Color(1, 0, 0, 1)
 
+[node name="StairsAheadRayCast3D" type="RayCast3D" parent="." unique_id=265503285]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54998195, -0.9117888)
+target_position = Vector3(0, -0.55, 0)
+
+[node name="StairsBelowRayCast3D" type="RayCast3D" parent="." unique_id=1311882563]
+target_position = Vector3(0, -0.75, 0)
+
 [node name="DefaultPlayerCollider" type="CollisionShape3D" parent="." unique_id=1268338097]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_u8vuu")
 
 [node name="CrouchingPlayerCollider" type="CollisionShape3D" parent="." unique_id=1389879870]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58934367, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
 

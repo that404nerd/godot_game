@@ -16,7 +16,7 @@ IdleMovementState::IdleMovementState(const MovementStateData& movementStateData)
 
 void IdleMovementState::_enter()
 { 
-
+  m_MovementManager->_idle();
 }
 
 void IdleMovementState::_handle_input(const Ref<InputEvent>& event) 
@@ -34,7 +34,6 @@ void IdleMovementState::_handle_input(const Ref<InputEvent>& event)
 
 void IdleMovementState::_physics_update(double delta) 
 {
-  m_MovementManager->_idle(delta);
   
   if(m_MovementStateCtx.CharacterInputDir != Vector2(0.0f, 0.0f) && m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
@@ -46,7 +45,10 @@ void IdleMovementState::_physics_update(double delta)
 }
 
 
-void IdleMovementState::_exit() {};
+void IdleMovementState::_exit() 
+{
+  m_MovementManager->_idle_exit();
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

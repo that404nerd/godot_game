@@ -3,10 +3,13 @@
 [ext_resource type="Resource" uid="uid://crgpdahjaj" path="res://addons/func_godot/fgd/func_godot_fgd.tres" id="1_egxrf"]
 [ext_resource type="Script" uid="uid://drlmgulwbjwqu" path="res://addons/func_godot/src/fgd/func_godot_fgd_file.gd" id="1_y4e8d"]
 [ext_resource type="Resource" uid="uid://dkk8u30gamtct" path="res://trenchbroom/fgd/solid_entities/func_elevator_door.tres" id="2_j3lxe"]
+[ext_resource type="Resource" uid="uid://bk24t0vundgb6" path="res://trenchbroom/fgd/model_entities/func_caged_hanging_light.tres" id="3_ftpks"]
+[ext_resource type="Resource" uid="uid://jbhpprlsihii" path="res://trenchbroom/fgd/model_entities/func_trash_can.tres" id="4_nhllk"]
+[ext_resource type="Resource" uid="uid://cf24488mcm3ka" path="res://trenchbroom/fgd/model_entities/func_worn_metal_rack.tres" id="5_y2tj2"]
 
 [resource]
 script = ExtResource("1_y4e8d")
 fgd_name = "FPSProject"
 base_fgd_files = Array[Resource]([ExtResource("1_egxrf")])
-entity_definitions = Array[Resource]([ExtResource("2_j3lxe")])
+entity_definitions = Array[Resource]([ExtResource("2_j3lxe"), ExtResource("3_ftpks"), ExtResource("4_nhllk"), ExtResource("5_y2tj2")])
 metadata/_custom_type_script = "uid://drlmgulwbjwqu"
