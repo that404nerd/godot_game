@@ -90,7 +90,6 @@ bool MovementManager::_snap_up_stairs_check(double delta)
   {
     Vector3 expected_move_pos = m_MovementStateCtx.CharacterVelocity * Vector3(1.0f, 0.0f, 1.0f) * delta; // Forward vector (x, z)
     
-    // The vector result would be forward_vector + (step_height * 2.0f) -> (1.0f, 1.0f, 1.0f)
     Transform3D step_pos_with_clearance = character_component->get_global_transform().translated(expected_move_pos + Vector3(0.0f, MAX_STEP_HEIGHT * 2.0f, 0.0f));
     
     Ref<PhysicsTestMotionResult3D> down_check_result;
