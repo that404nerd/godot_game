@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <cstdint>
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/engine.hpp>
@@ -91,9 +92,9 @@ private:
   DampedSpring m_DampedSpring {};
   Vector3 m_CrouchTranslateVel {};
 
-  const float MAX_STEP_HEIGHT { 0.5f };
+  const float MAX_STEP_HEIGHT { 0.25f };
   bool _snapped_to_stairs_last_frame { false };
-  int _last_frame_on_floor = -INFINITY;
+  uint64_t _last_frame_on_floor = -INFINITY;
 
   float m_FinalPos { 0.0f };
   Vector3 m_DashDir { Vector3(0.0f, 0.0f, 0.0f) };

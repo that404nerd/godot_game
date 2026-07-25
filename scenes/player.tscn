@@ -154,11 +154,10 @@ hit_from_inside = true
 debug_shape_custom_color = Color(1, 0, 0, 1)
 
 [node name="StairsAheadRayCast3D" type="RayCast3D" parent="." unique_id=265503285]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54998195, -0.9117888)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.822)
 target_position = Vector3(0, -0.55, 0)
 
 [node name="StairsBelowRayCast3D" type="RayCast3D" parent="." unique_id=1311882563]
-target_position = Vector3(0, -0.75, 0)
 
 [node name="DefaultPlayerCollider" type="CollisionShape3D" parent="." unique_id=1268338097]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

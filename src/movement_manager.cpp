@@ -86,48 +86,38 @@ void MovementManager::_snap_down_to_stairs_check()
 
 bool MovementManager::_snap_up_stairs_check(double delta)
 {
-  if(!m_MovementStateCtx.IsOnFloor && !_snapped_to_stairs_last_frame)
+  if(m_MovementStateCtx.IsOnFloor)
   {
-    return false;
-  }
-
-  if(m_MovementStateCtx.IsJumping || m_MovementStateCtx.IsIdle) 
-  {
-    return false;
-  }
-
-  Vector3 expected_move_pos = m_MovementStateCtx.CharacterVelocity * Vector3(1.0f, 0.0f, 1.0f) * delta; // Forward vector (x, z)
-
-  // The vector result would be forward_vector + (step_height * 2.0f) -> (1.0f, 1.0f, 1.0f)
-  Transform3D step_pos_with_clearance = character_component->get_global_transform().translated(expected_move_pos + Vector3(0.0f, MAX_STEP_HEIGHT * 2.0f, 0.0f));
-
-  Ref<PhysicsTestMotionResult3D> down_check_result;
-  down_check_result.instantiate();
-
-  bool result = _run_body_test_motion(step_pos_with_clearance, Vector3(0.0f, -MAX_STEP_HEIGHT * 2.0f, 0.0f), down_check_result);
-  print_line(result);
-
-  if(result)
-  {
-    float step_height = ((step_pos_with_clearance.get_origin() + down_check_result->get_travel()) - character_component->get_global_position()).y;
-
-    if(step_height > MAX_STEP_HEIGHT || step_height <= 0.1f || (down_check_result->get_collision_point() - character_component->get_global_position()).y > MAX_STEP_HEIGHT)
+    Vector3 expected_move_pos = m_MovementStateCtx.CharacterVelocity * Vector3(1.0f, 0.0f, 1.0f) * delta; // Forward vector (x, z)
+    
+    // The vector result would be forward_vector + (step_height * 2.0f) -> (1.0f, 1.0f, 1.0f)
+    Transform3D step_pos_with_clearance = character_component->get_global_transform().translated(expected_move_pos + Vector3(0.0f, MAX_STEP_HEIGHT * 2.0f, 0.0f));
+    
+    Ref<PhysicsTestMotionResult3D> down_check_result;
+    down_check_result.instantiate();
+    
+    bool result = _run_body_test_motion(step_pos_with_clearance, Vector3(0.0f, -MAX_STEP_HEIGHT * 2.0f, 0.0f), down_check_result);
+    
+    if(result)
     {
-      return false;
-    }
-
-    m_StairsAheadRayCast->set_global_position(down_check_result->get_collision_point() + Vector3(0.0f, MAX_STEP_HEIGHT, 0.0f) + expected_move_pos.normalized() * 0.1f);
-    m_StairsAheadRayCast->force_raycast_update();
-
-    if(m_StairsAheadRayCast->is_colliding() && !is_surface_too_steep(m_StairsAheadRayCast->get_collision_normal()))
-    {
-      Vector3 reqPos = step_pos_with_clearance.get_origin() + down_check_result->get_travel();
-
-      character_component->set_global_position(reqPos);
-      character_component->apply_floor_snap();
-
-      _snapped_to_stairs_last_frame = true;
-      return true;
+      float step_height = ((step_pos_with_clearance.get_origin() + down_check_result->get_travel()) - character_component->get_global_position()).y;
+      
+      if(step_height > MAX_STEP_HEIGHT || step_height <= 0.01f || (down_check_result->get_collision_point() - character_component->get_global_position()).y > MAX_STEP_HEIGHT)
+        return false;
+      
+      m_StairsAheadRayCast->set_global_position(down_check_result->get_collision_point() + Vector3(0.0f, MAX_STEP_HEIGHT, 0.0f) + expected_move_pos.normalized() * 0.1f);
+      m_StairsAheadRayCast->force_raycast_update();
+      
+      if(m_StairsAheadRayCast->is_colliding() && !is_surface_too_steep(m_StairsAheadRayCast->get_collision_normal()))
+      {
+        Vector3 reqPos = step_pos_with_clearance.get_origin() + down_check_result->get_travel();
+        
+        character_component->set_global_position(reqPos);
+        character_component->apply_floor_snap();
+        
+        _snapped_to_stairs_last_frame = true;
+        return true;
+      }
     }
   }
 
