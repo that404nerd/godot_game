@@ -1,5 +1,4 @@
 # Dotfiles
-.vscode/settings.json
 .cache
 .godot
 
@@ -12,10 +11,9 @@ assets/meshes/**/*.import
 
 # folders
 build/
-ambientcg/
-AmbientCG/
-temp_dta/
+gen_data/
 trenchbroom/maps/autosave
+trenchbroom/models
 
 !assets/meshes/**/textures/*.png
 !assets/meshes/**/textures/*.jpg

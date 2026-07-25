@@ -1090,17 +1090,6 @@ func _update_sun_transform() -> void:
 	var sun_energy = day_light_energy * smoothstep(-0.05, 0.08, s_alt)
 	var moon_energy = night_light_energy * smoothstep(0.0, 0.05, m_alt) * (1.0 - smoothstep(-0.1, 0.0, s_alt))
 
-	if sun_energy >= moon_energy:
-		if light:
-			light.global_transform.basis = dir_to_basis.call(sun_dir)
-			light.light_color = day_light_color.lerp(sunset_light_color, _sunset_blend)
-		_is_daytime = true
-	else:
-		if light:
-			light.global_transform.basis = dir_to_basis.call(moon_dir)
-			light.light_color = night_light_color
-		_is_daytime = false
-
 	_set_shader_param("gi_tint", gi_night_tint.lerp(gi_day_tint, _day_blend))
 	_set_shader_param("gi_energy_multiplier", lerp(gi_night_energy, gi_day_energy, _day_blend) + _sunset_blend * 0.5)
 

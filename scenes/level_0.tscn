@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="1_rerym"]
 [ext_resource type="Shader" uid="uid://ck1w2pkpwin11" path="res://addons/skydome/filmic_procedural_sky.gdshader" id="1_ypn4w"]
-[ext_resource type="Script" uid="uid://pw1ljvn4g7cy" path="res://addons/skydome/SunShaftsCompositorEffect.gd" id="2_pikno"]
 [ext_resource type="Resource" uid="uid://bmr8r3dexg0iq" path="res://trenchbroom/fpsproject_map_settings.tres" id="2_uijja"]
 [ext_resource type="Script" uid="uid://blkilnimp0sck" path="res://addons/skydome/Skydome.gd" id="2_vc1y7"]
 [ext_resource type="Texture2D" uid="uid://cyg2snr1w5xw5" path="res://addons/func_godot/textures/default_texture.png" id="3_5nv5w"]
@@ -23,6 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://b3v4hoxs73tlr" path="res://scenes/asset_scenes/caged_hanging_light.tscn" id="22_4pfwt"]
 [ext_resource type="PackedScene" uid="uid://c0xhn0wckw525" path="res://scenes/asset_scenes/worn_metal_rack.tscn" id="23_0a1bo"]
 [ext_resource type="PackedScene" uid="uid://cosnsoarirsee" path="res://scenes/asset_scenes/trash_can.tscn" id="23_pikno"]
+[ext_resource type="LightmapGIData" uid="uid://cvm3rn8slfx7q" path="res://gen_data/level_0.lmbake" id="23_trrqm"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0a1bo"]
 seed = 10
@@ -130,10 +130,6 @@ sky = SubResource("Sky_mn35f")
 ambient_light_source = 3
 reflected_light_source = 2
 tonemap_mode = 4
-ssr_enabled = true
-ssao_enabled = true
-ssil_enabled = true
-sdfgi_enabled = true
 sdfgi_use_occlusion = true
 glow_enabled = true
 glow_levels/1 = 1.8
@@ -149,29 +145,6 @@ volumetric_fog_albedo = Color(0.22732364, 0.22220597, 0.26631758, 1)
 volumetric_fog_length = 3.2572796
 volumetric_fog_ambient_inject = 0.096912645
 volumetric_fog_sky_affect = 0.5
-
-[sub_resource type="CompositorEffect" id="CompositorEffect_6eutv"]
-resource_local_to_scene = false
-resource_name = ""
-enabled = true
-effect_callback_type = 4
-needs_motion_vectors = false
-needs_normal_roughness = false
-script = ExtResource("2_pikno")
-sun_screen_uv = Vector2(-2.6748695, -1.7812241)
-sun_visible = true
-shaft_color = Color(0.6181767, 0.7013527, 0.948066, 1)
-density = 0.27325213574984997
-bright_threshold = 0.182
-weight = 0.04121511746006984
-decay = 0.93
-exposure = 1.6084337199128629
-max_radius = 1.377
-sample_count = 8
-dither_strength = 1.4
-
-[sub_resource type="Compositor" id="Compositor_37i53"]
-compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_6eutv")])
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pxy5j"]
 albedo_texture = ExtResource("3_5nv5w")
@@ -2191,11 +2164,9 @@ points = PackedVector3Array(2.875, 1.890625, 0.125, 2.875, -1.890625, 0.125, -2.
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=326426474]
 environment = SubResource("Environment_171oe")
-compositor = SubResource("Compositor_37i53")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1065714425]
 transform = Transform3D(0.008186781, -0.28969398, 0.9570843, 0, 0.9571164, 0.28970367, -0.9999665, -0.0023717408, 0.007835702, 0, 0, 0)
-light_color = Color(0.6, 0.8, 1, 1)
 shadow_enabled = true
 
 [node name="Skydome" type="Node" parent="." unique_id=1119047664]
@@ -2383,6 +2354,40 @@ area_normalize_energy = false
 area_size = Vector2(4, 1.5)
 
 [node name="RoomLight" type="SpotLight3D" parent="LightNodes/RoomLight5" unique_id=1854164943]
+transform = Transform3D(1, 0, 0, 0, 0.1163851, 0.99320424, 0, -0.99320424, 0.1163851, -2.1676848, 5.2541156, -6.4579587)
+light_energy = 16.0
+spot_range = 20.0
+spot_attenuation = 2.0
+spot_angle = 90.0
+
+[node name="RoomLight7" type="Node3D" parent="LightNodes" unique_id=448925340]
+transform = Transform3D(0.26448062, 0, 0.964391, 0, 1, 0, -0.964391, 0, 0.26448062, 11.36986, 6.440444, 15.413855)
+
+[node name="RoomLightCover" type="AreaLight3D" parent="LightNodes/RoomLight7" unique_id=1789106138]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -2.1555383, 5.869548, -5.8665786)
+area_range = 15.0
+area_attenuation = 2.5
+area_normalize_energy = false
+area_size = Vector2(4, 1.5)
+
+[node name="RoomLight" type="SpotLight3D" parent="LightNodes/RoomLight7" unique_id=2123099706]
+transform = Transform3D(1, 0, 0, 0, 0.1163851, 0.99320424, 0, -0.99320424, 0.1163851, -2.1676848, 5.2541156, -6.4579587)
+light_energy = 16.0
+spot_range = 20.0
+spot_attenuation = 2.0
+spot_angle = 90.0
+
+[node name="RoomLight8" type="Node3D" parent="LightNodes" unique_id=50248563]
+transform = Transform3D(-0.3467337, 0, -0.93796366, 0, 1, 0, 0.93796366, 0, -0.3467337, 28.397793, 6.440444, 15.413855)
+
+[node name="RoomLightCover" type="AreaLight3D" parent="LightNodes/RoomLight8" unique_id=1429999294]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -2.1555383, 5.869548, -5.8665786)
+area_range = 15.0
+area_attenuation = 2.5
+area_normalize_energy = false
+area_size = Vector2(4, 1.5)
+
+[node name="RoomLight" type="SpotLight3D" parent="LightNodes/RoomLight8" unique_id=120961673]
 transform = Transform3D(1, 0, 0, 0, 0.1163851, 0.99320424, 0, -0.99320424, 0.1163851, -2.1676848, 5.2541156, -6.4579587)
 light_energy = 16.0
 spot_range = 20.0
@@ -4272,3 +4277,8 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1.31
 
 [node name="entity_21_func_worn_metal_rack" parent="FuncGodotMap" unique_id=500717264 instance=ExtResource("23_0a1bo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.03125, 8.1875, 29.5625)
+
+[node name="LightmapGI" type="LightmapGI" parent="." unique_id=903205259]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.685081, 12.581956, 14.581303)
+generate_probes_subdiv = 1
+light_data = ExtResource("23_trrqm")
