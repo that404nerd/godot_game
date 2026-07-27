@@ -41,6 +41,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("MovementManager")) GDREGISTER_RUNTIME_CLASS(MovementManager);
 
   // Components
+  if(!ClassDB::class_exists("InputComponent")) GDREGISTER_CLASS(InputComponent);
   if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
   if(!ClassDB::class_exists("MuzzleFlashComponent")) GDREGISTER_CLASS(MuzzleFlashComponent);
   if(!ClassDB::class_exists("WeaponWrapper")) GDREGISTER_CLASS(WeaponWrapper);

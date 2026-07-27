@@ -180,7 +180,7 @@ namespace Utils {
   
   // Exponential decay function
   template <typename T>
-  inline T exp_decay(T a, T b, float decay, double dt)
+  inline T exp_decay(T a, T b, float decay, float dt)
   {
     return b + (a - b) * Math::exp(-decay * dt);
   }

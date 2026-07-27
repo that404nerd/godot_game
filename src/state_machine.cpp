@@ -69,7 +69,7 @@ int StateMachine::get_current_state()
 
 int StateMachine::get_prev_state()
 {
-  uint prev_state_id;
+  int prev_state_id;
   if(m_PrevState == nullptr) {
     print_error("Prev State doesn't exist!");
     return -1;

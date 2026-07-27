@@ -193,3 +193,5 @@ unique_name_in_owner = true
 weapon_manager = NodePath("../WeaponManager")
 weapon_component = NodePath("../WeaponComponent")
 unique_name_in_owner = true
+
+[node name="InputComponent" type="InputComponent" parent="." unique_id=485078161]
