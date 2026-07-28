@@ -1,14 +1,14 @@
 ## TODO
-- Add effects like landing on floor shake etc... []
-- Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
-- Move the CharacterComponent properties into a custom resource file to swap between multiple profiles quickly []
+- Move weapon effects component from a pure C++ to a reusable godot node/component []
+- Fix memory leak related to Canvas2D (HUD, Signal Lens) and Recoil Curve
 - Clean up weapon manager and weapon effects component []
-- (Still not decided) Move weapon effects component from a pure C++ to a reusable godot node/component []
+- Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
+- Add effects like landing on floor shake etc... []
+- Move the CharacterComponent properties into a custom resource file to swap between multiple profiles quickly []
 
 - Make slide detection work for objects like boxes, crates and etc.. []
 - Transition to idle state when sliding into world objects []
 - Allow sliding when crouch is toggled during falling state []
-- Write a command system to replace hardcoded inputs to a command to support any entity in states (like the player or any AI entity) []
 - Move the HUD from the player to the main game scene and let the main scene have the player reference []
 
 ## DONE:
@@ -23,6 +23,7 @@
 - Use a Path2D for the recoil patterns [x]
 - Fix Weapon Action affects when sliding [x]
 - Move slide effect and jump related effects to WeaponEffects class [x]
+- Write a command system to replace hardcoded inputs to a command to support any entity in states (like the player or any AI entity) [x]
 
 - Sideways movement when falling [x]
 - Add 3 points to the jump arc (Jump, Peak, Landing like a parabola) [x]

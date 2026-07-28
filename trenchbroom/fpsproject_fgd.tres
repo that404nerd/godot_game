@@ -6,10 +6,14 @@
 [ext_resource type="Resource" uid="uid://bk24t0vundgb6" path="res://trenchbroom/fgd/model_entities/func_caged_hanging_light.tres" id="3_ftpks"]
 [ext_resource type="Resource" uid="uid://jbhpprlsihii" path="res://trenchbroom/fgd/model_entities/func_trash_can.tres" id="4_nhllk"]
 [ext_resource type="Resource" uid="uid://cf24488mcm3ka" path="res://trenchbroom/fgd/model_entities/func_worn_metal_rack.tres" id="5_y2tj2"]
+[ext_resource type="Resource" uid="uid://m50m7a5spoxs" path="res://trenchbroom/fgd/model_entities/func_industrial_wall_lamp.tres" id="6_msgf4"]
+[ext_resource type="Resource" uid="uid://k0rorr1kpkgr" path="res://trenchbroom/fgd/model_entities/func_player_model_test.tres" id="7_v58lr"]
+[ext_resource type="Resource" uid="uid://de5o5ruuc60c0" path="res://trenchbroom/fgd/model_entities/func_metal_fence.tres" id="8_45mem"]
+[ext_resource type="Resource" uid="uid://cfqyx0axar0ud" path="res://trenchbroom/fgd/model_entities/func_garden_hose.tres" id="9_5tx5s"]
 
 [resource]
 script = ExtResource("1_y4e8d")
 fgd_name = "FPSProject"
 base_fgd_files = Array[Resource]([ExtResource("1_egxrf")])
-entity_definitions = Array[Resource]([ExtResource("2_j3lxe"), ExtResource("3_ftpks"), ExtResource("4_nhllk"), ExtResource("5_y2tj2")])
+entity_definitions = Array[Resource]([ExtResource("2_j3lxe"), ExtResource("3_ftpks"), ExtResource("4_nhllk"), ExtResource("5_y2tj2"), ExtResource("6_msgf4"), ExtResource("7_v58lr"), ExtResource("8_45mem"), ExtResource("9_5tx5s")])
 metadata/_custom_type_script = "uid://drlmgulwbjwqu"

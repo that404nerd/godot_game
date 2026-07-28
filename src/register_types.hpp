@@ -13,9 +13,12 @@
 #include "weapon_state_machine.h"
 #include "weapon_manager.h"
 #include "weapon_action_effects.h"
+#include "input_command_system.h"
 
 #include "singletons/event_bus.h"
 #include "resources/weapon.h"
+
+#include "components/input_component.h"
 #include "components/muzzle_flash_component.h"
 #include "components/weapon_wrapper.h"
 

@@ -4,7 +4,7 @@
 
 BaseMovementState::BaseMovementState(MovementStates movementState, const MovementStateData& movementStateData)
     : State(static_cast<int>(movementState)), m_MovementStateMachine(movementStateData.MovementStateMachineInst),
-      m_MovementManager(movementStateData.MovementManagerInst),
+      m_MovementManager(movementStateData.MovementManagerInst), m_CmdSystem(m_MovementManager->get_input_command_system_instance()),
       m_MovementStateCtx(m_MovementManager->get_movement_state_ctx()) {};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,11 +21,11 @@ void IdleMovementState::_enter()
 
 void IdleMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(Input::get_singleton()->is_action_just_pressed("jump") && m_MovementStateCtx.IsOnFloor) {
+  if(m_CmdSystem->wants_to_jump() && m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_MovementStateCtx.IsOnFloor)
+  if(m_CmdSystem->wants_to_crouch() && m_MovementStateCtx.IsOnFloor)
   {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
   }
@@ -34,8 +34,7 @@ void IdleMovementState::_handle_input(const Ref<InputEvent>& event)
 
 void IdleMovementState::_physics_update(double delta) 
 {
-  
-  if(m_MovementStateCtx.CharacterInputDir != Vector2(0.0f, 0.0f) && m_MovementStateCtx.IsOnFloor) {
+  if(m_CmdSystem->wants_to_sprint() && m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
   }
 
@@ -64,16 +63,16 @@ void SprintMovementState::_enter()
 
 void SprintMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(Input::get_singleton()->is_action_just_pressed("jump")) {
+  if(m_CmdSystem->wants_to_jump()) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_MovementStateCtx.IsOnFloor)
+  if(m_CmdSystem->wants_to_crouch() && m_MovementStateCtx.IsOnFloor)
   {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
   }
   
-  if(m_MovementStateCtx.CharacterVelocity.length() > (m_MovementStateCtx.CharacterSprintSpeed * 0.9f) && Input::get_singleton()->is_action_just_pressed("crouch"))
+  if(m_MovementStateCtx.CharacterVelocity.length() > (m_MovementStateCtx.CharacterSprintSpeed * 0.9f) && m_CmdSystem->wants_to_crouch())
   {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SLIDE));
   }
@@ -159,7 +158,7 @@ void FallMovementState::_handle_input(const Ref<InputEvent>& event)
   //   m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
   // }
 
-  if(Input::get_singleton()->is_action_just_pressed("crouch") && m_MovementStateCtx.IsCrouchPressed == false)
+  if(m_CmdSystem->wants_to_crouch() && m_MovementStateCtx.IsCrouchPressed == false)
   {
     m_MovementManager->set_crouch_pressed(true);
   }
@@ -199,12 +198,12 @@ void CrouchMovementState::_enter()
 
 void CrouchMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if (Input::get_singleton()->is_action_just_pressed("crouch") && !m_MovementStateCtx.IsCrouchRayCastColliding) {
+  if (m_CmdSystem->wants_to_crouch() && !m_MovementStateCtx.IsCrouchRayCastColliding) {
     m_MovementManager->_on_crouch_finished();
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
   
-  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_MovementStateCtx.IsCrouchRayCastColliding)
+  if(m_CmdSystem->wants_to_jump() && !m_MovementStateCtx.IsCrouchRayCastColliding)
   {
     m_MovementManager->_on_crouch_finished();
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
@@ -247,7 +246,7 @@ void SlideMovementState::_enter()
 
 void SlideMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(Input::get_singleton()->is_action_just_pressed("jump") && !m_MovementStateCtx.IsCrouchRayCastColliding) {
+  if(m_CmdSystem->wants_to_jump() && !m_MovementStateCtx.IsCrouchRayCastColliding) {
     m_MovementManager->_on_slide_finished();
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
   }

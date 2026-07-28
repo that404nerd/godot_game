@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://x754ms6ylygm"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_t5d5h"]
+load_path = "res://.godot/imported/industrial_wall_lamp_glass_diff_2k.png-2ec0aa1faed17593c02dcc07b5f00c18.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_x6au8"]
+load_path = "res://.godot/imported/industrial_wall_lamp_glass_nor_gl_2k.png-bb01ca09a2af66cf7afb0cc8f2d216d4.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_r33na"]
+load_path = "res://.godot/imported/industrial_wall_lamp_glass_rough_2k.png-f12fa3f5313bd3b453f11b49cc5424ab.s3tc.ctex"
+
+[resource]
+albedo_texture = SubResource("CompressedTexture2D_t5d5h")
+metallic = 1.0
+roughness = 0.0
+roughness_texture = SubResource("CompressedTexture2D_r33na")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_x6au8")
+refraction_enabled = true
+refraction_texture_channel = 3

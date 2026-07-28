@@ -3,7 +3,7 @@
 
 BaseWeaponState::BaseWeaponState(WeaponStates movementState, const WeaponStateData& weaponStateData)
   : State(static_cast<int>(movementState)), m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
-    m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx())
+    m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx()), m_CmdSystem(m_WeaponManager->get_input_command_system_instance())
 {
   if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
   {
@@ -22,14 +22,14 @@ WeaponIdleState::WeaponIdleState(const WeaponStateData& weaponStateData)
 
 void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
+  if(m_CmdSystem->wants_to_shoot_weapon())
   {
     m_WeaponManager->set_key_pressed(true);
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
 
-  if(Input::get_singleton()->is_action_just_pressed("reload_weapon") ||
-    (Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
+  if(m_CmdSystem->wants_to_reload_weapon() ||
+    (m_CmdSystem->wants_to_shoot_weapon() && 
     m_WeaponManager->current_weapon_has_auto_reload() && 
     (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->get_current_reserve_ammo() > 0)))
   {
@@ -65,7 +65,7 @@ WeaponEquipState::WeaponEquipState(const WeaponStateData& weaponStateData)
 
 void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
+  if(m_CmdSystem->wants_to_shoot_weapon())
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
@@ -102,7 +102,7 @@ WeaponShootState::WeaponShootState(const WeaponStateData& weaponStateData)
 
 void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(Input::get_singleton()->is_action_just_pressed("reload_weapon"))
+  if(m_CmdSystem->wants_to_reload_weapon())
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
@@ -117,7 +117,7 @@ void WeaponShootState::_update(double delta)
 {
   m_WeaponManager->_shoot_weapon(delta);
 
-  if((Input::get_singleton()->is_action_just_pressed("shoot_weapon") || m_WeaponStateContext.IsKeyHeld) &&
+  if((m_CmdSystem->wants_to_shoot_weapon() || m_WeaponStateContext.IsKeyHeld) &&
      m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload())
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
@@ -158,7 +158,7 @@ void WeaponReloadState::_update(double delta)
 {
   m_WeaponManager->_reload_weapon();
 
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && m_WeaponManager->get_current_weapon_ammo() > 0)
+  if(m_CmdSystem->wants_to_shoot_weapon() && m_WeaponManager->get_current_weapon_ammo() > 0)
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }

@@ -1,8 +1,6 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://yuuewf6dl1j0"]
 
-[ext_resource type="Texture2D" uid="uid://ju7dc8js0x3y" path="res://assets/textures/emissive_textures/emmisive.png" id="1_mtfto"]
-
 [resource]
-albedo_texture = ExtResource("1_mtfto")
-metallic_specular = 0.0
+metallic = 1.0
 emission = Color(1, 1, 1, 1)
+normal_enabled = true

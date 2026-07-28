@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/property_tweener.hpp>
 
 #include "state.h"
+#include "../input_command_system.h"
 #include "../components/character_component.h"
 #include "../singletons/event_bus.h"
 
@@ -55,7 +56,7 @@ public:
 protected:
   MovementStateMachine* m_MovementStateMachine { nullptr };
   MovementManager* m_MovementManager { nullptr };
-
+  InputCommandSystem* m_CmdSystem { nullptr };
   const MovementStateCtx& m_MovementStateCtx;
 };
 

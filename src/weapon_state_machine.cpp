@@ -13,6 +13,9 @@ void WeaponStateMachine::_init_data()
   m_States[static_cast<int>(WeaponStates::WEAPON_SWITCH)] = std::make_unique<WeaponSwitchState>(m_WeaponStateData);
   
   m_InitialState = m_States.at(static_cast<int>(WeaponStates::EQUIP)).get();
+
+  m_CmdSystem = weapon_manager->get_input_command_system_instance();
+  m_CmdSystem->set_weapon_list_size(weapon_component->get_weapon_resource_list().size());
 }
 
 void WeaponStateMachine::_bind_methods()
@@ -26,17 +29,11 @@ void WeaponStateMachine::_bind_methods()
 
 void WeaponStateMachine::_handle_state_machine_input(const Ref<InputEvent>& event)
 {
-  m_CurrentWeapon = weapon_manager->get_current_weapon();
-
-  for(int i = 0; i < weapon_component->get_weapon_resource_list().size(); i++)
+  if(m_CmdSystem->wants_to_switch_weapon())
   {
-    String inputAction = "weapon_" + String::num(i + 1, 0); // INFO: Need to match the set input action in the editor
-    if(Input::get_singleton()->is_action_just_pressed(inputAction))
-    {
-      weapon_manager->get_weapon_state_ctx().IsReloading = false;
-      weapon_manager->_switch_weapon_data(i);
-      _change_state(static_cast<int>(WeaponStates::UNEQUIP));
-    }
+    weapon_manager->get_weapon_state_ctx().IsReloading = false;
+    weapon_manager->_switch_weapon_data(m_CmdSystem->get_weapon_idx());
+    _change_state(static_cast<int>(WeaponStates::UNEQUIP));
   }
 }
 
@@ -62,6 +59,6 @@ void WeaponStateMachine::_on_animation_finished(const StringName& anim_name)
   if(anim_name == weapon_component->get_current_weapon_data()->get_weaponUnequipAnimName())
   {
     weapon_manager->_weapon_unequip_over();
-    _change_state(static_cast<uint>(WeaponStates::WEAPON_SWITCH));
+    _change_state(static_cast<int>(WeaponStates::WEAPON_SWITCH));
   }
 }

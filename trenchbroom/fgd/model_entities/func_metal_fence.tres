@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDModelPointClass" format=3 uid="uid://de5o5ruuc60c0"]
+
+[ext_resource type="Script" uid="uid://d1nwwgcrner8b" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class_display_descriptor.gd" id="1_h3ky5"]
+[ext_resource type="PackedScene" uid="uid://c7nd3802q7v4i" path="res://scenes/asset_scenes/metal_fence.tscn" id="2_bvwxg"]
+[ext_resource type="Script" uid="uid://ldfqjtq0br35" path="res://addons/func_godot/src/fgd/func_godot_fgd_model_point_class.gd" id="3_of3p8"]
+
+[resource]
+script = ExtResource("3_of3p8")
+target_map_editor = 1
+scene_file = ExtResource("2_bvwxg")
+classname = "func_metal_fence"
+meta_properties = Dictionary[String, Variant]({
+"color": Color(0.8, 0.8, 0.8, 1),
+"model": "{\"path\": \"trenchbroom/models/func_metal_fence.glb\", \"scale\": 32.0 }",
+"size": AABB(-8, -8, -8, 8, 8, 8)
+})
+metadata/_custom_type_script = "uid://ldfqjtq0br35"

@@ -7,13 +7,13 @@
 
 [resource]
 albedo_texture = ExtResource("1_bc11m")
-metallic = 0.8
+metallic = 0.1
 metallic_specular = 0.0
-roughness = 0.1
+roughness = 0.0
 roughness_texture = ExtResource("4_1sd3p")
 normal_enabled = true
 normal_texture = ExtResource("3_stcwy")
 heightmap_enabled = true
 heightmap_texture = ExtResource("2_obt5w")
-uv1_scale = Vector3(5, 5, 5)
+uv1_scale = Vector3(30, 30, 30)
 texture_filter = 2

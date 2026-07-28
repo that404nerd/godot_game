@@ -1,15 +1,15 @@
 #pragma once
 
-#include <cmath>
-#include <cstdint>
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/physics_test_motion_parameters3d.hpp>
 #include <godot_cpp/classes/physics_test_motion_result3d.hpp>
+#include <godot_cpp/classes/ray_cast3d.hpp>
 
+#include "input_command_system.h"
 #include "components/character_component.h"
-#include "godot_cpp/classes/ray_cast3d.hpp"
+#include "components/input_component.h"
 #include "states/movement_states.h"
 #include "utils/damped_spring.h"
 
@@ -78,9 +78,11 @@ public:
   void set_crouch_pressed(bool status) { m_MovementStateCtx.IsCrouchPressed = status; }
 
   MovementStateCtx& get_movement_state_ctx() { return m_MovementStateCtx; }
+  InputCommandSystem* get_input_command_system_instance() { return input_command_system; }
  
 private:
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
+  GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
 
 private:
   RayCast3D *m_StairsBelowRaycast { nullptr }, *m_StairsAheadRayCast { nullptr };

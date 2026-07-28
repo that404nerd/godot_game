@@ -672,7 +672,7 @@ func _refresh() -> void:
 	_light = _get_directional_light()
 
 	_remove_sunshafts_compositor_effect()
-	_install_sunshafts_compositor_effect()
+	#_install_sunshafts_compositor_effect()
 	_init_sky()
 	_update_sun_transform()
 	_update_cloud_time()
@@ -805,8 +805,8 @@ func _init_sky() -> void:
 
 	_environment.sky.sky_material = _sky_material
 
-	if not _compositor_effect:
-		_install_sunshafts_compositor_effect()
+	#if not _compositor_effect:
+		#_install_sunshafts_compositor_effect()
 
 	_sync_sky_shader_params()
 	_reset_cloud_time_tracking()
@@ -1198,39 +1198,39 @@ func _get_all_compositors() -> Array[Compositor]:
 
 	return compositors
 
-func _install_sunshafts_compositor_effect() -> void:
-	_remove_sunshafts_compositor_effect()
-
-	var compositor := _get_compositor()
-	if not compositor:
-		var has_target := false
-		if _get_world_environment():
-			has_target = true
-		elif Engine.is_editor_hint():
-			var editor_camera = _get_editor_access().get_editor_camera_3d(0) if _get_editor_access() != null else null
-			if editor_camera:
-				has_target = true
-		else:
-			var vp := get_viewport()
-			if vp and vp.get_camera_3d(): has_target = true
-			elif _find_active_camera(): has_target = true
-
-		if has_target:
-			compositor = Compositor.new()
-			_set_compositor(compositor)
-		else:
-			return
-
-	if not compositor.resource_path.is_empty():
-		compositor = compositor.duplicate(true) as Compositor
-		_set_compositor(compositor)
-
-	_compositor_effect = SUN_SHAFTS_EFFECT_SCRIPT.new()
-	_compositor_effect.set("sun_visible", true)
-	var effects = compositor.compositor_effects
-	effects.insert(0, _compositor_effect)
-	compositor.compositor_effects = effects
-	_success("Installed sunshafts compositor effect")
+#func _install_sunshafts_compositor_effect() -> void:
+	#_remove_sunshafts_compositor_effect()
+#
+	#var compositor := _get_compositor()
+	#if not compositor:
+		#var has_target := false
+		#if _get_world_environment():
+			#has_target = true
+		#elif Engine.is_editor_hint():
+			#var editor_camera = _get_editor_access().get_editor_camera_3d(0) if _get_editor_access() != null else null
+			#if editor_camera:
+				#has_target = true
+		#else:
+			#var vp := get_viewport()
+			#if vp and vp.get_camera_3d(): has_target = true
+			#elif _find_active_camera(): has_target = true
+#
+		#if has_target:
+			#compositor = Compositor.new()
+			#_set_compositor(compositor)
+		#else:
+			#return
+#
+	#if not compositor.resource_path.is_empty():
+		#compositor = compositor.duplicate(true) as Compositor
+		#_set_compositor(compositor)
+#
+	#_compositor_effect = SUN_SHAFTS_EFFECT_SCRIPT.new()
+	#_compositor_effect.set("sun_visible", true)
+	#var effects = compositor.compositor_effects
+	#effects.insert(0, _compositor_effect)
+	#compositor.compositor_effects = effects
+	#_success("Installed sunshafts compositor effect")
 
 
 func _remove_sunshafts_compositor_effect() -> void:

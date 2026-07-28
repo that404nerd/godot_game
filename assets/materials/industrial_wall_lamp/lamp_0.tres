@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://kkofn8qbg5al"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jivoc"]
+load_path = "res://.godot/imported/industrial_wall_lamp_diff_2k.jpg-cd8b59cc70217ae327738877f008030d.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0wq45"]
+load_path = "res://.godot/imported/industrial_wall_lamp_emissive_2k.png-952dcf604dd7adc19ff81c477ee09c3e.s3tc.ctex"
+
+[resource]
+albedo_texture = SubResource("CompressedTexture2D_jivoc")
+metallic = 0.7
+emission_enabled = true
+emission_texture = SubResource("CompressedTexture2D_0wq45")

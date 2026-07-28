@@ -155,6 +155,7 @@ void WeaponManager::_bind_methods()
   ClassDB::bind_method(D_METHOD("_on_window_size_changed"), &WeaponManager::_on_window_size_changed);
   
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -372,9 +373,6 @@ void WeaponManager::_shoot_weapon(double delta)
 
   m_WeaponStateCtx.IsWeaponFiring = true;
 
-  m_ShootTimer += delta;
-  m_ShootTimer = Math::clamp(m_ShootTimer, 0.0f, 1.0f);
-
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
   if(m_WeaponStateCtx.ShootTimeBeforeIdle >= 0.0f)
   {
@@ -384,8 +382,8 @@ void WeaponManager::_shoot_weapon(double delta)
   if(m_TimeBetweenShots <= 0.0f)
   {
     // Check whether the fire key is held or not (for automatic weapons)
-    if(Input::get_singleton()->is_action_pressed("shoot_weapon") && (
-          m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
+    if(input_command_system->wants_to_hold_shoot() &&
+      (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
       m_HoldCounter += delta;
       
@@ -403,7 +401,7 @@ void WeaponManager::_shoot_weapon(double delta)
     }  
 
     // Check whether we pressed the fire key (manual)
-    if(Input::get_singleton()->is_action_just_pressed("shoot_weapon") && 
+    if(input_command_system->wants_to_shoot_weapon() && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
@@ -434,7 +432,7 @@ void WeaponManager::_shoot_weapon(double delta)
     m_MuzzleComp->_enable_light_status(false);
 
   // Set the key held to false and reset the hold counter 
-  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) 
+  if(input_command_system->wants_to_release_shoot()) 
   {
     m_WeaponStateCtx.IsWeaponFiring = false;
     m_WeaponStateCtx.IsKeyHeld = false;
@@ -444,7 +442,6 @@ void WeaponManager::_shoot_weapon(double delta)
 
 void WeaponManager::_shoot_weapon_over()
 {
-  m_ShootTimer = 0.0f;
   m_WeaponStateCtx.IsWeaponFiring = false;
   m_MuzzleComp->_enable_light_status(false);
 }
@@ -468,7 +465,7 @@ void WeaponManager::_reload_weapon()
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
     // If we shoot mid-reload just cancel the entire reload
-    if(Input::get_singleton()->is_action_just_pressed("shoot_weapon"))
+    if(input_command_system->wants_to_shoot_weapon())
     {
       m_WeaponStateCtx.IsReloading = false;
       m_WeaponStateCtx.IsReloadStarted = false;

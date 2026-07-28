@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dxb64r8erx8jp"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_e86qt"]
+load_path = "res://.godot/imported/garden_hose_wall_mounted_01_diff_2k.jpg-b3135e02c855d6ef16f22e80f7879e6c.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_oqwp4"]
+load_path = "res://.godot/imported/garden_hose_wall_mounted_01_metal_2k.png-b12fb2b38e95224556952ffea590f2b4.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vm4ky"]
+load_path = "res://.godot/imported/garden_hose_wall_mounted_01_nor_gl_2k.png-f1eaa9dd20d57a4d8ac3871ff31425f5.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rffr8"]
+load_path = "res://.godot/imported/garden_hose_wall_mounted_01_rough_2k.png-3be80c5900e61d7b1b9a900433b2511c.s3tc.ctex"
+
+[resource]
+albedo_texture = SubResource("CompressedTexture2D_e86qt")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_oqwp4")
+roughness_texture = SubResource("CompressedTexture2D_rffr8")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_vm4ky")

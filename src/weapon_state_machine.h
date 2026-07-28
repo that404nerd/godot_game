@@ -4,6 +4,7 @@
 
 #include "magic_enum/magic_enum.hpp"
 
+#include "input_command_system.h"
 #include "components/weapon_component.h"
 #include "state_machine.h"
 
@@ -39,6 +40,7 @@ private:
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
 
+  InputCommandSystem* m_CmdSystem { nullptr };
   WeaponStateData m_WeaponStateData;
   Ref<Weapon> m_CurrentWeapon { nullptr };
 };

@@ -1,0 +1,18 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://32dppx5pd0m1"]
+
+[ext_resource type="Texture2D" uid="uid://douvwj4yhtnac" path="res://assets/textures/stainless_steel/stainless_steel.jpg" id="1_xgt5i"]
+[ext_resource type="Texture2D" uid="uid://drpnq7pfn8cfg" path="res://assets/textures/stainless_steel/stainless_steel_height.jpg" id="2_uhciw"]
+[ext_resource type="Texture2D" uid="uid://m6jaafb1rs4l" path="res://assets/textures/stainless_steel/stainless_steel_normal.jpg" id="3_u516l"]
+[ext_resource type="Texture2D" uid="uid://bygbhsb3jtxr5" path="res://assets/textures/stainless_steel/stainless_steel_roughness.jpg" id="4_yv65b"]
+
+[resource]
+albedo_texture = ExtResource("1_xgt5i")
+metallic = 1.0
+roughness = 0.0
+roughness_texture = ExtResource("4_yv65b")
+normal_enabled = true
+normal_texture = ExtResource("3_u516l")
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_uhciw")
+uv1_scale = Vector3(10, 10, 10)
+texture_filter = 2

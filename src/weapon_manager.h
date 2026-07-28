@@ -20,6 +20,7 @@
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/templates/vector.hpp>
 
+#include "input_command_system.h"
 #include "components/ammo_component.h"
 #include "components/character_component.h"
 #include "components/muzzle_flash_component.h"
@@ -88,6 +89,7 @@ public:
   }
 
   Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
+  InputCommandSystem* get_input_command_system_instance() { return input_command_system; }
 
   void set_key_pressed(bool status) { m_WeaponStateCtx.IsKeyPressed = status; }
 
@@ -106,8 +108,6 @@ protected:
   static void _bind_methods();
 
 private:
-  float m_ShootTimer { 0.0f };
-
   Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
 
@@ -120,23 +120,19 @@ private:
   Vector<Node3D*> m_WeaponSceneNodes;
 
   AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
-  Ref<Weapon> m_CurrentWeapon;
-  Ref<PackedScene> m_DecalScene;
   PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
+  Ref<Weapon> m_CurrentWeapon { nullptr };
+  Ref<PackedScene> m_DecalScene { nullptr };
 
   Viewport* m_Viewport {};
 
   WeaponEffects m_WeaponEffects;
-  WeaponBobComponent m_WeaponBobComponent;
-  WeaponSwayComponent m_WeaponSwayComponent;
   WeaponStateContext m_WeaponStateCtx;
   AmmoComponent m_AmmoComp;
-  MuzzleFlashComponent* m_MuzzleComp;
+
+  MuzzleFlashComponent* m_MuzzleComp { nullptr };
   WeaponWrapper* m_WeaponWrapperInst { nullptr };
   
-  StringName m_NextWeaponName;
-  StringName m_ReloadRootBoneName;
-
   Skeleton3D* m_Skeleton3D { nullptr };
   Transform3D m_BoneTransform {};
 
@@ -157,6 +153,9 @@ private:
 
 private:
   GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
+
+  GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
+
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);

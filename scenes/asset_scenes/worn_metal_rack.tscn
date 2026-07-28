@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cvci2lsoe17wq" path="res://assets/meshes/worn_metal_rack/worn_metal_rack_worn_metal_rack_diff_2k.jpg" id="1_oqme1"]
 [ext_resource type="Texture2D" uid="uid://deul3mrmk5rly" path="res://assets/meshes/worn_metal_rack/worn_metal_rack_worn_metal_rack_metal-worn_metal_rack_rough.png" id="2_wr0pb"]
 [ext_resource type="Texture2D" uid="uid://nx6mygwtacku" path="res://assets/meshes/worn_metal_rack/worn_metal_rack_worn_metal_rack_nor_gl.png" id="3_b0aeo"]
+[ext_resource type="Material" uid="uid://b045ceu16itlt" path="res://assets/meshes/worn_metal_rack/textures/worn_metal_rack.tres" id="4_wr0pb"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_oqme1"]
 points = PackedVector3Array(-0.46000007, -4.7838355e-10, -0.29706344, -0.46000007, -4.7838355e-10, 0.296946, -0.46000007, 0.0018598273, -0.29706344, -0.45964164, 0.05988645, -0.3, -0.45955205, -4.7838355e-10, -0.3, -0.45955205, -4.7838355e-10, 0.3, -0.45964164, 0.05988645, 0.3, -0.46000007, 0.0018598273, 0.296946, -0.45964164, 1.899814, -0.3, 0.455327, -4.7838355e-10, -0.3, 0.455327, -4.7838355e-10, 0.3, -0.45964164, 1.899814, 0.3, 0.45541665, 1.899814, -0.3, 0.45541665, 0.22987472, -0.3, 0.45541665, 0.22987472, 0.3, 0.45541665, 1.899814, 0.3)
@@ -67,3 +68,4 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 
 [node name="worn_metal_rack" type="MeshInstance3D" parent="StaticBody3D/worn_metal_rack_model" unique_id=507281271]
 mesh = SubResource("ArrayMesh_yb64k")
+surface_material_override/0 = ExtResource("4_wr0pb")

@@ -142,8 +142,9 @@ private:
   DampedSpring m_DampedSpring {};
 };
 
-class WeaponEffects
+class WeaponEffects : public Node
 {
+  GDCLASS(WeaponEffects, Node);
 public:
   void _init_data(const WeaponEffectsData& weaponEffectsData);
 

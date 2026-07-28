@@ -168,8 +168,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58934367, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
 
-[node name="MovementManager" type="MovementManager" parent="." unique_id=1615799341 node_paths=PackedStringArray("character_component")]
+[node name="MovementManager" type="MovementManager" parent="." unique_id=1615799341 node_paths=PackedStringArray("character_component", "input_command_system")]
 character_component = NodePath("..")
+input_command_system = NodePath("../InputComponent")
 unique_name_in_owner = true
 
 [node name="MovementStateMachine" type="MovementStateMachine" parent="." unique_id=1412789278 node_paths=PackedStringArray("character_component", "movement_manager")]
@@ -181,8 +182,9 @@ unique_name_in_owner = true
 weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("8_ur7pv"), ExtResource("7_smehm")]
 unique_name_in_owner = true
 
-[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("movement_manager", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
+[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("movement_manager", "input_command_system", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
 movement_manager = NodePath("../MovementManager")
+input_command_system = NodePath("../InputComponent")
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
 character_component = NodePath("..")
@@ -193,3 +195,5 @@ unique_name_in_owner = true
 weapon_manager = NodePath("../WeaponManager")
 weapon_component = NodePath("../WeaponComponent")
 unique_name_in_owner = true
+
+[node name="InputComponent" type="InputComponent" parent="." unique_id=1295549383]

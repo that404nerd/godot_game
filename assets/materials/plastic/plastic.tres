@@ -6,12 +6,18 @@
 [ext_resource type="Texture2D" uid="uid://2xidkcw5o1n4" path="res://assets/textures/plastic/plastic_roughness.jpg" id="4_8sf04"]
 
 [resource]
-albedo_color = Color(0.627451, 0.6666667, 0.25882354, 1)
+albedo_color = Color(0.7748984, 0.60830706, 0, 1)
 albedo_texture = ExtResource("1_df1xd")
+metallic = 0.05
+roughness = 0.5
 roughness_texture = ExtResource("4_8sf04")
+roughness_texture_channel = 1
 normal_enabled = true
 normal_texture = ExtResource("3_4a27l")
+ao_enabled = true
 heightmap_enabled = true
 heightmap_texture = ExtResource("2_c1dnu")
+subsurf_scatter_enabled = true
+subsurf_scatter_transmittance_enabled = true
 uv1_scale = Vector3(2, 2, 2)
 texture_filter = 2

@@ -3,6 +3,8 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 
+#include "../input_command_system.h"
+
 #include "../components/ammo_component.h"
 #include "../weapon_state_machine.h"
 
@@ -34,6 +36,7 @@ protected:
   WeaponManager* m_WeaponManager { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
   const WeaponStateContext& m_WeaponStateContext;
+  InputCommandSystem* m_CmdSystem { nullptr };
 };
 
 ///////////////////////////// Weapon States Declaration //////////////////////////////////
