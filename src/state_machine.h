@@ -26,8 +26,8 @@ public:
   virtual void _handle_state_machine_process(double delta) {};
 
   void _unhandled_input(const Ref<InputEvent>& event) override;
-  void _physics_process(double delta) override;
-  void _process(double delta) override;
+  void _physics_update(double delta);
+  void _update(double delta);
 
   void _change_state(int stateID);
 

@@ -4,6 +4,11 @@
 void WeaponStateMachine::_init_data()
 {
   m_WeaponStateData = { weapon_manager, this };
+  if(weapon_manager == nullptr || weapon_component == nullptr)
+  {
+    print_error("Weapon Manager is invalid!");
+    return;
+  }
 
   m_States[static_cast<int>(WeaponStates::IDLE)] = std::make_unique<WeaponIdleState>(m_WeaponStateData);
   m_States[static_cast<int>(WeaponStates::EQUIP)] = std::make_unique<WeaponEquipState>(m_WeaponStateData);

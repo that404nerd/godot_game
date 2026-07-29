@@ -7,7 +7,7 @@
 
 using namespace godot;
 
-struct CommandData 
+struct InputCommandData 
 {
   bool WantsToSprint = false;
   bool WantsToJump = false;
@@ -22,6 +22,10 @@ struct CommandData
 
   int WeaponListSize = 0;
   int WeaponIdx = 0;
+
+  float MaxHoldTime = 0.0f;
+
+  Vector2 MouseVel = Vector2(0.0f, 0.0f);
   Vector2 InputDir = Vector2(0.0f, 0.0f);
 };
 
@@ -29,29 +33,35 @@ class InputCommandSystem : public Node
 {
   GDCLASS(InputCommandSystem, Node);
 public:
-  bool wants_to_sprint() { return m_CmdData.WantsToSprint; };
-  bool wants_to_jump() { return m_CmdData.WantsToJump; };
-  bool wants_to_crouch() { return m_CmdData.WantsToCrouch; };
+  bool wants_to_sprint() { return m_InputCmdData.WantsToSprint; };
+  bool wants_to_jump() { return m_InputCmdData.WantsToJump; };
+  bool wants_to_crouch() { return m_InputCmdData.WantsToCrouch; };
 
-  bool wants_to_hold_shoot() { return m_CmdData.WantsToHoldShoot; };
-  bool wants_to_shoot_weapon() { return m_CmdData.WantsToShootWeapon; };
-  bool wants_to_release_shoot() { return m_CmdData.WantsToReleaseShoot; };
+  bool wants_to_hold_shoot() { return m_InputCmdData.WantsToHoldShoot; };
+  bool wants_to_shoot_weapon() { return m_InputCmdData.WantsToShootWeapon; };
+  bool wants_to_release_shoot() { return m_InputCmdData.WantsToReleaseShoot; };
 
-  bool wants_to_reload_weapon() { return m_CmdData.WantsToReloadWeapon; };
-  bool wants_to_switch_weapon() { return m_CmdData.WantsToSwitchWeapon; };
+  bool wants_to_reload_weapon() { return m_InputCmdData.WantsToReloadWeapon; };
+  bool wants_to_switch_weapon() { return m_InputCmdData.WantsToSwitchWeapon; };
 
-  void set_weapon_idx(int val) { m_CmdData.WeaponIdx = val; }
-  int get_weapon_idx() { return m_CmdData.WeaponIdx; }
+  void set_weapon_idx(int val) { m_InputCmdData.WeaponIdx = val; }
+  int get_weapon_idx() { return m_InputCmdData.WeaponIdx; }
 
-  void set_weapon_list_size(int val) { m_CmdData.WeaponListSize = val; }
-  int get_weapon_list_size() { return m_CmdData.WeaponListSize; }
+  void set_weapon_list_size(int val) { m_InputCmdData.WeaponListSize = val; }
+  int get_weapon_list_size() { return m_InputCmdData.WeaponListSize; }
 
-  Vector2 get_input_dir() { return m_CmdData.InputDir; };
+  Vector2 get_mouse_vel() { return m_InputCmdData.MouseVel; };
+  Vector2 get_input_dir() { return m_InputCmdData.InputDir; };
+
+  void set_max_hold_time(float val) { m_InputCmdData.MaxHoldTime = val; }
+  float get_max_hold_time() { return m_InputCmdData.MaxHoldTime; }
+
+  virtual void _update(double delta) {};
 
 protected:
   static void _bind_methods() {};
-  CommandData& get_command_data() { return m_CmdData; }
+  InputCommandData& get_input_command_data() { return m_InputCmdData; }
 
 private:
-  CommandData m_CmdData;
+  InputCommandData m_InputCmdData;
 };

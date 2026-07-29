@@ -22,7 +22,6 @@ weaponReloadAnimName = "pistol_reload"
 weapon_type = 2
 weaponRecoilPatternResource = ExtResource("2_akjpj")
 weaponDecalResource = ExtResource("1_eol0p")
-time_between_shots = 0.1
 hold_max_time = 0.2
 slide_armature_tilt_rot = Vector3(1, 1, -40)
 slide_armature_dip = Vector3(0, -0.02, 0)

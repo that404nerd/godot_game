@@ -26,8 +26,8 @@ void initialize_module(ModuleInitializationLevel p_level) {
     CharacterComponent is registered first because Player inherits from CharacterComponent
     and for some reason, the properties of CharacterComponent aren't shown in the editor if the order is switched 
   */
-  if(!ClassDB::class_exists("CharacterComponent")) GDREGISTER_CLASS(CharacterComponent);
-  if(!ClassDB::class_exists("Player")) GDREGISTER_CLASS(Player);
+  if(!ClassDB::class_exists("CharacterComponent")) GDREGISTER_RUNTIME_CLASS(CharacterComponent);
+  if(!ClassDB::class_exists("Player")) GDREGISTER_RUNTIME_CLASS(Player);
   
   if(!ClassDB::class_exists("CameraController")) GDREGISTER_RUNTIME_CLASS(CameraController); 
 
@@ -40,12 +40,13 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager);
   if(!ClassDB::class_exists("MovementManager")) GDREGISTER_RUNTIME_CLASS(MovementManager);
   if(!ClassDB::class_exists("InputCommandSystem")) GDREGISTER_RUNTIME_CLASS(InputCommandSystem);
-
+  
   // Components
   if(!ClassDB::class_exists("InputComponent")) GDREGISTER_RUNTIME_CLASS(InputComponent);
+  if(!ClassDB::class_exists("WeaponEffects")) GDREGISTER_RUNTIME_CLASS(WeaponEffects);
+  if(!ClassDB::class_exists("WeaponWrapper")) GDREGISTER_CLASS(WeaponWrapper);
   if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
   if(!ClassDB::class_exists("MuzzleFlashComponent")) GDREGISTER_CLASS(MuzzleFlashComponent);
-  if(!ClassDB::class_exists("WeaponWrapper")) GDREGISTER_CLASS(WeaponWrapper);
 }
 
 

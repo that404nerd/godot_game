@@ -12,6 +12,8 @@ public:
 
   void _ready() override
   {
+    set_physics_process(false);
+    set_process(false);
   }
 
   void set_current_weapon(Ref<Weapon> newWeapon) { 

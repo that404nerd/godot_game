@@ -7,6 +7,9 @@ void StateMachine::_ready()
     m_InitialState->_enter();
     m_CurrentState = m_InitialState;
   }
+
+  set_physics_process(false);
+  set_process(false);
 }
 
 void StateMachine::_bind_methods()
@@ -23,14 +26,14 @@ void StateMachine::_unhandled_input(const Ref<InputEvent>& event)
   }
 }
 
-void StateMachine::_physics_process(double delta)
+void StateMachine::_physics_update(double delta)
 {
   if(m_CurrentState) {
     m_CurrentState->_physics_update(delta);
   }
 }
 
-void StateMachine::_process(double delta)
+void StateMachine::_update(double delta)
 {
   _handle_state_machine_process(delta);
 

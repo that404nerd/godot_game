@@ -14,6 +14,7 @@
 #include "weapon_manager.h"
 #include "weapon_action_effects.h"
 #include "input_command_system.h"
+#include "components/weapon_effects_components.h"
 
 #include "singletons/event_bus.h"
 #include "resources/weapon.h"

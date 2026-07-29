@@ -1,3 +1,4 @@
+#include "godot_cpp/classes/node3d.hpp"
 #include "weapon_effects_components.h"
 #include "../weapon_manager.h"
 
@@ -134,10 +135,17 @@ void WeaponJumpEffect::_init_data(const WeaponEffectsData& weaponEffectsData)
   m_MovementManager = weaponEffectsData.MovementManagerInst;
   m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_data();
   m_WeaponManager = weaponEffectsData.WeaponManagerInst;
+
   m_WeaponArmatureNode = m_WeaponManager->get_weapon_armature_node();
 
   if(!weaponEffectsData.CharacterCompInst || !weaponEffectsData.WeaponCompInst) {
-    print_error("Character component is null!");
+    print_error("Character component is null or Weapon component is null!");
+    return;
+  }
+
+  if(m_WeaponArmatureNode == nullptr)
+  {
+    print_error("Weapon armature node is null!");
     return;
   }
 
@@ -289,6 +297,30 @@ void WeaponSlideEffect::_weapon_slide_effect(double delta)
 }
 
 
+void WeaponEffects::_ready()
+{
+  set_physics_process(false); 
+  set_process(false);
+
+  _init_data({
+    .HoldPointNode = hold_point_node,
+    .MovementManagerInst = movement_manager,
+    .WeaponManagerInst = weapon_manager,
+    .CharacterCompInst = character_component,
+    .WeaponCompInst = weapon_component
+  });
+}
+
+void WeaponEffects::_bind_methods()
+{
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+}
+
 void WeaponEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
   m_HoldPointNode = weaponEffectsData.HoldPointNode;
@@ -311,10 +343,12 @@ void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
   m_WeaponSlideComponent._update_slide_data(currentWeapon);
 }
 
-void WeaponEffects::_update(double delta, Vector3& sway_vel)
+void WeaponEffects::_update(double delta)
 {
+  m_MouseVel = Vector3(input_command_system->get_mouse_vel().x, 0.0f, 0.0f);
+
   m_WeaponSwayComponent.weapon_idle_sway(delta);
-  m_WeaponSwayComponent.weapon_sway(delta, sway_vel);
+  m_WeaponSwayComponent.weapon_sway(delta, m_MouseVel);
   m_WeaponBobComponent.weapon_bob(delta);
   m_WeaponJumpComponent._weapon_jump_effect(delta);
   m_WeaponSlideComponent._weapon_slide_effect(delta);

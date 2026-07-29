@@ -44,8 +44,8 @@ class WeaponManager : public Node {
 public:
   void _ready() override;
   void _unhandled_input(const Ref<InputEvent>& event) override;
-  void _process(double delta) override;
-  void _physics_process(double delta) override;
+  void _update(double delta);
+  void _physics_update(double delta);
   
   WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
   
@@ -77,7 +77,7 @@ public:
 
 public:
 
-  // NOTE: This function really doesn't reflect the actual weapon's shoot state. 
+  // NOTE: This function really doesn't reflect the actual weapon's shoot state. This is for recoil effect only
   // IsWeaponFiring is false as soon as the player leaves the input which is different from how the actual state is handled
   bool IsWeaponFiring() { return m_WeaponStateCtx.IsWeaponFiring; }
 
@@ -88,10 +88,14 @@ public:
     return currentWeapon->get_auto_reload();
   }
 
+  float get_time_between_shots() { return m_TimeBetweenShots; }
+
   Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
   InputCommandSystem* get_input_command_system_instance() { return input_command_system; }
 
-  void set_key_pressed(bool status) { m_WeaponStateCtx.IsKeyPressed = status; }
+  void set_trigger_press_status(bool status) { m_WeaponStateCtx.TriggerPressed = status; }
+
+  void set_release_status(bool status) { m_WeaponStateCtx.ReleaseStatus = status; }
 
   int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
   int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
@@ -108,7 +112,6 @@ protected:
   static void _bind_methods();
 
 private:
-  Vector3 m_MouseVel {};
   Vector2 m_ScreenCenter {};
 
   Ref<StandardMaterial3D> m_StdMaterial { nullptr };
@@ -126,7 +129,6 @@ private:
 
   Viewport* m_Viewport {};
 
-  WeaponEffects m_WeaponEffects;
   WeaponStateContext m_WeaponStateCtx;
   AmmoComponent m_AmmoComp;
 
@@ -152,10 +154,7 @@ private:
   Vector3 m_TargetRot {}, m_CurrentRot {};
 
 private:
-  GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
-
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
-
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);

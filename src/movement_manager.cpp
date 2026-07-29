@@ -6,6 +6,9 @@ void MovementManager::_ready()
   m_StairsBelowRaycast = character_component->get_stairs_below_raycast();
   m_StairsAheadRayCast = character_component->get_stairs_ahead_raycast();
   m_FinalPos = m_CharacterHead->get_position().y - character_component->get_crouch_translate();
+
+  set_physics_process(false);
+  set_process(false);
 }
 
 void MovementManager::_bind_methods()
@@ -14,7 +17,7 @@ void MovementManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(MovementManager, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
-void MovementManager::_process(double delta)
+void MovementManager::_update(double delta)
 {
   m_MovementStateCtx.CharacterVelocity = character_component->get_velocity();
   m_MovementStateCtx.CharacterWishDir = character_component->get_wish_dir();
@@ -35,7 +38,7 @@ void MovementManager::_process(double delta)
 
 }
 
-void MovementManager::_physics_process(double delta)
+void MovementManager::_physics_update(double delta)
 {
   if(m_MovementStateCtx.IsOnFloor)
   {

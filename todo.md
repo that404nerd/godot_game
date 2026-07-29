@@ -1,6 +1,5 @@
 ## TODO
-- Move weapon effects component from a pure C++ to a reusable godot node/component []
-- Fix memory leak related to Canvas2D (HUD, Signal Lens) and Recoil Curve
+- Fix memory leak related to Canvas2D (HUD, Signal Lens) and Recoil Curve []
 - Clean up weapon manager and weapon effects component []
 - Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
 - Add effects like landing on floor shake etc... []
@@ -24,6 +23,8 @@
 - Fix Weapon Action affects when sliding [x]
 - Move slide effect and jump related effects to WeaponEffects class [x]
 - Write a command system to replace hardcoded inputs to a command to support any entity in states (like the player or any AI entity) [x]
+- Move weapon effects component from a pure C++ to a reusable godot node/component [x]
+- Scene order seems to be messed up, input component needs to be push last for it to work properly, weapon state machine must be after weapon component and weapon manager [x]
 
 - Sideways movement when falling [x]
 - Add 3 points to the jump arc (Jump, Peak, Landing like a parabola) [x]

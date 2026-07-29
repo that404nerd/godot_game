@@ -17,11 +17,18 @@ font_size = 20
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 height = 1.2
 
-[node name="Player" type="Player" unique_id=1542459451 node_paths=PackedStringArray("character_head", "crouch_raycast", "stairs_ahead_raycast", "stairs_below_raycast", "default_collision_shape", "crouch_collision_shape")]
+[node name="Player" type="Player" unique_id=1542459451 node_paths=PackedStringArray("movement_manager", "movement_state_machine", "weapon_component", "weapon_manager", "weapon_state_machine", "weapon_effects_component", "input_component", "character_head", "crouch_raycast", "stairs_ahead_raycast", "stairs_below_raycast", "default_collision_shape", "crouch_collision_shape")]
+movement_manager = NodePath("MovementManager")
+movement_state_machine = NodePath("MovementStateMachine")
+weapon_component = NodePath("WeaponComponent")
+weapon_manager = NodePath("WeaponManager")
+weapon_state_machine = NodePath("WeaponStateMachine")
+weapon_effects_component = NodePath("WeaponEffects")
+input_component = NodePath("InputComponent")
 character_head = NodePath("CameraController/PlayerHead")
-crouch_raycast = NodePath("CrouchColliderRay")
-stairs_ahead_raycast = NodePath("StairsAheadRayCast3D")
-stairs_below_raycast = NodePath("StairsBelowRayCast3D")
+crouch_raycast = NodePath("RayCasts/CrouchColliderRay")
+stairs_ahead_raycast = NodePath("RayCasts/StairsAheadRayCast3D")
+stairs_below_raycast = NodePath("RayCasts/StairsBelowRayCast3D")
 default_collision_shape = NodePath("DefaultPlayerCollider")
 crouch_collision_shape = NodePath("CrouchingPlayerCollider")
 crouch_speed = 4.0
@@ -148,16 +155,18 @@ near = 0.001
 
 [node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/WeaponActionEffects/PlayerCamera" unique_id=1899973665]
 
-[node name="CrouchColliderRay" type="RayCast3D" parent="." unique_id=1414798151]
+[node name="RayCasts" type="Node3D" parent="." unique_id=2101439493]
+
+[node name="CrouchColliderRay" type="RayCast3D" parent="RayCasts" unique_id=1414798151]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 hit_from_inside = true
 debug_shape_custom_color = Color(1, 0, 0, 1)
 
-[node name="StairsAheadRayCast3D" type="RayCast3D" parent="." unique_id=265503285]
+[node name="StairsAheadRayCast3D" type="RayCast3D" parent="RayCasts" unique_id=265503285]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.822)
 target_position = Vector3(0, -0.55, 0)
 
-[node name="StairsBelowRayCast3D" type="RayCast3D" parent="." unique_id=1311882563]
+[node name="StairsBelowRayCast3D" type="RayCast3D" parent="RayCasts" unique_id=1311882563]
 
 [node name="DefaultPlayerCollider" type="CollisionShape3D" parent="." unique_id=1268338097]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -173,17 +182,11 @@ character_component = NodePath("..")
 input_command_system = NodePath("../InputComponent")
 unique_name_in_owner = true
 
-[node name="MovementStateMachine" type="MovementStateMachine" parent="." unique_id=1412789278 node_paths=PackedStringArray("character_component", "movement_manager")]
-character_component = NodePath("..")
-movement_manager = NodePath("../MovementManager")
-unique_name_in_owner = true
-
 [node name="WeaponComponent" type="WeaponComponent" parent="." unique_id=1645035038]
 weapon_resource_list = [ExtResource("6_tuyoq"), ExtResource("8_ur7pv"), ExtResource("7_smehm")]
 unique_name_in_owner = true
 
-[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("movement_manager", "input_command_system", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
-movement_manager = NodePath("../MovementManager")
+[node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("input_command_system", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
 input_command_system = NodePath("../InputComponent")
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
@@ -197,3 +200,16 @@ weapon_component = NodePath("../WeaponComponent")
 unique_name_in_owner = true
 
 [node name="InputComponent" type="InputComponent" parent="." unique_id=1295549383]
+
+[node name="MovementStateMachine" type="MovementStateMachine" parent="." unique_id=1412789278 node_paths=PackedStringArray("character_component", "movement_manager")]
+character_component = NodePath("..")
+movement_manager = NodePath("../MovementManager")
+unique_name_in_owner = true
+
+[node name="WeaponEffects" type="WeaponEffects" parent="." unique_id=1493144318 node_paths=PackedStringArray("hold_point_node", "movement_manager", "input_command_system", "weapon_manager", "character_component", "weapon_component")]
+hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionEffects/PlayerCamera/WeaponHoldPoint")
+movement_manager = NodePath("../MovementManager")
+input_command_system = NodePath("../InputComponent")
+weapon_manager = NodePath("../WeaponManager")
+character_component = NodePath("..")
+weapon_component = NodePath("../WeaponComponent")

@@ -23,7 +23,7 @@ struct WeaponStateContext
   bool IsWeaponFiring { false };
 
   bool IsReloading { false }, IsReloadStarted { false };
-  bool IsKeyPressed { false }, IsKeyHeld { false };
+  bool TriggerPressed { false }, TriggerHeld { false }, ReleaseStatus { false };
   bool IsUnequipped { false };
 };
 

@@ -3,6 +3,7 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event.hpp>
+#include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/node.hpp>
 
 #include "../input_command_system.h"
@@ -18,8 +19,8 @@ public:
   InputComponent();
 
   void _ready() override;
-  void _unhandled_input(const Ref<InputEvent>& event) override;
-  void _process(double delta) override;
+  void _input(const Ref<InputEvent>& event) override;
+  void _update(double delta) override;
 
 protected:
   static void _bind_methods();
@@ -27,5 +28,5 @@ protected:
 private:
   float m_HoldCounter { 0.0f };
 
-  CommandData& m_CmdData;
+  InputCommandData& m_InputCmdData;
 };

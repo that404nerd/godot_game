@@ -24,8 +24,8 @@ class MovementManager : public Node {
 
 public:
   void _ready() override;
-  void _process(double delta) override;
-  void _physics_process(double delta) override;
+  void _update(double delta);
+  void _physics_update(double delta);
 
 public:
   void _idle();

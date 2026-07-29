@@ -2,6 +2,9 @@
 
 void WeaponManager::_ready()
 {
+  set_physics_process(false);
+  set_process(false);
+
   AnimationPlayer* anim_player = nullptr;
   Node3D* weapon_node = nullptr;
   WeaponWrapper* weapon_wrapper = nullptr;
@@ -38,13 +41,6 @@ void WeaponManager::_ready()
   Path2D* path = Object::cast_to<Path2D>(pathNode);
 
   m_RecoilCurve = path->get_curve();
-
-  m_WeaponEffects._init_data({ 
-    .HoldPointNode = hold_point_node,
-    .MovementManagerInst = movement_manager,
-    .WeaponManagerInst = this,
-    .CharacterCompInst = character_component,
-    .WeaponCompInst = weapon_component });
 }
 
 void WeaponManager::_init_weapons()
@@ -154,7 +150,6 @@ void WeaponManager::_bind_methods()
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
   ClassDB::bind_method(D_METHOD("_on_window_size_changed"), &WeaponManager::_on_window_size_changed);
   
-  GD_BIND_CUSTOM_PROPERTY(WeaponManager, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -168,33 +163,23 @@ void WeaponManager::_bind_methods()
 
 void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 {
-  Ref<InputEventMouseMotion> mouseEvent = event;
-  
-  if(event->is_class("InputEventMouseMotion")) {
-    float swayIntensity = 0.005f; 
-
-    Vector2 relative = mouseEvent->get_relative(); 
-    m_MouseVel.x += -relative.x * swayIntensity;
-    m_MouseVel.y += -relative.y * swayIntensity;
-  }
 }
 
-void WeaponManager::_process(double delta)
+void WeaponManager::_update(double delta)
 {
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
   
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
+  input_command_system->set_max_hold_time(m_HoldMaxTime);
   
   m_TimeBetweenShots -= delta;
-
-  m_WeaponEffects._update(delta, m_MouseVel);
 }
 
-void WeaponManager::_physics_process(double delta)
+void WeaponManager::_physics_update(double delta)
 {
   // Get space state in _process or some other function could cause errors because
-  // for some reason it's not accessible unless it's in the _physics_process
+  // for some reason it's not accessible unless it's in the _physics_update
 
   Vector3 ray_start = m_Camera->project_ray_origin(m_ScreenCenter);
   Vector3 ray_end = ray_start + m_Camera->project_ray_normal(m_ScreenCenter) * 1000.0f;
@@ -210,8 +195,6 @@ void WeaponManager::_physics_process(double delta)
 // Runs when you switch a weapon (Only once)
 void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
 {
-  m_WeaponEffects._update_data(nextWeapon);
-
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
   m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
@@ -340,6 +323,13 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 void WeaponManager::_equip_weapon()
 {
   m_WeaponStateCtx.IsUnequipped = false;
+
+  if(m_CurrentWeaponAnimPlayer == nullptr)
+  {
+    print_error("Anim player is null!");
+    return;
+  }
+
   m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
                             m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
 }
@@ -366,8 +356,8 @@ void WeaponManager::_shoot_weapon(double delta)
   {
     m_MuzzleComp->_enable_light_status(false);
     m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
-    m_WeaponStateCtx.IsKeyHeld = false;
-    m_WeaponStateCtx.IsKeyPressed = false;
+    m_WeaponStateCtx.TriggerHeld = false;
+    m_WeaponStateCtx.TriggerPressed = false;
     return;
   }
 
@@ -378,8 +368,21 @@ void WeaponManager::_shoot_weapon(double delta)
   {
     m_WeaponStateCtx.ShootTimeBeforeIdle -= delta;
   }
-  
-  if(m_TimeBetweenShots <= 0.0f)
+ 
+  /*
+    Two mouse states (for now), one for automatic handling (mouse hold) and the other for just manual handling (single click). 
+    Since I switched from the normal inputs to a command system, the input component for the player clears the actual state for the shoot input every frame, 
+    so we need to cache before using it here. We can't check for the single mouse click input here because the state gets wiped every frame.
+
+    ShootTimeBeforeIdle should be self-explainatory and it resets every time you shoot the weapon to 1.0f.
+    This function triggers if the weapon's time_between_shots (again should be self-explainatory) is 0.0f which is checked in weapon_states.
+
+    The state goes to idle if ShootTimeBeforeIdle is 0.0f only. Checking for inputs could break semi-auto, full-auto weapons a timer is more solid.
+    The Muzzle flash is handled by using a timeout variable which is set to every weapon's particle's lifetime. It's managed using a simple timer.
+
+    The ReleaseStatus is to indicate the mouse has been released, this doesn't modify the TriggerHeld or TriggerPressed, it only modifies IsWeaponFired which
+    is only used for recoil and not in the shooting state.
+  */
   {
     // Check whether the fire key is held or not (for automatic weapons)
     if(input_command_system->wants_to_hold_shoot() &&
@@ -389,60 +392,62 @@ void WeaponManager::_shoot_weapon(double delta)
       
       if(m_HoldCounter > m_HoldMaxTime)
       {
-        m_WeaponStateCtx.IsKeyHeld = true;
+        m_WeaponStateCtx.TriggerHeld = true;
       }
       
-      if(m_WeaponStateCtx.IsKeyHeld)
+      if(m_WeaponStateCtx.TriggerHeld)
       {
         m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-          m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+        m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
       }
-
+      
     }  
-
+    
     // Check whether we pressed the fire key (manual)
-    if(input_command_system->wants_to_shoot_weapon() && 
+    if(m_WeaponStateCtx.TriggerPressed && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
-    {
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-          m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+      {
+        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+        m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+      }
+      
+      if(m_WeaponStateCtx.TriggerHeld || m_WeaponStateCtx.TriggerPressed)
+      {
+        m_MuzzleComp->_enable_light_status(true);
 
-
-      m_WeaponStateCtx.IsKeyPressed = true;
-    }
-
-    if(m_WeaponStateCtx.IsKeyHeld || m_WeaponStateCtx.IsKeyPressed)
+        m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
+        m_WeaponStateCtx.TriggerHeld = false;
+        m_WeaponStateCtx.TriggerPressed = false;
+        
+        m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
+      }
+  }
+      
+  {
+    m_MuzzleLightTimeout -= delta;
+    if(m_MuzzleLightTimeout >= 0.0f)
     {
       m_MuzzleComp->_enable_light_status(true);
-      m_WeaponStateCtx.ShootTimeBeforeIdle = 1.0f;
-
-      m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
-      m_WeaponStateCtx.IsKeyPressed = false;
     }
-
-  }
-
-  m_MuzzleLightTimeout -= delta;
-  if(m_MuzzleLightTimeout >= 0.0f)
-  {
-    m_MuzzleComp->_enable_light_status(true);
-  }
-
-  if(m_MuzzleLightTimeout <= 0.0f)
+    
+    if(m_MuzzleLightTimeout <= 0.0f)
     m_MuzzleComp->_enable_light_status(false);
+  }
 
-  // Set the key held to false and reset the hold counter 
-  if(input_command_system->wants_to_release_shoot()) 
+  if(m_WeaponStateCtx.ReleaseStatus)
   {
+    m_WeaponStateCtx.ReleaseStatus = false;
     m_WeaponStateCtx.IsWeaponFiring = false;
-    m_WeaponStateCtx.IsKeyHeld = false;
-    m_HoldCounter = 0.0f;
   }
 }
 
 void WeaponManager::_shoot_weapon_over()
 {
-  m_WeaponStateCtx.IsWeaponFiring = false;
+  
+  m_WeaponStateCtx.TriggerPressed = false;
+  m_WeaponStateCtx.TriggerHeld = false;
+  m_HoldCounter = 0.0f;
+  
   m_MuzzleComp->_enable_light_status(false);
 }
   

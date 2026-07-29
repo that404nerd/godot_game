@@ -24,7 +24,7 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
   if(m_CmdSystem->wants_to_shoot_weapon())
   {
-    m_WeaponManager->set_key_pressed(true);
+    m_WeaponManager->set_trigger_press_status(true);
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
 
@@ -100,31 +100,38 @@ WeaponShootState::WeaponShootState(const WeaponStateData& weaponStateData)
 {
 }
 
+void WeaponShootState::_enter()
+{
+}
+
 void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
+  if(m_CmdSystem->wants_to_shoot_weapon())
+  {
+    m_WeaponManager->set_trigger_press_status(true);
+  }
+
   if(m_CmdSystem->wants_to_reload_weapon())
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
 
-}
-
-void WeaponShootState::_enter()
-{
+  if(m_CmdSystem->wants_to_release_shoot())
+    m_WeaponManager->set_release_status(true);
 }
 
 void WeaponShootState::_update(double delta)
 {
   m_WeaponManager->_shoot_weapon(delta);
 
-  if((m_CmdSystem->wants_to_shoot_weapon() || m_WeaponStateContext.IsKeyHeld) &&
-     m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload())
+  if((m_CmdSystem->wants_to_shoot_weapon() || m_WeaponStateContext.TriggerHeld) &&
+  m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload())
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
- 
-  if(m_WeaponStateContext.ShootTimeBeforeIdle <= 0.0f &&
-      m_WeaponStateContext.IsKeyPressed == false && m_WeaponStateContext.IsKeyHeld == false)
+  
+  // Waits a complete second before it switches from the shoot state
+  if(m_WeaponStateContext.ShootTimeBeforeIdle <= 0.0f)
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::IDLE));
   }

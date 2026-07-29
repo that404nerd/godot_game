@@ -61,10 +61,11 @@ public:
   Vector3 get_sway_offset() const { return m_SwayOffset; }
 
 private:
-  DampedSpring m_DampedSpring;
   Vector3 m_IdleSwayOffset {}, m_IdleSwayVector {};
-  Vector3 m_SwayOffset {};
+  Vector3 m_SwayOffset {}, m_SwayVel {};
   Vector3 m_CharacterVel {};
+
+  DampedSpring m_DampedSpring;
   
   float m_IdleWeaponBobTime { 0.0f };
   
@@ -146,16 +147,20 @@ class WeaponEffects : public Node
 {
   GDCLASS(WeaponEffects, Node);
 public:
+  void _ready() override;
   void _init_data(const WeaponEffectsData& weaponEffectsData);
 
   void _update_data(Ref<Weapon> currentWeapon);
-  void _update(double delta, Vector3& sway_vel);
+  void _update(double delta);
+
+protected:
+  static void _bind_methods();
 
 private:
   Node3D *m_HoldPointNode { nullptr }, *m_WeaponArmatureNode { nullptr };
   Vector3 m_BasePos {}, m_BaseRot {};
 
-  Vector3 m_ArmaturePos {}, m_ArmatureRot {};
+  Vector3 m_ArmaturePos {}, m_ArmatureRot {}, m_MouseVel {};
 
   WeaponManager* m_WeaponManager { nullptr };
 
@@ -163,4 +168,12 @@ private:
   WeaponSwayComponent m_WeaponSwayComponent;
   WeaponSlideEffect m_WeaponSlideComponent;
   WeaponJumpEffect m_WeaponJumpComponent;
+
+private:
+  GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
+  GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
+  GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
+  GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
+  GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
+  GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
 };
