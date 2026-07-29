@@ -1,4 +1,5 @@
 #include "weapon_manager.h"
+#include "singletons/event_bus.h"
 
 void WeaponManager::_ready()
 {
@@ -371,8 +372,7 @@ void WeaponManager::_shoot_weapon(double delta)
  
   /*
     Two mouse states (for now), one for automatic handling (mouse hold) and the other for just manual handling (single click). 
-    Since I switched from the normal inputs to a command system, the input component for the player clears the actual state for the shoot input every frame, 
-    so we need to cache before using it here. We can't check for the single mouse click input here because the state gets wiped every frame.
+    We can't check for the single mouse click again HERE because the input state was already consumed to handle the shoot state in the first place.
 
     ShootTimeBeforeIdle should be self-explainatory and it resets every time you shoot the weapon to 1.0f.
     This function triggers if the weapon's time_between_shots (again should be self-explainatory) is 0.0f which is checked in weapon_states.
@@ -380,7 +380,7 @@ void WeaponManager::_shoot_weapon(double delta)
     The state goes to idle if ShootTimeBeforeIdle is 0.0f only. Checking for inputs could break semi-auto, full-auto weapons a timer is more solid.
     The Muzzle flash is handled by using a timeout variable which is set to every weapon's particle's lifetime. It's managed using a simple timer.
 
-    The ReleaseStatus is to indicate the mouse has been released, this doesn't modify the TriggerHeld or TriggerPressed, it only modifies IsWeaponFired which
+    The ReleaseStatus is to indicate the mouse click has been released, this doesn't modify the TriggerHeld or TriggerPressed, it only modifies IsWeaponFired which
     is only used for recoil and not in the shooting state.
   */
   {
@@ -436,14 +436,13 @@ void WeaponManager::_shoot_weapon(double delta)
 
   if(m_WeaponStateCtx.ReleaseStatus)
   {
-    m_WeaponStateCtx.ReleaseStatus = false;
     m_WeaponStateCtx.IsWeaponFiring = false;
+    m_WeaponStateCtx.ReleaseStatus = false;
   }
 }
 
 void WeaponManager::_shoot_weapon_over()
 {
-  
   m_WeaponStateCtx.TriggerPressed = false;
   m_WeaponStateCtx.TriggerHeld = false;
   m_HoldCounter = 0.0f;
@@ -506,6 +505,7 @@ void WeaponManager::_weapon_unequip_over()
 {
   m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
   weapon_component->set_current_weapon(weapon_component->get_next_weapon_data());
+  EventBus::get_singleton()->emit_signal("weapon_switched", weapon_component->get_current_weapon_data());
 }
 
 

@@ -150,6 +150,8 @@ public:
   void _ready() override;
   void _init_data(const WeaponEffectsData& weaponEffectsData);
 
+  void _on_weapon_switched(Ref<Weapon> currentWeapon);
+
   void _update_data(Ref<Weapon> currentWeapon);
   void _update(double delta);
 

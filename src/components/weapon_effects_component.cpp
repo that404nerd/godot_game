@@ -309,10 +309,20 @@ void WeaponEffects::_ready()
     .CharacterCompInst = character_component,
     .WeaponCompInst = weapon_component
   });
+
+  EventBus::get_singleton()->connect("weapon_switched", Callable(this, "_on_weapon_switched"));
+}
+
+void WeaponEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
+{
+  print_line(currentWeapon->get_weaponName());
+  _update_data(currentWeapon);
 }
 
 void WeaponEffects::_bind_methods()
 {
+  ClassDB::bind_method(D_METHOD("_on_weapon_switched", "currentWeapon"), &WeaponEffects::_on_weapon_switched);
+
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -345,7 +355,7 @@ void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
 
 void WeaponEffects::_update(double delta)
 {
-  m_MouseVel = Vector3(input_command_system->get_mouse_vel().x, 0.0f, 0.0f);
+  m_MouseVel = Vector3(input_command_system->get_mouse_vel().x, input_command_system->get_mouse_vel().y, 0.0f);
 
   m_WeaponSwayComponent.weapon_idle_sway(delta);
   m_WeaponSwayComponent.weapon_sway(delta, m_MouseVel);

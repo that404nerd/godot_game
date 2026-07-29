@@ -72,13 +72,6 @@ void WeaponActionEffects::_weapon_reload_effect(double delta)
   m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
 }
 
-void WeaponActionEffects::_update_data()
-{
-  m_CurrentNodeRot = m_RecoilSpringRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier());
-
-  set_rotation(m_CurrentNodeRot);
-}
-
 void WeaponActionEffects::_process(double delta)
 {
   if(weapon_component == nullptr || weapon_manager == nullptr)
@@ -86,11 +79,13 @@ void WeaponActionEffects::_process(double delta)
     print_error("Weapon component or weapon manager is null!");
     return;
   }
-
+  
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
-
+  
   _weapon_recoil_effect(delta);
   _weapon_reload_effect(delta);
-
-  _update_data();
+  
+  m_CurrentNodeRot = m_RecoilSpringRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier());
+  
+  set_rotation(m_CurrentNodeRot);
 }

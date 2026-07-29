@@ -15,7 +15,7 @@ void CharacterComponent::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, weapon_effects_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, input_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_GROUP("Character Nodes", "");
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, character_head, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -88,7 +88,7 @@ void CharacterComponent::_update_input(double delta)
 
 void CharacterComponent::_process(double delta)
 {
-  input_component->_update(delta);
+  input_command_system->_update(delta);
   movement_manager->_update(delta);
   movement_state_machine->_update(delta);
   weapon_manager->_update(delta);

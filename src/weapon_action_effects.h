@@ -31,8 +31,6 @@ public:
   void _weapon_recoil_effect(double delta);
   void _weapon_reload_effect(double delta);
 
-  void _update_data();
-
 protected:
   static void _bind_methods();
 

@@ -1,4 +1,5 @@
 ## TODO
+- Add a clamp to the mouse movement to limit the sway for the weapon sway []
 - Fix memory leak related to Canvas2D (HUD, Signal Lens) and Recoil Curve []
 - Clean up weapon manager and weapon effects component []
 - Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
