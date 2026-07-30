@@ -9,6 +9,7 @@ void MovementManager::_ready()
 
   set_physics_process(false);
   set_process(false);
+  print_line_rich("[color=GREEN]Movement Manager Initialized");
 }
 
 void MovementManager::_bind_methods()

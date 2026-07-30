@@ -61,6 +61,10 @@ public:
   Vector3 get_sway_offset() const { return m_SwayOffset; }
 
 private:
+  const float SWAY_X_MIN { -0.40f }, SWAY_X_MAX { 0.60f };
+  const float SWAY_Y_MIN { -0.70f }, SWAY_Y_MAX { 0.65f };
+
+private:
   Vector3 m_IdleSwayOffset {}, m_IdleSwayVector {};
   Vector3 m_SwayOffset {}, m_SwayVel {};
   Vector3 m_CharacterVel {};

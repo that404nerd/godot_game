@@ -118,14 +118,15 @@ void WeaponSwayComponent::weapon_idle_sway(double delta)
 
 void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
 {
-  Vector3 equilibriumPos {};
-
   m_DampedSpring.CalcDampedSpringMotionParams(
     (float)delta,
     m_WeaponSpringAngFreq,
     m_WeaponDampedSpringRatio);
 
-  m_DampedSpring.UpdateDampedSpringMotion(m_SwayOffset, sway_vel, equilibriumPos);
+  sway_vel.x = Math::clamp(sway_vel.x, SWAY_X_MIN, SWAY_X_MAX);
+  sway_vel.y = Math::clamp(sway_vel.y, SWAY_Y_MIN, SWAY_Y_MAX);
+
+  m_DampedSpring.UpdateDampedSpringMotion(m_SwayOffset, sway_vel, Vector3(0.0f, 0.0f, 0.0f));
 }
 
 
@@ -311,11 +312,12 @@ void WeaponEffects::_ready()
   });
 
   EventBus::get_singleton()->connect("weapon_switched", Callable(this, "_on_weapon_switched"));
+
+  print_line_rich("[color=GREEN]Weapon Effects Component Initialized");
 }
 
 void WeaponEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
 {
-  print_line(currentWeapon->get_weaponName());
   _update_data(currentWeapon);
 }
 

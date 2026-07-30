@@ -1,9 +1,11 @@
 extends Control
 
-@onready var weapon_manager: WeaponManager = %WeaponManager
-@onready var movementStateMachine: MovementStateMachine = %MovementStateMachine
-@onready var weaponStateMachine : WeaponStateMachine = %WeaponStateMachine
-@onready var weaponComponent : WeaponComponent = %WeaponComponent
+@onready var player: Player = $"../Player"
+
+@onready var weapon_manager: WeaponManager = player.get_weapon_manager()
+@onready var movementStateMachine: MovementStateMachine = player.get_movement_state_machine()
+@onready var weaponStateMachine : WeaponStateMachine = player.get_weapon_state_machine()
+@onready var weaponComponent : WeaponComponent = player.get_weapon_component()
 
 @onready var fps_label: Label = %FPSLabel
 @onready var player_state_name_label: Label = %PlayerStateNameLabel
@@ -17,6 +19,9 @@ var current_weapon_text : StringName
 var frames_per_second : StringName
 var player_state_name : StringName
 var weapon_state_name : StringName
+
+func _ready():
+	print_rich("[color=GREEN]HUD Initialized")
 
 func _process(_delta: float):
 	current_weapon_text = weapon_manager.get_current_weapon_name()

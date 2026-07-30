@@ -13,6 +13,7 @@ void MovementStateMachine::_init_data()
   m_States[static_cast<int>(MovementStates::DASH)] = std::make_unique<DashMovementState>(m_MovementStateData);
 
   m_InitialState = m_States.at(static_cast<int>(MovementStates::IDLE)).get();
+  print_line_rich("[color=GREEN]Movement State Machine Initialized");
 }
 
 void MovementStateMachine::_bind_methods()

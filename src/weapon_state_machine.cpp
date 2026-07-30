@@ -20,7 +20,10 @@ void WeaponStateMachine::_init_data()
   m_InitialState = m_States.at(static_cast<int>(WeaponStates::EQUIP)).get();
 
   m_CmdSystem = weapon_manager->get_input_command_system_instance();
-  m_CmdSystem->set_weapon_list_size(weapon_component->get_weapon_resource_list().size());
+  m_CmdSystem->set_weapon_list_size(weapon_component->get_weapon_list().size());
+
+
+  print_line_rich("[color=GREEN]Weapon State Machine Initialized");
 }
 
 void WeaponStateMachine::_bind_methods()

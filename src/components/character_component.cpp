@@ -86,22 +86,40 @@ void CharacterComponent::_update_input(double delta)
   set_velocity(characterVel);
 }
 
-void CharacterComponent::_process(double delta)
+void CharacterComponent::_update(double delta)
 {
-  input_command_system->_update(delta);
-  movement_manager->_update(delta);
-  movement_state_machine->_update(delta);
-  weapon_manager->_update(delta);
-  weapon_state_machine->_update(delta);
-  weapon_effects_component->_update(delta);
+  if(input_command_system)
+    input_command_system->_update(delta);
+
+  if(movement_manager)
+    movement_manager->_update(delta);
+
+  if(movement_state_machine)
+    movement_state_machine->_update(delta);
+
+  if(weapon_manager)
+    weapon_manager->_update(delta);
+
+  if(weapon_state_machine)
+    weapon_state_machine->_update(delta);
+
+  if(weapon_effects_component)
+    weapon_effects_component->_update(delta);
 }
 
-void CharacterComponent::_physics_process(double delta)
+void CharacterComponent::_physics_update(double delta)
 {
-  movement_manager->_physics_update(delta);
-  movement_state_machine->_physics_update(delta);
-  weapon_manager->_physics_update(delta);
-  weapon_state_machine->_physics_update(delta);
+  if(movement_manager)
+    movement_manager->_physics_update(delta);
+
+  if(movement_state_machine)
+    movement_state_machine->_physics_update(delta);
+
+  if(weapon_manager)
+    weapon_manager->_physics_update(delta);
+
+  if(weapon_state_machine)
+    weapon_state_machine->_physics_update(delta);
 }
 
 void CharacterComponent::_update_velocity()

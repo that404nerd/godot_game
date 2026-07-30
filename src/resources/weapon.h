@@ -68,7 +68,6 @@ private:
   GD_DEFINE_PROPERTY(float, hold_max_time, 0.5f);
 
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponDecalResource, nullptr);
-  GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponScene, nullptr);
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponRecoilPatternResource, nullptr);
 
   GD_DEFINE_PROPERTY(Vector3, slide_armature_tilt_rot, Vector3(2.0f, 2.0f, -30.0f));

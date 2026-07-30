@@ -10,6 +10,7 @@ void InputComponent::_ready()
 {
   set_physics_process(false);
   set_process(false);
+  print_line_rich("[color=GREEN]Input Command System Initialized");
 }
 
 void InputComponent::_bind_methods()

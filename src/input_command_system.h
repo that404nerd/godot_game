@@ -33,6 +33,7 @@ class InputCommandSystem : public Node
 {
   GDCLASS(InputCommandSystem, Node);
 public:
+
   bool wants_to_sprint() { return m_InputCmdData.WantsToSprint; };
   bool wants_to_jump() { return m_InputCmdData.WantsToJump; };
   bool wants_to_crouch() { return m_InputCmdData.WantsToCrouch; };

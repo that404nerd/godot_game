@@ -1,10 +1,98 @@
 [gd_scene format=3 uid="uid://dscvjpepl0ukv"]
 
 [ext_resource type="PackedScene" uid="uid://cnxdomimh38wt" path="res://scenes/level_test.tscn" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://cu33kq028l77c" path="res://src/scripts/hud.gd" id="1_tefeu"]
 [ext_resource type="PackedScene" uid="uid://2c0bf6m5ugct" path="res://scenes/player.tscn" id="2_0wfyh"]
+[ext_resource type="Texture2D" uid="uid://cho3drv247dd5" path="res://assets/textures/crosshair.png" id="2_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://cl56ml5fs3trv" path="res://scenes/level_0.tscn" id="2_sugp2"]
+[ext_resource type="Theme" uid="uid://607bfwn0648t" path="res://assets/ui/debug_panel_theme.tres" id="3_tipki"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_85g3d"]
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_choun"]
 
 [node name="Game" type="Game" unique_id=362974098]
+
+[node name="HUD" type="Control" parent="." unique_id=1672093155]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_tefeu")
+
+[node name="Rectile" type="TextureRect" parent="HUD" unique_id=393716548]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_o6xl0")
+metadata/_edit_use_anchors_ = true
+
+[node name="DebugPanel" type="PanelContainer" parent="HUD" unique_id=1321847495]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 210.0
+offset_bottom = 50.0
+theme = ExtResource("3_tipki")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/DebugPanel" unique_id=1189095936]
+layout_mode = 2
+
+[node name="PropertyContainer" type="VBoxContainer" parent="HUD/DebugPanel/MarginContainer" unique_id=354051382]
+layout_mode = 2
+
+[node name="FPSLabel" type="Label" parent="HUD/DebugPanel/MarginContainer/PropertyContainer" unique_id=1369786384]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PlayerStateNameLabel" type="Label" parent="HUD/DebugPanel/MarginContainer/PropertyContainer" unique_id=2094193167]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="WeaponStateNameLabel" type="Label" parent="HUD/DebugPanel/MarginContainer/PropertyContainer" unique_id=2042932783]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AmmoPanel" type="PanelContainer" parent="HUD" unique_id=1117822275]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -86.0
+offset_right = 250.0
+grow_vertical = 0
+theme = ExtResource("3_tipki")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/AmmoPanel" unique_id=1367147421]
+layout_mode = 2
+
+[node name="PropertyContainer" type="VBoxContainer" parent="HUD/AmmoPanel/MarginContainer" unique_id=769122907]
+layout_mode = 2
+
+[node name="WeaponNameLabel" type="Label" parent="HUD/AmmoPanel/MarginContainer/PropertyContainer" unique_id=1438539952]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_85g3d")
+
+[node name="AmmoLabel" type="Label" parent="HUD/AmmoPanel/MarginContainer/PropertyContainer" unique_id=146788757]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_choun")
 
 [node name="LevelTest" parent="." unique_id=483194061 instance=ExtResource("1_o5qli")]
 visible = false

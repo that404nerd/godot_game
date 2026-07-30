@@ -1,5 +1,4 @@
 #include "weapon_manager.h"
-#include "singletons/event_bus.h"
 
 void WeaponManager::_ready()
 {
@@ -27,13 +26,13 @@ void WeaponManager::_ready()
 
   m_Viewport->connect("size_changed", Callable(this, "_on_window_size_changed"));
 
-  m_AmmoComp._init_data(weapon_component->get_weapon_resource_list());
+  m_AmmoComp._init_data(weapon_component->get_weapon_list());
 
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
   
   _change_fov(weapon_node, weapon_wrapper);
 
-  weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[m_WeaponIndex]);
+  weapon_component->set_current_weapon(weapon_component->get_weapon_list()[m_WeaponIndex]);
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
   m_RecoilResource = m_CurrentWeapon->get_weaponRecoilPatternResource();
@@ -42,16 +41,17 @@ void WeaponManager::_ready()
   Path2D* path = Object::cast_to<Path2D>(pathNode);
 
   m_RecoilCurve = path->get_curve();
+  print_line_rich("[color=GREEN]Weapon Manager Initialized");
 }
 
 void WeaponManager::_init_weapons()
 {
-  for(int i = 0; i < weapon_component->get_weapon_resource_list().size(); i++)
+  for(int i = 0; i < weapon_component->get_weapon_list().size(); i++)
   {
-    weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[i]);
+    weapon_component->set_current_weapon(weapon_component->get_weapon_list()[i]);
     m_CurrentWeapon = weapon_component->get_current_weapon_data();
 
-    Ref<PackedScene> packedScene = m_CurrentWeapon->get_weaponScene();
+    Ref<PackedScene> packedScene = weapon_component->get_weapon_scene_list()[i];
     hold_point_node->add_child(packedScene->instantiate());
   }
 }
@@ -88,7 +88,7 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[weaponCount]);
     weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
 
-    weapon_component->set_current_weapon(weapon_component->get_weapon_resource_list()[weaponCount]);
+    weapon_component->set_current_weapon(weapon_component->get_weapon_list()[weaponCount]);
     m_CurrentWeapon = weapon_component->get_current_weapon_data();
 
     
@@ -511,8 +511,8 @@ void WeaponManager::_weapon_unequip_over()
 
 void WeaponManager::_weapon_switch()
 {
-  for (int i = 0; i < weapon_component->get_weapon_resource_list().size(); i++) {
-    Ref<Weapon> res = weapon_component->get_weapon_resource_list()[i]; 
+  for (int i = 0; i < weapon_component->get_weapon_list().size(); i++) {
+    Ref<Weapon> res = weapon_component->get_weapon_list()[i]; 
 
     if (res.is_valid() && res->get_weaponName() == weapon_component->get_next_weapon_name()) {
       m_WeaponIndex = i;
@@ -522,7 +522,7 @@ void WeaponManager::_weapon_switch()
   
   if(m_WeaponIndex != -1)
   {
-    Ref<Weapon> nextWeapon = weapon_component->get_weapon_resource_list()[m_WeaponIndex];
+    Ref<Weapon> nextWeapon = weapon_component->get_weapon_list()[m_WeaponIndex];
     weapon_component->set_current_weapon(nextWeapon);
     
     _update_weapon_data(nextWeapon);
@@ -533,7 +533,7 @@ void WeaponManager::_weapon_switch()
 void WeaponManager::_switch_weapon_data(int weaponIndex)
 {
   // We are still in the previous weapon and didn't switch to the next one yet
-  Ref<Weapon> next_weapon = weapon_component->get_weapon_resource_list()[weaponIndex];
+  Ref<Weapon> next_weapon = weapon_component->get_weapon_list()[weaponIndex];
   
   weapon_component->set_next_weapon(next_weapon);
   weapon_component->set_next_weapon_name(next_weapon->get_weaponName());
