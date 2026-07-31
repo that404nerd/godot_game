@@ -10,6 +10,7 @@
 #include "input_command_system.h"
 #include "components/character_component.h"
 #include "components/input_component.h"
+#include "components/step_handler_component.h"
 #include "states/movement_states.h"
 #include "utils/damped_spring.h"
 
@@ -50,16 +51,12 @@ public:
 
   void _dash(double delta);
 
+  ~MovementManager();
+
 protected:
   static void _bind_methods();
 
 public:
-
-  bool is_surface_too_steep(Vector3 normal) { return normal.angle_to(Vector3(0.0f, 1.0f, 0.0f)) > character_component->get_floor_max_angle(); };
-  bool _run_body_test_motion(Transform3D from, Vector3 motion, Ref<PhysicsTestMotionResult3D> result);
-
-  void _snap_down_to_stairs_check();
-  bool _snap_up_stairs_check(double delta);
 
   bool IsSlideStarted() { return m_MovementStateCtx.IsSlideStarted; }
   bool IsSliding() { return m_MovementStateCtx.IsSliding; }
@@ -89,14 +86,12 @@ private:
   Ref<Tween> m_CrouchTween { nullptr };
   Node3D* m_CharacterHead { nullptr };
 
+  StepHandlerComponent* m_StepHandlerComponent { nullptr };
+
 private:
   MovementStateCtx m_MovementStateCtx;
   DampedSpring m_DampedSpring {};
   Vector3 m_CrouchTranslateVel {};
-
-  const float MAX_STEP_HEIGHT { 0.25f };
-  bool _snapped_to_stairs_last_frame { false };
-  uint64_t _last_frame_on_floor = -INFINITY;
 
   float m_FinalPos { 0.0f };
   Vector3 m_DashDir { Vector3(0.0f, 0.0f, 0.0f) };

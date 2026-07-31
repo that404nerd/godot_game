@@ -7,6 +7,12 @@ void MovementManager::_ready()
   m_StairsAheadRayCast = character_component->get_stairs_ahead_raycast();
   m_FinalPos = m_CharacterHead->get_position().y - character_component->get_crouch_translate();
 
+  m_StepHandlerComponent = memnew(StepHandlerComponent(
+    StepHandlerData {
+      character_component, m_StairsBelowRaycast, m_StairsAheadRayCast, m_MovementStateCtx
+    }
+  ));
+
   set_physics_process(false);
   set_process(false);
   print_line_rich("[color=GREEN]Movement Manager Initialized");
@@ -43,110 +49,16 @@ void MovementManager::_physics_update(double delta)
 {
   if(m_MovementStateCtx.IsOnFloor)
   {
-    _last_frame_on_floor = Engine::get_singleton()->get_physics_frames();
+    m_MovementStateCtx.LastFrameOnFloor = Engine::get_singleton()->get_physics_frames();
   }
 
   character_component->_update_input(delta);
 
-  if(!_snap_up_stairs_check(delta))
+  if(!m_StepHandlerComponent->_snap_up_stairs_check(delta))
   {
     character_component->_update_velocity();
-    _snap_down_to_stairs_check();
+    m_StepHandlerComponent->_snap_down_to_stairs_check();
   }
-}
-
-void MovementManager::_snap_down_to_stairs_check()
-{
-  bool did_snap = false;
-  
-  m_StairsBelowRaycast->force_raycast_update();
-  
-  bool floor_below = m_StairsBelowRaycast->is_colliding() && !is_surface_too_steep(m_StairsBelowRaycast->get_collision_normal());
-  bool was_on_floor_last_frame = Engine::get_singleton()->get_physics_frames() - _last_frame_on_floor == 1;
-
-  if(!m_MovementStateCtx.IsOnFloor && m_MovementStateCtx.CharacterVelocity.y <= 0.0f && (was_on_floor_last_frame || _snapped_to_stairs_last_frame) && floor_below)
-  {
-    Ref<PhysicsTestMotionResult3D> body_test_result;
-    body_test_result.instantiate();
-    if(!body_test_result.is_valid())
-    {
-      print_error("body_test_result is invalid!");
-      return;
-    }
-
-    if(_run_body_test_motion(character_component->get_global_transform(), Vector3(0.0f, -MAX_STEP_HEIGHT, 0.0f), body_test_result))
-    {
-      float translate_y = body_test_result->get_travel().y;
-      Vector3 charPosition = character_component->get_position();
-      charPosition.y += translate_y;
-      character_component->apply_floor_snap();
-      did_snap = true;
-      character_component->set_position(charPosition);
-    }
-
-    _snapped_to_stairs_last_frame = did_snap;
-  }
-}
-
-bool MovementManager::_snap_up_stairs_check(double delta)
-{
-  if(m_MovementStateCtx.IsOnFloor)
-  {
-    Vector3 expected_move_pos = m_MovementStateCtx.CharacterVelocity * Vector3(1.0f, 0.0f, 1.0f) * delta; // Forward vector (x, z)
-    
-    Transform3D step_pos_with_clearance = character_component->get_global_transform().translated(expected_move_pos + Vector3(0.0f, MAX_STEP_HEIGHT * 2.0f, 0.0f));
-    
-    Ref<PhysicsTestMotionResult3D> down_check_result;
-    down_check_result.instantiate();
-    
-    bool result = _run_body_test_motion(step_pos_with_clearance, Vector3(0.0f, -MAX_STEP_HEIGHT * 2.0f, 0.0f), down_check_result);
-    
-    if(result)
-    {
-      float step_height = ((step_pos_with_clearance.get_origin() + down_check_result->get_travel()) - character_component->get_global_position()).y;
-      
-      if(step_height > MAX_STEP_HEIGHT || step_height <= 0.01f || (down_check_result->get_collision_point() - character_component->get_global_position()).y > MAX_STEP_HEIGHT)
-        return false;
-      
-      m_StairsAheadRayCast->set_global_position(down_check_result->get_collision_point() + Vector3(0.0f, MAX_STEP_HEIGHT, 0.0f) + expected_move_pos.normalized() * 0.1f);
-      m_StairsAheadRayCast->force_raycast_update();
-      
-      if(m_StairsAheadRayCast->is_colliding() && !is_surface_too_steep(m_StairsAheadRayCast->get_collision_normal()))
-      {
-        Vector3 reqPos = step_pos_with_clearance.get_origin() + down_check_result->get_travel();
-        
-        character_component->set_global_position(reqPos);
-        character_component->apply_floor_snap();
-        
-        _snapped_to_stairs_last_frame = true;
-        return true;
-      }
-    }
-  }
-
-  return false;
-  
-}
-
-bool MovementManager::_run_body_test_motion(Transform3D from, Vector3 motion, Ref<PhysicsTestMotionResult3D> result)
-{
-  Ref<PhysicsTestMotionParameters3D> params;
-
-  if(!result.is_valid())
-    result.instantiate();
-
-  params.instantiate();
-
-  if(!result.is_valid() || !params.is_valid())
-  {
-    print_error("PhysicsTestMotionResult3D is invalid or params are invalid!");
-    return false;
-  }
-
-  params->set_from(from);
-  params->set_motion(motion);
-
-  return PhysicsServer3D::get_singleton()->body_test_motion(character_component->get_rid(), params, result);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -345,4 +257,9 @@ void MovementManager::_dash(double delta)
   characterVel.z = m_DashDir.z * character_component->get_dash_speed();
 
   character_component->set_velocity(characterVel);
+}
+
+MovementManager::~MovementManager()
+{
+  memfree(m_StepHandlerComponent);
 }

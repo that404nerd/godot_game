@@ -23,6 +23,8 @@ struct MovementStateCtx
   Vector3 CharacterSlideVector = Vector3(0.0f, 0.0f, 0.0f);
   Vector3 CharacterHeadPos = Vector3(0.0f, 0.0f, 0.0f);
 
+  uint64_t LastFrameOnFloor = -INFINITY;
+
   float CharacterSprintSpeed = 0.0f;
   float SlideTimer = 0.0f;
   float DashCooldown { 0.0f };
