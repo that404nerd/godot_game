@@ -22,7 +22,7 @@ class WeaponComponent : public Node
 
 public:
 
-  void _ready() override
+  void _init()
   {
     set_physics_process(false);
     set_process(false);

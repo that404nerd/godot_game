@@ -6,6 +6,53 @@
 #include "../weapon_state_machine.h"
 #include "./weapon_effects_components.h"
 
+void CharacterComponent::_init()
+{
+  if(input_command_system)
+    input_command_system->_init();
+  else
+  {
+    print_line_rich("[color=RED]Input Command System failed to Initialize");
+    return;
+  }
+
+  if(movement_manager)
+    movement_manager->_init();
+  else
+  {
+    print_line_rich("[color=RED]Movement Manager failed to Initialize");
+    return;
+  }
+
+  if(movement_state_machine)
+    movement_state_machine->_init();
+  else {
+    print_line_rich("[color=RED]Movement State Machine failed to Initialize");
+    return;
+  }
+
+  if(weapon_manager)
+    weapon_manager->_init();
+  else {
+    print_line_rich("[color=RED]Weapon Manager failed to Initialize");
+    return;
+  }
+
+  if(weapon_state_machine)
+    weapon_state_machine->_init();
+  else {
+    print_line_rich("[color=RED]Movement Manager failed to Initialize");
+    return;
+  }
+
+  if(weapon_effects_component)
+    weapon_effects_component->_init();
+  else {
+    print_line_rich("[color=RED]Movement Manager failed to Initialize");
+    return;
+  }
+}
+
 void CharacterComponent::_bind_methods()
 {
   ADD_GROUP("Component Nodes", "");

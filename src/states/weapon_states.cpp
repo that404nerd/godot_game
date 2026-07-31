@@ -65,10 +65,7 @@ WeaponEquipState::WeaponEquipState(const WeaponStateData& weaponStateData)
 
 void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(m_CmdSystem->wants_to_shoot_weapon())
-  {
-    m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
-  }
+ 
 }
 
 void WeaponEquipState::_enter()

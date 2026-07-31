@@ -6,7 +6,7 @@ InputComponent::InputComponent()
 
 }
 
-void InputComponent::_ready()
+void InputComponent::_init()
 {
   set_physics_process(false);
   set_process(false);

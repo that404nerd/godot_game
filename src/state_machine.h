@@ -19,7 +19,7 @@ class StateMachine : public Node {
   GDCLASS(StateMachine, Node);
   
 public:
-  void _ready() override;
+  void _init();
 
   virtual void _init_data() {};
   virtual void _handle_state_machine_input(const Ref<InputEvent>& event) {};

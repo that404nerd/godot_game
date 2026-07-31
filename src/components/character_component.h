@@ -34,6 +34,7 @@ protected:
     These functions MUST be called in the _process(delta) and _physics_process(delta) functions in their respective inherited classes
     in order for the game movement and weapon mechanics and other components to function!!!
   */
+  void _init();
   void _update(double delta);
   void _physics_update(double delta);
 

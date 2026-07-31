@@ -92,17 +92,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58934367, 0)
 shape = SubResource("CapsuleShape3D_3vyb7")
 disabled = true
 
-[node name="MovementManager" type="MovementManager" parent="." unique_id=1615799341 node_paths=PackedStringArray("character_component", "input_command_system")]
-character_component = NodePath("..")
-input_command_system = NodePath("../InputComponent")
-unique_name_in_owner = true
-
 [node name="WeaponComponent" type="WeaponComponent" parent="." unique_id=1645035038]
 weapon_resource_list = Dictionary[Weapon, PackedScene]({
 ExtResource("4_ur7pv"): ExtResource("5_y4r1p"),
 ExtResource("6_d2wvv"): ExtResource("7_3v2ag"),
 ExtResource("8_jej6c"): ExtResource("9_f1ej7")
 })
+unique_name_in_owner = true
+
+[node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=29975295 node_paths=PackedStringArray("weapon_manager", "weapon_component")]
+weapon_manager = NodePath("../WeaponManager")
+weapon_component = NodePath("../WeaponComponent")
 unique_name_in_owner = true
 
 [node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("input_command_system", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
@@ -113,9 +113,17 @@ character_component = NodePath("..")
 hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionEffects/PlayerCamera/WeaponHoldPoint")
 unique_name_in_owner = true
 
-[node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=29975295 node_paths=PackedStringArray("weapon_manager", "weapon_component")]
+[node name="WeaponEffects" type="WeaponEffects" parent="." unique_id=1493144318 node_paths=PackedStringArray("hold_point_node", "movement_manager", "input_command_system", "weapon_manager", "character_component", "weapon_component")]
+hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionEffects/PlayerCamera/WeaponHoldPoint")
+movement_manager = NodePath("../MovementManager")
+input_command_system = NodePath("../InputComponent")
 weapon_manager = NodePath("../WeaponManager")
+character_component = NodePath("..")
 weapon_component = NodePath("../WeaponComponent")
+
+[node name="MovementManager" type="MovementManager" parent="." unique_id=1615799341 node_paths=PackedStringArray("character_component", "input_command_system")]
+character_component = NodePath("..")
+input_command_system = NodePath("../InputComponent")
 unique_name_in_owner = true
 
 [node name="InputComponent" type="InputComponent" parent="." unique_id=1295549383]
@@ -124,11 +132,3 @@ unique_name_in_owner = true
 character_component = NodePath("..")
 movement_manager = NodePath("../MovementManager")
 unique_name_in_owner = true
-
-[node name="WeaponEffects" type="WeaponEffects" parent="." unique_id=1493144318 node_paths=PackedStringArray("hold_point_node", "movement_manager", "input_command_system", "weapon_manager", "character_component", "weapon_component")]
-hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionEffects/PlayerCamera/WeaponHoldPoint")
-movement_manager = NodePath("../MovementManager")
-input_command_system = NodePath("../InputComponent")
-weapon_manager = NodePath("../WeaponManager")
-character_component = NodePath("..")
-weapon_component = NodePath("../WeaponComponent")

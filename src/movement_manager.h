@@ -24,7 +24,7 @@ class MovementManager : public Node {
   GDCLASS(MovementManager, Node);
 
 public:
-  void _ready() override;
+  void _init();
   void _update(double delta);
   void _physics_update(double delta);
 

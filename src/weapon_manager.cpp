@@ -1,6 +1,6 @@
 #include "weapon_manager.h"
 
-void WeaponManager::_ready()
+void WeaponManager::_init()
 {
   set_physics_process(false);
   set_process(false);

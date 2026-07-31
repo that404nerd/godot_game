@@ -1,6 +1,6 @@
 #include "movement_manager.h"
 
-void MovementManager::_ready()
+void MovementManager::_init()
 {
   m_CharacterHead = character_component->get_character_head();
   m_StairsBelowRaycast = character_component->get_stairs_below_raycast();

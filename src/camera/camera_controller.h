@@ -26,8 +26,7 @@ public:
 
   void _ready() override;
   void _physics_process(double delta) override;
-  
-  void _apply_fov(double delta);
+
   void _tilt_player(double delta);
   void _land_shake(double delta);
   void _headbob_effect(double delta);

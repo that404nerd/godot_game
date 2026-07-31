@@ -151,7 +151,7 @@ class WeaponEffects : public Node
 {
   GDCLASS(WeaponEffects, Node);
 public:
-  void _ready() override;
+  void _init();
   void _init_data(const WeaponEffectsData& weaponEffectsData);
 
   void _on_weapon_switched(Ref<Weapon> currentWeapon);

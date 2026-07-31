@@ -42,7 +42,7 @@ class WeaponManager : public Node {
   GDCLASS(WeaponManager, Node);
 
 public:
-  void _ready() override;
+  void _init();
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _update(double delta);
   void _physics_update(double delta);

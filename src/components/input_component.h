@@ -18,7 +18,7 @@ public:
 
   InputComponent();
 
-  void _ready() override;
+  void _init() override;
   void _input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
 

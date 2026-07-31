@@ -1,6 +1,6 @@
 #include "state_machine.h"
 
-void StateMachine::_ready()
+void StateMachine::_init()
 {
   _init_data();
   if(m_InitialState) {

@@ -10,6 +10,7 @@ void Player::_bind_methods()
 
 void Player::_ready()
 {
+  _init();
 }
 
 void Player::_unhandled_input(const Ref<InputEvent>& event)

@@ -97,20 +97,6 @@ void CameraController::_tilt_player(double delta)
   }
 }
 
-void CameraController::_apply_fov(double delta)
-{
-  float camFov = 0.0f;
-
-  if(movement_manager->IsSliding())
-  {
-    camFov = slide_fov;
-  } else {
-    camFov = m_OriginalFOV;
-  }
-
-  character_camera->set_fov(Utils::exp_decay(character_camera->get_fov(), camFov, sprint_fov_zoom_out_transition_value, (float)delta));
-}
-
 void CameraController::_land_shake(double delta)
 {
 
@@ -118,7 +104,6 @@ void CameraController::_land_shake(double delta)
 
 void CameraController::_physics_process(double delta) 
 {
-  // _apply_fov(delta);
   _tilt_player(delta);
   _headbob_effect(delta);
   _land_shake(delta);

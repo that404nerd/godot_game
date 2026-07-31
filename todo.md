@@ -46,3 +46,4 @@
 - Remove the weapon scene reference from the weapon resource and make the weapon component instead hold a TypedDictionary with key Weapon Reource and value PackedScene for the weapon scene [x]
 - Rename the actual _physics_process() and _process() in CharacterComponent class and make every inherited class to first call those base functions [x]
 - Move the HUD from the player to the main game scene and let the main scene have the player reference [x]
+- Fix a bug where shooting during the start of the game plays the shoot animation without equipping [x]

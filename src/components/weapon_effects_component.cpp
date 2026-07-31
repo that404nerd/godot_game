@@ -298,7 +298,7 @@ void WeaponSlideEffect::_weapon_slide_effect(double delta)
 }
 
 
-void WeaponEffects::_ready()
+void WeaponEffects::_init()
 {
   set_physics_process(false); 
   set_process(false);
