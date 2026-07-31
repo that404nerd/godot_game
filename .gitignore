@@ -8,6 +8,7 @@ assets/**/*.import
 assets/meshes/**/*.png
 assets/meshes/**/*.jpg
 assets/meshes/**/*.import
+export_presets.cfg
 
 # folders
 build/

@@ -1,4 +1,7 @@
 cmake_minimum_required( VERSION 3.26 )
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebugDLL")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 cmake_policy(SET CMP0177 NEW)
 
 message( STATUS "Using CMake ${CMAKE_VERSION}" )
@@ -69,6 +72,15 @@ set_target_properties( ${PROJECT_NAME}
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 	string(REPLACE "-fno-gnu-unique" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 	string(REPLACE "-fno-gnu-unique" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+endif()
+
+if(MSVC)
+    target_compile_options(FPSProject PRIVATE 
+        /wd4244 # Conversion warning (loss of data)
+        /wd4201 # Nameless struct/union (common in godot-cpp math types)
+        /wd4267 # Conversion from size_t to smaller type
+        /wd4005 # Macro redefinition (e.g., _CONCAT in globals.h)
+    )
 endif()
 
 if( NOT DEFINED CMAKE_DEBUG_POSTFIX )

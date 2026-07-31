@@ -1,39 +1,49 @@
 [gd_scene format=4 uid="uid://bjsvgv2vhrh57"]
 
-[ext_resource type="Texture2D" uid="uid://n52h0bh504d1" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp_industrial_wall_lamp_diff_2k.jpg" id="1_8iq6l"]
-[ext_resource type="Texture2D" uid="uid://b2souqgqx5e5b" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp_industrial_wall_lamp_emissive_2k.png" id="2_t5d5h"]
-[ext_resource type="Texture2D" uid="uid://be3anqan5kn41" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp_industrial_wall_lamp_nor_gl.png" id="4_r33na"]
-[ext_resource type="Texture2D" uid="uid://cn78o3f827jvc" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp_industrial_wall_lamp_glass_diff-industrial_wall_lamp_glass_alpha.png" id="5_h41xv"]
-[ext_resource type="Material" uid="uid://kkofn8qbg5al" path="res://assets/materials/industrial_wall_lamp/lamp_0.tres" id="6_8iq6l"]
-[ext_resource type="Texture2D" uid="uid://kymcnb34eqwl" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp_industrial_wall_lamp_glass_nor_gl_2k.png" id="7_7ii5j"]
-[ext_resource type="Material" uid="uid://x754ms6ylygm" path="res://assets/materials/industrial_wall_lamp/lamp_1.tres" id="7_t5d5h"]
+[ext_resource type="Material" uid="uid://dl464t5p4j2g4" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp.tres" id="6_8iq6l"]
+[ext_resource type="Material" uid="uid://b5lrigxa8s7x8" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp_glass.tres" id="7_t5d5h"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kfp3r"]
 radius = 0.25927734
 height = 0.8635826
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_nxbnk"]
+load_path = "res://.godot/imported/industrial_wall_lamp_industrial_wall_lamp_diff_2k.jpg-f0991074017cfee1790cf43e09db4863.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_boo3g"]
+load_path = "res://.godot/imported/industrial_wall_lamp_industrial_wall_lamp_emissive_2k.png-1db20c94195247435eb98186efaf12e7.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_611l5"]
+load_path = "res://.godot/imported/industrial_wall_lamp_industrial_wall_lamp_nor_gl.png-18800c779329d7e6454481291216b94a.s3tc.ctex"
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_im5dw"]
 resource_name = "industrial_wall_lamp"
 cull_mode = 2
-albedo_texture = ExtResource("1_8iq6l")
+albedo_texture = SubResource("CompressedTexture2D_nxbnk")
 metallic = 0.2
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
 emission_energy_multiplier = 100.0
 emission_operator = 1
-emission_texture = ExtResource("2_t5d5h")
+emission_texture = SubResource("CompressedTexture2D_boo3g")
 normal_enabled = true
-normal_texture = ExtResource("4_r33na")
+normal_texture = SubResource("CompressedTexture2D_611l5")
 metadata/_gltf_primary_texture_coord = 0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jivoc"]
+load_path = "res://.godot/imported/industrial_wall_lamp_industrial_wall_lamp_glass_diff-industrial_wall_lamp_glass_alpha.png-92403006e250efd4062e5cf54c7af909.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0wq45"]
+load_path = "res://.godot/imported/industrial_wall_lamp_industrial_wall_lamp_glass_nor_gl_2k.png-bf48a56854632dc921bbf13162eb0ed1.s3tc.ctex"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2e51x"]
 resource_name = "industrial_wall_lamp_glass"
 transparency = 4
 cull_mode = 2
-albedo_texture = ExtResource("5_h41xv")
+albedo_texture = SubResource("CompressedTexture2D_jivoc")
 metallic = 1.0
 normal_enabled = true
-normal_texture = ExtResource("7_7ii5j")
+normal_texture = SubResource("CompressedTexture2D_0wq45")
 metadata/_gltf_primary_texture_coord = 0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_2qcrb"]

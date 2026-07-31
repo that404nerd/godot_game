@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://b5lrigxa8s7x8"]
+
+[ext_resource type="Texture2D" uid="uid://dl8s3dh1ypt2v" path="res://assets/meshes/industrial_wall_lamp/textures/industrial_wall_lamp_glass_diff_2k.png" id="1_oj270"]
+[ext_resource type="Texture2D" uid="uid://bi8wn5q16ukbv" path="res://assets/meshes/industrial_wall_lamp/textures/industrial_wall_lamp_glass_nor_gl_2k.png" id="2_kt4eq"]
+[ext_resource type="Texture2D" uid="uid://blbyjnaleuumv" path="res://assets/meshes/industrial_wall_lamp/textures/industrial_wall_lamp_glass_rough_2k.png" id="3_bqhn0"]
+
+[resource]
+albedo_texture = ExtResource("1_oj270")
+metallic = 1.0
+roughness = 0.0
+roughness_texture = ExtResource("3_bqhn0")
+normal_enabled = true
+normal_texture = ExtResource("2_kt4eq")
+refraction_enabled = true
+refraction_texture_channel = 3
