@@ -40,7 +40,7 @@ private:
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
 
-  InputCommandSystem* m_CmdSystem { nullptr };
+  InputCommandSystem* m_InputCmdSystem { nullptr };
   WeaponStateData m_WeaponStateData;
   Ref<Weapon> m_CurrentWeapon { nullptr };
 };

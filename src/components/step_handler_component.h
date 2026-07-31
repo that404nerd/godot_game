@@ -22,7 +22,26 @@ class StepHandlerComponent
 {
 public:
 
-  StepHandlerComponent(StepHandlerData stepHandlerData) : m_StepHandlerData(stepHandlerData) {};
+  StepHandlerComponent(StepHandlerData stepHandlerData) : m_StepHandlerData(stepHandlerData) 
+  {
+    if(stepHandlerData.CharacterCompInst == nullptr)
+    {
+      print_line_rich("[color=WHITE][StepHandler Component]: [color=RED]Character Component is null");
+      return;
+    }
+
+    if(stepHandlerData.StairsAheadRaycast == nullptr)
+    {
+      print_line_rich("[color=WHITE][StepHandler Component]: [color=RED]Stairs Ahead Raycast is null");
+      return;
+    }
+
+    if(stepHandlerData.StairsBelowRaycast == nullptr)
+    {
+      print_line_rich("[color=WHITE][StepHandler Component]: [color=RED]Stairs Below Raycast is null");
+      return;
+    }
+  }
 
   bool is_surface_too_steep(Vector3 normal) { return normal.angle_to(Vector3(0.0f, 1.0f, 0.0f)) > m_StepHandlerData.CharacterCompInst->get_floor_max_angle(); };
   bool _run_body_test_motion(Transform3D from, Vector3 motion, Ref<PhysicsTestMotionResult3D> result);

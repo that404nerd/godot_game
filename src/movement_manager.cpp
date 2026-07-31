@@ -13,6 +13,21 @@ void MovementManager::_init()
     }
   ));
 
+  if(m_StepHandlerComponent == nullptr)
+    print_line_rich("[color=WHITE][Movement Manager]: [color=RED]Step Handler Component is null");
+
+  if(character_component == nullptr)
+  {
+    print_line_rich("[color=WHITE][Movement Manager]: [color=RED]Character Component is null");
+    return;
+  }
+
+  if(input_command_system == nullptr)
+  {
+    print_line_rich("[color=WHITE][Movement Manager]: [color=RED]Input Command System is null");
+    return;
+  }
+
   set_physics_process(false);
   set_process(false);
   print_line_rich("[color=GREEN]Movement Manager Initialized");
@@ -54,7 +69,7 @@ void MovementManager::_physics_update(double delta)
 
   character_component->_update_input(delta);
 
-  if(!m_StepHandlerComponent->_snap_up_stairs_check(delta))
+  if(m_StepHandlerComponent && !m_StepHandlerComponent->_snap_up_stairs_check(delta))
   {
     character_component->_update_velocity();
     m_StepHandlerComponent->_snap_down_to_stairs_check();
@@ -261,5 +276,6 @@ void MovementManager::_dash(double delta)
 
 MovementManager::~MovementManager()
 {
-  memfree(m_StepHandlerComponent);
+  if(m_StepHandlerComponent)
+    memfree(m_StepHandlerComponent);
 }

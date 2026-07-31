@@ -19,8 +19,8 @@ void WeaponStateMachine::_init_data()
   
   m_InitialState = m_States.at(static_cast<int>(WeaponStates::EQUIP)).get();
 
-  m_CmdSystem = weapon_manager->get_input_command_system_instance();
-  m_CmdSystem->set_weapon_list_size(weapon_component->get_weapon_list().size());
+  m_InputCmdSystem = weapon_manager->get_input_command_system_instance();
+  m_InputCmdSystem->set_weapon_list_size(weapon_component->get_weapon_list().size());
 
 
   print_line_rich("[color=GREEN]Weapon State Machine Initialized");
@@ -37,10 +37,16 @@ void WeaponStateMachine::_bind_methods()
 
 void WeaponStateMachine::_handle_state_machine_input(const Ref<InputEvent>& event)
 {
-  if(m_CmdSystem->wants_to_switch_weapon())
+  if(!m_InputCmdSystem)
+  {
+    print_line_rich("[color=WHITE][Weapon State Machine]: [color=RED]Input Command System failed to Initialize");
+    return;
+  }
+
+  if(m_InputCmdSystem->wants_to_switch_weapon())
   {
     weapon_manager->get_weapon_state_ctx().IsReloading = false;
-    weapon_manager->_switch_weapon_data(m_CmdSystem->get_weapon_idx());
+    weapon_manager->_switch_weapon_data(m_InputCmdSystem->get_weapon_idx());
     _change_state(static_cast<int>(WeaponStates::UNEQUIP));
   }
 }

@@ -41,6 +41,32 @@ void WeaponManager::_init()
   Path2D* path = Object::cast_to<Path2D>(pathNode);
 
   m_RecoilCurve = path->get_curve();
+
+  if(input_command_system == nullptr)
+  {
+    print_line_rich("[color=WHITE][Weapon Manager]: [color=RED]Input Command System is null");
+    return;
+  }
+
+  if(weapon_state_machine == nullptr)
+  {
+    print_line_rich("[color=WHITE][Weapon Manager]: [color=RED]Weapon State Machine is null");
+    return;
+  }
+
+  if(weapon_component == nullptr)
+  {
+    print_line_rich("[color=WHITE][Weapon Manager]: [color=RED]Weapon Component is null");
+    return;
+  }
+
+  if(hold_point_node == nullptr)
+  {
+    print_line_rich("[color=WHITE][Weapon Manager]: [color=RED]HoldPoint Node is null");
+    return;
+  }
+
+
   print_line_rich("[color=GREEN]Weapon Manager Initialized");
 }
 

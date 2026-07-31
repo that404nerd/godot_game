@@ -58,7 +58,7 @@ public:
 protected:
   MovementStateMachine* m_MovementStateMachine { nullptr };
   MovementManager* m_MovementManager { nullptr };
-  InputCommandSystem* m_CmdSystem { nullptr };
+  InputCommandSystem* m_InputCmdSystem { nullptr };
   const MovementStateCtx& m_MovementStateCtx;
 };
 

@@ -36,7 +36,7 @@ protected:
   WeaponManager* m_WeaponManager { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
   const WeaponStateContext& m_WeaponStateContext;
-  InputCommandSystem* m_CmdSystem { nullptr };
+  InputCommandSystem* m_InputCmdSystem { nullptr };
 };
 
 ///////////////////////////// Weapon States Declaration //////////////////////////////////
