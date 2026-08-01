@@ -1,4 +1,3 @@
-#include "godot_cpp/classes/node3d.hpp"
 #include "weapon_effects_components.h"
 #include "../weapon_manager.h"
 
@@ -298,34 +297,145 @@ void WeaponSlideEffect::_weapon_slide_effect(double delta)
 }
 
 
+//////////////////////////// Weapon Action Effects ///////////////////////////////
+void WeaponActionEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
+{
+  m_WeaponManager = weaponEffectsData.WeaponManagerInst;
+  m_WeaponComponent = weaponEffectsData.WeaponCompInst;
+
+  m_CurrentWeapon = m_WeaponManager->get_current_weapon();
+  m_CurrentSkeleton = m_WeaponManager->get_armature_skeleton();
+
+  StringName boneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
+  m_BoneID = m_CurrentSkeleton->find_bone(boneName);
+
+  m_RecoilCurve = m_WeaponManager->get_recoil_curve();
+
+  EventBus::get_singleton()->connect("weapon_fired", Callable(this, "_on_weapon_fired"));
+  EventBus::get_singleton()->connect("weapon_reload_start", Callable(this, "_on_weapon_reload_start"));
+}
+
+void WeaponActionEffects::_bind_methods()
+{
+  ClassDB::bind_method(D_METHOD("_on_weapon_fired", "recoilCurve"), &WeaponActionEffects::_on_weapon_fired);
+  ClassDB::bind_method(D_METHOD("_on_weapon_reload_start", "skeleton3D"), &WeaponActionEffects::_on_weapon_reload_start);  
+}
+
+void WeaponActionEffects::_on_weapon_reload_start(Skeleton3D* skeleton3D)
+{
+  StringName boneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
+  m_BoneID = skeleton3D->find_bone(boneName);
+  m_CurrentSkeleton = skeleton3D;
+}
+
+void WeaponActionEffects::_on_weapon_fired(Ref<Curve2D> recoilCurve)
+{
+  m_RecoilCurve = recoilCurve;
+
+  m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count) - m_CurveOrigin;
+  m_Count++;
+}
+
+void WeaponActionEffects::_weapon_recoil_effect(double delta)
+{
+  if(m_WeaponManager)
+  {
+    // Shift everything to (0, 0)
+    m_RecoilCurve = m_WeaponManager->get_recoil_curve();
+    m_CurveOrigin = m_RecoilCurve->get_point_position(0);
+
+    m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count) - m_CurveOrigin;
+  }
+
+  if(m_RecoilCurve.is_valid())
+  {
+    m_DampedSpring.CalcDampedSpringMotionParams(delta, m_CurrentWeapon->get_recoil_ang_freq(), m_CurrentWeapon->get_recoil_damping_ratio());
+    m_DampedSpring.UpdateDampedSpringMotion(m_RecoilSpringRot, m_RecoilVel, Vector3(-(m_RecoilEqPos.y * m_CurrentWeapon->get_recoilMultiplier()), 
+                                                                                    -(m_RecoilEqPos.x * m_CurrentWeapon->get_recoilMultiplier()), 0.0f));
+
+    if(m_Count >= m_RecoilCurve->get_point_count() - 1 || !m_WeaponManager->IsWeaponFiring())
+    {
+      m_Count = 0;
+      m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count);
+    }
+  }
+}
+
+void WeaponActionEffects::_weapon_reload_effect(double delta)
+{
+ if(m_BoneID != -1)
+  {
+    m_ReloadBoneTransform = m_CurrentSkeleton->get_bone_pose(m_BoneID);
+  }
+
+  if(m_WeaponManager->get_weapon_state_ctx().IsReloading)
+  {
+    m_ReloadBoneRot = m_ReloadBoneTransform.basis.get_euler();
+  }
+ 
+  m_ReloadBoneRot = Utils::exp_decay(m_ReloadBoneRot, Vector3(0.0f, 0.0f, 0.0f), m_CurrentWeapon->get_reloadShakeResetMultiplier(), delta);
+  m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
+}
+
+void WeaponActionEffects::_update(double delta)
+{
+  if(m_WeaponComponent == nullptr || m_WeaponManager == nullptr)
+  {
+    print_error("Weapon component or weapon manager is null!");
+    return;
+  }
+
+  m_CurrentWeapon = m_WeaponComponent->get_current_weapon_data();
+
+  _weapon_recoil_effect(delta);
+  _weapon_reload_effect(delta);
+  
+  m_WeaponActionEffectsRot = m_RecoilSpringRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier());
+}
+
+
+////////////////////////// Weapon Effects ///////////////////////////////
 void WeaponEffects::_init()
 {
   set_physics_process(false); 
   set_process(false);
 
+  m_WeaponActionsEffectsComp = memnew(WeaponActionEffects());
+  m_BasePos = hold_point_node->get_position();
+  m_BaseRot = hold_point_node->get_rotation();
+  
+
   _init_data({
     .HoldPointNode = hold_point_node,
+    .ActionEffectsHolderNode = weapon_actions_effect_holder,
     .MovementManagerInst = movement_manager,
     .WeaponManagerInst = weapon_manager,
     .CharacterCompInst = character_component,
     .WeaponCompInst = weapon_component
   });
-
+  
   EventBus::get_singleton()->connect("weapon_switched", Callable(this, "_on_weapon_switched"));
 
   print_line_rich("[color=GREEN]Weapon Effects Component Initialized");
 }
 
-void WeaponEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
+void WeaponEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
-  _update_data(currentWeapon);
+  m_WeaponActionsEffectsComp->_init_data(weaponEffectsData);
+  m_WeaponBobComponent._init_data(weaponEffectsData);
+  m_WeaponSwayComponent._init_data(weaponEffectsData);
+  m_WeaponJumpComponent._init_data(weaponEffectsData);
+  m_WeaponSlideComponent._init_data(weaponEffectsData);
 }
+
 
 void WeaponEffects::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_weapon_switched", "currentWeapon"), &WeaponEffects::_on_weapon_switched);
 
+  
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, weapon_actions_effect_holder, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -333,18 +443,9 @@ void WeaponEffects::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
-void WeaponEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
+void WeaponEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
 {
-  m_HoldPointNode = weaponEffectsData.HoldPointNode;
-  m_WeaponManager = weaponEffectsData.WeaponManagerInst;
-
-  m_BasePos = m_HoldPointNode->get_position();
-  m_BaseRot = m_HoldPointNode->get_rotation();
-
-  m_WeaponBobComponent._init_data(weaponEffectsData);
-  m_WeaponSwayComponent._init_data(weaponEffectsData);
-  m_WeaponJumpComponent._init_data(weaponEffectsData);
-  m_WeaponSlideComponent._init_data(weaponEffectsData);
+  _update_data(currentWeapon);
 }
 
 void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
@@ -358,18 +459,20 @@ void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
 void WeaponEffects::_update(double delta)
 {
   m_MouseVel = Vector3(input_command_system->get_mouse_vel().x, input_command_system->get_mouse_vel().y, 0.0f);
-
+  
+  m_WeaponActionsEffectsComp->_update(delta);
   m_WeaponSwayComponent.weapon_idle_sway(delta);
   m_WeaponSwayComponent.weapon_sway(delta, m_MouseVel);
   m_WeaponBobComponent.weapon_bob(delta);
   m_WeaponJumpComponent._weapon_jump_effect(delta);
   m_WeaponSlideComponent._weapon_slide_effect(delta);
 
-  m_WeaponArmatureNode = m_WeaponManager->get_weapon_armature_node();
+  m_WeaponArmatureNode = weapon_manager->get_weapon_armature_node();
+  m_WeaponActionsEffectsRot = m_WeaponActionsEffectsComp->get_actions_effects_rot();
 
-  if (!m_HoldPointNode) return;
+  if (!hold_point_node) return;
 
-  m_HoldPointNode->set_position(
+  hold_point_node->set_position(
     m_BasePos +
     m_WeaponSwayComponent.get_sway_offset() +
     m_WeaponBobComponent.get_weapon_bob_offset());
@@ -385,5 +488,13 @@ void WeaponEffects::_update(double delta)
   );
 
   Vector3 holdPointRot = Vector3(m_BaseRot + m_WeaponSwayComponent.get_idle_sway_offset());
-  m_HoldPointNode->set_rotation(holdPointRot);
+
+  hold_point_node->set_rotation(holdPointRot);
+
+  weapon_actions_effect_holder->set_rotation(m_WeaponActionsEffectsRot);
+}
+
+WeaponEffects::~WeaponEffects()
+{
+  memfree(m_WeaponActionsEffectsComp);
 }

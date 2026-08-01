@@ -44,7 +44,7 @@ velocity = Vector3(0, -689.29645, 0)
 
 [node name="CameraController" type="CameraController" parent="." unique_id=459137490 node_paths=PackedStringArray("movement_manager", "character_camera", "character_component")]
 movement_manager = NodePath("../MovementManager")
-character_camera = NodePath("PlayerHead/WeaponActionEffects/PlayerCamera")
+character_camera = NodePath("PlayerHead/WeaponActionsEffectHolder/PlayerCamera")
 character_component = NodePath("..")
 slide_fov = 85.0
 sprint_fov_zoom_out_transition_value = 4.0
@@ -57,18 +57,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
 
 [node name="PlayerHead" type="Node3D" parent="CameraController" unique_id=1010004094]
 
-[node name="WeaponActionEffects" type="WeaponActionEffects" parent="CameraController/PlayerHead" unique_id=1073464857 node_paths=PackedStringArray("weapon_component", "weapon_manager", "movement_manager")]
-weapon_component = NodePath("../../../WeaponComponent")
-weapon_manager = NodePath("../../../WeaponManager")
-movement_manager = NodePath("../../../MovementManager")
+[node name="WeaponActionsEffectHolder" type="Node3D" parent="CameraController/PlayerHead" unique_id=1378909620]
 
-[node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead/WeaponActionEffects" unique_id=27902470]
+[node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead/WeaponActionsEffectHolder" unique_id=27902470]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.11343908, -0.26044202)
 current = true
 near = 0.001
 
-[node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/WeaponActionEffects/PlayerCamera" unique_id=1899973665]
+[node name="WeaponHoldPoint" type="Node3D" parent="CameraController/PlayerHead/WeaponActionsEffectHolder/PlayerCamera" unique_id=1899973665]
 
 [node name="RayCasts" type="Node3D" parent="." unique_id=2101439493]
 
@@ -110,11 +107,12 @@ input_command_system = NodePath("../InputComponent")
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
 character_component = NodePath("..")
-hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionEffects/PlayerCamera/WeaponHoldPoint")
+hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionsEffectHolder/PlayerCamera/WeaponHoldPoint")
 unique_name_in_owner = true
 
-[node name="WeaponEffects" type="WeaponEffects" parent="." unique_id=1493144318 node_paths=PackedStringArray("hold_point_node", "movement_manager", "input_command_system", "weapon_manager", "character_component", "weapon_component")]
-hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionEffects/PlayerCamera/WeaponHoldPoint")
+[node name="WeaponEffects" type="WeaponEffects" parent="." unique_id=1493144318 node_paths=PackedStringArray("hold_point_node", "weapon_actions_effect_holder", "movement_manager", "input_command_system", "weapon_manager", "character_component", "weapon_component")]
+hold_point_node = NodePath("../CameraController/PlayerHead/WeaponActionsEffectHolder/PlayerCamera/WeaponHoldPoint")
+weapon_actions_effect_holder = NodePath("../CameraController/PlayerHead/WeaponActionsEffectHolder")
 movement_manager = NodePath("../MovementManager")
 input_command_system = NodePath("../InputComponent")
 weapon_manager = NodePath("../WeaponManager")

@@ -2,11 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_bdfqo"]
 [ext_resource type="PackedScene" uid="uid://dvwi6iu4xe710" path="res://assets/weapon_resources/recoil_patterns/recoil_rifle.tscn" id="2_687w1"]
-[ext_resource type="PackedScene" uid="uid://1oiq6mop2pvk" path="res://assets/weapon_scenes/rifle.tscn" id="2_ck3av"]
 
 [resource]
 weaponName = "Rifle"
-weaponScene = ExtResource("2_ck3av")
 totalAmmoCount = 180
 magAmmoCount = 30
 weaponFOV = 55.0

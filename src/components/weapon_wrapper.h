@@ -2,6 +2,7 @@
 
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/node3d.hpp>
+#include <godot_cpp/classes/marker3d.hpp>
 #include <godot_cpp/classes/skeleton3d.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 
@@ -11,12 +12,6 @@ using namespace godot;
 
 class WeaponWrapper : public Node3D {
   GDCLASS(WeaponWrapper, Node3D);
-
-public:
-  void _ready() override
-  {
-
-  }
 
 protected:
   static void _bind_methods()

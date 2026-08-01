@@ -50,7 +50,6 @@ normal_enabled = true
 normal_texture = ExtResource("3_2d33d")
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iuafh"]
@@ -230,7 +229,6 @@ normal_enabled = true
 normal_texture = ExtResource("5_1f5yj")
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jrtg2"]
@@ -259,8 +257,9 @@ blend_shape_mode = 0
 
 [node name="Pistol" type="Node3D" unique_id=22962097]
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("muzzle_flash_component", "armature_skeleton", "armature_node", "weapon_anim_player")]
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("muzzle_flash_component", "muzzle_flash_position_point", "armature_skeleton", "armature_node", "weapon_anim_player")]
 muzzle_flash_component = NodePath("gun_pistol/Armature/MuzzleFlashComponent")
+muzzle_flash_position_point = NodePath("")
 armature_skeleton = NodePath("gun_pistol/Armature/Skeleton3D")
 armature_node = NodePath("gun_pistol/Armature")
 weapon_anim_player = NodePath("AnimationPlayer")
@@ -281,7 +280,7 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.10
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_pistol/Armature" unique_id=219364471 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
 gpu_particles_inst = NodePath("GPUParticles3D")
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.14299995, 0.15900001, 0.668)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.0021046996, 0.17326543, 0.55258894)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_pistol/Armature/MuzzleFlashComponent" unique_id=601494058]
 visible = false

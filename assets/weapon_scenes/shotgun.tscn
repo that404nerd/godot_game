@@ -49,7 +49,6 @@ normal_enabled = true
 normal_texture = ExtResource("3_hnpij")
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u8ru2"]
@@ -226,7 +225,6 @@ normal_enabled = true
 normal_texture = ExtResource("4_yyh7y")
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0st5a"]
@@ -261,9 +259,10 @@ armature_skeleton = NodePath("gun_shotgun/Armature/Skeleton3D")
 armature_node = NodePath("gun_shotgun/Armature")
 weapon_anim_player = NodePath("AnimationPlayer")
 mesh_instances = [NodePath("gun_shotgun/Armature/Skeleton3D/arm"), NodePath("gun_shotgun/Armature/Skeleton3D/boomstick")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.144, -0.111, -0.13)
 
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=945955197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0551762, 0.0214645, 0.18502736)
+transform = Transform3D(0.5224984, -0.13338219, 0.8421429, 0, 0.98768836, 0.1564343, -0.8526403, -0.08173668, 0.5160656, -0.009978771, -0.15890777, 0.22546744)
 visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="WeaponWrapper" unique_id=128986582]
@@ -271,14 +270,14 @@ root_node = NodePath("../gun_shotgun")
 libraries/ = ExtResource("9_5blxk")
 
 [node name="gun_shotgun" type="Node3D" parent="WeaponWrapper" unique_id=657098799]
-transform = Transform3D(-0.7, 0, 6.119594e-08, 0, 0.7, 0, -6.119594e-08, 0, -0.7, 0.085, -0.106, -0.163)
+transform = Transform3D(-0.7, 0, 1.0569706e-07, 0, 0.7, 0, -1.0569706e-07, 0, -0.7, 0, 0, 0)
 
 [node name="Armature" type="Node3D" parent="WeaponWrapper/gun_shotgun" unique_id=1775927508]
 
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_shotgun/Armature" unique_id=1747293851 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
 gpu_particles_inst = NodePath("GPUParticles3D")
-transform = Transform3D(-1.4285715, 0, -1.2488968e-07, 0, 1.4285715, 0, 1.2488968e-07, 0, -1.4285715, -0.20714277, 0.014285713, 1.0114286)
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 1.2726064, -0.20257911, -0.00675489)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_shotgun/Armature/MuzzleFlashComponent" unique_id=1252502553]
 visible = false

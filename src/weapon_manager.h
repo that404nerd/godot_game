@@ -17,6 +17,7 @@
 #include <godot_cpp/classes/gpu_particles3d.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
 #include <godot_cpp/classes/omni_light3d.hpp>
+#include <godot_cpp/classes/base_material3d.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/templates/vector.hpp>
 
@@ -105,6 +106,7 @@ public:
   Ref<Weapon> get_current_weapon() { return m_CurrentWeapon; }
 
   Node3D* get_weapon_armature_node() { return m_WeaponWrapperInst->get_armature_node(); }
+  Skeleton3D* get_armature_skeleton() { return m_Skeleton3D; }
 
   Vector<Node3D*> get_weapon_nodes() { return m_WeaponNodes; }
 

@@ -32,7 +32,6 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("CameraController")) GDREGISTER_RUNTIME_CLASS(CameraController); 
 
   if(!ClassDB::class_exists("Weapon")) GDREGISTER_CLASS(Weapon);
-  if(!ClassDB::class_exists("WeaponActionEffects")) GDREGISTER_RUNTIME_CLASS(WeaponActionEffects);
 
   if(!ClassDB::class_exists("StateMachine")) GDREGISTER_RUNTIME_CLASS(StateMachine);
   if(!ClassDB::class_exists("MovementStateMachine")) GDREGISTER_RUNTIME_CLASS(MovementStateMachine);
@@ -44,6 +43,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   // Components
   if(!ClassDB::class_exists("InputComponent")) GDREGISTER_RUNTIME_CLASS(InputComponent);
   if(!ClassDB::class_exists("WeaponEffects")) GDREGISTER_RUNTIME_CLASS(WeaponEffects);
+  if(!ClassDB::class_exists("WeaponActionEffects")) GDREGISTER_RUNTIME_CLASS(WeaponActionEffects);
   if(!ClassDB::class_exists("WeaponWrapper")) GDREGISTER_CLASS(WeaponWrapper);
   if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
   if(!ClassDB::class_exists("MuzzleFlashComponent")) GDREGISTER_CLASS(MuzzleFlashComponent);

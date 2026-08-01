@@ -148,7 +148,8 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
           mesh->set_surface_override_material(surfaceMaterials, material);
           
           m_StdMaterial = material;
-          if (m_StdMaterial.is_valid()) {
+          if(m_StdMaterial.is_valid()) {
+            m_StdMaterial->set_flag(BaseMaterial3D::FLAG_USE_FOV_OVERRIDE, true);
             m_StdMaterial->set_fov_override(m_CurrentWeapon->get_weaponFOV());
           }
         }
@@ -160,7 +161,10 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
         
         m_StdMaterial = material;
         if(m_StdMaterial.is_valid())
+        {
+          m_StdMaterial->set_flag(BaseMaterial3D::FLAG_USE_FOV_OVERRIDE, true);
           m_StdMaterial->set_fov_override(m_CurrentWeapon->get_weaponFOV());
+        }
       }
     }
   }
@@ -196,7 +200,7 @@ void WeaponManager::_update(double delta)
 {
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
-  
+
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
   input_command_system->set_max_hold_time(m_HoldMaxTime);
   

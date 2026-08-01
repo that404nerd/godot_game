@@ -1,5 +1,5 @@
 ## TODO 
-- Clean up weapon manager and weapon effects component []
+- [**CRITICAL**] Clean up weapon manager and weapon effects component []
 - Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
 - Add effects like landing on floor shake etc... []
 - Move the CharacterComponent properties into a custom resource file to swap between multiple profiles quickly []

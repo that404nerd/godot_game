@@ -3,6 +3,7 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/classes/character_body3d.hpp>
 #include <godot_cpp/variant/vector3.hpp>
+#include <godot_cpp/classes/curve2d.hpp>
 #include <godot_cpp/classes/skeleton3d.hpp>
 
 #include "../utils/damped_spring.h"
@@ -16,7 +17,7 @@ class WeaponManager;
 
 struct WeaponEffectsData 
 {
-  Node3D* HoldPointNode;
+  Node3D *HoldPointNode, *ActionEffectsHolderNode;
   MovementManager* MovementManagerInst;
   WeaponManager* WeaponManagerInst;
   CharacterComponent* CharacterCompInst;
@@ -143,9 +144,52 @@ private:
   CharacterBody3D* m_CharacterBody { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
 
-
   DampedSpring m_DampedSpring {};
 };
+
+class WeaponActionEffects : public Node {
+  GDCLASS(WeaponActionEffects, Node);
+
+public:
+  void _init_data(const WeaponEffectsData& weaponEffectsData);
+  void _update(double delta);
+
+  void _on_weapon_fired(Ref<Curve2D> recoilCurve);
+  void _on_weapon_reload_start(Skeleton3D* skeleton3D);
+
+  void _weapon_recoil_effect(double delta);
+  void _weapon_reload_effect(double delta);
+
+  Vector3 get_actions_effects_rot() { return m_WeaponActionEffectsRot; };
+
+protected:
+  static void _bind_methods();
+
+private:
+  int m_BoneID { -1 };
+  int m_Count { 0 };
+
+  
+  Vector2 m_CurveOrigin {};
+  
+  Vector2 m_RecoilEqPos {};
+  Vector3 m_RecoilSpringRot {}, m_RecoilVel {};
+  
+  Vector3 m_ReloadBoneRot {};
+  
+  Vector3 m_WeaponActionEffectsRot {};
+  Transform3D m_ReloadBoneTransform {};
+  DampedSpring m_DampedSpring;
+  
+  
+  Skeleton3D* m_CurrentSkeleton { nullptr };
+  Ref<Curve2D> m_RecoilCurve { nullptr };
+  Ref<Weapon> m_CurrentWeapon { nullptr };
+  WeaponManager* m_WeaponManager { nullptr };
+  WeaponComponent* m_WeaponComponent { nullptr };
+
+};
+
 
 class WeaponEffects : public Node
 {
@@ -159,16 +203,17 @@ public:
   void _update_data(Ref<Weapon> currentWeapon);
   void _update(double delta);
 
+  ~WeaponEffects();
+
 protected:
   static void _bind_methods();
 
 private:
-  Node3D *m_HoldPointNode { nullptr }, *m_WeaponArmatureNode { nullptr };
+  Node3D *m_WeaponArmatureNode { nullptr };
+  WeaponActionEffects* m_WeaponActionsEffectsComp { nullptr };
   Vector3 m_BasePos {}, m_BaseRot {};
 
-  Vector3 m_ArmaturePos {}, m_ArmatureRot {}, m_MouseVel {};
-
-  WeaponManager* m_WeaponManager { nullptr };
+  Vector3 m_ArmaturePos {}, m_ArmatureRot {}, m_MouseVel {}, m_WeaponActionsEffectsRot {};
 
   WeaponBobComponent m_WeaponBobComponent;
   WeaponSwayComponent m_WeaponSwayComponent;
@@ -177,6 +222,7 @@ private:
 
 private:
   GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
+  GD_DEFINE_PROPERTY(Node3D*, weapon_actions_effect_holder, nullptr);
   GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);

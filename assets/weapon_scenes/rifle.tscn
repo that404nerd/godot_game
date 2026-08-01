@@ -454,7 +454,6 @@ ao_enabled = true
 ao_texture = SubResource("CompressedTexture2D_6qnol")
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rl2xm"]
@@ -478,7 +477,6 @@ normal_enabled = true
 normal_texture = SubResource("CompressedTexture2D_2qedj")
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_1hegd"]
@@ -498,7 +496,6 @@ roughness_texture = SubResource("CompressedTexture2D_y4n5m")
 emission_enabled = true
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hc6ms"]
@@ -522,7 +519,6 @@ normal_enabled = true
 normal_texture = SubResource("CompressedTexture2D_l8kbx")
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lidcj"]
@@ -532,7 +528,6 @@ normal_enabled = true
 normal_texture = ExtResource("19_jtb7r")
 use_z_clip_scale = true
 z_clip_scale = 0.65
-use_fov_override = true
 fov_override = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trv7c"]
@@ -587,13 +582,12 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.07
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_rifle/Armature" unique_id=1714815641 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
 gpu_particles_inst = NodePath("GPUParticles3D")
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.121000014, 0.144, 0.604)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.092, 0.144, 1.141)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_rifle/Armature/MuzzleFlashComponent" unique_id=129647094]
 visible = false
 light_color = Color(0.96862745, 0.7529412, 0.29803923, 1)
 light_indirect_energy = 2.236
-omni_range = 26.214
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="WeaponWrapper/gun_rifle/Armature/MuzzleFlashComponent" unique_id=61419485]
 emitting = false
@@ -601,6 +595,7 @@ amount = 300
 lifetime = 0.03
 one_shot = true
 explosiveness = 1.0
+fixed_fps = 60
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_we1mk")
 draw_pass_1 = SubResource("QuadMesh_iehkx")
