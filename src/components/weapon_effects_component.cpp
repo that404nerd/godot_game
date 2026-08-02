@@ -330,8 +330,6 @@ void WeaponActionEffects::_on_weapon_reload_start(Skeleton3D* skeleton3D)
 
 void WeaponActionEffects::_on_weapon_fired(Ref<Curve2D> recoilCurve)
 {
-  m_RecoilCurve = recoilCurve;
-
   m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count) - m_CurveOrigin;
   m_Count++;
 }
@@ -341,17 +339,18 @@ void WeaponActionEffects::_weapon_recoil_effect(double delta)
   if(m_WeaponManager)
   {
     // Shift everything to (0, 0)
-    m_RecoilCurve = m_WeaponManager->get_recoil_curve();
     m_CurveOrigin = m_RecoilCurve->get_point_position(0);
-
     m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count) - m_CurveOrigin;
   }
 
   if(m_RecoilCurve.is_valid())
   {
-    m_DampedSpring.CalcDampedSpringMotionParams(delta, m_CurrentWeapon->get_recoil_ang_freq(), m_CurrentWeapon->get_recoil_damping_ratio());
-    m_DampedSpring.UpdateDampedSpringMotion(m_RecoilSpringRot, m_RecoilVel, Vector3(-(m_RecoilEqPos.y * m_CurrentWeapon->get_recoilMultiplier()), 
-                                                                                    -(m_RecoilEqPos.x * m_CurrentWeapon->get_recoilMultiplier()), 0.0f));
+    if(m_WeaponManager->IsWeaponFiring())
+    {
+      m_DampedSpring.CalcDampedSpringMotionParams(delta, m_CurrentWeapon->get_recoil_ang_freq(), m_CurrentWeapon->get_recoil_damping_ratio());
+      m_DampedSpring.UpdateDampedSpringMotion(m_RecoilSpringRot, m_RecoilVel, Vector3(-(m_RecoilEqPos.y * m_CurrentWeapon->get_recoilMultiplier()), 
+                                            -(m_RecoilEqPos.x * m_CurrentWeapon->get_recoilMultiplier()), 0.0f));
+    }
 
     if(m_Count >= m_RecoilCurve->get_point_count() - 1 || !m_WeaponManager->IsWeaponFiring())
     {
@@ -363,7 +362,7 @@ void WeaponActionEffects::_weapon_recoil_effect(double delta)
 
 void WeaponActionEffects::_weapon_reload_effect(double delta)
 {
- if(m_BoneID != -1)
+  if(m_BoneID != -1)
   {
     m_ReloadBoneTransform = m_CurrentSkeleton->get_bone_pose(m_BoneID);
   }
@@ -386,6 +385,7 @@ void WeaponActionEffects::_update(double delta)
   }
 
   m_CurrentWeapon = m_WeaponComponent->get_current_weapon_data();
+  m_RecoilCurve = m_WeaponManager->get_recoil_curve();
 
   _weapon_recoil_effect(delta);
   _weapon_reload_effect(delta);
@@ -494,7 +494,7 @@ void WeaponEffects::_update(double delta)
   weapon_actions_effect_holder->set_rotation(m_WeaponActionsEffectsRot);
 }
 
-WeaponEffects::~WeaponEffects()
+void WeaponEffects::_exit_tree()
 {
-  memfree(m_WeaponActionsEffectsComp);
+  m_WeaponActionsEffectsComp->queue_free();
 }

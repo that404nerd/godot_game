@@ -51,6 +51,8 @@ target_compile_options( ${PROJECT_NAME}
             -Wwrite-strings
 
             # Disable warnings which bleed through from godot-cpp's macros.
+            -Wno-shadow
+            -Wno-unused-function
             -Wno-unused-parameter
             -Wno-ctor-dtor-privacy
         >

@@ -14,6 +14,7 @@
 angle_min = -72.99999
 angle_max = 73.000015
 direction = Vector3(-1, 0, 0)
+spread = 90.0
 initial_velocity_min = 1.0
 initial_velocity_max = 3.0
 gravity = Vector3(0, 0, 0)
@@ -257,11 +258,11 @@ blend_shape_mode = 0
 
 [node name="Pistol" type="Node3D" unique_id=22962097]
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("muzzle_flash_component", "muzzle_flash_position_point", "armature_skeleton", "armature_node", "weapon_anim_player")]
-muzzle_flash_component = NodePath("gun_pistol/Armature/MuzzleFlashComponent")
-muzzle_flash_position_point = NodePath("")
-armature_skeleton = NodePath("gun_pistol/Armature/Skeleton3D")
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
 armature_node = NodePath("gun_pistol/Armature")
+muzzle_point_marker = NodePath("gun_pistol/Armature/Marker3D")
+muzzle_flash_component = NodePath("gun_pistol/Armature/MuzzleFlashComponent")
+armature_skeleton = NodePath("gun_pistol/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
 mesh_instances = [NodePath("gun_pistol/Armature/Skeleton3D/arm"), NodePath("gun_pistol/Armature/Skeleton3D/pistol")]
 
@@ -276,6 +277,9 @@ visible = false
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.105, -0.244, -0.182)
 
 [node name="Armature" type="Node3D" parent="WeaponWrapper/gun_pistol" unique_id=1688506177]
+
+[node name="Marker3D" type="Marker3D" parent="WeaponWrapper/gun_pistol/Armature" unique_id=1109547686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4505806e-08, 0.17732832, 0.54501593)
 
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_pistol/Armature" unique_id=219364471 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")

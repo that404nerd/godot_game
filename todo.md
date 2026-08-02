@@ -1,9 +1,9 @@
 ## TODO 
-- [**CRITICAL**] Clean up weapon manager and weapon effects component []
-- Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues []
+- [NOT CRITICAL] Fix EventBus Singleton unregisteration []
+- Clean up weapon manager and weapon effects component []
+- Add decal patterns for guns []
 - Add effects like landing on floor shake etc... []
 - Move the CharacterComponent properties into a custom resource file to swap between multiple profiles quickly []
-- Fix memory leak related to Canvas2D (HUD, Signal Lens) and Recoil Curve Resource []
 
 - Make slide detection work for objects like boxes, crates and etc.. []
 - Transition to idle state when sliding into world objects []
@@ -47,3 +47,5 @@
 - Rename the actual _physics_process() and _process() in CharacterComponent class and make every inherited class to first call those base functions [x]
 - Move the HUD from the player to the main game scene and let the main scene have the player reference [x]
 - Fix a bug where shooting during the start of the game plays the shoot animation without equipping [x]
+- [**CRITICAL**] Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues [x]
+- [**CRITICAL**] Fix memory leak related to Canvas2D (HUD, Signal Lens) and Recoil Curve Resource [x]

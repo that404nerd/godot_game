@@ -29,6 +29,8 @@
 #include "components/weapon_effects_components.h"
 #include "components/weapon_wrapper.h"
 
+#include "dd3d_cpp_api.hpp"
+
 #include "globals.h"
 #include "singletons/event_bus.h"
 #include "movement_state_machine.h"
@@ -47,13 +49,14 @@ public:
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _update(double delta);
   void _physics_update(double delta);
-  
-  WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
+ 
+  void _exit_tree() override;
   
 public:
 
   void _init_weapons();
   void _init_weapon_anim_connections(Node3D* weapon_node, WeaponWrapper* weapon_wrapper, AnimationPlayer* anim_player);
+  void _init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper* weapon_wrapper);
   void _change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper);
 
   void _equip_weapon();
@@ -68,8 +71,6 @@ public:
   void _on_weapon_anim_finished(const StringName& anim_name);
   void _on_weapon_anim_started(const StringName& anim_name);
 
-  void _on_window_size_changed();
-  
   void _weapon_unequip_over();
   void _switch_weapon_data(int weaponIndex);
   void _update_weapon_data(Ref<Weapon> nextWeapon);
@@ -89,6 +90,7 @@ public:
     return currentWeapon->get_auto_reload();
   }
 
+  WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
   float get_time_between_shots() { return m_TimeBetweenShots; }
 
   Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
@@ -129,7 +131,10 @@ private:
   Ref<Weapon> m_CurrentWeapon { nullptr };
   Ref<PackedScene> m_DecalScene { nullptr };
 
-  Viewport* m_Viewport {};
+  Marker3D* m_WeaponMuzzleMarker { nullptr };
+  Node *m_RecoilPathNode { nullptr }, *m_BulletDecalInstNode { nullptr };
+  Path2D* m_RecoilPath { nullptr };
+  Decal* m_BulletDecalNode { nullptr };
 
   WeaponStateContext m_WeaponStateCtx;
   AmmoComponent m_AmmoComp;
@@ -142,7 +147,6 @@ private:
 
 private:
   CharacterBody3D* m_CharacterBody { nullptr };
-  Camera3D* m_Camera { nullptr };
 
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;

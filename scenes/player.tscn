@@ -60,7 +60,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
 [node name="WeaponActionsEffectHolder" type="Node3D" parent="CameraController/PlayerHead" unique_id=1378909620]
 
 [node name="PlayerCamera" type="Camera3D" parent="CameraController/PlayerHead/WeaponActionsEffectHolder" unique_id=27902470]
-unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.11343908, -0.26044202)
 current = true
 near = 0.001

@@ -181,10 +181,10 @@ private:
   Transform3D m_ReloadBoneTransform {};
   DampedSpring m_DampedSpring;
   
-  
-  Skeleton3D* m_CurrentSkeleton { nullptr };
   Ref<Curve2D> m_RecoilCurve { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
+  
+  Skeleton3D* m_CurrentSkeleton { nullptr };
   WeaponManager* m_WeaponManager { nullptr };
   WeaponComponent* m_WeaponComponent { nullptr };
 
@@ -203,18 +203,18 @@ public:
   void _update_data(Ref<Weapon> currentWeapon);
   void _update(double delta);
 
-  ~WeaponEffects();
+  void _exit_tree() override;
 
 protected:
   static void _bind_methods();
 
 private:
   Node3D *m_WeaponArmatureNode { nullptr };
-  WeaponActionEffects* m_WeaponActionsEffectsComp { nullptr };
   Vector3 m_BasePos {}, m_BaseRot {};
-
+  
   Vector3 m_ArmaturePos {}, m_ArmatureRot {}, m_MouseVel {}, m_WeaponActionsEffectsRot {};
-
+  
+  WeaponActionEffects* m_WeaponActionsEffectsComp { nullptr };
   WeaponBobComponent m_WeaponBobComponent;
   WeaponSwayComponent m_WeaponSwayComponent;
   WeaponSlideEffect m_WeaponSlideComponent;

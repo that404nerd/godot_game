@@ -13,34 +13,13 @@ void WeaponManager::_init()
   _init_weapon_anim_connections(weapon_node, weapon_wrapper, anim_player);
 
   // Init the weapon wrapper instance nodes
-  m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
-  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
-  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
-  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
-
-  m_CharacterBody = character_component;
-
-  m_Camera = get_node<Camera3D>(NodePath("%PlayerCamera"));
-  m_Viewport = get_viewport();
-  m_ScreenCenter = m_Viewport->get_visible_rect().get_size() / 2.0f;
-
-  m_Viewport->connect("size_changed", Callable(this, "_on_window_size_changed"));
-
+  _init_weapon_manager_data(weapon_node, weapon_wrapper);
   m_AmmoComp._init_data(weapon_component->get_weapon_list());
 
-  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
-  
-  _change_fov(weapon_node, weapon_wrapper);
+  m_RecoilPathNode = m_RecoilResource->instantiate();
+  m_RecoilPath = Object::cast_to<Path2D>(m_RecoilPathNode);
 
-  weapon_component->set_current_weapon(weapon_component->get_weapon_list()[m_WeaponIndex]);
-  m_CurrentWeapon = weapon_component->get_current_weapon_data();
-  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
-  m_RecoilResource = m_CurrentWeapon->get_weaponRecoilPatternResource();
-
-  Node* pathNode = m_RecoilResource->instantiate();
-  Path2D* path = Object::cast_to<Path2D>(pathNode);
-
-  m_RecoilCurve = path->get_curve();
+  m_RecoilCurve = m_RecoilPath->get_curve();
 
   if(input_command_system == nullptr)
   {
@@ -104,6 +83,25 @@ void WeaponManager::_init_weapon_anim_connections(Node3D* weapon_node, WeaponWra
     anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
     anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
   }
+}
+
+void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
+{
+  m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+  m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
+  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
+  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+
+  // Make sure to change the fov before performing the rest of the initializations
+  _change_fov(weapon_node, weapon_wrapper);
+
+  weapon_component->set_current_weapon(weapon_component->get_weapon_list()[m_WeaponIndex]);
+  m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
+  m_RecoilResource = m_CurrentWeapon->get_weaponRecoilPatternResource();
+  m_CharacterBody = character_component;
 }
 
 void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
@@ -170,16 +168,10 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
   }
 }
 
-void WeaponManager::_on_window_size_changed()
-{
-  m_ScreenCenter = m_Viewport->get_visible_rect().get_size() / 2.0f;
-}
-
 void WeaponManager::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_started", "anim_name"), &WeaponManager::_on_weapon_anim_started);
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
-  ClassDB::bind_method(D_METHOD("_on_window_size_changed"), &WeaponManager::_on_window_size_changed);
   
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -201,6 +193,9 @@ void WeaponManager::_update(double delta)
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
+  
+  m_MuzzleComp->set_global_position(m_WeaponMuzzleMarker->get_global_position());
+
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
   input_command_system->set_max_hold_time(m_HoldMaxTime);
   
@@ -212,8 +207,11 @@ void WeaponManager::_physics_update(double delta)
   // Get space state in _process or some other function could cause errors because
   // for some reason it's not accessible unless it's in the _physics_update
 
-  Vector3 ray_start = m_Camera->project_ray_origin(m_ScreenCenter);
-  Vector3 ray_end = ray_start + m_Camera->project_ray_normal(m_ScreenCenter) * 1000.0f;
+  Vector3 ray_start = m_WeaponMuzzleMarker->get_global_position();
+  Vector3 forwardVector = m_WeaponMuzzleMarker->get_global_basis().get_column(2);
+  Vector3 ray_end = ray_start + forwardVector * 1000.0f;
+
+  // DebugDraw3D::draw_line(ray_start, ray_end, Color(1, 1, 0));
 
   m_SpaceState = m_CharacterBody->get_world_3d()->get_direct_space_state();
   m_Query = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
@@ -228,16 +226,17 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
 {
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
   m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+  m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
   m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
 
   m_DecalScene = nextWeapon->get_weaponDecalResource();
   m_RecoilResource = nextWeapon->get_weaponRecoilPatternResource();
 
-  Node* pathNode = m_RecoilResource->instantiate();
-  Path2D* path = Object::cast_to<Path2D>(pathNode);
+  m_RecoilPathNode = m_RecoilResource->instantiate();
+  m_RecoilPath = Object::cast_to<Path2D>(m_RecoilPathNode);
 
-  m_RecoilCurve = path->get_curve();
+  m_RecoilCurve = m_RecoilPath->get_curve();
 }
 
 void WeaponManager::generate_decal()
@@ -246,16 +245,17 @@ void WeaponManager::generate_decal()
   {
     if(!m_Result.is_empty())
     {
-      Node* instance = m_DecalScene->instantiate();
-      Decal* bulletDecal = Object::cast_to<Decal>(instance);
+      m_BulletDecalInstNode = m_DecalScene->instantiate();
+      m_BulletDecalNode = Object::cast_to<Decal>(m_BulletDecalInstNode);
 
       CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
 
-      colliderBody->add_child(bulletDecal);
+      colliderBody->add_child(m_BulletDecalNode);
       Vector3 position = Vector3(m_Result["position"]);
-      bulletDecal->set_global_position(position);
-      bulletDecal->look_at(bulletDecal->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
-      bulletDecal->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+      m_BulletDecalNode->set_global_position(position);
+      m_BulletDecalNode->look_at(m_BulletDecalNode->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
+      m_BulletDecalNode->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+
     }
   }
 }
@@ -568,4 +568,13 @@ void WeaponManager::_switch_weapon_data(int weaponIndex)
   weapon_component->set_next_weapon(next_weapon);
   weapon_component->set_next_weapon_name(next_weapon->get_weaponName());
   m_WeaponIndex = weaponIndex;
+}
+
+void WeaponManager::_exit_tree()
+{
+  hold_point_node->queue_free();
+  m_RecoilPathNode->queue_free();
+  m_RecoilPath->queue_free();
+  m_BulletDecalInstNode->queue_free();
+  m_BulletDecalNode->queue_free();
 }

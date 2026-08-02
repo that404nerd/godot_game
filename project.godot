@@ -32,10 +32,6 @@ config/size/viewport_width=800
 
 buses/default_bus_layout="uid://cq2mfupdsh2tc"
 
-[autoload]
-
-SignalLens="*uid://85rkx60vm7a7"
-
 [debug_draw_3d]
 
 settings/addon_root_folder="res://addons/debug_draw_3d"
