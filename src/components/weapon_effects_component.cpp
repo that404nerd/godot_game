@@ -313,10 +313,12 @@ void WeaponActionEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 
   EventBus::get_singleton()->connect("weapon_fired", Callable(this, "_on_weapon_fired"));
   EventBus::get_singleton()->connect("weapon_reload_start", Callable(this, "_on_weapon_reload_start"));
+  EventBus::get_singleton()->connect("weapon_switched", Callable(this, "_on_weapon_switched"));
 }
 
 void WeaponActionEffects::_bind_methods()
 {
+  ClassDB::bind_method(D_METHOD("_on_weapon_switched", "currentWeapon"), &WeaponActionEffects::_on_weapon_switched);
   ClassDB::bind_method(D_METHOD("_on_weapon_fired", "recoilCurve"), &WeaponActionEffects::_on_weapon_fired);
   ClassDB::bind_method(D_METHOD("_on_weapon_reload_start", "skeleton3D"), &WeaponActionEffects::_on_weapon_reload_start);  
 }
@@ -332,6 +334,11 @@ void WeaponActionEffects::_on_weapon_fired(Ref<Curve2D> recoilCurve)
 {
   m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count) - m_CurveOrigin;
   m_Count++;
+}
+
+void WeaponActionEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
+{
+  m_Count = 0;
 }
 
 void WeaponActionEffects::_weapon_recoil_effect(double delta)

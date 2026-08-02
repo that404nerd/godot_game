@@ -16,10 +16,7 @@ void WeaponManager::_init()
   _init_weapon_manager_data(weapon_node, weapon_wrapper);
   m_AmmoComp._init_data(weapon_component->get_weapon_list());
 
-  m_RecoilPathNode = m_RecoilResource->instantiate();
-  m_RecoilPath = Object::cast_to<Path2D>(m_RecoilPathNode);
-
-  m_RecoilCurve = m_RecoilPath->get_curve();
+  
 
   if(input_command_system == nullptr)
   {
@@ -102,6 +99,14 @@ void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper
   m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
   m_RecoilResource = m_CurrentWeapon->get_weaponRecoilPatternResource();
   m_CharacterBody = character_component;
+
+  m_RecoilPathNode = m_RecoilResource->instantiate();
+  m_RecoilPath = Object::cast_to<Path2D>(m_RecoilPathNode);
+  m_RecoilCurve = m_RecoilPath->get_curve();
+
+  // Free the node immediately
+  m_RecoilPathNode->queue_free();
+  m_RecoilPath->queue_free();
 }
 
 void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
@@ -237,6 +242,10 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
   m_RecoilPath = Object::cast_to<Path2D>(m_RecoilPathNode);
 
   m_RecoilCurve = m_RecoilPath->get_curve();
+
+  // Free the node immediately
+  m_RecoilPathNode->queue_free();
+  m_RecoilPath->queue_free();
 }
 
 void WeaponManager::generate_decal()
@@ -573,8 +582,6 @@ void WeaponManager::_switch_weapon_data(int weaponIndex)
 void WeaponManager::_exit_tree()
 {
   hold_point_node->queue_free();
-  m_RecoilPathNode->queue_free();
-  m_RecoilPath->queue_free();
   m_BulletDecalInstNode->queue_free();
   m_BulletDecalNode->queue_free();
 }

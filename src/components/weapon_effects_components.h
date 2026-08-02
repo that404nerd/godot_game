@@ -156,6 +156,7 @@ public:
 
   void _on_weapon_fired(Ref<Curve2D> recoilCurve);
   void _on_weapon_reload_start(Skeleton3D* skeleton3D);
+  void _on_weapon_switched(Ref<Weapon> currentWeapon);
 
   void _weapon_recoil_effect(double delta);
   void _weapon_reload_effect(double delta);
