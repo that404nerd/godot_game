@@ -7,7 +7,7 @@
 #include <godot_cpp/classes/skeleton3d.hpp>
 
 #include "../utils/damped_spring.h"
-#include "../movement_manager.h"
+#include "../managers/movement_manager.h"
 #include "character_component.h"
 #include "weapon_component.h"
 

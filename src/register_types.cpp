@@ -1,4 +1,6 @@
 #include "register_types.hpp"
+#include "components/ai_character_component.h"
+#include "singletons/event_bus.h"
 
 #include <godot_cpp/core/class_db.hpp>
 #include <gdextension_interface.h>
@@ -15,9 +17,9 @@ void initialize_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-  if(!ClassDB::class_exists("EventBus")) GDREGISTER_CLASS(EventBus);
+  if(!ClassDB::class_exists("EventBus")) ClassDB::register_class<EventBus>();
   s_EventBus = memnew(EventBus);
-  Engine::get_singleton()->register_singleton("EventBus", s_EventBus);
+  Engine::get_singleton()->register_singleton("EventBus", EventBus::get_singleton());
 
   // the game runs, the checks are required prevents error spam (DO NOT CHANGE THE Game from GDREGISTER_RUNTIME_CLASS)
   if(!ClassDB::class_exists("Game")) GDREGISTER_RUNTIME_CLASS(Game); 
@@ -36,12 +38,15 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("StateMachine")) GDREGISTER_RUNTIME_CLASS(StateMachine);
   if(!ClassDB::class_exists("MovementStateMachine")) GDREGISTER_RUNTIME_CLASS(MovementStateMachine);
   if(!ClassDB::class_exists("WeaponStateMachine")) GDREGISTER_RUNTIME_CLASS(WeaponStateMachine);
+  if(!ClassDB::class_exists("AIStateMachine")) GDREGISTER_RUNTIME_CLASS(AIStateMachine);
   if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager);
   if(!ClassDB::class_exists("MovementManager")) GDREGISTER_RUNTIME_CLASS(MovementManager);
+
   if(!ClassDB::class_exists("InputCommandSystem")) GDREGISTER_RUNTIME_CLASS(InputCommandSystem);
   
   // Components
   if(!ClassDB::class_exists("InputComponent")) GDREGISTER_RUNTIME_CLASS(InputComponent);
+  if(!ClassDB::class_exists("AICharacterComponent")) GDREGISTER_RUNTIME_CLASS(AICharacterComponent);
   if(!ClassDB::class_exists("WeaponEffects")) GDREGISTER_RUNTIME_CLASS(WeaponEffects);
   if(!ClassDB::class_exists("WeaponActionEffects")) GDREGISTER_RUNTIME_CLASS(WeaponActionEffects);
   if(!ClassDB::class_exists("WeaponWrapper")) GDREGISTER_CLASS(WeaponWrapper);
@@ -56,12 +61,7 @@ void uninitialize_module(ModuleInitializationLevel p_level) {
 	}
 
   Engine::get_singleton()->unregister_singleton("EventBus");
-
-  if(s_EventBus)
-  {
-    memdelete(s_EventBus);
-    s_EventBus = nullptr;
-  }
+  memdelete(s_EventBus);
 }
 
 extern "C" {

@@ -1,19 +1,19 @@
 #include "weapon_states.h"
-#include "../weapon_manager.h"
+#include "../managers/weapon_manager.h"
 
-BaseWeaponState::BaseWeaponState(WeaponStates movementState, const WeaponStateData& weaponStateData)
-  : State(static_cast<int>(movementState)), m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
+BaseWeaponState::BaseWeaponState(WeaponStates weaponState, const WeaponStateData& weaponStateData)
+  : State(static_cast<int>(weaponState)), m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
     m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx()), m_InputCmdSystem(m_WeaponManager->get_input_command_system_instance())
 {
   if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
   {
-    print_line_rich("[color=WHITE][Weapon State]: [color=RED]Weapon Manager or Weapon State Machine is null");
+    print_error("[color=WHITE][Weapon State]: [color=RED]Weapon Manager or Weapon State Machine is null");
     return;
   }
 
   if(m_InputCmdSystem == nullptr)
   {
-    print_line_rich("[color=WHITE][Weapon State]: [color=RED]Input Command System is null");
+    print_error("[color=WHITE][Weapon State]: [color=RED]Input Command System is null");
     return;
   }
 }
@@ -28,13 +28,13 @@ WeaponIdleState::WeaponIdleState(const WeaponStateData& weaponStateData)
 
 void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(m_InputCmdSystem->wants_to_shoot_weapon())
+  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_shoot_weapon())
   {
     m_WeaponManager->set_trigger_press_status(true);
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
 
-  if(m_InputCmdSystem->wants_to_reload_weapon() ||
+  if((m_InputCmdSystem && m_InputCmdSystem->wants_to_reload_weapon()) ||
     (m_InputCmdSystem->wants_to_shoot_weapon() && 
     m_WeaponManager->current_weapon_has_auto_reload() && 
     (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->get_current_reserve_ammo() > 0)))
@@ -109,17 +109,17 @@ void WeaponShootState::_enter()
 
 void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(m_InputCmdSystem->wants_to_shoot_weapon())
+  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_shoot_weapon())
   {
     m_WeaponManager->set_trigger_press_status(true);
   }
 
-  if(m_InputCmdSystem->wants_to_reload_weapon())
+  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_reload_weapon())
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
 
-  if(m_InputCmdSystem->wants_to_release_shoot())
+  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_release_shoot())
     m_WeaponManager->set_release_status(true);
 }
 
@@ -168,7 +168,7 @@ void WeaponReloadState::_update(double delta)
 {
   m_WeaponManager->_reload_weapon();
 
-  if(m_InputCmdSystem->wants_to_shoot_weapon() && m_WeaponManager->get_current_weapon_ammo() > 0)
+  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_shoot_weapon() && m_WeaponManager->get_current_weapon_ammo() > 0)
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }

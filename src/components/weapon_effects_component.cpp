@@ -1,5 +1,5 @@
 #include "weapon_effects_components.h"
-#include "../weapon_manager.h"
+#include "../managers/weapon_manager.h"
 
 void WeaponBobComponent::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
@@ -423,7 +423,7 @@ void WeaponEffects::_init()
   
   EventBus::get_singleton()->connect("weapon_switched", Callable(this, "_on_weapon_switched"));
 
-  print_line_rich("[color=GREEN]Weapon Effects Component Initialized");
+  print_error("[color=GREEN]Weapon Effects Component Initialized");
 }
 
 void WeaponEffects::_init_data(const WeaponEffectsData& weaponEffectsData)

@@ -8,7 +8,7 @@
 #include <godot_cpp/classes/camera3d.hpp>
 
 #include "../globals.h"
-#include "../movement_state_machine.h"
+#include "../state_machines/movement_state_machine.h"
 
 using namespace godot;
 

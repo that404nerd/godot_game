@@ -12,7 +12,7 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 height = 1.2
 
-[node name="Player" type="Player" unique_id=1542459451 node_paths=PackedStringArray("movement_manager", "movement_state_machine", "weapon_component", "weapon_manager", "weapon_state_machine", "weapon_effects_component", "input_command_system", "character_head", "crouch_raycast", "stairs_ahead_raycast", "stairs_below_raycast", "default_collision_shape", "crouch_collision_shape")]
+[node name="Player" type="Player" unique_id=59684459 node_paths=PackedStringArray("movement_manager", "movement_state_machine", "weapon_component", "weapon_manager", "weapon_state_machine", "weapon_effects_component", "input_command_system", "character_head", "crouch_raycast", "stairs_ahead_raycast", "stairs_below_raycast", "default_collision_shape", "crouch_collision_shape") groups=["player"]]
 movement_manager = NodePath("MovementManager")
 movement_state_machine = NodePath("MovementStateMachine")
 weapon_component = NodePath("WeaponComponent")

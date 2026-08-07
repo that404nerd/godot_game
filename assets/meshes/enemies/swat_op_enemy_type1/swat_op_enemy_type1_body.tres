@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dvlwmtch0hbug"]
+
+[ext_resource type="Texture2D" uid="uid://lyqtj4yjkgy6" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/Body_Base_color.png" id="1_ec2pk"]
+[ext_resource type="Texture2D" uid="uid://c21f0ruvev1sv" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/Body_Mixed_AO.png" id="2_eqys4"]
+[ext_resource type="Texture2D" uid="uid://bnwv5mxtcc4c6" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/Body_Normal_OpenGL.png" id="3_ft1nr"]
+[ext_resource type="Texture2D" uid="uid://cqfaip8o6ckir" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/Body_Roughness.png" id="4_sfv32"]
+
+[resource]
+albedo_texture = ExtResource("1_ec2pk")
+roughness_texture = ExtResource("4_sfv32")
+normal_enabled = true
+normal_texture = ExtResource("3_ft1nr")
+ao_enabled = true
+ao_texture = ExtResource("2_eqys4")

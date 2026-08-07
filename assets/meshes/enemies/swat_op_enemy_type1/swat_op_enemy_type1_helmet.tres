@@ -1,0 +1,24 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://diklpxuibe6lf"]
+
+[ext_resource type="Texture2D" uid="uid://bkw1mmyqll7ti" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/HeadGear_Base_color.png" id="1_qm4nh"]
+[ext_resource type="Texture2D" uid="uid://h46dwfpwc6pc" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/HeadGear_Mixed_AO.png" id="2_j8s8i"]
+[ext_resource type="Texture2D" uid="uid://dj6qj1bn7jmts" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/HeadGear_Emissive.png" id="3_54tuj"]
+[ext_resource type="Texture2D" uid="uid://c5fiajuje2uql" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/HeadGear_Metallic.png" id="4_j7u2h"]
+[ext_resource type="Texture2D" uid="uid://xrot0npdco17" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/HeadGear_Normal_OpenGL.png" id="5_k7ow8"]
+[ext_resource type="Texture2D" uid="uid://dmcjjruovcr61" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/HeadGear_Roughness.png" id="6_swtid"]
+[ext_resource type="Texture2D" uid="uid://dpcffb8m740bs" path="res://assets/meshes/enemies/swat_op_enemy_type1/textures/HeadGear_SSS.png" id="7_w3rjg"]
+
+[resource]
+albedo_texture = ExtResource("1_qm4nh")
+metallic = 1.0
+metallic_texture = ExtResource("4_j7u2h")
+roughness_texture = ExtResource("6_swtid")
+emission_enabled = true
+emission_energy_multiplier = 10.0
+emission_texture = ExtResource("3_54tuj")
+normal_enabled = true
+normal_texture = ExtResource("5_k7ow8")
+ao_enabled = true
+ao_texture = ExtResource("2_j8s8i")
+subsurf_scatter_enabled = true
+subsurf_scatter_texture = ExtResource("7_w3rjg")

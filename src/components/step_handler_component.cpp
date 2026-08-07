@@ -3,6 +3,12 @@
 void StepHandlerComponent::_snap_down_to_stairs_check()
 {
   bool did_snap = false;
+
+  if(!(m_StepHandlerData.StairsAheadRaycast && m_StepHandlerData.StairsBelowRaycast))
+  {
+    print_error("[color=WHITE][Step Handler Component]: [color=RED]Step Handling Raycasts are null");
+    return;
+  }
   
   m_StepHandlerData.StairsBelowRaycast->force_raycast_update();
   
@@ -35,6 +41,13 @@ void StepHandlerComponent::_snap_down_to_stairs_check()
 
 bool StepHandlerComponent::_snap_up_stairs_check(double delta)
 {
+
+  if(!(m_StepHandlerData.StairsAheadRaycast && m_StepHandlerData.StairsBelowRaycast))
+  {
+    print_error("[color=WHITE][Step Handler Component]: [color=RED]Step Handling Raycasts are null");
+    return false;
+  }
+
   if(m_StepHandlerData.MovementCtx.IsOnFloor)
   {
     Vector3 expected_move_pos = m_StepHandlerData.MovementCtx.CharacterVelocity * Vector3(1.0f, 0.0f, 1.0f) * delta; // Forward vector (x, z)

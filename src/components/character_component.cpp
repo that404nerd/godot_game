@@ -1,12 +1,12 @@
 #include "character_component.h"
-#include "../movement_manager.h"
-#include "../movement_state_machine.h"
+#include "../managers/movement_manager.h"
+#include "../state_machines/movement_state_machine.h"
 #include "./weapon_component.h"
-#include "../weapon_manager.h"
-#include "../weapon_state_machine.h"
+#include "../managers/weapon_manager.h"
+#include "../state_machines/weapon_state_machine.h"
 #include "./weapon_effects_components.h"
 
-void CharacterComponent::_init()
+void CharacterComponent::_ready()
 {
   if(input_command_system)
     input_command_system->_init();
@@ -78,19 +78,16 @@ void CharacterComponent::_bind_methods()
   GD_BIND_PROPERTY(CharacterComponent, dash_cooldown, Variant::FLOAT);
 }
 
-void CharacterComponent::_update_input(double delta) 
+void CharacterComponent::_update_movement(double delta) 
 {
   Vector3 characterVel = get_velocity();
-
+  
   if(!is_on_floor())
   {
     characterVel.y -= down_gravity * delta;
   }
 
-  m_InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
-  m_WishDir = get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized();
-  
-  if (is_on_floor())
+  if(is_on_floor())
   {
     if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
     {
@@ -107,7 +104,7 @@ void CharacterComponent::_update_input(double delta)
   set_velocity(characterVel);
 }
 
-void CharacterComponent::_update(double delta)
+void CharacterComponent::_process(double delta)
 {
   if(input_command_system)
     input_command_system->_update(delta);
@@ -128,7 +125,7 @@ void CharacterComponent::_update(double delta)
     weapon_effects_component->_update(delta);
 }
 
-void CharacterComponent::_physics_update(double delta)
+void CharacterComponent::_physics_process(double delta)
 {
   if(movement_manager)
     movement_manager->_physics_update(delta);

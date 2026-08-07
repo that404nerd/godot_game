@@ -1,0 +1,166 @@
+#pragma once
+
+#include <godot_cpp/godot.hpp>
+
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/input_event_mouse_motion.hpp>
+#include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/camera3d.hpp>
+#include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
+#include <godot_cpp/classes/physics_direct_space_state3d.hpp>
+#include <godot_cpp/classes/decal.hpp>
+#include <godot_cpp/classes/world3d.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/path2d.hpp>
+#include <godot_cpp/classes/curve2d.hpp>
+#include <godot_cpp/classes/animation_player.hpp>
+#include <godot_cpp/classes/gpu_particles3d.hpp>
+#include <godot_cpp/variant/typed_array.hpp>
+#include <godot_cpp/classes/omni_light3d.hpp>
+#include <godot_cpp/classes/base_material3d.hpp>
+#include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/templates/vector.hpp>
+
+#include "../input_command_system.h"
+#include "../components/ammo_component.h"
+#include "../components/character_component.h"
+#include "../components/muzzle_flash_component.h"
+#include "../components/weapon_component.h"
+#include "../components/weapon_effects_components.h"
+#include "../components/weapon_wrapper.h"
+
+#include "../dd3d_cpp_api.hpp"
+
+#include "../globals.h"
+#include "../singletons/event_bus.h"
+#include "../state_machines/movement_state_machine.h"
+#include "../resources/weapon.h"
+#include "../states/weapon_states.h"
+#include "../state_machines/weapon_state_machine.h"
+
+using namespace godot;
+
+class WeaponManager : public Node {
+
+  GDCLASS(WeaponManager, Node);
+
+public:
+  void _init();
+  void _unhandled_input(const Ref<InputEvent>& event) override;
+  void _update(double delta);
+  void _physics_update(double delta);
+ 
+public:
+
+  void _init_weapons();
+  void _init_weapon_anim_connections(Node3D* weapon_node, WeaponWrapper* weapon_wrapper, AnimationPlayer* anim_player);
+  void _init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper* weapon_wrapper);
+  void _change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper);
+
+  void _equip_weapon();
+  void _unequip_weapon();
+
+  void _shoot_weapon(double delta);
+  void _shoot_weapon_over();
+
+  void _reload_weapon();
+  void _weapon_switch();
+
+  void _on_weapon_anim_finished(const StringName& anim_name);
+  void _on_weapon_anim_started(const StringName& anim_name);
+
+  void _weapon_unequip_over();
+  void _switch_weapon_data(int weaponIndex);
+  void _update_weapon_data(Ref<Weapon> nextWeapon);
+  
+  void generate_decal();
+
+public:
+
+  // NOTE: This function really doesn't reflect the actual weapon's shoot state. This is for recoil effect only
+  // IsWeaponFiring is false as soon as the player leaves the input which is different from how the actual state is handled
+  bool IsWeaponFiring() { return m_WeaponStateCtx.IsWeaponFiring; }
+
+  bool IsReloading() { return m_WeaponStateCtx.IsReloading; }
+
+  bool current_weapon_has_auto_reload() {
+    Ref<Weapon> currentWeapon = get_current_weapon();
+    return currentWeapon->get_auto_reload();
+  }
+
+  WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
+  float get_time_between_shots() { return m_TimeBetweenShots; }
+
+  Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
+  InputCommandSystem* get_input_command_system_instance() { return input_command_system; }
+
+  void set_trigger_press_status(bool status) { m_WeaponStateCtx.TriggerPressed = status; }
+
+  void set_release_status(bool status) { m_WeaponStateCtx.ReleaseStatus = status; }
+
+  int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
+  int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
+  StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
+  double get_current_anim_length() { return m_CurrentWeaponAnimPlayer->get_current_animation_position(); }
+
+  Ref<Weapon> get_current_weapon() { return m_CurrentWeapon; }
+
+  Node3D* get_weapon_armature_node() { return m_WeaponWrapperInst->get_armature_node(); }
+  Skeleton3D* get_armature_skeleton() { return m_Skeleton3D; }
+
+  Vector<Node3D*> get_weapon_nodes() { return m_WeaponNodes; }
+
+protected:
+  static void _bind_methods();
+
+private:
+  Vector2 m_ScreenCenter {};
+
+  Ref<StandardMaterial3D> m_StdMaterial { nullptr };
+  Ref<PackedScene> m_RecoilResource { nullptr };
+  Ref<Curve2D> m_RecoilCurve { nullptr };
+
+  Vector<AnimationPlayer*> m_WeaponAnims;
+  Vector<Node3D*> m_WeaponNodes;
+  Vector<Node3D*> m_WeaponSceneNodes;
+
+  AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
+  PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
+  Ref<Weapon> m_CurrentWeapon { nullptr };
+  Ref<PackedScene> m_DecalScene { nullptr };
+
+  Marker3D* m_WeaponMuzzleMarker { nullptr };
+  Node *m_RecoilPathNode { nullptr }, *m_BulletDecalInstNode { nullptr };
+  Path2D* m_RecoilPath { nullptr };
+  Decal* m_BulletDecalNode { nullptr };
+
+  WeaponStateContext m_WeaponStateCtx;
+  AmmoComponent m_AmmoComp;
+
+  MuzzleFlashComponent* m_MuzzleComp { nullptr };
+  WeaponWrapper* m_WeaponWrapperInst { nullptr };
+  
+  Skeleton3D* m_Skeleton3D { nullptr };
+  Transform3D m_BoneTransform {};
+
+private:
+  CharacterBody3D* m_CharacterBody { nullptr };
+
+  Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
+  Dictionary m_Result;
+
+  float m_TimeBetweenShots { 0.0f };
+  int m_WeaponIndex { 0 };
+
+  float m_MuzzleLightTimeout { 0.0f };
+  float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.0f };
+
+  Vector3 m_TargetRot {}, m_CurrentRot {};
+
+private:
+  GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
+  GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
+  GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
+  GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
+};

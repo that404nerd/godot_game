@@ -27,6 +27,4 @@ protected:
 
 private:
   float m_HoldCounter { 0.0f };
-
-  InputCommandData& m_InputCmdData;
 };

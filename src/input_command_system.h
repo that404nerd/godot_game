@@ -36,6 +36,18 @@ public:
 
   virtual void _init() {};
 
+  void set_wants_to_sprint(bool status) { m_InputCmdData.WantsToSprint = status; }
+  void set_wants_to_jump(bool status) { m_InputCmdData.WantsToJump = status; }
+  void set_wants_to_crouch(bool status) { m_InputCmdData.WantsToCrouch = status; }
+  void set_wants_to_shoot_weapon(bool status) { m_InputCmdData.WantsToShootWeapon = status; }
+  void set_wants_to_hold_shoot(bool status) { m_InputCmdData.WantsToHoldShoot = status; }
+  void set_wants_to_release_shoot(bool status) { m_InputCmdData.WantsToReleaseShoot = status; }
+  void set_wants_to_reload_weapon(bool status) { m_InputCmdData.WantsToReloadWeapon = status; }
+  void set_wants_to_switch_weapon(bool status) { m_InputCmdData.WantsToSwitchWeapon = status; }
+
+  void set_input_dir(Vector2 inputDir) { m_InputCmdData.InputDir = inputDir; }
+  void set_mouse_vel(Vector2 mouseVel) { m_InputCmdData.MouseVel = mouseVel; }
+
   bool wants_to_sprint() { return m_InputCmdData.WantsToSprint; };
   bool wants_to_jump() { return m_InputCmdData.WantsToJump; };
   bool wants_to_crouch() { return m_InputCmdData.WantsToCrouch; };
@@ -61,10 +73,8 @@ public:
 
   virtual void _update(double delta) {};
 
-protected:
+public:
   static void _bind_methods() {};
-  InputCommandData& get_input_command_data() { return m_InputCmdData; }
-
 private:
   InputCommandData m_InputCmdData;
 };

@@ -23,20 +23,22 @@ class CharacterComponent : public CharacterBody3D {
 
 public:
   Vector3 get_wish_dir() { return m_WishDir; }
+  void set_wish_dir(Vector3 wishDir) { m_WishDir = wishDir; }
+
   Vector2 get_input_dir() { return m_InputDir; }
   
-  void _update_input(double delta);
+  void _update_movement(double delta);
   void _update_velocity();
 
-protected:
+public:
 
   /*
-    These functions MUST be called in the _process(delta) and _physics_process(delta) functions in their respective inherited classes
+    These functions MUST be called in the in their respective inherited classes
     in order for the game movement and weapon mechanics and other components to function!!!
   */
-  void _init();
-  void _update(double delta);
-  void _physics_update(double delta);
+  void _ready() override;
+  void _process(double delta) override;
+  void _physics_process(double delta) override;
 
 protected:
   static void _bind_methods();
@@ -44,7 +46,6 @@ protected:
 private:
   Vector2 m_InputDir { Vector2(0.0f, 0.0f) };
   Vector3 m_WishDir { Vector3(0.0f, 0.0f, 0.0f) };
-
 
 private:
   // You don't have to connect them all, you can leave as nullptr some of them just fine and they will work (in the editor ofc)

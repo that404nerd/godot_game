@@ -9,7 +9,6 @@
 #include "components/character_component.h"
 
 #include "globals.h"
-#include "weapon_manager.h"
 
 using namespace godot;
 
@@ -26,5 +25,8 @@ public:
   void _unhandled_input(const Ref<InputEvent>& event) override;
   void _process(double delta) override;
   void _physics_process(double delta) override;
-  
+
+private:
+  Vector2 m_InputDir {};
+  InputCommandSystem* m_InputCmdSystem { nullptr };
 };

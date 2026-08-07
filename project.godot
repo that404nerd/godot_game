@@ -43,7 +43,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/func_godot/plugin.cfg", "res://addons/signal_lens/plugin.cfg", "res://addons/skydome/plugin.cfg")
+enabled=PackedStringArray("res://addons/func_godot/plugin.cfg", "res://addons/skydome/plugin.cfg")
 
 [filesystem]
 
@@ -52,6 +52,10 @@ import/blender/enabled=false
 [func_godot]
 
 model_point_class_save_path="trenchbroom/models"
+
+[global_group]
+
+player="Main Player Group"
 
 [input]
 

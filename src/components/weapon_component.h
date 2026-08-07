@@ -26,7 +26,7 @@ public:
   {
     set_physics_process(false);
     set_process(false);
-    print_line_rich("[color=GREEN]Weapon Component Initialized");
+    print_error("[color=GREEN]Weapon Component Initialized");
   }
 
   void set_current_weapon(Ref<Weapon> newWeapon) { 

@@ -1,7 +1,6 @@
 #include "input_component.h"
 
 InputComponent::InputComponent()
-  : m_InputCmdData(get_input_command_data())
 {
 
 }
@@ -10,7 +9,7 @@ void InputComponent::_init()
 {
   set_physics_process(false);
   set_process(false);
-  print_line_rich("[color=GREEN]Input Command System Initialized");
+  print_error("[color=GREEN]Input Command System Initialized");
 }
 
 void InputComponent::_bind_methods()
@@ -22,21 +21,21 @@ void InputComponent::_input(const Ref<InputEvent>& event)
 {
   Ref<InputEventMouseMotion> mouseEvent = event;
 
-  m_InputCmdData.InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized();
+  set_input_dir(Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized());
 
-  if(Input::get_singleton()->is_action_just_pressed("jump"))  m_InputCmdData.WantsToJump = true;
-  if(Input::get_singleton()->is_action_just_pressed("crouch")) m_InputCmdData.WantsToCrouch = true;
+  if(Input::get_singleton()->is_action_just_pressed("jump"))  set_wants_to_jump(true);
+  if(Input::get_singleton()->is_action_just_pressed("crouch")) set_wants_to_crouch(true);
 
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) m_InputCmdData.WantsToShootWeapon = true;
-  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) m_InputCmdData.WantsToReleaseShoot = true;
-  if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) m_InputCmdData.WantsToReloadWeapon = true;
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) set_wants_to_shoot_weapon(true);
+  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) set_wants_to_release_shoot(true);
+  if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) set_wants_to_reload_weapon(true);
 
   if(event->is_class("InputEventMouseMotion")) {
     float swayIntensity = 0.005f; 
 
     Vector2 relative = mouseEvent->get_relative(); 
-    m_InputCmdData.MouseVel.x = -relative.x * swayIntensity;
-    m_InputCmdData.MouseVel.y = -relative.y * swayIntensity;
+
+    set_mouse_vel(Vector2(-relative.x * swayIntensity, -relative.y * swayIntensity));
   }
   
   for(int i = 0; i < get_weapon_list_size(); i++)
@@ -44,37 +43,36 @@ void InputComponent::_input(const Ref<InputEvent>& event)
     String inputAction = "weapon_" + String::num(i + 1, 0); // INFO: Need to match the set input action in the editor
     if(Input::get_singleton()->is_action_just_pressed(inputAction))
     {
-      m_InputCmdData.WeaponIdx = i;
-      m_InputCmdData.WantsToSwitchWeapon = true;
+      set_weapon_idx(i);
+      set_wants_to_switch_weapon(true);
     }
   }
 }
 
 void InputComponent::_update(double delta)
 {
-  if(m_InputCmdData.InputDir != Vector2(0.0f, 0.0f))
+  if(get_input_dir() != Vector2(0.0f, 0.0f))
   {
-    m_InputCmdData.WantsToSprint = true;
+    set_wants_to_sprint(true);
   } else {
-    m_InputCmdData.WantsToSprint = false;
+    set_wants_to_sprint(false);
   }
 
   if(Input::get_singleton()->is_action_pressed("shoot_weapon"))
   {
     m_HoldCounter += delta;
-    if(m_HoldCounter >= m_InputCmdData.MaxHoldTime)
+    if(m_HoldCounter >= get_max_hold_time())
     {
-      m_InputCmdData.WantsToHoldShoot = true;
+      set_wants_to_hold_shoot(true);
     }
   }
 
-  if(m_InputCmdData.WantsToReleaseShoot) m_InputCmdData.WantsToHoldShoot = false;
+  if(wants_to_release_shoot()) set_wants_to_hold_shoot(false);
 
-  m_InputCmdData.WantsToShootWeapon = false;
-  m_InputCmdData.WantsToReleaseShoot = false;
-
-  m_InputCmdData.WantsToSwitchWeapon = false;
-  m_InputCmdData.WantsToReloadWeapon = false;
-  m_InputCmdData.WantsToJump = false;
-  m_InputCmdData.WantsToCrouch = false;
+  set_wants_to_shoot_weapon(false);
+  set_wants_to_release_shoot(false);
+  set_wants_to_switch_weapon(false);
+  set_wants_to_reload_weapon(false);
+  set_wants_to_jump(false);
+  set_wants_to_crouch(false);
 }

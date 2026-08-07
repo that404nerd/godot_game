@@ -26,19 +26,19 @@ public:
   {
     if(stepHandlerData.CharacterCompInst == nullptr)
     {
-      print_line_rich("[color=WHITE][StepHandler Component]: [color=RED]Character Component is null");
+      print_error("[color=WHITE][StepHandler Component]: [color=RED]Character Component is null");
       return;
     }
 
     if(stepHandlerData.StairsAheadRaycast == nullptr)
     {
-      print_line_rich("[color=WHITE][StepHandler Component]: [color=RED]Stairs Ahead Raycast is null");
+      print_error("[color=WHITE][StepHandler Component]: [color=RED]Stairs Ahead Raycast is null");
       return;
     }
 
     if(stepHandlerData.StairsBelowRaycast == nullptr)
     {
-      print_line_rich("[color=WHITE][StepHandler Component]: [color=RED]Stairs Below Raycast is null");
+      print_error("[color=WHITE][StepHandler Component]: [color=RED]Stairs Below Raycast is null");
       return;
     }
   }

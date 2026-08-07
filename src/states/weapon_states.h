@@ -6,10 +6,10 @@
 #include "../input_command_system.h"
 
 #include "../components/ammo_component.h"
-#include "../weapon_state_machine.h"
+#include "../state_machines/weapon_state_machine.h"
 
 #include "state.h"
-#include "../weapon_state_machine.h"
+#include "../state_machines/weapon_state_machine.h"
 
 class WeaponManager;
 
@@ -30,7 +30,7 @@ struct WeaponStateContext
 
 class BaseWeaponState : public State {
 public:
-  BaseWeaponState(WeaponStates movementState, const WeaponStateData& weaponStateData);
+  BaseWeaponState(WeaponStates weaponState, const WeaponStateData& weaponStateData);
 
 protected:
   WeaponManager* m_WeaponManager { nullptr };

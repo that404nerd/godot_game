@@ -271,7 +271,7 @@ root_node = NodePath("../gun_shotgun")
 libraries/ = ExtResource("9_5blxk")
 
 [node name="gun_shotgun" type="Node3D" parent="WeaponWrapper" unique_id=657098799]
-transform = Transform3D(-0.7, 0, 6.119594e-08, 0, 0.7, 0, -6.119594e-08, 0, -0.7, 0.085, -0.106, -0.163)
+transform = Transform3D(-0.6, 0, 9.059749e-08, 0, 0.6, 0, -9.059749e-08, 0, -0.6, 0.085, -0.106, -0.163)
 
 [node name="Armature" type="Node3D" parent="WeaponWrapper/gun_shotgun" unique_id=1775927508]
 
