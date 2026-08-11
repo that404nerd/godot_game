@@ -2,9 +2,19 @@
 #include "../state_machines/ai_state_machine.h"
 
 BaseAIState::BaseAIState(AIStates aiState, const AIStateData& aiStateData)
-    : State(static_cast<int>(aiState)), m_AIStateMachine(aiStateData.aiStateMachine), m_AICharacterComp(m_AIStateMachine->get_ai_character_component()), 
+    : State(static_cast<int>(aiState)), m_AIStateMachine(aiStateData.aiStateMachine),
+       m_AnimPlayer(m_AIStateMachine->get_anim_player()), m_AnimTree(m_AIStateMachine->get_anim_tree()),
+       m_AnimTreeState(Object::cast_to<AnimationNodeStateMachinePlayback>(m_AnimTree->get("parameters/playback"))),
+       m_AICharacterComp(m_AIStateMachine->get_ai_character_component()),
       m_NavAgent3D(m_AIStateMachine->get_nav_agent_3d()), m_InputCmdSystem(m_AIStateMachine->get_input_cmd_system()),
       m_DetectionArea(m_AIStateMachine->get_detection_area()), m_Target(aiStateData.target) {};
+
+void BaseAIState::_update_blends(double delta)
+{
+  float vel = m_AICharacterComp->get_velocity().length();
+  vel = Math::remap(vel, 0.0f, m_AICharacterComp->get_ground_accel(), 0.0f, 1.0f);
+  m_AnimTree->get("parameters/Chase/IdleChaseBlend/blend_position") = vel;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Idle AI State /////////////////////////////////////////////////
@@ -18,7 +28,7 @@ IdleAIState::IdleAIState(const AIStateData& aiStateData)
 
 void IdleAIState::_enter()
 {
-
+  m_InputCmdSystem->set_wants_to_idle(true);
 }
 
 void IdleAIState::_handle_input(const Ref<InputEvent>& event)
@@ -28,7 +38,10 @@ void IdleAIState::_handle_input(const Ref<InputEvent>& event)
 
 void IdleAIState::_update(double delta)
 {
+  m_AnimTreeState->travel("Idle");
+  m_NavAgent3D->set_velocity(m_AICharacterComp->get_velocity());
 
+  _update_blends(delta);
 }
 
 void IdleAIState::_physics_update(double delta)
@@ -39,7 +52,7 @@ void IdleAIState::_physics_update(double delta)
 
 void IdleAIState::_exit()
 {
-
+  m_InputCmdSystem->set_wants_to_idle(false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,11 +67,12 @@ ChaseAIState::ChaseAIState(const AIStateData& aiStateData)
 
 void ChaseAIState::_enter()
 {
+  m_InputCmdSystem->set_wants_to_sprint(true);
 }
 
 void ChaseAIState::_handle_input(const Ref<InputEvent>& event)
 {
-
+  
 }
 
 void ChaseAIState::_update(double delta)
@@ -68,22 +82,23 @@ void ChaseAIState::_update(double delta)
     print_error("Player not found to chase!");
     return;
   }
-  
+
+  _update_blends(delta);
   m_NavAgent3D->set_target_position(m_Target->get_global_position());
   if(m_NavAgent3D->is_navigation_finished())
   {
-    m_NavAgent3D->set_velocity(Vector3(0.0f, 0.0f, 0.0f));
-    return;
+    print_line("Nav finished!");
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::AI_IDLE));
   }
-
+  
   Vector3 nextPos = m_NavAgent3D->get_next_path_position();
   Vector3 direction = (nextPos - m_AICharacterComp->get_global_position()).normalized();
-
-  m_InputCmdSystem->set_wants_to_sprint(true);
-
+  
+  
   m_AICharacterComp->set_wish_dir(direction);
   m_NavAgent3D->set_velocity(m_AICharacterComp->get_velocity());
-
+  m_AnimTreeState->travel("Chase");
+  
   if(direction.length() > 0.01f)
   {
     float target_rot = Math::atan2(direction.x, direction.z);
@@ -100,5 +115,5 @@ void ChaseAIState::_physics_update(double delta)
 
 void ChaseAIState::_exit()
 {
-  m_InputCmdSystem->set_wants_to_sprint(true);
+  m_InputCmdSystem->set_wants_to_sprint(false);
 }

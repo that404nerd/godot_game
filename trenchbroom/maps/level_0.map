@@ -6018,3 +6018,9 @@
 "origin" "51 -251 265"
 "angles" "-90 0 0"
 }
+// entity 73
+{
+"classname" "func_garden_hose"
+"origin" "-8 -248 270"
+"angles" "-90 0 0"
+}

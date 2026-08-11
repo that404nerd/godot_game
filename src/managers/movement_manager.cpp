@@ -79,7 +79,7 @@ void MovementManager::_physics_update(double delta)
     m_MovementStateCtx.LastFrameOnFloor = Engine::get_singleton()->get_physics_frames();
   }
 
-  character_component->_update_movement(delta);
+  character_component->_update_gravity(delta);
 
   if(m_StepHandlerComponent && !m_StepHandlerComponent->_snap_up_stairs_check(delta))
   {
@@ -92,9 +92,16 @@ void MovementManager::_physics_update(double delta)
 /////////////////// Movement States Implementation ///////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-void MovementManager::_idle()
+void MovementManager::_idle(double delta)
 {
   m_MovementStateCtx.IsIdle = true;
+
+  Vector3 characterVel = character_component->get_velocity();
+
+  characterVel.x = Utils::exp_decay(characterVel.x, 0.0f, 1.0f, character_component->get_ground_decel());
+  characterVel.z = Utils::exp_decay(characterVel.z, 0.0f, 1.0f, character_component->get_ground_decel());
+  
+  character_component->set_velocity(characterVel);
 }
 
 void MovementManager::_idle_exit()

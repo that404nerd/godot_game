@@ -16,7 +16,6 @@ void AIStateMachine::_init_data()
 void AIStateMachine::_player_entered_detection_area(Node3D* body)
 {
   _change_state(static_cast<int>(AIStates::AI_CHASE));
-
 }
 
 void AIStateMachine::_bind_methods()
@@ -27,5 +26,6 @@ void AIStateMachine::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AIStateMachine, input_cmd_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIStateMachine, nav_agent_3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIStateMachine, detection_area, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIStateMachine, anim_player, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIStateMachine, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }

@@ -78,7 +78,7 @@ void CharacterComponent::_bind_methods()
   GD_BIND_PROPERTY(CharacterComponent, dash_cooldown, Variant::FLOAT);
 }
 
-void CharacterComponent::_update_movement(double delta) 
+void CharacterComponent::_update_gravity(double delta) 
 {
   Vector3 characterVel = get_velocity();
   
@@ -87,19 +87,6 @@ void CharacterComponent::_update_movement(double delta)
     characterVel.y -= down_gravity * delta;
   }
 
-  if(is_on_floor())
-  {
-    if (m_WishDir != Vector3(0.0f, 0.0f, 0.0f))
-    {
-      characterVel.x = Utils::exp_decay(characterVel.x, m_WishDir.x, 15.0f, ground_accel);
-      characterVel.z = Utils::exp_decay(characterVel.z, m_WishDir.z, 15.0f, ground_accel);
-    }
-    else
-    {
-      characterVel.x = Utils::exp_decay(characterVel.x, 0.0f, 1.0f, ground_decel);
-      characterVel.z = Utils::exp_decay(characterVel.z, 0.0f, 1.0f, ground_decel);
-    }
-  }
 
   set_velocity(characterVel);
 }

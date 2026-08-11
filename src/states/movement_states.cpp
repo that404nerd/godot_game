@@ -29,7 +29,6 @@ IdleMovementState::IdleMovementState(const MovementStateData& movementStateData)
 
 void IdleMovementState::_enter()
 { 
-  m_MovementManager->_idle();
 }
 
 void IdleMovementState::_handle_input(const Ref<InputEvent>& event) 
@@ -50,6 +49,11 @@ void IdleMovementState::_handle_input(const Ref<InputEvent>& event)
 
 void IdleMovementState::_physics_update(double delta) 
 {
+  if(m_InputCmdSystem->wants_to_idle())
+  {
+    m_MovementManager->_idle(delta);
+  }
+
   if(m_InputCmdSystem && m_InputCmdSystem->wants_to_sprint() && m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
   }

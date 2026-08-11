@@ -47,4 +47,5 @@ private:
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
   GD_DEFINE_PROPERTY(Area3D*, detection_area, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
+  GD_DEFINE_PROPERTY(AnimationPlayer*, anim_player, nullptr);
 };

@@ -21,7 +21,10 @@ void Player::_unhandled_input(const Ref<InputEvent>& event)
 void Player::_process(double delta)
 {
   m_InputDir = m_InputCmdSystem->get_input_dir();
+  
   set_wish_dir(get_global_transform().basis.xform(Vector3(m_InputDir.x, 0.0f, m_InputDir.y)).normalized());
+  m_InputCmdSystem->set_wish_dir(get_wish_dir());
+
   CharacterComponent::_process(delta);
 }
 

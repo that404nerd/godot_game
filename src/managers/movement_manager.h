@@ -29,7 +29,7 @@ public:
   void _physics_update(double delta);
 
 public:
-  void _idle();
+  void _idle(double delta);
   void _idle_exit();
 
   void _sprint(double delta);

@@ -27,7 +27,7 @@ public:
 
   Vector2 get_input_dir() { return m_InputDir; }
   
-  void _update_movement(double delta);
+  void _update_gravity(double delta);
   void _update_velocity();
 
 public:

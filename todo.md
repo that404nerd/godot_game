@@ -1,4 +1,5 @@
 ## TODO 
+- Change LICENSE seperately for assets []
 - Use PlayerComponent in WeaponEffects Component instead of a generic Character Component []
 - [NOT CRITICAL] Fix EventBus Singleton unregisteration []
 - Clean up weapon manager and weapon effects component []

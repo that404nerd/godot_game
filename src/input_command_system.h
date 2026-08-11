@@ -9,6 +9,7 @@ using namespace godot;
 
 struct InputCommandData 
 {
+  bool WantsToIdle = false;
   bool WantsToSprint = false;
   bool WantsToJump = false;
   bool WantsToCrouch = false;
@@ -25,6 +26,7 @@ struct InputCommandData
 
   float MaxHoldTime = 0.0f;
 
+  Vector3 CharacterWishDir = Vector3(0.0f, 0.0f, 0.0f);
   Vector2 MouseVel = Vector2(0.0f, 0.0f);
   Vector2 InputDir = Vector2(0.0f, 0.0f);
 };
@@ -36,6 +38,7 @@ public:
 
   virtual void _init() {};
 
+  void set_wants_to_idle(bool status) { m_InputCmdData.WantsToIdle = status; }
   void set_wants_to_sprint(bool status) { m_InputCmdData.WantsToSprint = status; }
   void set_wants_to_jump(bool status) { m_InputCmdData.WantsToJump = status; }
   void set_wants_to_crouch(bool status) { m_InputCmdData.WantsToCrouch = status; }
@@ -45,9 +48,11 @@ public:
   void set_wants_to_reload_weapon(bool status) { m_InputCmdData.WantsToReloadWeapon = status; }
   void set_wants_to_switch_weapon(bool status) { m_InputCmdData.WantsToSwitchWeapon = status; }
 
+  void set_wish_dir(Vector3 wishDir) { m_InputCmdData.CharacterWishDir = wishDir; }
   void set_input_dir(Vector2 inputDir) { m_InputCmdData.InputDir = inputDir; }
   void set_mouse_vel(Vector2 mouseVel) { m_InputCmdData.MouseVel = mouseVel; }
 
+  bool wants_to_idle() { return m_InputCmdData.WantsToIdle; };
   bool wants_to_sprint() { return m_InputCmdData.WantsToSprint; };
   bool wants_to_jump() { return m_InputCmdData.WantsToJump; };
   bool wants_to_crouch() { return m_InputCmdData.WantsToCrouch; };
@@ -65,6 +70,7 @@ public:
   void set_weapon_list_size(int val) { m_InputCmdData.WeaponListSize = val; }
   int get_weapon_list_size() { return m_InputCmdData.WeaponListSize; }
 
+  Vector3 get_character_wish_dir() { return m_InputCmdData.CharacterWishDir; };
   Vector2 get_mouse_vel() { return m_InputCmdData.MouseVel; };
   Vector2 get_input_dir() { return m_InputCmdData.InputDir; };
 

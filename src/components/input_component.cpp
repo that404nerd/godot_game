@@ -51,11 +51,16 @@ void InputComponent::_input(const Ref<InputEvent>& event)
 
 void InputComponent::_update(double delta)
 {
-  if(get_input_dir() != Vector2(0.0f, 0.0f))
+  if(get_input_dir() != Vector2(0.0f, 0.0f) || get_character_wish_dir() != Vector3(0.0f, 0.0f, 0.0f))
   {
     set_wants_to_sprint(true);
-  } else {
+    set_wants_to_idle(false);
+  }
+
+  if(get_input_dir() == Vector2(0.0f, 0.0f) && get_character_wish_dir() == Vector3(0.0f, 0.0f, 0.0f))
+  {
     set_wants_to_sprint(false);
+    set_wants_to_idle(true);
   }
 
   if(Input::get_singleton()->is_action_pressed("shoot_weapon"))

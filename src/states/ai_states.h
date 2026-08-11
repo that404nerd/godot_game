@@ -3,6 +3,7 @@
 #include <godot_cpp/godot.hpp>
 
 #include <godot_cpp/classes/navigation_agent3d.hpp>
+#include <godot_cpp/classes/animation_node_state_machine_playback.hpp>
 #include <godot_cpp/classes/area3d.hpp>
 
 #include "state.h"
@@ -19,8 +20,15 @@ class AIStateMachine;
 class BaseAIState : public State {
 public:
   BaseAIState(AIStates aiState, const AIStateData& aiStateData);
+
+  void _update_blends(double delta);
 protected:
   AIStateMachine* m_AIStateMachine { nullptr };
+
+  AnimationPlayer* m_AnimPlayer { nullptr };
+  AnimationTree* m_AnimTree { nullptr };
+  AnimationNodeStateMachinePlayback* m_AnimTreeState { nullptr };
+
   AICharacterComponent* m_AICharacterComp { nullptr };
   NavigationAgent3D* m_NavAgent3D { nullptr };
   InputCommandSystem* m_InputCmdSystem { nullptr };

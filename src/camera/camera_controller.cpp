@@ -107,7 +107,6 @@ void CameraController::_physics_process(double delta)
   _tilt_player(delta);
   _headbob_effect(delta);
   _land_shake(delta);
-
   
   m_FinalPos = m_BasePos + m_HeadBobPos;
   m_FinalRot = m_BaseRot + m_SideTiltRot;
