@@ -78,6 +78,7 @@ private:
   GD_DEFINE_PROPERTY(float, slide_timer, 2.0f);
 
   GD_DEFINE_PROPERTY(float, jump_height, 10.0f);
+  GD_DEFINE_PROPERTY(float, air_control_factor, 10.0f);
   GD_DEFINE_PROPERTY(float, down_gravity, 15.0f);
 
   GD_DEFINE_PROPERTY(float, max_air_move_speed, 10.0f);

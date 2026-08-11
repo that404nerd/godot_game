@@ -423,7 +423,7 @@ void WeaponEffects::_init()
   
   EventBus::get_singleton()->connect("weapon_switched", Callable(this, "_on_weapon_switched"));
 
-  print_error("[color=GREEN]Weapon Effects Component Initialized");
+  print_line("Weapon Effects Component Initialized");
 }
 
 void WeaponEffects::_init_data(const WeaponEffectsData& weaponEffectsData)

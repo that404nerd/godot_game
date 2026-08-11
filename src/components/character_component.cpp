@@ -68,6 +68,7 @@ void CharacterComponent::_bind_methods()
 
   ADD_GROUP("Air Strafe Settings", "");
   GD_BIND_PROPERTY(CharacterComponent, max_air_move_speed, Variant::FLOAT);
+  GD_BIND_PROPERTY(CharacterComponent, air_control_factor, Variant::FLOAT);
   GD_BIND_PROPERTY(CharacterComponent, mouse_sensitivity, Variant::FLOAT);
 
   ADD_GROUP("Acceleration Settings", "");
@@ -86,7 +87,6 @@ void CharacterComponent::_update_gravity(double delta)
   {
     characterVel.y -= down_gravity * delta;
   }
-
 
   set_velocity(characterVel);
 }

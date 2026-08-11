@@ -23,7 +23,7 @@ void WeaponStateMachine::_init_data()
   m_InputCmdSystem->set_weapon_list_size(weapon_component->get_weapon_list().size());
 
 
-  print_error("[color=GREEN]Weapon State Machine Initialized");
+  print_line("Weapon State Machine Initialized");
 }
 
 void WeaponStateMachine::_bind_methods()

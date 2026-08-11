@@ -43,7 +43,7 @@ void WeaponManager::_init()
   }
 
 
-  print_error("[color=GREEN]Weapon Manager Initialized");
+  print_line("Weapon Manager Initialized");
 }
 
 void WeaponManager::_init_weapons()

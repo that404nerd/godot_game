@@ -36,7 +36,7 @@ void MovementManager::_init()
 
   set_physics_process(false);
   set_process(false);
-  print_error("[color=GREEN]Movement Manager Initialized");
+  print_line("Movement Manager Initialized");
 }
 
 void MovementManager::_bind_methods()
@@ -98,9 +98,9 @@ void MovementManager::_idle(double delta)
 
   Vector3 characterVel = character_component->get_velocity();
 
-  characterVel.x = Utils::exp_decay(characterVel.x, 0.0f, 1.0f, character_component->get_ground_decel());
-  characterVel.z = Utils::exp_decay(characterVel.z, 0.0f, 1.0f, character_component->get_ground_decel());
-  
+  characterVel.x = Math::move_toward(characterVel.x, 0.0f, character_component->get_ground_decel() * (float)delta);
+  characterVel.z = Math::move_toward(characterVel.z, 0.0f, character_component->get_ground_decel() * (float)delta);
+
   character_component->set_velocity(characterVel);
 }
 
@@ -120,7 +120,9 @@ void MovementManager::_sprint(double delta)
   //   m_MovementStateCtx.DashCooldown = character_component->get_dash_cooldown();
   // }
 
-  characterVel = Utils::exp_decay(characterVel, character_component->get_sprint_speed() * character_component->get_wish_dir(), 15.0f, (float)delta);
+  characterVel.x = Math::move_toward(characterVel.x, character_component->get_sprint_speed() * character_component->get_wish_dir().x, character_component->get_ground_decel() * (float)delta);
+  characterVel.z = Math::move_toward(characterVel.z, character_component->get_sprint_speed() * character_component->get_wish_dir().z, character_component->get_ground_decel() * (float)delta);
+
   character_component->set_velocity(characterVel);
 }
 
@@ -153,22 +155,19 @@ void MovementManager::_fall(double delta)
   Vector3 characterVel = character_component->get_velocity();
   Vector3 wishDir = character_component->get_wish_dir().normalized();
 
-  // Vector3 gravity_vec = Vector3(0.0f, -1.0f, 0.0f) * character_component->get_down_gravity() * delta;
-  // character_component->set_gravity_vec(gravity_vec);
-  
   float targetX = wishDir.x * character_component->get_max_air_move_speed();
   float targetZ = wishDir.z * character_component->get_max_air_move_speed();
 
   if (wishDir.length() > 0.0f) {
-    characterVel.x = Utils::exp_decay(characterVel.x, targetX, 15.0f, delta);
-    characterVel.z = Utils::exp_decay(characterVel.z, targetZ, 15.0f, delta);
+    characterVel.x = Math::move_toward(characterVel.x, targetX, (float)delta * character_component->get_air_control_factor());
+    characterVel.z = Math::move_toward(characterVel.z, targetZ, (float)delta * character_component->get_air_control_factor());
   }
 
-  if(m_MovementStateCtx.DashCooldown <= 0.0f)
-  {
-    m_MovementStateCtx.CanDash = true;
-    m_MovementStateCtx.DashCooldown = character_component->get_dash_cooldown();
-  }
+  // if(m_MovementStateCtx.DashCooldown <= 0.0f)
+  // {
+  //   m_MovementStateCtx.CanDash = true;
+  //   m_MovementStateCtx.DashCooldown = character_component->get_dash_cooldown();
+  // }
 
   character_component->set_velocity(characterVel);
 }

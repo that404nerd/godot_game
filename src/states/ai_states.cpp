@@ -12,8 +12,8 @@ BaseAIState::BaseAIState(AIStates aiState, const AIStateData& aiStateData)
 void BaseAIState::_update_blends(double delta)
 {
   float vel = m_AICharacterComp->get_velocity().length();
-  vel = Math::remap(vel, 0.0f, m_AICharacterComp->get_ground_accel(), 0.0f, 1.0f);
-  m_AnimTree->get("parameters/Chase/IdleChaseBlend/blend_position") = vel;
+  vel = Math::remap(vel, 0.0f, 3.0f, 0.0f, 1.0f);
+  m_AnimTree->set("parameters/Chase/IdleChaseBlend/blend_position", vel);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,8 @@ void IdleAIState::_handle_input(const Ref<InputEvent>& event)
 void IdleAIState::_update(double delta)
 {
   m_AnimTreeState->travel("Idle");
+  
+  m_AICharacterComp->set_wish_dir(Vector3(0.0f, 0.0f, 0.0f));
   m_NavAgent3D->set_velocity(m_AICharacterComp->get_velocity());
 
   _update_blends(delta);
@@ -83,17 +85,14 @@ void ChaseAIState::_update(double delta)
     return;
   }
 
-  _update_blends(delta);
   m_NavAgent3D->set_target_position(m_Target->get_global_position());
   if(m_NavAgent3D->is_navigation_finished())
   {
-    print_line("Nav finished!");
     m_AIStateMachine->_change_state(static_cast<int>(AIStates::AI_IDLE));
   }
   
   Vector3 nextPos = m_NavAgent3D->get_next_path_position();
   Vector3 direction = (nextPos - m_AICharacterComp->get_global_position()).normalized();
-  
   
   m_AICharacterComp->set_wish_dir(direction);
   m_NavAgent3D->set_velocity(m_AICharacterComp->get_velocity());
@@ -106,6 +105,7 @@ void ChaseAIState::_update(double delta)
     aiRot.y = Math::lerp(aiRot.y, target_rot, 5.0f * (float)delta);
     m_AICharacterComp->set_rotation(aiRot);
   }
+  _update_blends(delta);
 }
 
 void ChaseAIState::_physics_update(double delta)

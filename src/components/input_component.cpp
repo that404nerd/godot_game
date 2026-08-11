@@ -9,7 +9,7 @@ void InputComponent::_init()
 {
   set_physics_process(false);
   set_process(false);
-  print_error("[color=GREEN]Input Command System Initialized");
+  print_line("Input Command System Initialized");
 }
 
 void InputComponent::_bind_methods()
