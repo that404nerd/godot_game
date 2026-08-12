@@ -17,18 +17,23 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
   Ref<InputEventMouseMotion> mouse_event = event;
   if(event->is_class("InputEventMouseMotion")) {
 
-    character_component->rotate_y(-mouse_event->get_relative().x * character_component->get_mouse_sensitivity());
-    character_camera->rotate_x(-mouse_event->get_relative().y * character_component->get_mouse_sensitivity());
+    if(Input::get_singleton()->get_mouse_mode() == Input::MOUSE_MODE_CAPTURED)
+    {
 
-    Vector3 camRot = character_camera->get_rotation();
-    camRot.x = Math::clamp(camRot.x, Math::deg_to_rad(-89.0f), Math::deg_to_rad(89.0f));
-    character_camera->set_rotation(Vector3(camRot.x, camRot.y, 0.0f));
+      character_component->rotate_y(-mouse_event->get_relative().x * character_component->get_mouse_sensitivity());
+      character_camera->rotate_x(-mouse_event->get_relative().y * character_component->get_mouse_sensitivity());
+      
+      Vector3 camRot = character_camera->get_rotation();
+      camRot.x = Math::clamp(camRot.x, Math::deg_to_rad(-89.0f), Math::deg_to_rad(89.0f));
+      character_camera->set_rotation(Vector3(camRot.x, camRot.y, 0.0f));
+    }
   }
 }
 
 void CameraController::_bind_methods() 
 {
   GD_BIND_CUSTOM_PROPERTY(CameraController, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CameraController, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CameraController, character_camera, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CameraController, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
@@ -85,16 +90,12 @@ void CameraController::_tilt_player(double delta)
 {
   m_SideTiltRot = get_rotation();
 
-  if(!movement_manager->IsSprinting())
-  {
-    m_SideTiltRot = Vector3(0.0f, 0.0f, 0.0f);
-    return;
-  }
-
   if(movement_manager->IsSprinting())
   {
-    m_SideTiltRot.z = Utils::exp_decay(m_SideTiltRot.z, Math::deg_to_rad(side_tilt_angle) * -character_component->get_input_dir().x, side_tilt_transition_value, (float)delta);
+    m_SideTiltRot.z = Utils::exp_decay(m_SideTiltRot.z, Math::deg_to_rad(side_tilt_angle) * -input_command_system->get_input_dir().x, side_tilt_transition_value, (float)delta);
   }
+
+  m_SideTiltRot.z = Math::lerp(m_SideTiltRot.z, 0.0f, (float)delta * side_tilt_transition_value);
 }
 
 void CameraController::_land_shake(double delta)
@@ -110,7 +111,7 @@ void CameraController::_physics_process(double delta)
   
   m_FinalPos = m_BasePos + m_HeadBobPos;
   m_FinalRot = m_BaseRot + m_SideTiltRot;
-  
+
   m_CharacterHead->set_position(m_FinalPos);
   set_rotation(m_FinalRot);
 }

@@ -465,7 +465,11 @@ void WeaponEffects::_update_data(Ref<Weapon> currentWeapon)
 
 void WeaponEffects::_update(double delta)
 {
-  m_MouseVel = Vector3(input_command_system->get_mouse_vel().x, input_command_system->get_mouse_vel().y, 0.0f);
+
+  if(Input::get_singleton()->get_mouse_mode() == Input::MOUSE_MODE_CAPTURED)
+  {
+    m_MouseVel = Vector3(input_command_system->get_mouse_vel().x, input_command_system->get_mouse_vel().y, 0.0f);
+  }
   
   m_WeaponActionsEffectsComp->_update(delta);
   m_WeaponSwayComponent.weapon_idle_sway(delta);

@@ -114,7 +114,7 @@ void SprintMovementState::_physics_update(double delta)
   
   Vector3 characterVel = m_MovementStateCtx.CharacterVelocity;
 
-  if(characterVel.length() < 1.0f && m_MovementStateCtx.IsOnFloor) {
+  if(m_InputCmdSystem->wants_to_idle() && m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
 

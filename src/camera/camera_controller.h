@@ -70,6 +70,7 @@ private:
   
 private:
   GD_DEFINE_PROPERTY(Camera3D*, character_camera, nullptr);
+  GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
 };

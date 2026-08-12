@@ -8,7 +8,6 @@
 [resource]
 script = ExtResource("3_u5f86")
 entity_fgd = ExtResource("2_w5snr")
-use_groups_hierarchy = true
 base_texture_dir = "res://assets/textures"
 base_material_dir = "res://assets/materials"
 metadata/_custom_type_script = "uid://38q6k0ctahjn"

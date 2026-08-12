@@ -40,7 +40,6 @@ void IdleAIState::_update(double delta)
 {
   m_AnimTreeState->travel("Idle");
   
-  m_AICharacterComp->set_wish_dir(Vector3(0.0f, 0.0f, 0.0f));
   m_NavAgent3D->set_velocity(m_AICharacterComp->get_velocity());
 
   _update_blends(delta);

@@ -100,4 +100,4 @@ label_settings = SubResource("LabelSettings_choun")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.211403, 8.299101, 34.384678)
 
 [node name="SwatOperator_Type1" parent="." unique_id=64193725 instance=ExtResource("7_o6xl0")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 18.994, 4.31, 12.278)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -10.230322, 8.277768, 13.02125)
