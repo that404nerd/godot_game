@@ -4,13 +4,33 @@
 void VisionComponent::_init()
 {
   m_PlayerInst = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
+
+  detection_area->connect("body_entered", Callable(this, "_on_player_entered_area"));
+  detection_area->connect("body_exited", Callable(this, "_on_player_exited_area"));
 }
 
 void VisionComponent::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, ai_character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, character_skeleton, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(VisionComponent, detection_area, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(VisionComponent, eye_raycasts, Variant::ARRAY, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_PROPERTY(VisionComponent, character_bone_name, Variant::STRING_NAME);
+
+  GD_BIND_PROPERTY(VisionComponent, vision_fov, Variant::FLOAT);
+
+  ClassDB::bind_method(D_METHOD("_on_player_entered_area"), &VisionComponent::_on_player_entered_area);
+  ClassDB::bind_method(D_METHOD("_on_player_exited_area"), &VisionComponent::_on_player_exited_area);
+}
+
+void VisionComponent::_on_player_entered_area()
+{
+  m_IsInArea = true;
+}
+
+void VisionComponent::_on_player_exited_area()
+{
+  m_IsInArea = false;
 }
 
 void VisionComponent::_update_component_transform()
@@ -33,17 +53,20 @@ void VisionComponent::_update_component_transform()
 void VisionComponent::_update(double delta)
 {
   _update_component_transform();
-  m_ForwardVector = (ai_character_component->get_global_basis().get_column(2)).normalized();
-  m_PlayerPos = (m_PlayerInst->get_global_position() - ai_character_component->get_global_position()).normalized();
 
-  float dot = m_ForwardVector.dot(m_PlayerPos);
-
-  if(dot >= Math::cos(Math::deg_to_rad(60.0f)))
+  if(m_IsInArea)
   {
-    print_line("Cant see the player");
-  } else {
-
-    print_line("Can see the player");
+    print_line("is in area!!");
+    m_ForwardVector = (ai_character_component->get_global_basis().get_column(2)).normalized();
+    m_PlayerPos = (m_PlayerInst->get_global_position() - ai_character_component->get_global_position()).normalized();
+    
+    float dot = m_ForwardVector.dot(m_PlayerPos);
+    
+    if(dot >= Math::cos(Math::deg_to_rad(vision_fov)))
+    {
+      
+    } else {
+    }
   }
 }
 

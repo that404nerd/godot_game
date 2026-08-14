@@ -21,7 +21,7 @@ void BaseAIState::_update_blends(double delta)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 IdleAIState::IdleAIState(const AIStateData& aiStateData)
-  : BaseAIState(AIStates::AI_IDLE, aiStateData)
+  : BaseAIState(AIStates::IDLE, aiStateData)
 {
 
 }
@@ -61,7 +61,7 @@ void IdleAIState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 ChaseAIState::ChaseAIState(const AIStateData& aiStateData)
-  : BaseAIState(AIStates::AI_CHASE, aiStateData)
+  : BaseAIState(AIStates::CHASE, aiStateData)
 {
 
 }
@@ -87,7 +87,7 @@ void ChaseAIState::_update(double delta)
   m_NavAgent3D->set_target_position(m_Target->get_global_position());
   if(m_NavAgent3D->is_navigation_finished())
   {
-    m_AIStateMachine->_change_state(static_cast<int>(AIStates::AI_IDLE));
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
   }
   
   Vector3 nextPos = m_NavAgent3D->get_next_path_position();
@@ -115,4 +115,39 @@ void ChaseAIState::_physics_update(double delta)
 void ChaseAIState::_exit()
 {
   m_InputCmdSystem->set_wants_to_sprint(false);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Patrol AI State //////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+PatrolAIState::PatrolAIState(const AIStateData& aiStateData)
+  : BaseAIState(AIStates::CHASE, aiStateData)
+{
+
+}
+
+void PatrolAIState::_enter()
+{
+  print_line("Patrol");
+  // m_InputCmdSystem->set_wants_to_sprint(true);
+}
+
+void PatrolAIState::_handle_input(const Ref<InputEvent>& event)
+{
+  
+}
+
+void PatrolAIState::_update(double delta)
+{
+}
+
+void PatrolAIState::_physics_update(double delta)
+{
+
+}
+
+void PatrolAIState::_exit()
+{
+  // m_InputCmdSystem->set_wants_to_sprint(false);
 }

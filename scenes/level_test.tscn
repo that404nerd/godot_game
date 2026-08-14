@@ -2,91 +2,39 @@
 
 [ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="2_qsrgx"]
 [ext_resource type="Resource" uid="uid://bmr8r3dexg0iq" path="res://trenchbroom/fpsproject_map_settings.tres" id="3_2h6oo"]
-[ext_resource type="Texture2D" uid="uid://d3u4ab5fyivaq" path="res://assets/textures/grid.jpg" id="3_qsrgx"]
+[ext_resource type="Texture2D" uid="uid://cyg2snr1w5xw5" path="res://addons/func_godot/textures/default_texture.png" id="3_d5kir"]
 
-[sub_resource type="Shader" id="Shader_cwof1"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.1.dev4's StandardMaterial3D.
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_d5kir"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 
-shader_type spatial;
-render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-uniform float point_size : hint_range(0,128);
-uniform float roughness : hint_range(0,1);
-uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
-uniform float specular;
-uniform float metallic;
-varying vec3 uv1_triplanar_pos;
-uniform float uv1_blend_sharpness;
-varying vec3 uv1_power_normal;
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
+[sub_resource type="Sky" id="Sky_plvai"]
+sky_material = SubResource("ProceduralSkyMaterial_d5kir")
 
+[sub_resource type="Environment" id="Environment_vkcgd"]
+background_mode = 2
+sky = SubResource("Sky_plvai")
+glow_enabled = true
 
-void vertex() {
-	TANGENT = vec3(0.0,0.0,-1.0) * abs(NORMAL.x);
-	TANGENT+= vec3(1.0,0.0,0.0) * abs(NORMAL.y);
-	TANGENT+= vec3(1.0,0.0,0.0) * abs(NORMAL.z);
-	TANGENT = normalize(TANGENT);
-	BINORMAL = vec3(0.0,1.0,0.0) * abs(NORMAL.x);
-	BINORMAL+= vec3(0.0,0.0,-1.0) * abs(NORMAL.y);
-	BINORMAL+= vec3(0.0,1.0,0.0) * abs(NORMAL.z);
-	BINORMAL = normalize(BINORMAL);
-	uv1_power_normal=pow(abs(NORMAL),vec3(uv1_blend_sharpness));
-	uv1_triplanar_pos = VERTEX * uv1_scale + uv1_offset;
-	uv1_power_normal/=dot(uv1_power_normal,vec3(1.0));
-	uv1_triplanar_pos *= vec3(1.0,-1.0, 1.0);
-}
+[sub_resource type="NavigationMesh" id="NavigationMesh_b0qfj"]
+vertices = PackedVector3Array(-32.5, 24.52, 3.5, -32.25, 24.52, 5.5, -30, 24.52, 5, -30, 24.52, 0.75, -27.5, 24.69, -5.25, -27.5, 25.8, -3.25, -24.5, 25.8, -3.25, -24.5, 24.69, -5.25, -47, 24.52, 5, -28.5, 24.52, -5.25, -18.5, 24.52, -12.25, -15.75, 24.52, -43.5, -47, 24.52, -43.5, -37.02437, 24.77, -4.994026, -36.994514, 24.52, -6.475872, -38.52425, 24.52, -3.4841576, -32.519333, 24.52, -5.0110664, -34.004345, 24.76, -5.022053, -38, 24.52, 3.5, -23.75, 24.55, -5.5, -25, 24.55, -5.416668, -26.25, 24.55, -5.333332, -28.5, 24.52, 0.5, -18.5, 24.52, -5.75, -20.525, 24.52, -8.025002, -38.25, 24.52, 5.25, -15.75, 24.52, -12.5, -13.75, 24.52, 4.75, -15.25, 24.52, 4.75, -15.25, 24.52, 5.5, -13.25, 24.52, 5.75, 47, 24.52, 41.5, -13.25, 24.52, 4.25, -13.25, 24.52, 10.25, -13.75, 24.52, -2.25, -15.5, 24.52, -2.25, -15.25, 24.52, -0.5, -13.25, 24.52, -0.25, 47, 24.52, -43.5, -13.25, 24.52, -12.25, -13.25, 24.52, -2.75, -13.25, 24.52, 41.5, -17.5, 25.77, -11.5, -17.5, 25.77, -8.5, -14.5, 25.77, -8.5, -14.5, 25.77, -11.5, -17.25, 24.52, -11.25, -17.25, 24.52, -8.5, -14.5, 24.52, -8.5, -14.5, 24.52, -11.25, -17.5, 26.52, -6.5, -17.5, 26.52, -3.5, -14.5, 26.52, -3.5, -14.5, 26.52, -6.5, -17.25, 24.52, -6.25, -17.25, 24.52, -3.5, -14.5, 24.52, -3.5, -14.5, 24.52, -6.25, -18.25, 24.52, -0.5, -18.5, 24.52, -2.5, -23.25, 24.52, -5.25, -18.5, 24.52, 0.25, -23.25, 24.52, 0.5, -22.25, 24.52, 0.5, -27.25, 24.52, -4.75, -27.25, 24.52, 0.5, -24.5, 24.52, 0.5, -24.5, 24.52, -4.75, -27.5, 28.02, 1.25, -24.5, 28.02, 1.25, -24.5, 27.6, 0.125, -24.5, 27.04, -1, -24.5, 26.35, -2.125, -27.5, 26.35, -2.125, -27.5, 27.04, -1, -27.5, 27.6, 0.125, -26.525, 26.49, -2.0250015, -26.489988, 27.32, -0.5140114, -29, 28.02, 1.5, -29, 28.02, 10.5, -23, 28.02, 10.5, -23, 28.02, 1.5, -10, 28.27, -2.5, -10, 28.27, 5.5, 3, 28.27, 5.5, 3, 28.27, -2.5, -21.75, 24.52, 11, -18, 24.52, 10.75, -18.5, 24.52, 10.5, -21.75, 24.52, 0.75, -18.5, 24.52, 5.75, -18.5, 24.52, 4.5, -36.75, 26.64, 0.5, -36.75, 26.89, 1.5, -34.5, 26.89, 1.5, -34.5, 26.64, 0.5, -17.5, 28.52, 0.5, -17.5, 28.52, 3.5, -14.5, 28.52, 3.5, -14.5, 28.52, 0.5, -17.25, 24.52, 0.75, -17.25, 24.52, 3.5, -14.5, 24.52, 3.5, -14.5, 24.52, 0.75, -28.75, 24.52, 1.75, -28.75, 24.52, 10.5, -23, 24.52, 10.5, -23, 24.52, 1.75, -34.5, 27.64, 4.25, -34.5, 27.64, 3.5, -36.75, 27.64, 3.5, -36.75, 27.64, 4.25, -37.25, 27.64, 4.5, -37.25, 27.64, 13.5, -33.5, 27.64, 13.5, -33.5, 27.64, 4.5, -37, 24.52, 4.75, -37, 24.52, 13.5, -33.5, 24.52, 13.5, -33.5, 24.52, 4.75, -47, 24.52, 13.25, -38.25, 24.52, 13, -30, 24.52, 11.5, -32.25, 24.52, 14.25, -32.75, 24.52, 14.75, -38, 24.52, 14.75, -47, 24.52, 41.5, -23.5, 24.52, 41.5, -23.75, 24.52, 11.75, -17.5, 30.52, 6.5, -17.5, 30.52, 9.5, -14.5, 30.52, 9.5, -14.5, 30.52, 6.5, -17.25, 24.52, 6.75, -17.25, 24.52, 9.5, -14.5, 24.52, 9.5, -14.5, 24.52, 6.75, -22.25, 24.52, 11.75, -13.75, 24.52, 10.75)
+polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(7, 6, 4), PackedInt32Array(4, 6, 5), PackedInt32Array(11, 10, 12), PackedInt32Array(12, 14, 8), PackedInt32Array(8, 16, 9), PackedInt32Array(9, 14, 10), PackedInt32Array(10, 14, 12), PackedInt32Array(14, 15, 8), PackedInt32Array(16, 14, 9), PackedInt32Array(8, 15, 16), PackedInt32Array(14, 13, 15), PackedInt32Array(16, 17, 14), PackedInt32Array(15, 17, 16), PackedInt32Array(13, 17, 15), PackedInt32Array(14, 17, 13), PackedInt32Array(3, 18, 9), PackedInt32Array(9, 18, 8), PackedInt32Array(19, 7, 20), PackedInt32Array(20, 7, 21), PackedInt32Array(21, 7, 4), PackedInt32Array(4, 9, 21), PackedInt32Array(21, 9, 20), PackedInt32Array(20, 9, 19), PackedInt32Array(19, 9, 10), PackedInt32Array(9, 22, 3), PackedInt32Array(3, 0, 18), PackedInt32Array(23, 24, 10), PackedInt32Array(10, 24, 19), PackedInt32Array(19, 24, 23), PackedInt32Array(18, 25, 8), PackedInt32Array(11, 26, 10), PackedInt32Array(28, 27, 29), PackedInt32Array(29, 27, 30), PackedInt32Array(27, 32, 30), PackedInt32Array(30, 32, 31), PackedInt32Array(31, 33, 30), PackedInt32Array(35, 34, 36), PackedInt32Array(36, 34, 37), PackedInt32Array(40, 39, 38), PackedInt32Array(34, 40, 37), PackedInt32Array(37, 40, 38), PackedInt32Array(37, 38, 31), PackedInt32Array(26, 11, 39), PackedInt32Array(39, 11, 38), PackedInt32Array(31, 41, 33), PackedInt32Array(31, 32, 37), PackedInt32Array(45, 44, 42), PackedInt32Array(42, 44, 43), PackedInt32Array(49, 48, 46), PackedInt32Array(46, 48, 47), PackedInt32Array(53, 52, 50), PackedInt32Array(50, 52, 51), PackedInt32Array(57, 56, 54), PackedInt32Array(54, 56, 55), PackedInt32Array(36, 58, 35), PackedInt32Array(35, 58, 59), PackedInt32Array(60, 23, 59), PackedInt32Array(58, 61, 59), PackedInt32Array(59, 61, 63), PackedInt32Array(59, 63, 62), PackedInt32Array(59, 62, 60), PackedInt32Array(60, 19, 23), PackedInt32Array(67, 66, 64), PackedInt32Array(64, 66, 65), PackedInt32Array(68, 77, 69), PackedInt32Array(69, 77, 70), PackedInt32Array(70, 77, 71), PackedInt32Array(71, 76, 72), PackedInt32Array(72, 76, 6), PackedInt32Array(6, 76, 5), PackedInt32Array(5, 76, 73), PackedInt32Array(73, 76, 74), PackedInt32Array(74, 77, 75), PackedInt32Array(75, 77, 68), PackedInt32Array(77, 76, 71), PackedInt32Array(76, 77, 74), PackedInt32Array(69, 81, 68), PackedInt32Array(68, 81, 78), PackedInt32Array(78, 81, 80), PackedInt32Array(78, 80, 79), PackedInt32Array(85, 84, 82), PackedInt32Array(82, 84, 83), PackedInt32Array(88, 87, 86), PackedInt32Array(89, 63, 61), PackedInt32Array(29, 90, 28), PackedInt32Array(28, 90, 91), PackedInt32Array(88, 86, 90), PackedInt32Array(90, 86, 89), PackedInt32Array(89, 61, 91), PackedInt32Array(89, 91, 90), PackedInt32Array(95, 94, 92), PackedInt32Array(92, 94, 93), PackedInt32Array(99, 98, 96), PackedInt32Array(96, 98, 97), PackedInt32Array(103, 102, 100), PackedInt32Array(100, 102, 101), PackedInt32Array(107, 106, 104), PackedInt32Array(104, 106, 105), PackedInt32Array(111, 110, 108), PackedInt32Array(108, 110, 109), PackedInt32Array(111, 108, 112), PackedInt32Array(112, 108, 115), PackedInt32Array(112, 115, 114), PackedInt32Array(112, 114, 113), PackedInt32Array(119, 118, 116), PackedInt32Array(116, 118, 117), PackedInt32Array(121, 120, 25), PackedInt32Array(25, 120, 8), PackedInt32Array(2, 122, 1), PackedInt32Array(1, 122, 123), PackedInt32Array(125, 124, 126), PackedInt32Array(126, 124, 127), PackedInt32Array(123, 122, 128), PackedInt32Array(121, 125, 120), PackedInt32Array(120, 125, 126), PackedInt32Array(123, 128, 124), PackedInt32Array(124, 128, 127), PackedInt32Array(132, 131, 129), PackedInt32Array(129, 131, 130), PackedInt32Array(136, 135, 133), PackedInt32Array(133, 135, 134), PackedInt32Array(86, 87, 137), PackedInt32Array(137, 87, 138), PackedInt32Array(137, 138, 41), PackedInt32Array(137, 41, 127), PackedInt32Array(138, 33, 41), PackedInt32Array(127, 128, 137)]
+geometry_parsed_geometry_type = 0
+agent_height = 0.01
 
-vec4 triplanar_texture(sampler2D p_sampler,vec3 p_weights,vec3 p_triplanar_pos) {
-	vec4 samp=vec4(0.0);
-	samp+= texture(p_sampler,p_triplanar_pos.xy) * p_weights.z;
-	samp+= texture(p_sampler,p_triplanar_pos.xz) * p_weights.y;
-	samp+= texture(p_sampler,p_triplanar_pos.zy * vec2(-1.0,1.0)) * p_weights.x;
-	return samp;
-}
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plvai"]
+albedo_texture = ExtResource("3_d5kir")
+metallic_specular = 0.0
+texture_filter = 2
 
-void fragment() {
-	vec4 albedo_tex = triplanar_texture(texture_albedo,uv1_power_normal,uv1_triplanar_pos);
-	ALBEDO = (albedo.rgb * albedo_tex.r) + albedo_tex.g + albedo_tex.b;
-	float metallic_tex = dot(triplanar_texture(texture_metallic,uv1_power_normal,uv1_triplanar_pos),metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
-	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
-	float roughness_tex = dot(triplanar_texture(texture_roughness,uv1_power_normal,uv1_triplanar_pos),roughness_texture_channel);
-	ROUGHNESS = (1.0 - albedo_tex.g) * roughness;
-	SPECULAR = specular;
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_d5kir"]
-render_priority = 0
-shader = SubResource("Shader_cwof1")
-shader_parameter/albedo = Color(0, 0, 0, 1)
-shader_parameter/texture_albedo = ExtResource("3_qsrgx")
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 0.5
-shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
-shader_parameter/texture_roughness = ExtResource("3_qsrgx")
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/uv1_blend_sharpness = 1.0
-shader_parameter/uv1_scale = Vector3(0.5, 0.5, 0.5)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_plvai"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_vkcgd"]
 _surfaces = [{
 "aabb": AABB(-47.5, 24, -44, 95, 6.5, 86),
 "attribute_data": PackedByteArray("AAC+wQAARMEAAL5BAABEwQAAvkEAAEDBAAC+wQAAQMEAAKhBAABAwQAAsMEAAEDBAACwwQAARMEAAKhBAABEwQAAqMEAAL5BAACowQAAvsEAALBBAAC+wQAAsEEAAL5BAACoQQAAvkEAALDBAAC+QQAAsMEAAL7BAACoQQAAvsEAAKjBAABEwQAAsEEAAETBAACwQQAAQMEAAKjBAABAwQAAvkEAAEDBAAC+wQAAQMEAAL7BAABEwQAAvkEAAETBAADgQAAAZMEAABBBAABkwQAAEEEAAETBAADgQAAARMEAAABAAABEwQAAAAAAAETBAAAAAAAAZMEAAABAAABkwQAAAMAAABBBAAAAwAAA4EAAAAAAAADgQAAAAAAAABBBAAAAQAAAEEEAAAAAAAAQQQAAAAAAAOBAAAAAQAAA4EAAAADAAABkwQAAAAAAAGTBAAAAAAAARMEAAADAAABEwQAA4MAAAETBAAAQwQAARMEAABDBAABkwQAA4MAAAGTBAADgQAAAVMEAABBBAABUwQAAEEEAAETBAADgQAAARMEAAMC/AABEwQAAYMAAAETBAABgwAAAVMEAAMC/AABUwQAAwD8AABBBAADAPwAA4EAAAGBAAADgQAAAYEAAABBBAADAvwAAEEEAAGDAAAAQQQAAYMAAAOBAAADAvwAA4EAAAMA/AABUwQAAYEAAAFTBAABgQAAARMEAAMA/AABEwQAA4MAAAETBAAAQwQAARMEAABDBAABUwQAA4MAAAFTBAADgQAAAdMEAABBBAAB0wQAAEEEAAETBAADgQAAARMEAAKBAAABEwQAAQEAAAETBAABAQAAAdMEAAKBAAAB0wQAAoMAAABBBAACgwAAA4EAAAEDAAADgQAAAQMAAABBBAACgQAAAEEEAAEBAAAAQQQAAQEAAAOBAAACgQAAA4EAAAKDAAAB0wQAAQMAAAHTBAABAwAAARMEAAKDAAABEwQAA4MAAAETBAAAQwQAARMEAABDBAAB0wQAA4MAAAHTBAADgvwAAYsEAAKhAAABiwQAAqEAAAFLBAADgvwAAUsEAAEBAAABSwQAAwL8AAFLBAADAvwAAYsEAAEBAAABiwQAAQMAAAKhAAABAwAAA4L8AAMA/AADgvwAAwD8AAKhAAABAQAAAqEAAAMC/AACoQAAAwL8AAOC/AABAQAAA4L8AAEDAAABiwQAAwD8AAGLBAADAPwAAUsEAAEDAAABSwQAA4D8AAFLBAACowAAAUsEAAKjAAABiwQAA4D8AAGLBAADgQAAATsEAABBBAABOwQAAEEEAAETBAADgQAAARMEAAIDAAABEwQAAwMAAAETBAADAwAAATsEAAIDAAABOwQAAgEAAABBBAACAQAAA4EAAAMBAAADgQAAAwEAAABBBAACAwAAAEEEAAMDAAAAQQQAAwMAAAOBAAACAwAAA4EAAAIBAAABOwQAAwEAAAE7BAADAQAAARMEAAIBAAABEwQAA4MAAAETBAAAQwQAARMEAABDBAABOwQAA4MAAAE7BAAAAP+0NrkAAACrAGkDJQAAAKsDqTZFAAAAAP3o3bEAAAAC/AABEwQAAKkAAAETBAAAAvwAAYMEAAAC/AABgQQAAAL8AAEBBAAAqQAAAQEEAACpAAABgQQAAAD8AAETBAAAAPwAAYMEAACrAAABEwQAAQEEAAETBAABgQQAARMEAAGBBAABgwQAAQEEAAGDBAAA0QQAAYMEAAGxBAABgwQAAbEEAAETBAAA0QQAARMEAALBAAABEwQAAAD8AAETBAAAAPwAAYMEAALBAAABgwQAAsMAAAGxBAACwwAAANEEAAAC/AAA0QQAAAL8AAGxBAACwQAAAbEEAAAA/AABsQQAAAD8AADRBAACwQAAANEEAALDAAABgwQAAAL8AAGDBAAAAvwAARMEAALDAAABEwQAANMEAAETBAABswQAARMEAAGzBAABgwQAANMEAAGDBAACIQQAARsEAAJVBAABGwQAAlUEAAETBAACIQQAARMEAAADAAABEwQAAIMAAAETBAAAgwAAARsEAAADAAABGwQAAAEAAAJVBAAAAQAAAiEEAACBAAACIQQAAIEAAAJVBAAAAwAAAlUEAACDAAACVQQAAIMAAAIhBAAAAwAAAiEEAAABAAABGwQAAIEAAAEbBAAAgQAAARMEAAABAAABEwQAAiMEAAETBAACVwQAARMEAAJXBAABGwQAAiMEAAEbBAACIQQAAScEAAJVBAABJwQAAlUEAAEfBAACIQQAAR8EAAMC/AABHwQAAAMAAAEfBAAAAwAAAScEAAMC/AABJwQAAwD8AAJVBAADAPwAAiEEAAABAAACIQQAAAEAAAJVBAADAvwAAlUEAAADAAACVQQAAAMAAAIhBAADAvwAAiEEAAMA/AABJwQAAAEAAAEnBAAAAQAAAR8EAAMA/AABHwQAAiMEAAEfBAACVwQAAR8EAAJXBAABJwQAAiMEAAEnBAACIQQAATMEAAJVBAABMwQAAlUEAAErBAACIQQAASsEAAIC/AABKwQAAwL8AAErBAADAvwAATMEAAIC/AABMwQAAgD8AAJVBAACAPwAAiEEAAMA/AACIQQAAwD8AAJVBAACAvwAAlUEAAMC/AACVQQAAwL8AAIhBAACAvwAAiEEAAIA/AABMwQAAwD8AAEzBAADAPwAASsEAAIA/AABKwQAAiMEAAErBAACVwQAASsEAAJXBAABMwQAAiMEAAEzBAACIQQAAVcEAAJVBAABVwQAAlUEAAFPBAACIQQAAU8EAAAA/AABTwQAAAAAAAFPBAAAAAAAAVcEAAAA/AABVwQAAAL8AAJVBAAAAvwAAiEEAAAAAAACIQQAAAAAAAJVBAAAAPwAAlUEAAAAAAACVQQAAAAAAAIhBAAAAPwAAiEEAAAC/AABVwQAAAAAAAFXBAAAAAAAAU8EAAAC/AABTwQAAiMEAAFPBAACVwQAAU8EAAJXBAABVwQAAiMEAAFXBAACIQQAAUsEAAJVBAABSwQAAlUEAAFDBAACIQQAAUMEAAAAAAABQwQAAAL8AAFDBAAAAvwAAUsEAAAAAAABSwQAAAAAAAJVBAAAAAAAAiEEAAAA/AACIQQAAAD8AAJVBAAAAAAAAlUEAAAC/AACVQQAAAL8AAIhBAAAAAAAAiEEAAAAAAABSwQAAAD8AAFLBAAAAPwAAUMEAAAAAAABQwQAAiMEAAFDBAACVwQAAUMEAAJXBAABSwQAAiMEAAFLBAACIQQAAT8EAAJVBAABPwQAAlUEAAE3BAACIQQAATcEAAAC/AABNwQAAgL8AAE3BAACAvwAAT8EAAAC/AABPwQAAAD8AAJVBAAAAPwAAiEEAAIA/AACIQQAAgD8AAJVBAAAAvwAAlUEAAIC/AACVQQAAgL8AAIhBAAAAvwAAiEEAAAA/AABPwQAAgD8AAE/BAACAPwAATcEAAAA/AABNwQAAiMEAAE3BAACVwQAATcEAAJXBAABPwQAAiMEAAE/BAACIQQAAXcEAAJVBAABdwQAAlUEAAFvBAACIQQAAW8EAAABAAABbwQAAwD8AAFvBAADAPwAAXcEAAABAAABdwQAAAMAAAJVBAAAAwAAAiEEAAMC/AACIQQAAwL8AAJVBAAAAQAAAlUEAAMA/AACVQQAAwD8AAIhBAAAAQAAAiEEAAADAAABdwQAAwL8AAF3BAADAvwAAW8EAAADAAABbwQAAiMEAAFvBAACVwQAAW8EAAJXBAABdwQAAiMEAAF3BAACIQQAAWsEAAJVBAABawQAAlUEAAFjBAACIQQAAWMEAAMA/AABYwQAAgD8AAFjBAACAPwAAWsEAAMA/AABawQAAwL8AAJVBAADAvwAAiEEAAIC/AACIQQAAgL8AAJVBAADAPwAAlUEAAIA/AACVQQAAgD8AAIhBAADAPwAAiEEAAMC/AABawQAAgL8AAFrBAACAvwAAWMEAAMC/AABYwQAAiMEAAFjBAACVwQAAWMEAAJXBAABawQAAiMEAAFrBAACIQQAAV8EAAJVBAABXwQAAlUEAAFXBAACIQQAAVcEAAIA/AABVwQAAAD8AAFXBAAAAPwAAV8EAAIA/AABXwQAAgL8AAJVBAACAvwAAiEEAAAC/AACIQQAAAL8AAJVBAACAPwAAlUEAAAA/AACVQQAAAD8AAIhBAACAPwAAiEEAAIC/AABXwQAAAL8AAFfBAAAAvwAAVcEAAIC/AABVwQAAiMEAAFXBAACVwQAAVcEAAJXBAABXwQAAiMEAAFfBAACEQQAAXcEAAJdBAABdwQAAl0EAAETBAACEQQAARMEAAOBAAABEwQAAAEAAAETBAAAAQAAAXcEAAOBAAABdwQAA4MAAAJdBAADgwAAAhEEAAADAAACEQQAAAMAAAJdBAADgQAAAl0EAAABAAACXQQAAAEAAAIRBAADgQAAAhEEAAODAAABdwQAAAMAAAF3BAAAAwAAARMEAAODAAABEwQAAhMEAAETBAACXwQAARMEAAJfBAABdwQAAhMEAAF3B"),
 "format": 34359742487,
 "index_count": 636,
 "index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcAGAAZABoAGAAaABsAHAAdAB4AHAAeAB8AIAAhACIAIAAiACMAJAAlACYAJAAmACcAKAApACoAKAAqACsALAAtAC4ALAAuAC8AMAAxADIAMAAyADMANAA1ADYANAA2ADcAOAA5ADoAOAA6ADsAPAA9AD4APAA+AD8AQABBAEIAQABCAEMARABFAEYARABGAEcASABJAEoASABKAEsATABNAE4ATABOAE8AUABRAFIAUABSAFMAVABVAFYAVABWAFcAWABZAFoAWABaAFsAXABdAF4AXABeAF8AYABhAGIAYABiAGMAZABlAGYAZABmAGcAaABpAGoAaABqAGsAbABtAG4AbABuAG8AcABxAHIAcAByAHMAdAB1AHYAdAB2AHcAeAB5AHoAeAB6AHsAfAB9AH4AfAB+AH8AgACBAIIAgACCAIMAhACFAIYAhACGAIcAiACJAIoAiACKAIsAjACNAI4AjACOAI8AkACRAJIAkACSAJMAlACVAJYAlwCYAJkAlwCZAJoAmwCcAJ0AngCfAKAAngCgAKEAogCjAKQAogCkAKUApgCnAKgApgCoAKkAqgCrAKwAqgCsAK0ArgCvALAArgCwALEAsgCzALQAsgC0ALUAtgC3ALgAtgC4ALkAugC7ALwAugC8AL0AvgC/AMAAvgDAAMEAwgDDAMQAwgDEAMUAxgDHAMgAxgDIAMkAygDLAMwAygDMAM0AzgDPANAAzgDQANEA0gDTANQA0gDUANUA1gDXANgA1gDYANkA2gDbANwA2gDcAN0A3gDfAOAA3gDgAOEA4gDjAOQA4gDkAOUA5gDnAOgA5gDoAOkA6gDrAOwA6gDsAO0A7gDvAPAA7gDwAPEA8gDzAPQA8gD0APUA9gD3APgA9gD4APkA+gD7APwA+gD8AP0A/gD/AAAB/gAAAQEBAgEDAQQBAgEEAQUBBgEHAQgBBgEIAQkBCgELAQwBCgEMAQ0BDgEPARABDgEQAREBEgETARQBEgEUARUBFgEXARgBFgEYARkBGgEbARwBGgEcAR0BHgEfASABHgEgASEBIgEjASQBIgEkASUBJgEnASgBJgEoASkBKgErASwBKgEsAS0BLgEvATABLgEwATEBMgEzATQBMgE0ATUBNgE3ATgBNgE4ATkBOgE7ATwBOgE8AT0BPgE/AUABPgFAAUEBQgFDAUQBQgFEAUUBRgFHAUgBRgFIAUkBSgFLAUwBSgFMAU0BTgFPAVABTgFQAVEBUgFTAVQBUgFUAVUBVgFXAVgBVgFYAVkBWgFbAVwBWgFcAV0BXgFfAWABXgFgAWEBYgFjAWQBYgFkAWUBZgFnAWgBZgFoAWkBagFrAWwBagFsAW0BbgFvAXABbgFwAXEBcgFzAXQBcgF0AXUBdgF3AXgBdgF4AXkBegF7AXwBegF8AX0BfgF/AYABfgGAAYEBggGDAYQBggGEAYUBhgGHAYgBhgGIAYkBigGLAYwBigGMAY0BjgGPAZABjgGQAZEBkgGTAZQBkgGUAZUBlgGXAZgBlgGYAZkBmgGbAZwBmgGcAZ0BngGfAaABngGgAaEBogGjAaQBogGkAaUBpgGnAagBpgGoAakB"),
-"material": SubResource("ShaderMaterial_d5kir"),
+"material": SubResource("StandardMaterial3D_plvai"),
 "name": "__TB_empty",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -94,124 +42,134 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AAA+QgAAxEEAADDCAAA+wgAAxEEAADDCAAA+wgAAwEEAADDCAAA+QgAAwEEAADDCAAA+wgAAwEEAAChCAAA+wgAAwEEAADDCAAA+wgAAxEEAADDCAAA+wgAAxEEAAChCAAA+wgAAwEEAAChCAAA+QgAAwEEAAChCAAA+QgAAwEEAADDCAAA+wgAAwEEAADDCAAA+wgAAxEEAAChCAAA+wgAAxEEAADDCAAA+QgAAxEEAADDCAAA+QgAAxEEAAChCAAA+QgAAxEEAAChCAAA+QgAAxEEAADDCAAA+QgAAwEEAADDCAAA+QgAAwEEAAChCAAA+QgAAwEEAAChCAAA+wgAAwEEAAChCAAA+wgAAxEEAAChCAAA+QgAAxEEAAChCAABgwQAA5EEAAAAAAACQwQAA5EEAAAAAAACQwQAAxEEAAAAAAABgwQAAxEEAAAAAAACQwQAAxEEAAIBAAACQwQAAxEEAAAAAAACQwQAA5EEAAAAAAACQwQAA5EEAAIBAAACQwQAAxEEAAIBAAABgwQAAxEEAAIBAAABgwQAAxEEAAAAAAACQwQAAxEEAAAAAAACQwQAA5EEAAIBAAACQwQAA5EEAAAAAAABgwQAA5EEAAAAAAABgwQAA5EEAAIBAAABgwQAA5EEAAIBAAABgwQAA5EEAAAAAAABgwQAAxEEAAAAAAABgwQAAxEEAAIBAAABgwQAAxEEAAIBAAACQwQAAxEEAAIBAAACQwQAA5EEAAIBAAABgwQAA5EEAAIBAAABgwQAA1EEAAODAAACQwQAA1EEAAODAAACQwQAAxEEAAODAAABgwQAAxEEAAODAAACQwQAAxEEAAEDAAACQwQAAxEEAAODAAACQwQAA1EEAAODAAACQwQAA1EEAAEDAAACQwQAAxEEAAEDAAABgwQAAxEEAAEDAAABgwQAAxEEAAODAAACQwQAAxEEAAODAAACQwQAA1EEAAEDAAACQwQAA1EEAAODAAABgwQAA1EEAAODAAABgwQAA1EEAAEDAAABgwQAA1EEAAEDAAABgwQAA1EEAAODAAABgwQAAxEEAAODAAABgwQAAxEEAAEDAAABgwQAAxEEAAEDAAACQwQAAxEEAAEDAAACQwQAA1EEAAEDAAABgwQAA1EEAAEDAAABgwQAA9EEAAMBAAACQwQAA9EEAAMBAAACQwQAAxEEAAMBAAABgwQAAxEEAAMBAAACQwQAAxEEAACBBAACQwQAAxEEAAMBAAACQwQAA9EEAAMBAAACQwQAA9EEAACBBAACQwQAAxEEAACBBAABgwQAAxEEAACBBAABgwQAAxEEAAMBAAACQwQAAxEEAAMBAAACQwQAA9EEAACBBAACQwQAA9EEAAMBAAABgwQAA9EEAAMBAAABgwQAA9EEAACBBAABgwQAA9EEAACBBAABgwQAA9EEAAMBAAABgwQAAxEEAAMBAAABgwQAAxEEAACBBAABgwQAAxEEAACBBAACQwQAAxEEAACBBAACQwQAA9EEAACBBAABgwQAA9EEAACBBAABgQAAA4kEAAEDAAAAowQAA4kEAAEDAAAAowQAA0kEAAEDAAABgQAAA0kEAAEDAAAAowQAA0kEAAMBAAAAowQAA0kEAAEDAAAAowQAA4kEAAEDAAAAowQAA4kEAAMBAAAAowQAA0kEAAMBAAABgQAAA0kEAAMBAAABgQAAA0kEAAEDAAAAowQAA0kEAAEDAAAAowQAA4kEAAMBAAAAowQAA4kEAAEDAAABgQAAA4kEAAEDAAABgQAAA4kEAAMBAAABgQAAA4kEAAMBAAABgQAAA4kEAAEDAAABgQAAA0kEAAEDAAABgQAAA0kEAAMBAAABgQAAA0kEAAMBAAAAowQAA0kEAAMBAAAAowQAA4kEAAMBAAABgQAAA4kEAAMBAAABgwQAAzkEAAEDBAACQwQAAzkEAAEDBAACQwQAAxEEAAEDBAABgwQAAxEEAAEDBAACQwQAAxEEAAADBAACQwQAAxEEAAEDBAACQwQAAzkEAAEDBAACQwQAAzkEAAADBAACQwQAAxEEAAADBAABgwQAAxEEAAADBAABgwQAAxEEAAEDBAACQwQAAxEEAAEDBAACQwQAAzkEAAADBAACQwQAAzkEAAEDBAABgwQAAzkEAAEDBAABgwQAAzkEAAADBAABgwQAAzkEAAADBAABgwQAAzkEAAEDBAABgwQAAxEEAAEDBAABgwQAAxEEAAADBAABgwQAAxEEAAADBAACQwQAAxEEAAADBAACQwQAAzkEAAADBAABgwQAAzkEAAADBAADgwQAA4EEAAIA/AADgwQAAxEEAAKrAAADAwQAAxEEAAKrAAADAwQAA4EEAAIA/AADgwQAAxEEAAIA/AADgwQAAxEEAAKrAAADgwQAA4EEAAIA/AADgwQAAxEEAAIA/AADAwQAAxEEAAIA/AADAwQAAxEEAAKrAAADgwQAAxEEAAKrAAADAwQAAxEEAAIA/AADAwQAA4EEAAIA/AADAwQAAxEEAAKrAAADAwQAAxEEAAIA/AADgwQAAxEEAAIA/AADgwQAA4EEAAIA/AADAwQAA4EEAAIA/AAC0wQAA4EEAAIA/AADswQAA4EEAAIA/AADswQAAxEEAAIA/AAC0wQAAxEEAAIA/AADswQAAxEEAADBBAADswQAAxEEAAIA/AADswQAA4EEAAIA/AADswQAA4EEAADBBAADswQAAxEEAADBBAAC0wQAAxEEAADBBAAC0wQAAxEEAAIA/AADswQAAxEEAAIA/AADswQAA4EEAADBBAADswQAA4EEAAIA/AAC0wQAA4EEAAIA/AAC0wQAA4EEAADBBAAC0wQAA4EEAADBBAAC0wQAA4EEAAIA/AAC0wQAAxEEAAIA/AAC0wQAAxEEAADBBAAC0wQAAxEEAADBBAADswQAAxEEAADBBAADswQAA4EEAADBBAAC0wQAA4EEAADBBAAAIwgAAxkEAAKDAAAAVwgAAxkEAAKDAAAAVwgAAxEEAAKDAAAAIwgAAxEEAAKDAAAAVwgAAxEEAAIDAAAAVwgAAxEEAAKDAAAAVwgAAxkEAAKDAAAAVwgAAxkEAAIDAAAAVwgAAxEEAAIDAAAAIwgAAxEEAAIDAAAAIwgAAxEEAAKDAAAAVwgAAxEEAAKDAAAAVwgAAxkEAAIDAAAAVwgAAxkEAAKDAAAAIwgAAxkEAAKDAAAAIwgAAxkEAAIDAAAAIwgAAxkEAAIDAAAAIwgAAxkEAAKDAAAAIwgAAxEEAAKDAAAAIwgAAxEEAAIDAAAAIwgAAxEEAAIDAAAAVwgAAxEEAAIDAAAAVwgAAxkEAAIDAAAAIwgAAxkEAAIDAAAAIwgAAyUEAAIDAAAAVwgAAyUEAAIDAAAAVwgAAx0EAAIDAAAAIwgAAx0EAAIDAAAAVwgAAx0EAAEDAAAAVwgAAx0EAAIDAAAAVwgAAyUEAAIDAAAAVwgAAyUEAAEDAAAAVwgAAx0EAAEDAAAAIwgAAx0EAAEDAAAAIwgAAx0EAAIDAAAAVwgAAx0EAAIDAAAAVwgAAyUEAAEDAAAAVwgAAyUEAAIDAAAAIwgAAyUEAAIDAAAAIwgAAyUEAAEDAAAAIwgAAyUEAAEDAAAAIwgAAyUEAAIDAAAAIwgAAx0EAAIDAAAAIwgAAx0EAAEDAAAAIwgAAx0EAAEDAAAAVwgAAx0EAAEDAAAAVwgAAyUEAAEDAAAAIwgAAyUEAAEDAAAAIwgAAzEEAAEDAAAAVwgAAzEEAAEDAAAAVwgAAykEAAEDAAAAIwgAAykEAAEDAAAAVwgAAykEAAADAAAAVwgAAykEAAEDAAAAVwgAAzEEAAEDAAAAVwgAAzEEAAADAAAAVwgAAykEAAADAAAAIwgAAykEAAADAAAAIwgAAykEAAEDAAAAVwgAAykEAAEDAAAAVwgAAzEEAAADAAAAVwgAAzEEAAEDAAAAIwgAAzEEAAEDAAAAIwgAAzEEAAADAAAAIwgAAzEEAAADAAAAIwgAAzEEAAEDAAAAIwgAAykEAAEDAAAAIwgAAykEAAADAAAAIwgAAykEAAADAAAAVwgAAykEAAADAAAAVwgAAzEEAAADAAAAIwgAAzEEAAADAAAAIwgAA1UEAAAAAAAAVwgAA1UEAAAAAAAAVwgAA00EAAAAAAAAIwgAA00EAAAAAAAAVwgAA00EAAIA/AAAVwgAA00EAAAAAAAAVwgAA1UEAAAAAAAAVwgAA1UEAAIA/AAAVwgAA00EAAIA/AAAIwgAA00EAAIA/AAAIwgAA00EAAAAAAAAVwgAA00EAAAAAAAAVwgAA1UEAAIA/AAAVwgAA1UEAAAAAAAAIwgAA1UEAAAAAAAAIwgAA1UEAAIA/AAAIwgAA1UEAAIA/AAAIwgAA1UEAAAAAAAAIwgAA00EAAAAAAAAIwgAA00EAAIA/AAAIwgAA00EAAIA/AAAVwgAA00EAAIA/AAAVwgAA1UEAAIA/AAAIwgAA1UEAAIA/AAAIwgAA0kEAAIC/AAAVwgAA0kEAAIC/AAAVwgAA0EEAAIC/AAAIwgAA0EEAAIC/AAAVwgAA0EEAAAAAAAAVwgAA0EEAAIC/AAAVwgAA0kEAAIC/AAAVwgAA0kEAAAAAAAAVwgAA0EEAAAAAAAAIwgAA0EEAAAAAAAAIwgAA0EEAAIC/AAAVwgAA0EEAAIC/AAAVwgAA0kEAAAAAAAAVwgAA0kEAAIC/AAAIwgAA0kEAAIC/AAAIwgAA0kEAAAAAAAAIwgAA0kEAAAAAAAAIwgAA0kEAAIC/AAAIwgAA0EEAAIC/AAAIwgAA0EEAAAAAAAAIwgAA0EEAAAAAAAAVwgAA0EEAAAAAAAAVwgAA0kEAAAAAAAAIwgAA0kEAAAAAAAAIwgAAz0EAAADAAAAVwgAAz0EAAADAAAAVwgAAzUEAAADAAAAIwgAAzUEAAADAAAAVwgAAzUEAAIC/AAAVwgAAzUEAAADAAAAVwgAAz0EAAADAAAAVwgAAz0EAAIC/AAAVwgAAzUEAAIC/AAAIwgAAzUEAAIC/AAAIwgAAzUEAAADAAAAVwgAAzUEAAADAAAAVwgAAz0EAAIC/AAAVwgAAz0EAAADAAAAIwgAAz0EAAADAAAAIwgAAz0EAAIC/AAAIwgAAz0EAAIC/AAAIwgAAz0EAAADAAAAIwgAAzUEAAADAAAAIwgAAzUEAAIC/AAAIwgAAzUEAAIC/AAAVwgAAzUEAAIC/AAAVwgAAz0EAAIC/AAAIwgAAz0EAAIC/AAAIwgAA3UEAAEBAAAAVwgAA3UEAAEBAAAAVwgAA20EAAEBAAAAIwgAA20EAAEBAAAAVwgAA20EAAIBAAAAVwgAA20EAAEBAAAAVwgAA3UEAAEBAAAAVwgAA3UEAAIBAAAAVwgAA20EAAIBAAAAIwgAA20EAAIBAAAAIwgAA20EAAEBAAAAVwgAA20EAAEBAAAAVwgAA3UEAAIBAAAAVwgAA3UEAAEBAAAAIwgAA3UEAAEBAAAAIwgAA3UEAAIBAAAAIwgAA3UEAAIBAAAAIwgAA3UEAAEBAAAAIwgAA20EAAEBAAAAIwgAA20EAAIBAAAAIwgAA20EAAIBAAAAVwgAA20EAAIBAAAAVwgAA3UEAAIBAAAAIwgAA3UEAAIBAAAAIwgAA2kEAAABAAAAVwgAA2kEAAABAAAAVwgAA2EEAAABAAAAIwgAA2EEAAABAAAAVwgAA2EEAAEBAAAAVwgAA2EEAAABAAAAVwgAA2kEAAABAAAAVwgAA2kEAAEBAAAAVwgAA2EEAAEBAAAAIwgAA2EEAAEBAAAAIwgAA2EEAAABAAAAVwgAA2EEAAABAAAAVwgAA2kEAAEBAAAAVwgAA2kEAAABAAAAIwgAA2kEAAABAAAAIwgAA2kEAAEBAAAAIwgAA2kEAAEBAAAAIwgAA2kEAAABAAAAIwgAA2EEAAABAAAAIwgAA2EEAAEBAAAAIwgAA2EEAAEBAAAAVwgAA2EEAAEBAAAAVwgAA2kEAAEBAAAAIwgAA2kEAAEBAAAAIwgAA10EAAIA/AAAVwgAA10EAAIA/AAAVwgAA1UEAAIA/AAAIwgAA1UEAAIA/AAAVwgAA1UEAAABAAAAVwgAA1UEAAIA/AAAVwgAA10EAAIA/AAAVwgAA10EAAABAAAAVwgAA1UEAAABAAAAIwgAA1UEAAABAAAAIwgAA1UEAAIA/AAAVwgAA1UEAAIA/AAAVwgAA10EAAABAAAAVwgAA10EAAIA/AAAIwgAA10EAAIA/AAAIwgAA10EAAABAAAAIwgAA10EAAABAAAAIwgAA10EAAIA/AAAIwgAA1UEAAIA/AAAIwgAA1UEAAABAAAAIwgAA1UEAAABAAAAVwgAA1UEAAABAAAAVwgAA10EAAABAAAAIwgAA10EAAABAAAAEwgAA3UEAAIBAAAAXwgAA3UEAAIBAAAAXwgAAxEEAAIBAAAAEwgAAxEEAAIBAAAAXwgAAxEEAAGBBAAAXwgAAxEEAAIBAAAAXwgAA3UEAAIBAAAAXwgAA3UEAAGBBAAAXwgAAxEEAAGBBAAAEwgAAxEEAAGBBAAAEwgAAxEEAAIBAAAAXwgAAxEEAAIBAAAAXwgAA3UEAAGBBAAAXwgAA3UEAAIBAAAAEwgAA3UEAAIBAAAAEwgAA3UEAAGBBAAAEwgAA3UEAAGBBAAAEwgAA3UEAAIBAAAAEwgAAxEEAAIBAAAAEwgAAxEEAAGBBAAAEwgAAxEEAAGBBAAAXwgAAxEEAAGBBAAAXwgAA3UEAAGBBAAAEwgAA3UEAAGBB/////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+/tq3///9//7+2rf///3//v7at////f/+/tq3///9//78AAP9///8AAAAA/3///wAAAAD/f///AAD/fwAA//////9/AAD//////38AAP//////fwAA/////////3//f/8/////f/9//z////9//3//P/9//38AAP8//3//fwAA/z//f/9/AAD/P/9//38AAP8//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+//////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+/")
 }]
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vkcgd"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_yvmk3"]
 points = PackedVector3Array(47.5, 24.5, 42, 47.5, 24, 42, -47.5, 24.5, 42, -47.5, 24, 42, 47.5, 24.5, -44, 47.5, 24, -44, -47.5, 24.5, -44, -47.5, 24, -44)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_yvmk3"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_r2no1"]
 points = PackedVector3Array(-14, 28.5, 4, -14, 24.5, 4, -18, 28.5, 4, -18, 24.5, 4, -14, 28.5, 0, -14, 24.5, 0, -18, 28.5, 0, -18, 24.5, 0)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_r2no1"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_7dxvt"]
 points = PackedVector3Array(-14, 26.5, -3, -14, 24.5, -3, -18, 26.5, -3, -18, 24.5, -3, -14, 26.5, -7, -14, 24.5, -7, -18, 26.5, -7, -18, 24.5, -7)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_7dxvt"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6g5uf"]
 points = PackedVector3Array(-14, 30.5, 10, -14, 24.5, 10, -18, 30.5, 10, -18, 24.5, 10, -14, 30.5, 6, -14, 24.5, 6, -18, 30.5, 6, -18, 24.5, 6)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6g5uf"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vogc1"]
 points = PackedVector3Array(3.5, 28.25, 6, 3.5, 26.25, 6, -10.5, 28.25, 6, -10.5, 26.25, 6, 3.5, 28.25, -3, 3.5, 26.25, -3, -10.5, 28.25, -3, -10.5, 26.25, -3)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vogc1"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_tdoqa"]
 points = PackedVector3Array(-14, 25.75, -8, -14, 24.5, -8, -18, 25.75, -8, -18, 24.5, -8, -14, 25.75, -12, -14, 24.5, -12, -18, 25.75, -12, -18, 24.5, -12)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_tdoqa"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ddr63"]
 points = PackedVector3Array(-24, 24.5, 1, -24, 28, 1, -28, 24.5, 1, -28, 28, 1, -24, 24.5, -5.299997, -28, 24.5, -5.299997)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ddr63"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0dj0t"]
 points = PackedVector3Array(-22.5, 28, 11, -22.5, 24.5, 11, -29.5, 28, 11, -29.5, 24.5, 11, -22.5, 28, 1, -22.5, 24.5, 1, -29.5, 28, 1, -29.5, 24.5, 1)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0dj0t"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_w0l5l"]
 points = PackedVector3Array(-34, 24.75, -4, -34, 24.5, -4, -37.25, 24.75, -4, -37.25, 24.5, -4, -34, 24.75, -5, -34, 24.5, -5, -37.25, 24.75, -5, -37.25, 24.5, -5)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_w0l5l"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_e0wnd"]
 points = PackedVector3Array(-34, 25.125, -3, -34, 24.875, -3, -37.25, 25.125, -3, -37.25, 24.875, -3, -34, 25.125, -4, -34, 24.875, -4, -37.25, 25.125, -4, -37.25, 24.875, -4)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_e0wnd"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_n44uc"]
 points = PackedVector3Array(-34, 25.5, -2, -34, 25.25, -2, -37.25, 25.5, -2, -37.25, 25.25, -2, -34, 25.5, -3, -34, 25.25, -3, -37.25, 25.5, -3, -37.25, 25.25, -3)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_n44uc"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_nuslc"]
 points = PackedVector3Array(-34, 26.625, 1, -34, 26.375, 1, -37.25, 26.625, 1, -37.25, 26.375, 1, -34, 26.625, 0, -34, 26.375, 0, -37.25, 26.625, 0, -37.25, 26.375, 0)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_nuslc"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_re6lg"]
 points = PackedVector3Array(-34, 26.25, 0, -34, 26, 0, -37.25, 26.25, 0, -37.25, 26, 0, -34, 26.25, -1, -34, 26, -1, -37.25, 26.25, -1, -37.25, 26, -1)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_re6lg"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_1pn8n"]
 points = PackedVector3Array(-34, 25.875, -1, -34, 25.625, -1, -37.25, 25.875, -1, -37.25, 25.625, -1, -34, 25.875, -2, -34, 25.625, -2, -37.25, 25.875, -2, -37.25, 25.625, -2)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_1pn8n"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vnuhc"]
 points = PackedVector3Array(-34, 27.625, 4, -34, 27.375, 4, -37.25, 27.625, 4, -37.25, 27.375, 4, -34, 27.625, 3, -34, 27.375, 3, -37.25, 27.625, 3, -37.25, 27.375, 3)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vnuhc"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_sgyyf"]
 points = PackedVector3Array(-34, 27.25, 3, -34, 27, 3, -37.25, 27.25, 3, -37.25, 27, 3, -34, 27.25, 2, -34, 27, 2, -37.25, 27.25, 2, -37.25, 27, 2)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_sgyyf"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_blca8"]
 points = PackedVector3Array(-34, 26.875, 2, -34, 26.625, 2, -37.25, 26.875, 2, -37.25, 26.625, 2, -34, 26.875, 1, -34, 26.625, 1, -37.25, 26.875, 1, -37.25, 26.625, 1)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_blca8"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_dsidl"]
 points = PackedVector3Array(-33, 27.625, 14, -33, 24.5, 14, -37.75, 27.625, 14, -37.75, 24.5, 14, -33, 27.625, 4, -33, 24.5, 4, -37.75, 27.625, 4, -37.75, 24.5, 4)
 
 [node name="LevelTest" type="Node3D" unique_id=483194061]
 
-[node name="FuncGodotMap" type="Node3D" parent="." unique_id=1203353924]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1002937616]
+environment = SubResource("Environment_vkcgd")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1643356904]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1756748502]
+navigation_mesh = SubResource("NavigationMesh_b0qfj")
+
+[node name="FuncGodotMap" type="Node3D" parent="NavigationRegion3D" unique_id=1203353924]
 script = ExtResource("2_qsrgx")
 local_map_file = "uid://cn5wqrskkp4mj"
 map_settings = ExtResource("3_2h6oo")
 metadata/_custom_type_script = "uid://cwu5cf7a0awcd"
 
-[node name="entity_0_worldspawn" type="StaticBody3D" parent="FuncGodotMap" unique_id=2013895434]
+[node name="entity_0_worldspawn" type="StaticBody3D" parent="NavigationRegion3D/FuncGodotMap" unique_id=1592121698]
 collision_mask = 0
 
-[node name="entity_0_mesh_instance" type="MeshInstance3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1555563517]
-mesh = SubResource("ArrayMesh_plvai")
+[node name="entity_0_mesh_instance" type="MeshInstance3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1162268880]
+mesh = SubResource("ArrayMesh_vkcgd")
 
-[node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1393459764]
-shape = SubResource("ConvexPolygonShape3D_vkcgd")
-
-[node name="entity_0_brush_1_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1583041195]
+[node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=917940472]
 shape = SubResource("ConvexPolygonShape3D_yvmk3")
 
-[node name="entity_0_brush_2_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1075219208]
+[node name="entity_0_brush_1_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1652112725]
 shape = SubResource("ConvexPolygonShape3D_r2no1")
 
-[node name="entity_0_brush_3_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1343403808]
+[node name="entity_0_brush_2_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1552266715]
 shape = SubResource("ConvexPolygonShape3D_7dxvt")
 
-[node name="entity_0_brush_4_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1834485143]
+[node name="entity_0_brush_3_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1794974568]
 shape = SubResource("ConvexPolygonShape3D_6g5uf")
 
-[node name="entity_0_brush_5_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1421080818]
+[node name="entity_0_brush_4_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1936409660]
 shape = SubResource("ConvexPolygonShape3D_vogc1")
 
-[node name="entity_0_brush_6_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=394856302]
+[node name="entity_0_brush_5_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1415708897]
 shape = SubResource("ConvexPolygonShape3D_tdoqa")
 
-[node name="entity_0_brush_7_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1090676961]
+[node name="entity_0_brush_6_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=2014065967]
 shape = SubResource("ConvexPolygonShape3D_ddr63")
 
-[node name="entity_0_brush_8_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1903303168]
+[node name="entity_0_brush_7_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1625232706]
 shape = SubResource("ConvexPolygonShape3D_0dj0t")
 
-[node name="entity_0_brush_9_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1213609713]
+[node name="entity_0_brush_8_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1956479867]
 shape = SubResource("ConvexPolygonShape3D_w0l5l")
 
-[node name="entity_0_brush_10_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1691199109]
+[node name="entity_0_brush_9_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=884785694]
 shape = SubResource("ConvexPolygonShape3D_e0wnd")
 
-[node name="entity_0_brush_11_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1231577958]
+[node name="entity_0_brush_10_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=13202046]
 shape = SubResource("ConvexPolygonShape3D_n44uc")
 
-[node name="entity_0_brush_12_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1641479365]
+[node name="entity_0_brush_11_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1507293935]
 shape = SubResource("ConvexPolygonShape3D_nuslc")
 
-[node name="entity_0_brush_13_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=644142523]
+[node name="entity_0_brush_12_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=2111440442]
 shape = SubResource("ConvexPolygonShape3D_re6lg")
 
-[node name="entity_0_brush_14_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=2073304109]
+[node name="entity_0_brush_13_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=923214313]
 shape = SubResource("ConvexPolygonShape3D_1pn8n")
 
-[node name="entity_0_brush_15_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=383728337]
+[node name="entity_0_brush_14_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1570523079]
 shape = SubResource("ConvexPolygonShape3D_vnuhc")
 
-[node name="entity_0_brush_16_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1859086846]
+[node name="entity_0_brush_15_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1230930009]
 shape = SubResource("ConvexPolygonShape3D_sgyyf")
 
-[node name="entity_0_brush_17_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1314317164]
+[node name="entity_0_brush_16_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1057299212]
 shape = SubResource("ConvexPolygonShape3D_blca8")
+
+[node name="entity_0_brush_17_collision_shape" type="CollisionShape3D" parent="NavigationRegion3D/FuncGodotMap/entity_0_worldspawn" unique_id=1605733107]
+shape = SubResource("ConvexPolygonShape3D_dsidl")

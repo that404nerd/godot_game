@@ -53,8 +53,8 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("WeaponComponent")) GDREGISTER_CLASS(WeaponComponent);
   if(!ClassDB::class_exists("MuzzleFlashComponent")) GDREGISTER_CLASS(MuzzleFlashComponent);
 
-  if(!ClassDB::class_exists("VisionComponent")) GDREGISTER_RUNTIME_CLASS(VisionComponent);
   if(!ClassDB::class_exists("AICharacterComponent")) GDREGISTER_RUNTIME_CLASS(AICharacterComponent);
+  if(!ClassDB::class_exists("VisionComponent")) GDREGISTER_RUNTIME_CLASS(VisionComponent);
 }
 
 

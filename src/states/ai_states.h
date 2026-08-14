@@ -60,3 +60,15 @@ public:
 
   void _exit() override;
 };
+
+class PatrolAIState : public BaseAIState {
+public:
+  PatrolAIState(const AIStateData& aiStateData); 
+
+  void _enter() override;
+  void _handle_input(const Ref<InputEvent>& event) override;
+  void _update(double delta) override;
+  void _physics_update(double delta) override;
+
+  void _exit() override;
+};

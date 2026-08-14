@@ -5,17 +5,18 @@ void AIStateMachine::_init_data()
 {
   m_AIStateData = { this, Object::cast_to<Node3D>(get_tree()->get_first_node_in_group("player")) };
 
-  m_States[static_cast<int>(AIStates::AI_IDLE)] = std::make_unique<IdleAIState>(m_AIStateData);
-  m_States[static_cast<int>(AIStates::AI_CHASE)] = std::make_unique<ChaseAIState>(m_AIStateData);
+  m_States[static_cast<int>(AIStates::IDLE)] = std::make_unique<IdleAIState>(m_AIStateData);
+  m_States[static_cast<int>(AIStates::CHASE)] = std::make_unique<ChaseAIState>(m_AIStateData);
+  m_States[static_cast<int>(AIStates::SEARCH)] = std::make_unique<PatrolAIState>(m_AIStateData);
 
-  m_InitialState = m_States.at(static_cast<int>(AIStates::AI_IDLE)).get();
+  m_InitialState = m_States.at(static_cast<int>(AIStates::IDLE)).get();
 
   detection_area->connect("body_entered", Callable(this, "_player_entered_detection_area"));
 }
 
 void AIStateMachine::_player_entered_detection_area(Node3D* body)
 {
-  _change_state(static_cast<int>(AIStates::AI_CHASE));
+  _change_state(static_cast<int>(AIStates::SEARCH));
 }
 
 void AIStateMachine::_bind_methods()

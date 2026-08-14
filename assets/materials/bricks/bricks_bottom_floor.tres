@@ -1,8 +1,8 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://d2exosj7ftmgi"]
 
 [ext_resource type="Texture2D" uid="uid://b2icdkyyfa0e1" path="res://assets/textures/bricks/bricks_bottom_floor.jpg" id="1_q7moe"]
-[ext_resource type="Texture2D" uid="uid://mfkvm5gnpajm" path="res://assets/textures/bricks/bricks_normal.jpg" id="2_5qr4f"]
-[ext_resource type="Texture2D" uid="uid://crboeogr3ok71" path="res://assets/textures/bricks/bricks_roughness.jpg" id="3_487uo"]
+[ext_resource type="Texture2D" uid="uid://de7rkm70uonm2" path="res://assets/textures/bricks/bricks_normal.jpg" id="2_5qr4f"]
+[ext_resource type="Texture2D" uid="uid://dhbpxnrd177pe" path="res://assets/textures/bricks/bricks_roughness.jpg" id="3_487uo"]
 
 [resource]
 albedo_color = Color(0.46229059, 0.46229059, 0.46229059, 1)

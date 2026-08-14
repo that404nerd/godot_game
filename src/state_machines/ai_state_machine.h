@@ -16,7 +16,7 @@ class IdleAIState;
 class ChaseAIState;
 
 enum class AIStates {
-  NONE = -1, AI_IDLE, AI_CHASE
+  NONE = -1, IDLE, CHASE, SEARCH
 };
 
 

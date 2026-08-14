@@ -96,7 +96,6 @@ void MovementManager::_idle(double delta)
 {
   m_MovementStateCtx.IsIdle = true;
 
-  character_component->set_wish_dir(Vector3(0.0f, 0.0f, 0.0f));
   Vector3 characterVel = character_component->get_velocity();
 
   characterVel.x = Math::move_toward(characterVel.x, 0.0f, character_component->get_ground_decel() * (float)delta);
