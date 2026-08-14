@@ -3,6 +3,7 @@
 #include <godot_cpp/godot.hpp>
 
 #include "character_component.h"
+#include "ai/vision_component.h"
 
 class AIStateMachine;
 
@@ -21,4 +22,5 @@ public:
 
 private:
   GD_DEFINE_PROPERTY(AIStateMachine*, ai_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(VisionComponent*, vision_component, nullptr);
 };

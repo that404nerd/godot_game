@@ -19,10 +19,12 @@
 #include "resources/weapon.h"
 
 #include "components/weapon_effects_components.h"
-#include "components/ai_character_component.h"
 #include "components/input_component.h"
 #include "components/muzzle_flash_component.h"
 #include "components/weapon_wrapper.h"
+
+#include "components/ai_character_component.h"
+#include "components/ai/vision_component.h"
 
 using namespace godot;
 
