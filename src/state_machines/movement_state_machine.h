@@ -17,7 +17,7 @@ struct MovementStateData
 };
 
 enum class MovementStates {
-  NONE = -1, IDLE, SPRINT, JUMP, FALL, CROUCH, SLIDE, DASH
+  NONE = -1, IDLE, WALK, SPRINT, JUMP, FALL, CROUCH, SLIDE, DASH
 };
 
 class MovementStateMachine : public StateMachine 

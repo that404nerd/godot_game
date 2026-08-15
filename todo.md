@@ -1,4 +1,8 @@
 ## TODO 
+
+- For enemy rotation, use timers and other checks for smooth rotation []
+
+
 - Change LICENSE seperately for assets []
 - Use PlayerComponent in WeaponEffects Component instead of a generic Character Component []
 - [NOT CRITICAL] Fix EventBus Singleton unregisteration []

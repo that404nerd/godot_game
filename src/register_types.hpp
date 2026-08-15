@@ -9,6 +9,8 @@
 
 #include "managers/movement_manager.h"
 #include "managers/weapon_manager.h"
+#include "managers/ai_manager.h"
+
 #include "state_machines/state_machine.h"
 #include "state_machines/movement_state_machine.h"
 #include "state_machines/weapon_state_machine.h"

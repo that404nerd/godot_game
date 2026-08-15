@@ -43,6 +43,7 @@ void IdleMovementState::_handle_input(const Ref<InputEvent>& event)
     {
       m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
     }
+
   }
 
 }
@@ -54,6 +55,11 @@ void IdleMovementState::_physics_update(double delta)
     if(m_InputCmdSystem->wants_to_idle())
     {
       m_MovementManager->_idle(delta);
+    }
+
+    if(m_InputCmdSystem->wants_to_walk())
+    {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::WALK));
     }
   
     if(m_InputCmdSystem->wants_to_sprint()) {
@@ -71,6 +77,61 @@ void IdleMovementState::_physics_update(double delta)
 void IdleMovementState::_exit() 
 {
   m_MovementManager->_idle_exit();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Idle Movement State ///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+WalkMovementState::WalkMovementState(const MovementStateData& movementStateData) :
+    BaseMovementState(MovementStates::WALK, movementStateData) {};
+
+void WalkMovementState::_enter()
+{ 
+}
+
+void WalkMovementState::_handle_input(const Ref<InputEvent>& event) 
+{
+  if(m_InputCmdSystem)
+  {
+    if(m_InputCmdSystem->wants_to_jump() && m_MovementStateCtx.IsOnFloor) {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
+    }
+    
+    if(m_InputCmdSystem->wants_to_crouch() && m_MovementStateCtx.IsOnFloor)
+    {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
+    }
+  }
+
+}
+
+void WalkMovementState::_physics_update(double delta) 
+{
+  m_MovementManager->_walk(delta);
+
+  if(m_InputCmdSystem && m_MovementStateCtx.IsOnFloor)
+  {
+    if(m_InputCmdSystem->wants_to_idle())
+    {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
+    }
+  
+    if(m_InputCmdSystem->wants_to_sprint()) {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
+    }
+    
+  }
+
+  if(m_MovementStateCtx.CharacterVelocity.y < 0.0f || !m_MovementStateCtx.IsOnFloor) {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
+  }
+}
+
+
+void WalkMovementState::_exit() 
+{
+  m_MovementManager->_walk_end();
 }
 
 

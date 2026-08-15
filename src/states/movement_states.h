@@ -30,7 +30,7 @@ struct MovementStateCtx
   float DashCooldown { 0.0f };
 
   bool IsIdle = false;
-  
+  bool IsWalking = false;
   bool IsSprinting = false;
   bool IsCrouching = false;
   bool IsFalling = false;
@@ -66,6 +66,16 @@ protected:
 class IdleMovementState : public BaseMovementState {
 public:
   IdleMovementState(const MovementStateData& movementStateMachine);
+
+  void _enter() override;
+  void _handle_input(const Ref<InputEvent>& event) override;
+  void _physics_update(double delta) override;
+  void _exit() override;
+};
+
+class WalkMovementState : public BaseMovementState {
+public:
+  WalkMovementState(const MovementStateData& movementStateMachine);
 
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;

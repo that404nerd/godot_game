@@ -48,6 +48,7 @@ void CharacterComponent::_bind_methods()
   
   ADD_GROUP("Speed Settings", "");
   GD_BIND_PROPERTY(CharacterComponent, crouch_speed, Variant::FLOAT);
+  GD_BIND_PROPERTY(CharacterComponent, walk_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(CharacterComponent, sprint_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(CharacterComponent, slide_speed, Variant::FLOAT);
   GD_BIND_PROPERTY(CharacterComponent, dash_speed, Variant::FLOAT);

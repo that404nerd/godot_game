@@ -5,6 +5,7 @@
 #include "character_component.h"
 #include "ai/vision_component.h"
 
+class AIManager;
 class AIStateMachine;
 
 class AICharacterComponent : public CharacterComponent
@@ -21,6 +22,9 @@ public:
   void _physics_process(double delta) override;
 
 private:
+  GD_DEFINE_PROPERTY(AIManager*, ai_manager, nullptr);
   GD_DEFINE_PROPERTY(AIStateMachine*, ai_state_machine, nullptr);
   GD_DEFINE_PROPERTY(VisionComponent*, vision_component, nullptr);
+
+  GD_DEFINE_PROPERTY(float, vision_trigger_dist, 30.0f);
 };

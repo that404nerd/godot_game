@@ -1,20 +1,10 @@
 #include "ai_states.h"
 #include "../state_machines/ai_state_machine.h"
+#include "../managers/ai_manager.h"
 
 BaseAIState::BaseAIState(AIStates aiState, const AIStateData& aiStateData)
-    : State(static_cast<int>(aiState)), m_AIStateMachine(aiStateData.aiStateMachine),
-       m_AnimPlayer(m_AIStateMachine->get_anim_player()), m_AnimTree(m_AIStateMachine->get_anim_tree()),
-       m_AnimTreeState(Object::cast_to<AnimationNodeStateMachinePlayback>(m_AnimTree->get("parameters/playback"))),
-       m_AICharacterComp(m_AIStateMachine->get_ai_character_component()),
-      m_NavAgent3D(m_AIStateMachine->get_nav_agent_3d()), m_InputCmdSystem(m_AIStateMachine->get_input_cmd_system()),
-      m_DetectionArea(m_AIStateMachine->get_detection_area()), m_Target(aiStateData.target) {};
-
-void BaseAIState::_update_blends(double delta)
-{
-  float vel = m_AICharacterComp->get_velocity().length();
-  vel = Math::remap(vel, 0.0f, 3.0f, 0.0f, 1.0f);
-  m_AnimTree->set("parameters/Chase/IdleChaseBlend/blend_position", vel);
-}
+    : State(static_cast<int>(aiState)), m_AIManagerInst(aiStateData.aiManager), m_AIStateMachine(aiStateData.aiStateMachine),
+      m_InputCmdSystem(m_AIManagerInst->get_input_cmd_system()), m_AIStateCtxInst(m_AIManagerInst->get_ai_state_ctx()) {};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Idle AI State /////////////////////////////////////////////////
@@ -38,11 +28,7 @@ void IdleAIState::_handle_input(const Ref<InputEvent>& event)
 
 void IdleAIState::_update(double delta)
 {
-  m_AnimTreeState->travel("Idle");
-  
-  m_NavAgent3D->set_velocity(m_AICharacterComp->get_velocity());
-
-  _update_blends(delta);
+  m_AIManagerInst->_idle(delta);  
 }
 
 void IdleAIState::_physics_update(double delta)
@@ -78,33 +64,20 @@ void ChaseAIState::_handle_input(const Ref<InputEvent>& event)
 
 void ChaseAIState::_update(double delta)
 {
-  if(!m_Target)
+  m_AIManagerInst->_chase(delta);  
+
+  float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
+
+  if(toPlayerDist > 20.0f)
   {
-    print_error("Player not found to chase!");
-    return;
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::PATROL));
   }
 
-  m_NavAgent3D->set_target_position(m_Target->get_global_position());
-  if(m_NavAgent3D->is_navigation_finished())
+  if(m_AIStateCtxInst.IsNavigationFinished)
   {
+    print_line("Combat State");
     m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
   }
-  
-  Vector3 nextPos = m_NavAgent3D->get_next_path_position();
-  Vector3 direction = (nextPos - m_AICharacterComp->get_global_position()).normalized();
-  
-  m_AICharacterComp->set_wish_dir(direction);
-  m_NavAgent3D->set_velocity(m_AICharacterComp->get_velocity());
-  m_AnimTreeState->travel("Chase");
-  
-  if(direction.length() > 0.01f)
-  {
-    float target_rot = Math::atan2(direction.x, direction.z);
-    Vector3 aiRot = m_AICharacterComp->get_rotation();
-    aiRot.y = Math::lerp(aiRot.y, target_rot, 5.0f * (float)delta);
-    m_AICharacterComp->set_rotation(aiRot);
-  }
-  _update_blends(delta);
 }
 
 void ChaseAIState::_physics_update(double delta)
@@ -122,15 +95,14 @@ void ChaseAIState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 PatrolAIState::PatrolAIState(const AIStateData& aiStateData)
-  : BaseAIState(AIStates::CHASE, aiStateData)
+  : BaseAIState(AIStates::PATROL, aiStateData)
 {
 
 }
 
 void PatrolAIState::_enter()
 {
-  print_line("Patrol");
-  // m_InputCmdSystem->set_wants_to_sprint(true);
+  m_InputCmdSystem->set_wants_to_walk(true);
 }
 
 void PatrolAIState::_handle_input(const Ref<InputEvent>& event)
@@ -140,6 +112,7 @@ void PatrolAIState::_handle_input(const Ref<InputEvent>& event)
 
 void PatrolAIState::_update(double delta)
 {
+  m_AIManagerInst->_patrol(delta);  
 }
 
 void PatrolAIState::_physics_update(double delta)
@@ -149,5 +122,51 @@ void PatrolAIState::_physics_update(double delta)
 
 void PatrolAIState::_exit()
 {
-  // m_InputCmdSystem->set_wants_to_sprint(false);
+  m_InputCmdSystem->set_wants_to_walk(false);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Combat AI State //////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+CombatAIState::CombatAIState(const AIStateData& aiStateData)
+  : BaseAIState(AIStates::COMBAT, aiStateData)
+{
+
+}
+
+void CombatAIState::_enter()
+{
+  m_InputCmdSystem->set_wants_to_walk(true);
+}
+
+void CombatAIState::_handle_input(const Ref<InputEvent>& event)
+{
+  
+}
+
+void CombatAIState::_update(double delta)
+{
+  // m_AIManagerInst->_(delta);  
+  float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
+
+  if(m_AIStateCtxInst.IsNavigationFinished)
+  {
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
+  }
+
+  if(toPlayerDist < 20.0f)
+  {
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::CHASE));
+  }
+}
+
+void CombatAIState::_physics_update(double delta)
+{
+
+}
+
+void CombatAIState::_exit()
+{
+  m_InputCmdSystem->set_wants_to_walk(false);
 }

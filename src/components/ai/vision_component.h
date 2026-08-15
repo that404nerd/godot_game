@@ -26,8 +26,8 @@ public:
   void _init();
 
   void _update_component_transform();
-  void _on_player_entered_area();
-  void _on_player_exited_area();
+  void _on_player_entered_area(Node* body);
+  void _on_player_exited_area(Node* body);
 
   void _physics_update(double delta);
   void _update(double delta);

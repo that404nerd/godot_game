@@ -65,6 +65,7 @@ private:
   GD_DEFINE_PROPERTY(CollisionShape3D*, crouch_collision_shape, nullptr);
 
   GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
+  GD_DEFINE_PROPERTY(float, walk_speed, 10.0f);
   GD_DEFINE_PROPERTY(float, sprint_speed, 10.0f);
   GD_DEFINE_PROPERTY(float, dash_speed, 50.0f);
 

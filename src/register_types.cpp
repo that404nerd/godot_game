@@ -40,8 +40,10 @@ void initialize_module(ModuleInitializationLevel p_level) {
   if(!ClassDB::class_exists("MovementStateMachine")) GDREGISTER_RUNTIME_CLASS(MovementStateMachine);
   if(!ClassDB::class_exists("WeaponStateMachine")) GDREGISTER_RUNTIME_CLASS(WeaponStateMachine);
   if(!ClassDB::class_exists("AIStateMachine")) GDREGISTER_RUNTIME_CLASS(AIStateMachine);
+
   if(!ClassDB::class_exists("WeaponManager")) GDREGISTER_RUNTIME_CLASS(WeaponManager);
   if(!ClassDB::class_exists("MovementManager")) GDREGISTER_RUNTIME_CLASS(MovementManager);
+  if(!ClassDB::class_exists("AIManager")) GDREGISTER_RUNTIME_CLASS(AIManager);
 
   if(!ClassDB::class_exists("InputCommandSystem")) GDREGISTER_RUNTIME_CLASS(InputCommandSystem);
   

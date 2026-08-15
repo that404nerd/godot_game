@@ -5,6 +5,7 @@ void MovementStateMachine::_init_data()
   m_MovementStateData = { movement_manager, this };
 
   m_States[static_cast<int>(MovementStates::IDLE)] = std::make_unique<IdleMovementState>(m_MovementStateData);
+  m_States[static_cast<int>(MovementStates::WALK)] = std::make_unique<WalkMovementState>(m_MovementStateData);
   m_States[static_cast<int>(MovementStates::SPRINT)] = std::make_unique<SprintMovementState>(m_MovementStateData);
   m_States[static_cast<int>(MovementStates::JUMP)] = std::make_unique<JumpMovementState>(m_MovementStateData);
   m_States[static_cast<int>(MovementStates::FALL)] = std::make_unique<FallMovementState>(m_MovementStateData);

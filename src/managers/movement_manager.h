@@ -32,6 +32,9 @@ public:
   void _idle(double delta);
   void _idle_exit();
 
+  void _walk(double delta);
+  void _walk_end();
+
   void _sprint(double delta);
   void _sprint_end();
 

@@ -109,6 +109,27 @@ void MovementManager::_idle_exit()
   m_MovementStateCtx.IsIdle = false;
 }
 
+void MovementManager::_walk(double delta)
+{
+  m_MovementStateCtx.IsWalking = true;
+  Vector3 characterVel = character_component->get_velocity();
+  // if(m_MovementStateCtx.DashCooldown <= 0.0f)
+  // {
+  //   m_MovementStateCtx.CanDash = true;
+  //   m_MovementStateCtx.DashCooldown = character_component->get_dash_cooldown();
+  // }
+
+  characterVel.x = Math::move_toward(characterVel.x, character_component->get_walk_speed() * character_component->get_wish_dir().x, character_component->get_ground_decel() * (float)delta);
+  characterVel.z = Math::move_toward(characterVel.z, character_component->get_walk_speed() * character_component->get_wish_dir().z, character_component->get_ground_decel() * (float)delta);
+
+  character_component->set_velocity(characterVel);
+}
+
+void MovementManager::_walk_end()
+{
+  m_MovementStateCtx.IsWalking = false;
+}
+
 void MovementManager::_sprint(double delta)
 {
   m_MovementStateCtx.IsSprinting = true;

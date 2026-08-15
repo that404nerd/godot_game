@@ -10,6 +10,7 @@ using namespace godot;
 struct InputCommandData 
 {
   bool WantsToIdle = false;
+  bool WantsToWalk = false;
   bool WantsToSprint = false;
   bool WantsToJump = false;
   bool WantsToCrouch = false;
@@ -39,6 +40,7 @@ public:
   virtual void _init() {};
 
   void set_wants_to_idle(bool status) { m_InputCmdData.WantsToIdle = status; }
+  void set_wants_to_walk(bool status) { m_InputCmdData.WantsToWalk = status; }
   void set_wants_to_sprint(bool status) { m_InputCmdData.WantsToSprint = status; }
   void set_wants_to_jump(bool status) { m_InputCmdData.WantsToJump = status; }
   void set_wants_to_crouch(bool status) { m_InputCmdData.WantsToCrouch = status; }
@@ -53,6 +55,7 @@ public:
   void set_mouse_vel(Vector2 mouseVel) { m_InputCmdData.MouseVel = mouseVel; }
 
   bool wants_to_idle() { return m_InputCmdData.WantsToIdle; };
+  bool wants_to_walk() { return m_InputCmdData.WantsToWalk; };
   bool wants_to_sprint() { return m_InputCmdData.WantsToSprint; };
   bool wants_to_jump() { return m_InputCmdData.WantsToJump; };
   bool wants_to_crouch() { return m_InputCmdData.WantsToCrouch; };

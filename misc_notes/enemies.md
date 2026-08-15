@@ -13,14 +13,19 @@
 - How can we use the detection area, the raycasts, the fov all
   together, distance b/w player and enemy?
 
-  a) So for the detection area, this triggers the **SEARCH STATE** for the enemy (say 50m). <br/>
-  And then you might have an arbitrary range of say 30m where the enemy could go into the **COMBAT STATE** <br/>
-  b) The FOV and Raycasts will be used for the following:
+  (a) So for the detection area, this triggers the **SEARCH STATE** for the enemy (say 50m). <br/>
+    And then you might have an arbitrary range of say 30m where the enemy could go into the **COMBAT STATE** <br/>
+  (b) The FOV and Raycasts will be used for the following:
      - The FOV will define how wide the enemy can see like a cone shape. And the Raycasts can be used for
      line of sight which allows the enemy to detect whether the raycast collided with the Player or some obstruction.
     - For example:
       - 50m area: keeps track of potential entities.
       - 30m: maximum distance at which vision can trigger.
-      - 120 deg: angular restriction.
+      - 120 deg: fov.
       - Raycast: confirms there's no wall/obstacle between eye and target.
       - 10m: attack/combat range.
+
+- Problems: <br/>
+ (a) The enemy goes idle when the target desired distance is reached [NEED to implement the Combat states] <br/>
+ (b) If the distance between the enemy and the player is like 20m no matter what obstacle, the enemy immediately chases the player. [Use raycasts for obstacle checking] <br/>
+ (c) The enemy's patrol path changes as the player moves, instead store the last moved position and then set the target position to that point <br/>
