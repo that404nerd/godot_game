@@ -5,42 +5,54 @@ void VisionComponent::_init()
 {
   m_PlayerInst = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
 
-  detection_area->connect("body_entered", Callable(this, "_on_player_entered_area"));
-  detection_area->connect("body_exited", Callable(this, "_on_player_exited_area"));
+  m_RngGen.instantiate();
+  _setup_vision_raycasts();
 
-  for(auto& raycast : eye_raycasts)
+  m_RememberTime = max_remember_time;
+}
+
+void VisionComponent::_setup_vision_raycasts()
+{
+  
+  for(int i = 0; i < eye_raycasts_count; i++)
   {
-    if(raycast)
-    {
-      RayCast3D* eyeRaycast = get_node<RayCast3D>(raycast);
-      eyeRaycast->set_target_position(Vector3(0.0f, ai_character_component->get_vision_trigger_dist(), 0.0f)); 
-    } 
+    /*
+      - Even number of raycasts (preferably 16) [x]
+      - Rotate raycast to -90deg in x-axis [x]
+      - Set their target position to smtg like (0, -7 to -14, 0) [x]
+      - Set Collision Mask to 1, 2 (Environment, Player respectively) [x]
+      - Randomize their z-rotation from -20deg to 20deg in radians [x]
+
+      The raycasts will not go out of the cone defined to match the volume the enemy can see
+    */
+    RayCast3D* raycast = memnew(RayCast3D);
+    raycast->set_target_position(Vector3(0.0f, -eye_raycast_length, 0.0f));
+
+    raycast->set_collision_mask_value(1, true);
+    raycast->set_collision_mask_value(2, true);
+
+    // Except the middle raycast all the other raycasts will have a random z-rotation b/w -20rad and 20rad.
+    raycast->set_rotation(Vector3(Math::deg_to_rad(-90.0f), 0.0f, 
+                              i == eye_raycasts_count / 2 ? 0.0f : m_RngGen->randf_range(Math::deg_to_rad(-5.0f), Math::deg_to_rad(5.0f))));
+
+    add_child(raycast);
+    m_VisionRayCasts.insert(i, raycast);
   }
+  
 }
 
 void VisionComponent::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, ai_character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, character_skeleton, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(VisionComponent, detection_area, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(VisionComponent, eye_raycasts, Variant::ARRAY, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(VisionComponent, viewable_area, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_PROPERTY(VisionComponent, character_bone_name, Variant::STRING_NAME);
 
-  GD_BIND_PROPERTY(VisionComponent, vision_fov, Variant::FLOAT);
-
-  ClassDB::bind_method(D_METHOD("_on_player_entered_area", "body"), &VisionComponent::_on_player_entered_area);
-  ClassDB::bind_method(D_METHOD("_on_player_exited_area", "body"), &VisionComponent::_on_player_exited_area);
+  GD_BIND_PROPERTY(VisionComponent, eye_raycast_length, Variant::FLOAT);
+  GD_BIND_PROPERTY(VisionComponent, eye_raycasts_count, Variant::INT);
+  GD_BIND_PROPERTY(VisionComponent, max_remember_time, Variant::FLOAT);
 }
 
-void VisionComponent::_on_player_entered_area(Node* body)
-{
-  m_IsInArea = true;
-}
-
-void VisionComponent::_on_player_exited_area(Node* body)
-{
-  m_IsInArea = false;
-}
 
 void VisionComponent::_update_component_transform()
 {
@@ -64,22 +76,39 @@ void VisionComponent::_update(double delta)
 {
   _update_component_transform();
 
-  if(m_IsInArea)
-  {
-    m_ForwardVector = (ai_character_component->get_global_basis().get_column(2)).normalized();
-    m_PlayerPos = (m_PlayerInst->get_global_position() - ai_character_component->get_global_position()).normalized();
+  if(m_RememberTime >= 0.0f)
+    m_RememberTime -= delta;
 
-    float dot = m_ForwardVector.dot(m_PlayerPos);
-    
-    if(dot >= Math::cos(Math::deg_to_rad(vision_fov)))
+  for(int i = 0; i < eye_raycasts_count; i++)
+  {
+    RayCast3D* raycast = Object::cast_to<RayCast3D>(m_VisionRayCasts[i]);
+    m_Colliding = (raycast->get_collider_rid() == m_PlayerInst->get_rid());
+
+    // Check if m_SawPlayer is false so that multiple rays in one sweep doesn't reset the state
+    if(m_Colliding && !m_SawPlayer)
     {
-      
-    } else {
+      m_SawPlayer = true;
     }
   }
+
+  if(m_RememberTime <= 0.0f)
+  {
+    m_SawPlayer = false;
+  }  
+  
+  if(m_Colliding)
+    m_RememberTime = max_remember_time; 
+
+  print_line("Vision Status: ", m_SawPlayer, ", Remember Time: ", m_RememberTime, " Max Remember Time: ", max_remember_time);
+
 }
 
 void VisionComponent::_physics_update(double delta)
+{
+
+}
+
+void VisionComponent::_exit_tree()
 {
 
 }

@@ -22,7 +22,6 @@ enum class AIStates {
   NONE = -1, IDLE, CHASE, PATROL, COMBAT
 };
 
-
 struct AIStateData 
 {
   AIStateMachine* aiStateMachine;
@@ -34,8 +33,6 @@ class AIStateMachine : public StateMachine
   GDCLASS(AIStateMachine, StateMachine);
 public:
   void _init_data() override;
-
-  void _player_entered_detection_area(Node3D* body);
 
 protected:
   static void _bind_methods();

@@ -103,6 +103,7 @@ PatrolAIState::PatrolAIState(const AIStateData& aiStateData)
 void PatrolAIState::_enter()
 {
   m_InputCmdSystem->set_wants_to_walk(true);
+  m_AIManagerInst->_patrol_enter();
 }
 
 void PatrolAIState::_handle_input(const Ref<InputEvent>& event)
@@ -113,6 +114,11 @@ void PatrolAIState::_handle_input(const Ref<InputEvent>& event)
 void PatrolAIState::_update(double delta)
 {
   m_AIManagerInst->_patrol(delta);  
+
+  if(m_AIStateCtxInst.WantsToChase)
+  {
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::CHASE));
+  }
 }
 
 void PatrolAIState::_physics_update(double delta)
@@ -148,17 +154,7 @@ void CombatAIState::_handle_input(const Ref<InputEvent>& event)
 void CombatAIState::_update(double delta)
 {
   // m_AIManagerInst->_(delta);  
-  float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
-
-  if(m_AIStateCtxInst.IsNavigationFinished)
-  {
-    m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
-  }
-
-  if(toPlayerDist < 20.0f)
-  {
-    m_AIStateMachine->_change_state(static_cast<int>(AIStates::CHASE));
-  }
+  
 }
 
 void CombatAIState::_physics_update(double delta)

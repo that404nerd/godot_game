@@ -23,7 +23,11 @@ public:
 
   void _idle(double delta);
   void _chase(double delta);
+
+  void _patrol_enter();
   void _patrol(double delta);
+
+  void _rotate_character(double delta);
 
   void _update(double delta);
   void _physics_update(double delta);
@@ -37,7 +41,6 @@ private:
   GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component, nullptr);
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_cmd_system, nullptr);
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
-  GD_DEFINE_PROPERTY(Area3D*, detection_area, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
   GD_DEFINE_PROPERTY(AnimationPlayer*, anim_player, nullptr);
 

@@ -78,11 +78,8 @@ namespace Utils {
     Variant::Type VariantType;
     PropertyHint PropHint = PROPERTY_HINT_NONE;
     StringName EnumValues = "";
-    // List<PropertyInfo>::Element* AfterOrBeforeElement;
     std::function<bool()> Condition = []() { return true; };
   };
-
-  inline LocalVector<StringName> propertyNames;
 
   inline void add_property_cond(List<PropertyInfo> *p_list, const PropertyParams& propertyParams)
   {
@@ -103,9 +100,6 @@ namespace Utils {
         propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName);
       }
       
-      // p_list->insert_after(propertyParams.AfterOrBeforeElement, propInfo);
-      // p_list->push_back(propInfo);
-      
     }
    
   }
@@ -113,13 +107,6 @@ namespace Utils {
   template <typename T, typename ClassInstance>
   inline bool set_properties(const StringName& p_name, const StringName& targetPropName, const Variant& p_value, T& propVariable, ClassInstance* cInstance)
   {
-    Array props = cInstance->get_property_list();
-
-    for (int i = 0; i < props.size(); i++) {
-      Dictionary d = props[i];
-      propertyNames.push_back(d["name"]);
-    }
-
     if(p_name == targetPropName)
     {
       propVariable = p_value;

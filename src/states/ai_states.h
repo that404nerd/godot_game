@@ -22,8 +22,13 @@ using namespace godot;
 struct AIStateCtx
 {
   Vector3 LastPlayerPosBeforePatrol = Vector3(0.0f, 0.0f, 0.0f);
+  Vector3 NextNavigationPoint = Vector3(0.0f, 0.0f, 0.0f);
+  Vector3 AIDirection = Vector3(0.0f, 0.0f, 0.0f);
 
   float ToPlayerDistance = 0.0f;
+
+  bool WantsToPatrol = false;
+  bool WantsToChase = false;
   bool IsNavigationFinished = false;
 };
 

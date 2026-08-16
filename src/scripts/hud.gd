@@ -1,6 +1,6 @@
 extends Control
 
-@onready var player: Player = $"../Player"
+@onready var player: Player = get_tree().get_first_node_in_group("player")
 
 @onready var weapon_manager: WeaponManager = player.get_weapon_manager()
 @onready var movementStateMachine: MovementStateMachine = player.get_movement_state_machine()
