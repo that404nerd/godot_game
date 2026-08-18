@@ -14,12 +14,12 @@
 
 using namespace godot;
 
-class IdleAIState;
-class ChaseAIState;
-class AIStateMachine;
-
 enum class AIStates {
   NONE = -1, IDLE, CHASE, PATROL, COMBAT
+};
+
+enum class AICombatStates {
+  SHOOT, RELOAD
 };
 
 struct AIStateData 

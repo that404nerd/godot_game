@@ -94,12 +94,12 @@ void VisionComponent::_update(double delta)
   if(m_RememberTime <= 0.0f)
   {
     m_SawPlayer = false;
-  }  
+  }
   
   if(m_Colliding)
     m_RememberTime = max_remember_time; 
 
-  print_line("Vision Status: ", m_SawPlayer, ", Remember Time: ", m_RememberTime, " Max Remember Time: ", max_remember_time);
+  // print_line("Vision Status: ", m_SawPlayer, ", Remember Time: ", m_RememberTime, " Max Remember Time: ", max_remember_time);
 
 }
 

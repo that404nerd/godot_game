@@ -43,12 +43,12 @@ void StateMachine::_update(double delta)
 
 void StateMachine::_change_state(int stateID)
 {
-  State* newState = m_States.at(stateID).get();
-
-  if(newState == nullptr) {
+  if(!m_States.contains(stateID))
+  {
     print_error("New state not found!");
     return;
   }
+  State* newState = m_States.at(stateID).get();
 
   if(m_CurrentState) {
     m_CurrentState->_exit();

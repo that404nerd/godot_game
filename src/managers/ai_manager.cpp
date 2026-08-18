@@ -4,7 +4,12 @@
 void AIManager::_init()
 {
   m_AnimTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/playback"));
+  m_CombatTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Combat/playback"));
+
   m_Target = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
+
+  if(ai_vision_component)
+    ai_vision_component->_init();
 }
 
 void AIManager::_bind_methods()
@@ -14,15 +19,23 @@ void AIManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AIManager, nav_agent_3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, anim_player, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+
+  GD_BIND_CUSTOM_PROPERTY(AIManager, ai_vision_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
 void AIManager::_update(double delta)
 {
-  m_AIStateCtxInst.ToPlayerDistance = (m_Target->get_global_position() - ai_character_component->get_global_position()).length();
+  if(ai_vision_component)
+    ai_vision_component->_update(delta);
 
+  m_AIStateCtxInst.ToPlayerDistance = (m_Target->get_global_position() - ai_character_component->get_global_position()).length();
   m_AIStateCtxInst.NextNavigationPoint = nav_agent_3d->get_next_path_position();
 
+  m_AIStateCtxInst.ToPlayerDirection = m_Target->get_global_position() - ai_character_component->get_global_position();
   m_AIStateCtxInst.AIDirection = (m_AIStateCtxInst.NextNavigationPoint - ai_character_component->get_global_position()).normalized();
+
+  if(ai_vision_component)
+    m_AIStateCtxInst.CanSeePlayer = ai_vision_component->can_see_player();
 
   _rotate_character(delta);
 
@@ -32,14 +45,15 @@ void AIManager::_update(double delta)
 
 void AIManager::_physics_update(double delta)
 {
-
+  if(ai_vision_component)
+    ai_vision_component->_physics_update(delta);
 }
 
 void AIManager::_rotate_character(double delta)
 {
-  if(m_AIStateCtxInst.AIDirection.length() > 0.01f)
+  if(m_AIStateCtxInst.ToPlayerDirection.length() > 0.01f)
   {
-    float target_rot = Math::atan2(m_AIStateCtxInst.AIDirection.x, m_AIStateCtxInst.AIDirection.z);
+    float target_rot = Math::atan2(m_AIStateCtxInst.ToPlayerDirection.x, m_AIStateCtxInst.ToPlayerDirection.z);
     Vector3 aiRot = ai_character_component->get_rotation();
     aiRot.y = Math::lerp(aiRot.y, target_rot, 5.0f * (float)delta);
     ai_character_component->set_rotation(aiRot);
@@ -82,4 +96,10 @@ void AIManager::_patrol(double delta)
   
   m_AnimTreeState->travel("Patrol");
   nav_agent_3d->set_target_position(m_Target->get_global_position());
+}
+
+void AIManager::_shoot(double delta)
+{
+  m_AnimTreeState->travel("Combat");
+  m_CombatTreeState->travel("Enemy_Stand_Shoot");
 }

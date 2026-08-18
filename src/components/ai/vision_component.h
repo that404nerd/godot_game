@@ -28,13 +28,18 @@ protected:
 public:
   void _init();
 
+private:
   void _setup_vision_raycasts();
   void _update_component_transform();
 
+public:
   void _physics_update(double delta);
   void _update(double delta);
 
   void _exit_tree() override;
+
+public:
+  bool can_see_player() { return m_SawPlayer; }
 
 private:
   bool m_SawPlayer { false }, m_Colliding { false };

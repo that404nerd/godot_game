@@ -10,6 +10,8 @@
 #include "../state_machines/ai_state_machine.h"
 #include "../input_command_system.h"
 
+#include "../components/ai/vision_component.h"
+
 using namespace godot;
 
 class AIManager : public Node {
@@ -26,6 +28,8 @@ public:
 
   void _patrol_enter();
   void _patrol(double delta);
+
+  void _shoot(double delta);
 
   void _rotate_character(double delta);
 
@@ -44,8 +48,10 @@ private:
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
   GD_DEFINE_PROPERTY(AnimationPlayer*, anim_player, nullptr);
 
+  GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
+
 private:
-  AnimationNodeStateMachinePlayback* m_AnimTreeState { nullptr };
+  AnimationNodeStateMachinePlayback *m_AnimTreeState { nullptr }, *m_CombatTreeState { nullptr };
   Player* m_Target { nullptr };
 
   AIStateCtx m_AIStateCtxInst;
