@@ -5,6 +5,7 @@ void AIManager::_init()
 {
   m_AnimTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/playback"));
   m_CombatTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Combat/playback"));
+  m_PatrolTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Patrol/playback"));
 
   m_Target = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
 
@@ -28,6 +29,7 @@ void AIManager::_update(double delta)
   if(ai_vision_component)
     ai_vision_component->_update(delta);
 
+  m_AIStateCtxInst.AIVelocity = ai_character_component->get_velocity();
   m_AIStateCtxInst.ToPlayerDistance = (m_Target->get_global_position() - ai_character_component->get_global_position()).length();
   m_AIStateCtxInst.NextNavigationPoint = nav_agent_3d->get_next_path_position();
 
@@ -37,7 +39,6 @@ void AIManager::_update(double delta)
   if(ai_vision_component)
     m_AIStateCtxInst.CanSeePlayer = ai_vision_component->can_see_player();
 
-  _rotate_character(delta);
 
   ai_character_component->set_wish_dir(m_AIStateCtxInst.AIDirection);
   nav_agent_3d->set_velocity(ai_character_component->get_velocity());
@@ -54,6 +55,8 @@ void AIManager::_rotate_character(double delta)
   if(m_AIStateCtxInst.ToPlayerDirection.length() > 0.01f)
   {
     float target_rot = Math::atan2(m_AIStateCtxInst.ToPlayerDirection.x, m_AIStateCtxInst.ToPlayerDirection.z);
+    print_line(Math::rad_to_deg(target_rot));
+
     Vector3 aiRot = ai_character_component->get_rotation();
     aiRot.y = Math::lerp(aiRot.y, target_rot, 5.0f * (float)delta);
     ai_character_component->set_rotation(aiRot);
@@ -62,8 +65,16 @@ void AIManager::_rotate_character(double delta)
 
 void AIManager::_idle(double delta)
 {
+  _rotate_character(delta);
+
   m_AIStateCtxInst.IsNavigationFinished = false;
   m_AnimTreeState->travel("Idle");
+}
+
+void AIManager::_blend_chase_states(double delta)
+{
+  Vector2 dir = Vector2(m_AIStateCtxInst.AIDirection.x, m_AIStateCtxInst.AIDirection.z).normalized();
+  anim_tree->set("parameters/Chase/blend_position", dir);
 }
 
 void AIManager::_chase(double delta)
@@ -73,6 +84,9 @@ void AIManager::_chase(double delta)
     print_error("Player not found to chase!");
     return;
   }
+
+  _blend_chase_states(delta);
+  _rotate_character(delta);
 
   m_AIStateCtxInst.IsNavigationFinished = nav_agent_3d->is_navigation_finished();
 
@@ -86,6 +100,12 @@ void AIManager::_patrol_enter()
   m_AIStateCtxInst.LastPlayerPosBeforePatrol = m_Target->get_global_position();
 }
 
+void AIManager::_blend_patrol_states(double delta)
+{
+  Vector2 dir = Vector2(m_AIStateCtxInst.AIDirection.x, m_AIStateCtxInst.AIDirection.z).normalized();
+  anim_tree->set("parameters/Patrol/blend_position", dir);
+}
+
 void AIManager::_patrol(double delta)
 {
   if(!m_Target)
@@ -94,12 +114,21 @@ void AIManager::_patrol(double delta)
     return;
   }
   
+  _blend_patrol_states(delta);
   m_AnimTreeState->travel("Patrol");
-  nav_agent_3d->set_target_position(m_Target->get_global_position());
+
+  nav_agent_3d->set_target_position(m_AIStateCtxInst.LastPlayerPosBeforePatrol);
+
+  if(nav_agent_3d->is_navigation_finished())
+  {
+    m_AIStateCtxInst.IsNavigationFinished = true;
+  }
 }
 
 void AIManager::_shoot(double delta)
 {
+  _rotate_character(delta);
+
   m_AnimTreeState->travel("Combat");
   m_CombatTreeState->travel("Enemy_Stand_Shoot");
 }

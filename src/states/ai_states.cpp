@@ -19,6 +19,7 @@ AIIdleState::AIIdleState(const AIStateData& aiStateData)
 void AIIdleState::_enter()
 {
   m_InputCmdSystem->set_wants_to_idle(true);
+  print_line("Going idle! Player not visible!");
 }
 
 void AIIdleState::_handle_input(const Ref<InputEvent>& event)
@@ -60,6 +61,7 @@ AIChaseState::AIChaseState(const AIStateData& aiStateData)
 void AIChaseState::_enter()
 {
   m_InputCmdSystem->set_wants_to_sprint(true);
+  print_line("Gonna chase!");
 }
 
 void AIChaseState::_handle_input(const Ref<InputEvent>& event)
@@ -73,10 +75,14 @@ void AIChaseState::_update(double delta)
 
   float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
 
-  if(toPlayerDist <= 5.0f)
+  if(toPlayerDist <= 10.0f)
   {
-    print_line("Now going to combat!");
     m_AIStateMachine->_change_state(static_cast<int>(AIStates::COMBAT));
+  }
+
+  if(!m_AIStateCtxInst.CanSeePlayer)
+  {
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::PATROL));
   }
 }
 
@@ -104,6 +110,8 @@ void AIPatrolState::_enter()
 {
   m_InputCmdSystem->set_wants_to_walk(true);
   m_AIManagerInst->_patrol_enter();
+
+  print_line("Patrolling!");
 }
 
 void AIPatrolState::_handle_input(const Ref<InputEvent>& event)
@@ -115,10 +123,15 @@ void AIPatrolState::_update(double delta)
 {
   m_AIManagerInst->_patrol(delta);  
 
-  // if(m_AIStateCtxInst.WantsToChase)
-  // {
-  //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::CHASE));
-  // }
+  if(m_AIStateCtxInst.CanSeePlayer)
+  {
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::CHASE));
+  }
+
+  if(m_AIStateCtxInst.IsNavigationFinished)
+  {
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
+  }
 }
 
 void AIPatrolState::_physics_update(double delta)
@@ -201,6 +214,7 @@ AIShootState::AIShootState(const AIStateData& aiStateData)
 void AIShootState::_enter()
 {
   m_InputCmdSystem->set_wants_to_idle(true);
+  print_line("Gonna shoot!");
 }
 
 void AIShootState::_handle_input(const Ref<InputEvent>& event)
@@ -218,6 +232,9 @@ void AIShootState::_update(double delta)
   {
     m_AIStateMachine->_change_state(static_cast<int>(AIStates::CHASE));
   }
+
+  if(!m_AIStateCtxInst.CanSeePlayer)
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::PATROL));
 }
 
 void AIShootState::_physics_update(double delta)

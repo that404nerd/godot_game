@@ -136,6 +136,11 @@ reload_weapon={
 3d_physics/layer_2="player"
 3d_physics/layer_3="enemies"
 
+[limbo_ai]
+
+behavior_tree/behavior_tree_default_dir="res://assets/ai/trees"
+behavior_tree/user_task_dirs=PackedStringArray("res://assets/ai/trees")
+
 [physics]
 
 3d/run_on_separate_thread=true

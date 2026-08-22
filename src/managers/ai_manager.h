@@ -27,6 +27,10 @@ public:
   void _chase(double delta);
 
   void _patrol_enter();
+
+  void _blend_patrol_states(double delta);
+  void _blend_chase_states(double delta);
+
   void _patrol(double delta);
 
   void _shoot(double delta);
@@ -52,6 +56,7 @@ private:
 
 private:
   AnimationNodeStateMachinePlayback *m_AnimTreeState { nullptr }, *m_CombatTreeState { nullptr };
+  AnimationNodeStateMachinePlayback *m_PatrolTreeState { nullptr };
   Player* m_Target { nullptr };
 
   AIStateCtx m_AIStateCtxInst;

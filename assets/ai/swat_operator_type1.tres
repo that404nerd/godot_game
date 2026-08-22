@@ -1,0 +1,10 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://bfrmvhwb2luux"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_xyl24"]
+
+[sub_resource type="BTSequence" id="BTSequence_xyl24"]
+custom_name = "PatrolSequence"
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_xyl24")
+root_task = SubResource("BTSequence_xyl24")

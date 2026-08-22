@@ -5,6 +5,7 @@
 [submodule "addons/godot-cpp"]
 	path = addons/godot-cpp
 	url = https://github.com/godotengine/godot-cpp
+
 [submodule "addons/convex-cone-shape"]
 	path = addons/convex-cone-shape
 	url = https://github.com/Oblepikha/godot-convex-cone-shape-3d-plugin

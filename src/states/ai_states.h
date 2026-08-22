@@ -26,6 +26,7 @@ struct AIStateCtx
   Vector3 NextNavigationPoint = Vector3(0.0f, 0.0f, 0.0f);
   Vector3 ToPlayerDirection = Vector3(0.0f, 0.0f, 0.0f);
   Vector3 AIDirection = Vector3(0.0f, 0.0f, 0.0f);
+  Vector3 AIVelocity = Vector3(0.0f, 0.0f, 0.0f);
 
   float ToPlayerDistance = 0.0f;
 

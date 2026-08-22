@@ -33,7 +33,7 @@ void VisionComponent::_setup_vision_raycasts()
 
     // Except the middle raycast all the other raycasts will have a random z-rotation b/w -20rad and 20rad.
     raycast->set_rotation(Vector3(Math::deg_to_rad(-90.0f), 0.0f, 
-                              i == eye_raycasts_count / 2 ? 0.0f : m_RngGen->randf_range(Math::deg_to_rad(-5.0f), Math::deg_to_rad(5.0f))));
+                              i == eye_raycasts_count / 2 ? 0.0f : m_RngGen->randf_range(Math::deg_to_rad(-eye_raycast_ray_rot), Math::deg_to_rad(eye_raycast_ray_rot))));
 
     add_child(raycast);
     m_VisionRayCasts.insert(i, raycast);
@@ -48,6 +48,7 @@ void VisionComponent::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, viewable_area, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_PROPERTY(VisionComponent, character_bone_name, Variant::STRING_NAME);
 
+  GD_BIND_PROPERTY(VisionComponent, eye_raycast_ray_rot, Variant::FLOAT);
   GD_BIND_PROPERTY(VisionComponent, eye_raycast_length, Variant::FLOAT);
   GD_BIND_PROPERTY(VisionComponent, eye_raycasts_count, Variant::INT);
   GD_BIND_PROPERTY(VisionComponent, max_remember_time, Variant::FLOAT);
@@ -99,7 +100,7 @@ void VisionComponent::_update(double delta)
   if(m_Colliding)
     m_RememberTime = max_remember_time; 
 
-  // print_line("Vision Status: ", m_SawPlayer, ", Remember Time: ", m_RememberTime, " Max Remember Time: ", max_remember_time);
+  print_line("Vision Status: ", m_SawPlayer, ", Remember Time: ", m_RememberTime /*, " Max Remember Time: ", max_remember_time */);
 
 }
 
