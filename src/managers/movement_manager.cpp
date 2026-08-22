@@ -41,8 +41,8 @@ void MovementManager::_init()
 
 void MovementManager::_bind_methods()
 {
-  GD_BIND_CUSTOM_PROPERTY(MovementManager, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(MovementManager, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(MovementManager, CharacterComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(MovementManager, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
 void MovementManager::_update(double delta)

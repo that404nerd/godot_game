@@ -16,5 +16,5 @@ void AIStateMachine::_init_data()
 
 void AIStateMachine::_bind_methods()
 {
-  GD_BIND_CUSTOM_PROPERTY(AIStateMachine, ai_manager_inst, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIStateMachine, AIManager, ai_manager_inst, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }

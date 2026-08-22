@@ -19,8 +19,8 @@ void MovementStateMachine::_init_data()
 
 void MovementStateMachine::_bind_methods()
 {
-  GD_BIND_CUSTOM_PROPERTY(MovementStateMachine, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(MovementStateMachine, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(MovementStateMachine, CharacterComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(MovementStateMachine, MovementManager, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ClassDB::bind_method(D_METHOD("get_current_state_name"), &MovementStateMachine::get_current_state_name);
   ClassDB::bind_method(D_METHOD("get_prev_state_name"), &MovementStateMachine::get_prev_state_name);

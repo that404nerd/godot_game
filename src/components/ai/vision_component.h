@@ -58,7 +58,6 @@ private:
   GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component, nullptr);
   GD_DEFINE_PROPERTY(Skeleton3D*, character_skeleton, nullptr);
   GD_DEFINE_PROPERTY(StringName, character_bone_name, StringName());
-  GD_DEFINE_PROPERTY(ShapeCast3D*, viewable_area, nullptr);
 
   GD_DEFINE_PROPERTY(float, eye_raycast_ray_rot, 10.0f);
   GD_DEFINE_PROPERTY(float, eye_raycast_length, 14.0f);

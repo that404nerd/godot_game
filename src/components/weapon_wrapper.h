@@ -16,11 +16,11 @@ class WeaponWrapper : public Node3D {
 protected:
   static void _bind_methods()
   {
-    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, armature_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, muzzle_point_marker, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, muzzle_flash_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, armature_skeleton, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, weapon_anim_player, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, Node3D, armature_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, Marker3D, muzzle_point_marker, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, MuzzleFlashComponent, muzzle_flash_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, Skeleton3D, armature_skeleton, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+    GD_BIND_CUSTOM_PROPERTY(WeaponWrapper, AnimationPlayer, weapon_anim_player, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
     GD_BIND_PROPERTY(WeaponWrapper, mesh_instances, Variant::ARRAY);
   }
 

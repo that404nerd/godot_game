@@ -32,10 +32,10 @@ void CameraController::_unhandled_input(const Ref<InputEvent>& event)
 
 void CameraController::_bind_methods() 
 {
-  GD_BIND_CUSTOM_PROPERTY(CameraController, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CameraController, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CameraController, character_camera, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CameraController, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CameraController, MovementManager, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CameraController, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CameraController, Camera3D, character_camera, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CameraController, CharacterComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_GROUP("FOV Settings", "");
   GD_BIND_PROPERTY(CameraController, slide_fov, Variant::FLOAT);

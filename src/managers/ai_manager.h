@@ -46,7 +46,9 @@ public:
   float get_to_player_dist() { return m_AIStateCtxInst.ToPlayerDistance; }
 
 private:
+
   GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component, nullptr);
+  GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component2, nullptr);
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_cmd_system, nullptr);
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);

@@ -60,10 +60,10 @@ protected:                                                \
         ADD_PROPERTY(PropertyInfo(p_type, #p_name), "set_" #p_name, "get_" #p_name);
 
 // For binding a property like an Array, Nodes etc...
-#define GD_BIND_CUSTOM_PROPERTY(p_class, p_name, p_type, p_property_type) \
+#define GD_BIND_CUSTOM_PROPERTY(p_class, hint, p_name, p_type, p_property_type) \
         ClassDB::bind_method(D_METHOD("get_"#p_name), &p_class::get_##p_name); \
         ClassDB::bind_method(D_METHOD("set_"#p_name, "p_"#p_name), &p_class::set_##p_name); \
-        ADD_PROPERTY(PropertyInfo(p_type, #p_name, p_property_type), "set_" #p_name, "get_" #p_name);
+        ADD_PROPERTY(PropertyInfo(p_type, #p_name, p_property_type, #hint), "set_" #p_name, "get_" #p_name);
 
 #define GD_BIND_ENUM(p_class, p_name, p_enum_values) \
         ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name); \

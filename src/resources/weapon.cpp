@@ -51,8 +51,8 @@ void Weapon::_bind_methods() {
   BIND_ENUM_CONSTANT(BOTH);
   GD_BIND_ENUM(Weapon, weapon_type, "Manual,Auto,Both");
 
-  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponRecoilPatternResource, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(Weapon, weaponDecalResource, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(Weapon, PackedScene, weaponRecoilPatternResource, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(Weapon, PackedScene, weaponDecalResource, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
 
   GD_BIND_PROPERTY(Weapon, time_between_shots, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, noOfProjectilesAtSameTime, Variant::INT);

@@ -30,21 +30,21 @@ void CharacterComponent::_ready()
 void CharacterComponent::_bind_methods()
 {
   ADD_GROUP("Component Nodes", "");
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, movement_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, weapon_effects_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, MovementManager, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, MovementStateMachine, movement_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, WeaponComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, WeaponManager, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, WeaponStateMachine, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, WeaponEffectsComponent, weapon_effects_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_GROUP("Character Nodes", "");
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, character_head, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, crouch_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, stairs_ahead_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, stairs_below_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, default_collision_shape, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, crouch_collision_shape, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, Node3D, character_head, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, RayCast3D, crouch_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, RayCast3D, stairs_ahead_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, RayCast3D, stairs_below_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, CollisionShape3D, default_collision_shape, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, CollisionShape3D, crouch_collision_shape, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   
   ADD_GROUP("Speed Settings", "");
   GD_BIND_PROPERTY(CharacterComponent, crouch_speed, Variant::FLOAT);
