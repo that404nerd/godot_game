@@ -9,7 +9,7 @@
 #include "../components/ai_character_component.h"
 #include "../state_machines/ai_state_machine.h"
 #include "../input_command_system.h"
-
+#include "../components/ai/lookat_player_component.h"
 #include "../components/ai/vision_component.h"
 
 using namespace godot;
@@ -48,17 +48,17 @@ public:
 private:
 
   GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component, nullptr);
-  GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component2, nullptr);
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_cmd_system, nullptr);
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
   GD_DEFINE_PROPERTY(AnimationPlayer*, anim_player, nullptr);
-
+  GD_DEFINE_PROPERTY(LookAtPlayerComponent*, lookat_player_component, nullptr);
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
 
 private:
   AnimationNodeStateMachinePlayback *m_AnimTreeState { nullptr }, *m_CombatTreeState { nullptr };
   AnimationNodeStateMachinePlayback *m_PatrolTreeState { nullptr };
+  AnimationNodeStateMachinePlayback *m_ChaseTreeState { nullptr }, *m_NormalChaseTreeState { nullptr }, *m_CrouchChaseTreeState { nullptr };
   Player* m_Target { nullptr };
 
   AIStateCtx m_AIStateCtxInst;

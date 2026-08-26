@@ -125,7 +125,10 @@ private:
   Vector<Node3D*> m_WeaponSceneNodes;
 
   AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
+
   PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
+  Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
+
   Ref<Weapon> m_CurrentWeapon { nullptr };
   Ref<PackedScene> m_DecalScene { nullptr };
 
@@ -142,13 +145,10 @@ private:
   
   Skeleton3D* m_Skeleton3D { nullptr };
   Transform3D m_BoneTransform {};
-
-private:
   CharacterBody3D* m_CharacterBody { nullptr };
-
-  Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
   Dictionary m_Result;
 
+private:
   float m_TimeBetweenShots { 0.0f };
   int m_WeaponIndex { 0 };
 

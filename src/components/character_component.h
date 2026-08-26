@@ -2,6 +2,7 @@
 
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/marker3d.hpp>
 #include <godot_cpp/classes/character_body3d.hpp>
 #include <godot_cpp/classes/ray_cast3d.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
@@ -58,6 +59,7 @@ private:
   GD_DEFINE_PROPERTY(WeaponEffects*, weapon_effects_component, nullptr);
 
   GD_DEFINE_PROPERTY(Node3D*, character_head, nullptr);
+  GD_DEFINE_PROPERTY(Marker3D*, character_marker, nullptr);
   GD_DEFINE_PROPERTY(RayCast3D*, crouch_raycast, nullptr);
   GD_DEFINE_PROPERTY(RayCast3D*, stairs_below_raycast, nullptr);
   GD_DEFINE_PROPERTY(RayCast3D*, stairs_ahead_raycast, nullptr);

@@ -16,9 +16,15 @@
 #include "state_machines/weapon_state_machine.h"
 #include "state_machines/ai_state_machine.h"
 
-#include "input_command_system.h"
 #include "singletons/event_bus.h"
+#include "singletons/event_bus.h"
+
+#include "input_command_system.h"
 #include "resources/weapon.h"
+
+#include "components/ai/vision_component.h"
+#include "components/ai/detection_area_component.h"
+#include "components/ai_character_component.h"
 
 #include "components/weapon_effects_components.h"
 #include "components/input_component.h"

@@ -6,70 +6,67 @@ void VisionComponent::_init()
   m_PlayerInst = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
 
   m_RngGen.instantiate();
-  _setup_vision_raycasts();
 
   m_RememberTime = max_remember_time;
-}
 
-void VisionComponent::_setup_vision_raycasts()
-{
-  
-  for(int i = 0; i < eye_raycasts_count; i++)
+  m_BoneID = character_skeleton->find_bone(character_bone_name);
+  m_PlayerMarker = m_PlayerInst->get_character_marker();
+
+  if(m_BoneID == -1)
   {
-    /*
-      - Even number of raycasts (preferably 16) [x]
-      - Rotate raycast to -90deg in x-axis [x]
-      - Set their target position to smtg like (0, -7 to -14, 0) [x]
-      - Set Collision Mask to 1, 2 (Environment, Player respectively) [x]
-      - Randomize their z-rotation from -20deg to 20deg in radians [x]
-
-      The raycasts will not go out of the cone defined to match the volume the enemy can see
-    */
-    RayCast3D* raycast = memnew(RayCast3D);
-    raycast->set_target_position(Vector3(0.0f, -eye_raycast_length, 0.0f));
-
-    raycast->set_collision_mask_value(1, true);
-    raycast->set_collision_mask_value(2, true);
-
-    // Except the middle raycast all the other raycasts will have a random z-rotation b/w -20rad and 20rad.
-    raycast->set_rotation(Vector3(Math::deg_to_rad(-90.0f), 0.0f, 
-                              i == eye_raycasts_count / 2 ? 0.0f : m_RngGen->randf_range(Math::deg_to_rad(-eye_raycast_ray_rot), Math::deg_to_rad(eye_raycast_ray_rot))));
-
-    add_child(raycast);
-    m_VisionRayCasts.insert(i, raycast);
+    print_error("Bone not found!");
+    return;
   }
-  
+
+  lookat_skeleton_modifier->connect("modification_processed", Callable(this, "_on_skeleton_modified"));
+
+  inner_detection_area->connect("body_entered", Callable(this, "_on_body_entered_inner_area"));
+  inner_detection_area->connect("body_exited", Callable(this, "_on_body_exited_inner_area"));
 }
 
 void VisionComponent::_bind_methods()
 {
+  ClassDB::bind_method(D_METHOD("_on_skeleton_modified"), &VisionComponent::_on_skeleton_modified);
+  ClassDB::bind_method(D_METHOD("_on_body_entered_inner_area", "body"), &VisionComponent::_on_body_entered_inner_area);
+  ClassDB::bind_method(D_METHOD("_on_body_exited_inner_area", "body"), &VisionComponent::_on_body_exited_inner_area);
+
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, AICharacterComponent, ai_character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, Skeleton3D, character_skeleton, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(VisionComponent, SkeletonModifier3D, lookat_skeleton_modifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(VisionComponent, DetectionAreaComponent, inner_detection_area, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_PROPERTY(VisionComponent, character_bone_name, Variant::STRING_NAME);
-
+  
+  GD_BIND_PROPERTY(VisionComponent, can_debug, Variant::BOOL);
+  GD_BIND_PROPERTY(VisionComponent, eye_fov, Variant::FLOAT);
   GD_BIND_PROPERTY(VisionComponent, eye_raycast_ray_rot, Variant::FLOAT);
   GD_BIND_PROPERTY(VisionComponent, eye_raycast_length, Variant::FLOAT);
-  GD_BIND_PROPERTY(VisionComponent, eye_raycasts_count, Variant::INT);
   GD_BIND_PROPERTY(VisionComponent, max_remember_time, Variant::FLOAT);
 }
 
+void VisionComponent::_on_body_entered_inner_area(Node3D* body)
+{
+  if(body->get_name() == m_PlayerInst->get_name())
+    m_DidEnterInnerArea = true;
+}
+
+void VisionComponent::_on_body_exited_inner_area(Node3D* body)
+{
+  if(body->get_name() == m_PlayerInst->get_name())
+    m_DidEnterInnerArea = false;
+}
+
+void VisionComponent::_on_skeleton_modified()
+{
+  _update_component_transform();
+}
 
 void VisionComponent::_update_component_transform()
 {
-  int boneID = character_skeleton->find_bone(character_bone_name);
+  m_BoneTransform = character_skeleton->get_bone_global_pose(m_BoneID);
+  m_FinalBoneTransform = character_skeleton->get_global_transform() * m_BoneTransform;
 
-  if(boneID == -1)
-  {
-    print_error("Bone not found!");
-  }
-
-  m_BoneTransform = character_skeleton->get_bone_global_pose(boneID);
-  
-  Transform3D final_bone_transform = character_skeleton->get_global_transform() * m_BoneTransform;
-  
-  set_global_transform(final_bone_transform);
+  set_global_transform(m_FinalBoneTransform);
   set_scale(Vector3(1.0f, 1.0f, 1.0f));
-  set_global_rotation(Vector3(final_bone_transform.basis.get_euler().x, final_bone_transform.basis.get_euler().y, 0.0f));
 }
 
 void VisionComponent::_update(double delta)
@@ -78,34 +75,49 @@ void VisionComponent::_update(double delta)
 
   if(m_RememberTime >= 0.0f)
     m_RememberTime -= delta;
-
-  for(int i = 0; i < eye_raycasts_count; i++)
-  {
-    RayCast3D* raycast = Object::cast_to<RayCast3D>(m_VisionRayCasts[i]);
-    m_Colliding = (raycast->get_collider_rid() == m_PlayerInst->get_rid());
-
-    // Check if m_SawPlayer is false so that multiple rays in one sweep doesn't reset the state
-    if(m_Colliding && !m_SawPlayer)
-    {
-      m_SawPlayer = true;
-    }
-  }
-
-  if(m_RememberTime <= 0.0f)
-  {
-    m_SawPlayer = false;
-  }
-  
-  if(m_Colliding)
-    m_RememberTime = max_remember_time; 
-
-  print_line("Vision Status: ", m_SawPlayer, ", Remember Time: ", m_RememberTime /*, " Max Remember Time: ", max_remember_time */);
-
 }
 
 void VisionComponent::_physics_update(double delta)
 {
+  Vector3 enemyForward = ai_character_component->get_basis().get_column(2).normalized();
+  Vector3 toPlayerDirection = (m_PlayerInst->get_global_position() - ai_character_component->get_global_position());
 
+  float angle = Math::clamp(enemyForward.dot(toPlayerDirection.normalized()), -1.0f, 1.0f);
+  
+  if(m_DidEnterInnerArea)
+  {
+    // Check if player is in the given FOV
+    if(Math::acos(angle) <= Math::deg_to_rad(eye_fov / 2.0f))
+    {
+      Vector3 eyeStart = m_FinalBoneTransform.get_origin();
+      Vector3 eyeEnd = m_PlayerMarker->get_global_position();
+
+      if(can_debug)
+      {
+        DebugDraw3D::draw_sphere(eyeStart, 0.05f);
+        DebugDraw3D::draw_sphere(m_PlayerMarker->get_global_position(), 0.1f);
+        DebugDraw3D::draw_line(eyeStart, eyeEnd);
+      }
+    
+      m_SpaceState = ai_character_component->get_world_3d()->get_direct_space_state();
+      m_Query = PhysicsRayQueryParameters3D::create(eyeStart, eyeEnd);
+      m_Query->set_collide_with_bodies(true);
+    
+      m_CollisionResult = m_SpaceState->intersect_ray(m_Query);
+      
+      CollisionObject3D* collidedObj = Object::cast_to<CollisionObject3D>(m_CollisionResult["collider"]);
+      if(collidedObj)
+      {
+        if(collidedObj == m_PlayerInst)
+        {
+          m_CanSeePlayer = true;
+          m_RememberTime = max_remember_time; 
+        }
+      }
+    }
+  }
+  
+  print_line("Vision Status: ", m_CanSeePlayer, ", Remember Time: ", m_RememberTime, " Max Remember Time: ", max_remember_time);
 }
 
 void VisionComponent::_exit_tree()

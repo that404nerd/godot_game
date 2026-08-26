@@ -28,12 +28,6 @@ endif()
 set( GD_EXTENSION_FILE ${PROJECT_NAME}.gdextension )
 configure_file( ${GD_EXTENSION_FILE_INPUT} ${PROJECT_BINARY_DIR}/${PROJECT_NAME}/${GD_EXTENSION_FILE} )
 
-# Install the gdextension file from the build directory
-install(
-    FILES ${BUILD_OUTPUT_DIR}/${GD_EXTENSION_FILE}
-    DESTINATION ${INSTALL_DIR}
-)
-
 unset( ALLOWED_BUILDS )
 unset( BUILD_TYPE )
 unset( GD_EXTENSION_FILE )

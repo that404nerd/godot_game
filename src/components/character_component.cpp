@@ -40,6 +40,7 @@ void CharacterComponent::_bind_methods()
 
   ADD_GROUP("Character Nodes", "");
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, Node3D, character_head, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, Marker3D, character_marker, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, RayCast3D, crouch_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, RayCast3D, stairs_ahead_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, RayCast3D, stairs_below_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);

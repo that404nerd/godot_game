@@ -75,7 +75,7 @@ void AIChaseState::_update(double delta)
 
   float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
 
-  if(toPlayerDist <= 10.0f)
+  if(toPlayerDist <= 10.0f && m_AIStateCtxInst.CanSeePlayer)
   {
     m_AIStateMachine->_change_state(static_cast<int>(AIStates::COMBAT));
   }
@@ -214,7 +214,6 @@ AIShootState::AIShootState(const AIStateData& aiStateData)
 void AIShootState::_enter()
 {
   m_InputCmdSystem->set_wants_to_idle(true);
-  print_line("Gonna shoot!");
 }
 
 void AIShootState::_handle_input(const Ref<InputEvent>& event)
