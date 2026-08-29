@@ -6,7 +6,7 @@
 #include <godot_cpp/classes/animation_node_state_machine_playback.hpp>
 #include <godot_cpp/classes/animation_tree.hpp>
 
-#include "../components/ai_character_component.h"
+#include "../components/ai/ai_character_component.h"
 #include "../state_machines/ai_state_machine.h"
 #include "../input_command_system.h"
 #include "../components/ai/lookat_player_component.h"

@@ -9,3 +9,6 @@
 [submodule "addons/convex-cone-shape"]
 	path = addons/convex-cone-shape
 	url = https://github.com/Oblepikha/godot-convex-cone-shape-3d-plugin
+[submodule "addons/geqo"]
+	path = addons/geqo
+	url = https://github.com/geqo-godot/geqo

@@ -53,6 +53,8 @@ target_compile_options( ${PROJECT_NAME}
             # Disable warnings which bleed through from godot-cpp's macros.
             -Wno-shadow
             -Wno-unused-function
+            -Wno-sign-compare
+            -Wno-non-virtual-dtor
             -Wno-unused-parameter
             -Wno-ctor-dtor-privacy
         >

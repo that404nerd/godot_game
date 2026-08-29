@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 #include "state.h"
-#include "../components/ai_character_component.h"
+#include "../components/ai/ai_character_component.h"
 #include "../utils/damped_spring.h"
 #include "../input_command_system.h"
 

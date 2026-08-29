@@ -1,5 +1,5 @@
 #include "ai_manager.h"
-#include "../components/ai_character_component.h"
+#include "../components/ai/ai_character_component.h"
 
 void AIManager::_init()
 {
@@ -67,7 +67,7 @@ void AIManager::_rotate_character(double delta)
 {
   if(m_AIStateCtxInst.ToPlayerDirection.length() > 0.01f)
   {
-    Vector3 enemyForward = ai_character_component->get_basis().get_column(2).normalized();
+    Vector3 enemyForward = (ai_character_component->get_basis().get_column(2)).normalized();
     Vector3 toTarget = (m_Target->get_global_position() - ai_character_component->get_global_position()).normalized();
 
     enemyForward.y = 0.0f;

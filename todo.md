@@ -1,11 +1,7 @@
 ## TODO 
 
-- For enemy rotation, use timers and other checks for smooth rotation []
-
-
 - Change LICENSE seperately for assets []
 - Use PlayerComponent in WeaponEffects Component instead of a generic Character Component []
-- [NOT CRITICAL] Fix EventBus Singleton unregisteration []
 - Clean up weapon manager and weapon effects component []
 - Add decal patterns for guns []
 - Add effects like landing on floor shake etc... []
@@ -56,3 +52,4 @@
 - [**CRITICAL**] Put the Muzzle Flash near the gun's muzzle point using a Marker3D to avoid positioning issues [x]
 - [**CRITICAL**] Fix memory leak related to Canvas2D (HUD, Signal Lens) and Recoil Curve Resource [x]
 - Set the commands in the InputCommandSystem using setters instead of modifying the struct members directly [x]
+- [NOT CRITICAL] Fix EventBus Singleton unregisteration [x]

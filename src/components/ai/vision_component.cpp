@@ -1,5 +1,5 @@
 #include "vision_component.h"
-#include "../ai_character_component.h"
+#include "../ai/ai_character_component.h"
 
 void VisionComponent::_init()
 {
@@ -80,7 +80,7 @@ void VisionComponent::_update(double delta)
 void VisionComponent::_physics_update(double delta)
 {
   Vector3 enemyForward = ai_character_component->get_basis().get_column(2).normalized();
-  Vector3 toPlayerDirection = (m_PlayerInst->get_global_position() - ai_character_component->get_global_position());
+  Vector3 toPlayerDirection = (m_PlayerInst->get_global_position() - ai_character_component->get_global_position()).normalized();
 
   float angle = Math::clamp(enemyForward.dot(toPlayerDirection.normalized()), -1.0f, 1.0f);
   
@@ -117,7 +117,7 @@ void VisionComponent::_physics_update(double delta)
     }
   }
   
-  print_line("Vision Status: ", m_CanSeePlayer, ", Remember Time: ", m_RememberTime, " Max Remember Time: ", max_remember_time);
+  // print_line("Vision Status: ", m_CanSeePlayer, ", Remember Time: ", m_RememberTime, " Max Remember Time: ", max_remember_time);
 }
 
 void VisionComponent::_exit_tree()

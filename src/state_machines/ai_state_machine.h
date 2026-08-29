@@ -7,7 +7,7 @@
 #include <godot_cpp/classes/animation_tree.hpp>
 
 #include "state_machine.h"
-#include "../components/ai_character_component.h"
+#include "../components/ai/ai_character_component.h"
 #include "../input_command_system.h"
 
 #include "../states/ai_states.h"
