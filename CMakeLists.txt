@@ -141,6 +141,7 @@ if ( NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/addons/godot-cpp/Makefile" )
 endif()
 
 set( GODOT_CPP_SYSTEM_HEADERS ON CACHE BOOL "" FORCE )
+set( GODOTCPP_API_VERSION 4.7 CACHE BOOL "" FORCE )
 set( GODOTCPP_USE_HOT_RELOAD ON CACHE BOOL "Enable hot reloading" )
 
 add_subdirectory( addons/godot-cpp )

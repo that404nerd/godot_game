@@ -1,6 +1,10 @@
 #include "ai_manager.h"
 #include "../components/ai/ai_character_component.h"
 
+AIManager::AIManager()
+{
+}
+
 void AIManager::_init()
 {
   m_AnimTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/playback"));
@@ -11,6 +15,7 @@ void AIManager::_init()
   m_CrouchChaseTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Chase/NormalChase/playback"));
 
   m_Target = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
+  env_query3d->connect("query_finished", Callable(this, "_on_query_finished"));
 
   if(ai_vision_component)
     ai_vision_component->_init();
@@ -25,13 +30,29 @@ void AIManager::_init()
 
 void AIManager::_bind_methods()
 {
+  ClassDB::bind_method(D_METHOD("_on_query_finished", "queryResult"), &AIManager::_on_query_finished);
+
   GD_BIND_CUSTOM_PROPERTY(AIManager, AICharacterComponent, ai_character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, InputCommandSystem, input_cmd_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, NavigationAgent3D, nav_agent_3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIManager, EnvironmentQuery3D, env_query3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationPlayer, anim_player, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationTree, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, LookAtPlayerComponent, lookat_player_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, VisionComponent, ai_vision_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+
+  GD_BIND_PROPERTY(AIManager, ai_query_timer, Variant::FLOAT);
+}
+
+void AIManager::_on_query_finished(QueryResult3D* queryResult)
+{
+  print_line("Query Finished!");
+  input_cmd_system->set_wants_to_idle(false);
+  input_cmd_system->set_wants_to_sprint(true);
+
+  Vector3 best_pos = queryResult->get_highest_score_position();
+
+  nav_agent_3d->set_target_position(best_pos);
 }
 
 void AIManager::_update(double delta)
@@ -152,7 +173,15 @@ void AIManager::_patrol(double delta)
 
 void AIManager::_shoot(double delta)
 {
-  _rotate_character(delta);
+  _rotate_character(delta); 
+
+  if(m_QueryTimer <= 0.0f)
+  {
+    env_query3d->request_query();
+    m_QueryTimer = ai_query_timer;
+  }
+
+  m_QueryTimer -= delta;
 
   m_AnimTreeState->travel("Combat");
   m_CombatTreeState->travel("Enemy_Stand_Shoot");

@@ -12,6 +12,8 @@
 #include "../components/ai/lookat_player_component.h"
 #include "../components/ai/vision_component.h"
 
+#include "../geqo/environment_query3d.h"
+
 using namespace godot;
 
 class AIManager : public Node {
@@ -21,6 +23,8 @@ protected:
   static void _bind_methods();
 
 public:
+  AIManager();
+
   void _init();
 
   void _idle(double delta);
@@ -43,17 +47,25 @@ public:
 public:
   const AIStateCtx& get_ai_state_ctx() { return m_AIStateCtxInst; }
 
+  void _on_query_finished(QueryResult3D* queryResult);
+
   float get_to_player_dist() { return m_AIStateCtxInst.ToPlayerDistance; }
 
 private:
 
+  float m_QueryTimer { 0.0f };
+
   GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component, nullptr);
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_cmd_system, nullptr);
+  GD_DEFINE_PROPERTY(EnvironmentQuery3D*, env_query3d, nullptr);
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
   GD_DEFINE_PROPERTY(AnimationPlayer*, anim_player, nullptr);
   GD_DEFINE_PROPERTY(LookAtPlayerComponent*, lookat_player_component, nullptr);
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
+
+
+  GD_DEFINE_PROPERTY(float, ai_query_timer, 1.0f);
 
 private:
   AnimationNodeStateMachinePlayback *m_AnimTreeState { nullptr }, *m_CombatTreeState { nullptr };
