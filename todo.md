@@ -1,6 +1,6 @@
 ## TODO 
 
-- Change LICENSE seperately for assets []
+- ADD LICENSE seperately for assets []
 - Use PlayerComponent in WeaponEffects Component instead of a generic Character Component []
 - Clean up weapon manager and weapon effects component []
 - Add decal patterns for guns []

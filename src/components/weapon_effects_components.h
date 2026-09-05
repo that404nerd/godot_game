@@ -155,9 +155,9 @@ public:
   void _init_data(const WeaponEffectsData& weaponEffectsData);
   void _update(double delta);
 
-  void _on_weapon_fired(Ref<Curve2D> recoilCurve);
   void _on_weapon_reload_start(Skeleton3D* skeleton3D);
   void _on_weapon_switched(Ref<Weapon> currentWeapon);
+  void _on_weapon_fired(Ref<Weapon> currentWeapon);
 
   void _weapon_recoil_effect(double delta);
   void _weapon_reload_effect(double delta);
@@ -169,8 +169,7 @@ protected:
 
 private:
   int m_BoneID { -1 };
-  int m_Count { 0 };
-
+  // int m_RecoilCurvePointCount { 0 };
   
   Vector2 m_CurveOrigin {};
   
@@ -183,7 +182,7 @@ private:
   Transform3D m_ReloadBoneTransform {};
   DampedSpring m_DampedSpring;
   
-  Ref<Curve2D> m_RecoilCurve { nullptr };
+  // Ref<Curve2D> m_RecoilCurve { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
   
   Skeleton3D* m_CurrentSkeleton { nullptr };

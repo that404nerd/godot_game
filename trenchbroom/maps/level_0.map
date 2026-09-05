@@ -1583,6 +1583,15 @@
 ( 192 955 133 ) ( 192 955 712 ) ( 156 955 712 ) concrete/concrete_pillars [ -1 0 0 60 ] [ 0 0 -1 5 ] 180 1 1
 ( 192 912 712 ) ( 192 955 712 ) ( 192 955 133 ) concrete/concrete_pillars [ 0 1 0 -723 ] [ 0 0 -1 5 ] 0 1 1
 }
+// brush 175
+{
+( 152 1255 712 ) ( 152 1212 712 ) ( 152 1212 133 ) concrete/concrete_pillars [ 0 -1 0 -1 ] [ 0 0 -1 5 ] 270 1 1
+( 152 1212 712 ) ( 188 1212 712 ) ( 188 1212 133 ) concrete/concrete_pillars [ 1 0 0 -8 ] [ 0 0 -1 5 ] 90 1 1
+( 188 1212 133 ) ( 188 1255 133 ) ( 152 1255 133 ) concrete/concrete_pillars [ -1 0 0 8 ] [ 0 -1 0 -1 ] 270 1 1
+( 152 1255 712 ) ( 188 1255 712 ) ( 188 1212 712 ) concrete/concrete_pillars [ 1 0 0 -8 ] [ 0 -1 0 -1 ] 0 1 1
+( 188 1255 133 ) ( 188 1255 712 ) ( 152 1255 712 ) concrete/concrete_pillars [ -1 0 0 8 ] [ 0 0 -1 5 ] 270 1 1
+( 188 1212 712 ) ( 188 1255 712 ) ( 188 1255 133 ) concrete/concrete_pillars [ 0 1 0 1 ] [ 0 0 -1 5 ] 90 1 1
+}
 }
 // entity 1
 {
@@ -5965,23 +5974,10 @@
 }
 // entity 73
 {
-"classname" "func_cover_entity"
-// brush 0
-{
-( 152 1255 712 ) ( 152 1212 712 ) ( 152 1212 133 ) concrete/concrete_pillars [ 0 -1 0 -1 ] [ 0 0 -1 5 ] 270 1 1
-( 152 1212 712 ) ( 188 1212 712 ) ( 188 1212 133 ) concrete/concrete_pillars [ 1 0 0 -8 ] [ 0 0 -1 5 ] 90 1 1
-( 188 1212 133 ) ( 188 1255 133 ) ( 152 1255 133 ) concrete/concrete_pillars [ -1 0 0 8 ] [ 0 -1 0 -1 ] 270 1 1
-( 152 1255 712 ) ( 188 1255 712 ) ( 188 1212 712 ) concrete/concrete_pillars [ 1 0 0 -8 ] [ 0 -1 0 -1 ] 0 1 1
-( 188 1255 133 ) ( 188 1255 712 ) ( 152 1255 712 ) concrete/concrete_pillars [ -1 0 0 8 ] [ 0 0 -1 5 ] 270 1 1
-( 188 1212 712 ) ( 188 1255 712 ) ( 188 1255 133 ) concrete/concrete_pillars [ 0 1 0 1 ] [ 0 0 -1 5 ] 90 1 1
-}
-}
-// entity 74
-{
 "classname" "func_player_reference"
 "origin" "1096 696 272"
 }
-// entity 75
+// entity 74
 {
 "classname" "func_group"
 "_tb_type" "_tb_group"

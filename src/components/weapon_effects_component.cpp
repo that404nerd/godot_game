@@ -305,11 +305,10 @@ void WeaponActionEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 
   m_CurrentWeapon = m_WeaponManager->get_current_weapon();
   m_CurrentSkeleton = m_WeaponManager->get_armature_skeleton();
+  m_RecoilVel = m_CurrentWeapon->get_recoilVector();
 
   StringName boneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
   m_BoneID = m_CurrentSkeleton->find_bone(boneName);
-
-  m_RecoilCurve = m_WeaponManager->get_recoil_curve();
 
   EventBus::get_singleton()->connect("weapon_fired", Callable(this, "_on_weapon_fired"));
   EventBus::get_singleton()->connect("weapon_reload_start", Callable(this, "_on_weapon_reload_start"));
@@ -318,8 +317,8 @@ void WeaponActionEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 
 void WeaponActionEffects::_bind_methods()
 {
+  ClassDB::bind_method(D_METHOD("_on_weapon_fired", "currentWeapon"), &WeaponActionEffects::_on_weapon_fired);
   ClassDB::bind_method(D_METHOD("_on_weapon_switched", "currentWeapon"), &WeaponActionEffects::_on_weapon_switched);
-  ClassDB::bind_method(D_METHOD("_on_weapon_fired", "recoilCurve"), &WeaponActionEffects::_on_weapon_fired);
   ClassDB::bind_method(D_METHOD("_on_weapon_reload_start", "skeleton3D"), &WeaponActionEffects::_on_weapon_reload_start);  
 }
 
@@ -330,41 +329,21 @@ void WeaponActionEffects::_on_weapon_reload_start(Skeleton3D* skeleton3D)
   m_CurrentSkeleton = skeleton3D;
 }
 
-void WeaponActionEffects::_on_weapon_fired(Ref<Curve2D> recoilCurve)
-{
-  m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count) - m_CurveOrigin;
-  m_Count++;
-}
-
 void WeaponActionEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
 {
-  m_Count = 0;
+  // m_RecoilVel = currentWeapon->get_recoilVector();
+}
+
+void WeaponActionEffects::_on_weapon_fired(Ref<Weapon> currentWeapon)
+{
+  m_RecoilVel = currentWeapon->get_recoilVector();
 }
 
 void WeaponActionEffects::_weapon_recoil_effect(double delta)
 {
-  if(m_WeaponManager)
-  {
-    // Shift everything to (0, 0)
-    m_CurveOrigin = m_RecoilCurve->get_point_position(0);
-    m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count) - m_CurveOrigin;
-  }
+  m_DampedSpring.CalcDampedSpringMotionParams(delta, m_CurrentWeapon->get_recoil_ang_freq(), m_CurrentWeapon->get_recoil_damping_ratio());
+  m_DampedSpring.UpdateDampedSpringMotion(m_RecoilSpringRot, m_RecoilVel, Vector3(0.0f, 0.0f, 0.0f)); 
 
-  if(m_RecoilCurve.is_valid())
-  {
-    if(m_WeaponManager->IsWeaponFiring())
-    {
-      m_DampedSpring.CalcDampedSpringMotionParams(delta, m_CurrentWeapon->get_recoil_ang_freq(), m_CurrentWeapon->get_recoil_damping_ratio());
-      m_DampedSpring.UpdateDampedSpringMotion(m_RecoilSpringRot, m_RecoilVel, Vector3(-(m_RecoilEqPos.y * m_CurrentWeapon->get_recoilMultiplier()), 
-                                            -(m_RecoilEqPos.x * m_CurrentWeapon->get_recoilMultiplier()), 0.0f));
-    }
-
-    if(m_Count >= m_RecoilCurve->get_point_count() - 1 || !m_WeaponManager->IsWeaponFiring())
-    {
-      m_Count = 0;
-      m_RecoilEqPos = m_RecoilCurve->get_point_position(m_Count);
-    }
-  }
 }
 
 void WeaponActionEffects::_weapon_reload_effect(double delta)
@@ -391,9 +370,7 @@ void WeaponActionEffects::_update(double delta)
     return;
   }
 
-  m_CurrentWeapon = m_WeaponComponent->get_current_weapon_data();
-  m_RecoilCurve = m_WeaponManager->get_recoil_curve();
-
+  print_line(m_RecoilVel);
   _weapon_recoil_effect(delta);
   _weapon_reload_effect(delta);
   

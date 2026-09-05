@@ -59,7 +59,8 @@ public:
 
   void _equip_weapon();
   void _unequip_weapon();
-
+  
+  void _on_weapon_fire_pressed();
   void _shoot_weapon(double delta);
   void _shoot_weapon_over();
 
@@ -77,10 +78,7 @@ public:
 
 public:
 
-  // NOTE: This function really doesn't reflect the actual weapon's shoot state. This is for recoil effect only
-  // IsWeaponFiring is false as soon as the player leaves the input which is different from how the actual state is handled
-  bool IsWeaponFiring() { return m_WeaponStateCtx.IsWeaponFiring; }
-
+  bool IsShooting() { return m_WeaponStateCtx.IsShooting; }
   bool IsReloading() { return m_WeaponStateCtx.IsReloading; }
 
   bool current_weapon_has_auto_reload() {
@@ -91,12 +89,10 @@ public:
   WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
   float get_time_between_shots() { return m_TimeBetweenShots; }
 
-  Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
+  // Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
   InputCommandSystem* get_input_command_system_instance() { return input_command_system; }
 
   void set_trigger_press_status(bool status) { m_WeaponStateCtx.TriggerPressed = status; }
-
-  void set_release_status(bool status) { m_WeaponStateCtx.ReleaseStatus = status; }
 
   int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
   int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
@@ -117,8 +113,8 @@ private:
   Vector2 m_ScreenCenter {};
 
   Ref<StandardMaterial3D> m_StdMaterial { nullptr };
-  Ref<PackedScene> m_RecoilResource { nullptr };
-  Ref<Curve2D> m_RecoilCurve { nullptr };
+  // Ref<PackedScene> m_RecoilResource { nullptr };
+  // Ref<Curve2D> m_RecoilCurve { nullptr };
 
   Vector<AnimationPlayer*> m_WeaponAnims;
   Vector<Node3D*> m_WeaponNodes;
@@ -132,9 +128,11 @@ private:
   Ref<Weapon> m_CurrentWeapon { nullptr };
   Ref<PackedScene> m_DecalScene { nullptr };
 
+  // Node* m_RecoilPathNode { nullptr };
+  // Path2D* m_RecoilPath { nullptr };
+
   Marker3D* m_WeaponMuzzleMarker { nullptr };
-  Node *m_RecoilPathNode { nullptr }, *m_BulletDecalInstNode { nullptr };
-  Path2D* m_RecoilPath { nullptr };
+  Node* m_BulletDecalInstNode { nullptr };
   Decal* m_BulletDecalNode { nullptr };
 
   WeaponStateContext m_WeaponStateCtx;
@@ -156,6 +154,8 @@ private:
   float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.0f };
 
   Vector3 m_TargetRot {}, m_CurrentRot {};
+
+  const float MAX_SHOOT_STATE_TIME { 0.5f };
 
 private:
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);

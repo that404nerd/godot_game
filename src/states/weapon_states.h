@@ -20,10 +20,10 @@ struct WeaponStateContext
   Weapon::WeaponType CurrentWeaponType { Weapon::WeaponType::NONE };
   float ShootTimeBeforeIdle { 1.0f };
 
-  bool IsWeaponFiring { false };
+  bool IsShooting { false };
 
   bool IsReloading { false }, IsReloadStarted { false };
-  bool TriggerPressed { false }, TriggerHeld { false }, ReleaseStatus { false };
+  bool TriggerPressed { false }, TriggerHeld { false };
   bool IsUnequipped { false };
 };
 

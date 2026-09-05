@@ -109,18 +109,19 @@ void WeaponShootState::_enter()
 
 void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_shoot_weapon())
+  if(m_InputCmdSystem)
   {
-    m_WeaponManager->set_trigger_press_status(true);
+    if(m_InputCmdSystem->wants_to_shoot_weapon())
+    {
+      m_WeaponManager->set_trigger_press_status(true);
+      EventBus::get_singleton()->emit_signal("weapon_fire_pressed");
+    }
+    
+    if(m_InputCmdSystem->wants_to_reload_weapon())
+    {
+      m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
+    }
   }
-
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_reload_weapon())
-  {
-    m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
-  }
-
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_release_shoot())
-    m_WeaponManager->set_release_status(true);
 }
 
 void WeaponShootState::_update(double delta)

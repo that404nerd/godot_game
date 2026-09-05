@@ -1,7 +1,6 @@
 [gd_resource type="Weapon" format=3 uid="uid://g6nbobyu2ifd"]
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_lvpox"]
-[ext_resource type="PackedScene" uid="uid://crnx1wupyx76k" path="res://assets/weapon_resources/recoil_patterns/recoil_shotgun.tscn" id="2_32k43"]
 
 [resource]
 weaponName = "Shotgun"
@@ -19,7 +18,6 @@ weaponShootingAnimName = "shotgun_shoot"
 weaponReloadStartAnimName = "shotgun_reload_start"
 weaponReloadAnimName = "shotgun_reload"
 weaponReloadEndAnimName = "shotgun_reload_end"
-weaponRecoilPatternResource = ExtResource("2_32k43")
 weaponDecalResource = ExtResource("1_lvpox")
 time_between_shots = 1.0
 noOfProjectilesAtSameTime = 5
@@ -35,8 +33,9 @@ jump_armature_weapon_rise_ang_freq = 15.0
 jump_armature_weapon_rise_damping_ratio = 0.4
 jump_armature_weapon_rot_ang_freq = 5.0
 jump_armature_weapon_rot_damping_ratio = 0.4
-recoilMultiplier = 0.2
+recoilMultiplier = 22.0
 reloadShakeResetMultiplier = 5.0
+recoilVector = Vector3(8, 4, 1)
 recoil_ang_freq = 20.0
 recoil_damping_ratio = 0.8
 weaponReloadRootBoneName = "weapon"
