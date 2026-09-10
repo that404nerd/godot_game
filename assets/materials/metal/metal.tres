@@ -1,9 +1,9 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://qttatta6cko8"]
 
-[ext_resource type="Texture2D" uid="uid://dm61rmmfnhshe" path="res://assets/textures/metal/metal_albedo.jpg" id="1_bc11m"]
-[ext_resource type="Texture2D" uid="uid://c5irs73nrr741" path="res://assets/textures/metal/metal_height.jpg" id="2_obt5w"]
-[ext_resource type="Texture2D" uid="uid://chr4c6rcqg2ir" path="res://assets/textures/metal/metal_normal.jpg" id="3_stcwy"]
-[ext_resource type="Texture2D" uid="uid://0ofkv8e72oj7" path="res://assets/textures/metal/metal_roughness.jpg" id="4_1sd3p"]
+[ext_resource type="Texture2D" uid="uid://w60hx6bpbgm2" path="res://assets/textures/metal/metal_albedo.jpg" id="1_bc11m"]
+[ext_resource type="Texture2D" uid="uid://db4indyhh1osq" path="res://assets/textures/metal/metal_height.jpg" id="2_obt5w"]
+[ext_resource type="Texture2D" uid="uid://d1bijxswfwrvd" path="res://assets/textures/metal/metal_normal.jpg" id="3_stcwy"]
+[ext_resource type="Texture2D" uid="uid://d1aihwoov7oik" path="res://assets/textures/metal/metal_roughness.jpg" id="4_1sd3p"]
 
 [resource]
 albedo_texture = ExtResource("1_bc11m")

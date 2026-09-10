@@ -1,11 +1,11 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://dwmhhmlyfvalo"]
 
-[ext_resource type="Texture2D" uid="uid://6rxb653ksc3x" path="res://assets/textures/steel/steel_albedo.jpg" id="1_dhsen"]
-[ext_resource type="Texture2D" uid="uid://c5p0idg7lk5rb" path="res://assets/textures/steel/steel_ao.jpg" id="2_gs2pw"]
-[ext_resource type="Texture2D" uid="uid://cq8oevyqk65dd" path="res://assets/textures/steel/steel_height.jpg" id="3_txmje"]
-[ext_resource type="Texture2D" uid="uid://baabqygvwj34k" path="res://assets/textures/steel/steel_metallic.jpg" id="4_ynorr"]
+[ext_resource type="Texture2D" uid="uid://bv1lhubve02d8" path="res://assets/textures/steel/steel_albedo.jpg" id="1_dhsen"]
+[ext_resource type="Texture2D" uid="uid://def5cbfwtbb4c" path="res://assets/textures/steel/steel_ao.jpg" id="2_gs2pw"]
+[ext_resource type="Texture2D" uid="uid://8gy7lwlswmym" path="res://assets/textures/steel/steel_height.jpg" id="3_txmje"]
+[ext_resource type="Texture2D" uid="uid://bm0ypw26wr4ta" path="res://assets/textures/steel/steel_metallic.jpg" id="4_ynorr"]
 [ext_resource type="Texture2D" uid="uid://ir64wccjnci1" path="res://assets/textures/steel/steel_normal.jpg" id="5_5sevs"]
-[ext_resource type="Texture2D" uid="uid://da84xh5c5y2ih" path="res://assets/textures/steel/steel_roughness.jpg" id="6_vwpfw"]
+[ext_resource type="Texture2D" uid="uid://bcyk0fmtqb6uf" path="res://assets/textures/steel/steel_roughness.jpg" id="6_vwpfw"]
 
 [resource]
 albedo_color = Color(0.3854925, 0.38549247, 0.38549247, 1)

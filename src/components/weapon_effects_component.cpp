@@ -326,12 +326,16 @@ void WeaponActionEffects::_on_weapon_reload_start(Skeleton3D* skeleton3D)
 {
   StringName boneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
   m_BoneID = skeleton3D->find_bone(boneName);
+  if(m_BoneID == -1)
+  {
+    print_error("Bone ID is not valid!");
+  }
   m_CurrentSkeleton = skeleton3D;
 }
 
 void WeaponActionEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
 {
-  // m_RecoilVel = currentWeapon->get_recoilVector();
+  m_CurrentWeapon = currentWeapon;
 }
 
 void WeaponActionEffects::_on_weapon_fired(Ref<Weapon> currentWeapon)
@@ -370,7 +374,6 @@ void WeaponActionEffects::_update(double delta)
     return;
   }
 
-  print_line(m_RecoilVel);
   _weapon_recoil_effect(delta);
   _weapon_reload_effect(delta);
   

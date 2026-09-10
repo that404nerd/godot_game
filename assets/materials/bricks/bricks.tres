@@ -1,10 +1,10 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://di6nqin18r3hx"]
 
-[ext_resource type="Texture2D" uid="uid://b7rp7fo3rrxbi" path="res://assets/textures/bricks/bricks_albedo.jpg" id="1_2dgsd"]
-[ext_resource type="Texture2D" uid="uid://sr77khtn8gpp" path="res://assets/textures/bricks/bricks_ao.jpg" id="2_1eyqh"]
-[ext_resource type="Texture2D" uid="uid://b7fdhvv8asi7v" path="res://assets/textures/bricks/bricks_height.jpg" id="3_rsiin"]
-[ext_resource type="Texture2D" uid="uid://de7rkm70uonm2" path="res://assets/textures/bricks/bricks_normal.jpg" id="4_sbyrd"]
-[ext_resource type="Texture2D" uid="uid://dhbpxnrd177pe" path="res://assets/textures/bricks/bricks_roughness.jpg" id="5_7aqqe"]
+[ext_resource type="Texture2D" uid="uid://dv8q104yq06xr" path="res://assets/textures/bricks/bricks_albedo.jpg" id="1_2dgsd"]
+[ext_resource type="Texture2D" uid="uid://gucu5axf15m2" path="res://assets/textures/bricks/bricks_ao.jpg" id="2_1eyqh"]
+[ext_resource type="Texture2D" uid="uid://b4cp6d26b7bu" path="res://assets/textures/bricks/bricks_height.jpg" id="3_rsiin"]
+[ext_resource type="Texture2D" uid="uid://mfkvm5gnpajm" path="res://assets/textures/bricks/bricks_normal.jpg" id="4_sbyrd"]
+[ext_resource type="Texture2D" uid="uid://crboeogr3ok71" path="res://assets/textures/bricks/bricks_roughness.jpg" id="5_7aqqe"]
 
 [resource]
 albedo_texture = ExtResource("1_2dgsd")

@@ -83,14 +83,14 @@ void Weapon::_bind_methods() {
 
   ADD_GROUP("Weapon Recoil Values", "");
   GD_BIND_PROPERTY(Weapon, recoilMultiplier, Variant::FLOAT);
-  GD_BIND_PROPERTY(Weapon, reloadShakeResetMultiplier, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, recoilVector, Variant::VECTOR3);
   GD_BIND_PROPERTY(Weapon, recoil_ang_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, recoil_damping_ratio, Variant::FLOAT);
-
+  
   ADD_GROUP("Weapon Reload Properties", "");
   GD_BIND_PROPERTY(Weapon, weaponReloadRootBoneName, Variant::STRING);
   GD_BIND_PROPERTY(Weapon, auto_reload, Variant::BOOL);
+  GD_BIND_PROPERTY(Weapon, reloadShakeResetMultiplier, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, magEnteredTimestamp, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, reloadShakeSpeedMultiplier, Variant::FLOAT);
 
@@ -106,55 +106,55 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, weapon_bob_smooth_val, Variant::FLOAT);
 }
 
-/*
-* This is the function that pushes the properties into the list
-*/
-void Weapon::_get_property_list(List<PropertyInfo> *p_list)
-{
-  Utils::add_property_cond(p_list, { 
-    .PropertyName = "state_enum", 
-    .VariantType = Variant::INT, 
-    .PropHint = PROPERTY_HINT_ENUM, 
-    .EnumValues = "IDLE,WALK,RUN,JUMP",
-    // .AfterOrBeforeElement = p_list->front(),
-  });
+// /*
+// * This is the function that pushes the properties into the list
+// */
+// void Weapon::_get_property_list(List<PropertyInfo> *p_list)
+// {
+//   Utils::add_property_cond(p_list, { 
+//     .PropertyName = "state_enum", 
+//     .VariantType = Variant::INT, 
+//     .PropHint = PROPERTY_HINT_ENUM, 
+//     .EnumValues = "IDLE,WALK,RUN,JUMP",
+//     // .AfterOrBeforeElement = p_list->front(),
+//   });
 
-  Utils::add_property_cond(p_list, { 
-    .PropertyName = "test_float", 
-    .VariantType = Variant::FLOAT, 
-    .Condition = [this](){ return current_state == States::IDLE; }
-  });
+//   Utils::add_property_cond(p_list, { 
+//     .PropertyName = "test_float", 
+//     .VariantType = Variant::FLOAT, 
+//     .Condition = [this](){ return current_state == States::IDLE; }
+//   });
 
  
  
-}
+// }
 
-/*
-* The _set function takes the property name as the first parameter,
-* The p_value is like a template parameter. It accepts any standard godot types. It stores the value of the property pushed into the list
-* This function just sets the value to the property, we are setting a custom class's properties to the p_value
-*/
-bool Weapon::_set(const StringName &p_name, const Variant &p_value) {
+// /*
+// * The _set function takes the property name as the first parameter,
+// * The p_value is like a template parameter. It accepts any standard godot types. It stores the value of the property pushed into the list
+// * This function just sets the value to the property, we are setting a custom class's properties to the p_value
+// */
+// bool Weapon::_set(const StringName &p_name, const Variant &p_value) {
 
-  Utils::set_properties(p_name, "test_float", p_value, test_float, this);
-  Utils::set_properties_enum<States>(p_name, "state_enum", p_value, current_state);
+//   Utils::set_properties(p_name, "test_float", p_value, test_float, this);
+//   Utils::set_properties_enum<States>(p_name, "state_enum", p_value, current_state);
 
-  notify_property_list_changed();
+//   notify_property_list_changed();
 
-	return false;
-}
+// 	return false;
+// }
 
-/*
-  This function gets the value set by the user (which is performed by the _set() above) and then set it to r_ret which then updates the value in the editor
-*/
-bool Weapon::_get(const StringName &p_name, Variant &r_ret) 
-{
-  // This is weird, the _get() ABSOLUTELY requires you to check and then manually return true for it to update the value in the editor. _set() didn't require that.
-  if(Utils::get_property_enum(p_name, "state_enum", r_ret, current_state))
-    return true;
+// /*
+//   This function gets the value set by the user (which is performed by the _set() above) and then set it to r_ret which then updates the value in the editor
+// */
+// bool Weapon::_get(const StringName &p_name, Variant &r_ret) 
+// {
+//   // This is weird, the _get() ABSOLUTELY requires you to check and then manually return true for it to update the value in the editor. _set() didn't require that.
+//   if(Utils::get_property_enum(p_name, "state_enum", r_ret, current_state))
+//     return true;
 
-  if(Utils::get_property(p_name, "test_float", r_ret, test_float))
-    return true;
+//   if(Utils::get_property(p_name, "test_float", r_ret, test_float))
+//     return true;
   
-  return false;
-}
+//   return false;
+// }
