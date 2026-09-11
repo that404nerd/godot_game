@@ -68,9 +68,9 @@ private:
   GD_DEFINE_PROPERTY(float, ai_query_timer, 1.0f);
 
 private:
-  AnimationNodeStateMachinePlayback *m_AnimTreeState { nullptr }, *m_CombatTreeState { nullptr };
-  AnimationNodeStateMachinePlayback *m_PatrolTreeState { nullptr };
-  AnimationNodeStateMachinePlayback *m_ChaseTreeState { nullptr }, *m_NormalChaseTreeState { nullptr }, *m_CrouchChaseTreeState { nullptr };
+  AnimationNodeStateMachinePlayback *m_LowerBodyStateMachine { nullptr };
+  AnimationNodeStateMachinePlayback *m_UpperBodyStateMachine { nullptr };
+
   Player* m_Target { nullptr };
 
   AIStateCtx m_AIStateCtxInst;

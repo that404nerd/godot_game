@@ -7,12 +7,8 @@ AIManager::AIManager()
 
 void AIManager::_init()
 {
-  m_AnimTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/playback"));
-  m_CombatTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Combat/playback"));
-  m_PatrolTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Patrol/playback"));
-  m_ChaseTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Chase/playback"));
-  m_NormalChaseTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Chase/CrouchChase/playback"));
-  m_CrouchChaseTreeState = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/Chase/NormalChase/playback"));
+  m_LowerBodyStateMachine = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/LowerBodyStateMachine/playback"));
+  m_UpperBodyStateMachine = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/UpperBodyStateMachine/playback"));
 
   m_Target = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
   env_query3d->connect("query_finished", Callable(this, "_on_query_finished"));
@@ -110,13 +106,14 @@ void AIManager::_idle(double delta)
   lookat_player_component->set_look_status(false);
 
   m_AIStateCtxInst.IsNavigationFinished = false;
-  m_AnimTreeState->travel("Idle");
+  m_LowerBodyStateMachine->travel("Idle");
+  anim_tree->set("parameters/UpperBodyBlend/blend_amount", 0.0f);
 }
 
 void AIManager::_blend_chase_states(double delta)
 {
   Vector2 dir = Vector2(m_AIStateCtxInst.AIDirection.x, m_AIStateCtxInst.AIDirection.z).normalized();
-  anim_tree->set("parameters/Chase/blend_position", dir);
+  anim_tree->set("parameters/LowerBodyStateMachine/Run/blend_position", dir);
 }
 
 void AIManager::_chase(double delta)
@@ -133,7 +130,7 @@ void AIManager::_chase(double delta)
 
   m_AIStateCtxInst.IsNavigationFinished = nav_agent_3d->is_navigation_finished();
 
-  m_AnimTreeState->travel("Chase");
+  m_LowerBodyStateMachine->travel("Run");
   nav_agent_3d->set_target_position(m_Target->get_global_position());
   nav_agent_3d->set_target_desired_distance(5.0f);
 
@@ -160,7 +157,7 @@ void AIManager::_patrol(double delta)
   
   _blend_patrol_states(delta);
   lookat_player_component->set_look_status(false);
-  m_AnimTreeState->travel("Patrol");
+  // m_AnimTreeState->travel("Patrol");
 
   nav_agent_3d->set_target_position(m_AIStateCtxInst.LastPlayerPosBeforePatrol);
 
@@ -183,8 +180,8 @@ void AIManager::_shoot(double delta)
 
   m_QueryTimer -= delta;
 
-  m_AnimTreeState->travel("Combat");
-  m_CombatTreeState->travel("Enemy_Stand_Shoot");
+  // m_AnimTreeState->travel("Combat");
+  // m_CombatTreeState->travel("Enemy_Stand_Shoot");
 
   lookat_player_component->set_look_status(true);
 }
