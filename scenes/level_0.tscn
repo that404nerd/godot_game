@@ -95,6 +95,7 @@ shader_parameter/moon_size = 1.0
 shader_parameter/moon_glow_strength = 0.1
 shader_parameter/moon_eclipse_size = 0.8
 shader_parameter/moon_glow_size = 1.0
+shader_parameter/high_quality_sky = true
 shader_parameter/cloud_scroll_a = Vector2(0.0012, 0.00015)
 shader_parameter/cloud_scroll_b = Vector2(-0.0018, 0.0004)
 shader_parameter/cloud_scale_a = Vector2(0.045, 0.055)
@@ -2373,7 +2374,9 @@ points = PackedVector3Array(2.875, 1.890625, 0.125, 2.875, -1.890625, 0.125, -2.
 environment = SubResource("Environment_171oe")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1065714425]
-transform = Transform3D(0.008186781, -0.28969398, 0.9570843, 0, 0.9571164, 0.28970367, -0.9999665, -0.0023717408, 0.007835702, 0, 0, 0)
+transform = Transform3D(0.031070942, -0.3223438, 0.94611263, 0, 0.9465696, 0.32249948, -0.9995172, -0.010020363, 0.02941081, 0, 0, 0)
+light_color = Color(0.59633404, 0.76700604, 0.941344, 1)
+light_energy = 0.2
 shadow_enabled = true
 sky_mode = 2
 

@@ -60,7 +60,6 @@ public:
   void _equip_weapon();
   void _unequip_weapon();
   
-  void _on_weapon_fire_pressed();
   void _shoot_weapon(double delta);
   void _shoot_weapon_over();
 

@@ -11,6 +11,7 @@
 #include "../input_command_system.h"
 
 #include "../states/ai_states.h"
+#include "../globals.h"
 
 using namespace godot;
 

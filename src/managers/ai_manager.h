@@ -60,12 +60,10 @@ private:
   GD_DEFINE_PROPERTY(EnvironmentQuery3D*, env_query3d, nullptr);
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
-  GD_DEFINE_PROPERTY(AnimationPlayer*, anim_player, nullptr);
   GD_DEFINE_PROPERTY(LookAtPlayerComponent*, lookat_player_component, nullptr);
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
 
-
-  GD_DEFINE_PROPERTY(float, ai_query_timer, 1.0f);
+  Ref<AIBehaviourProps> m_AIBehaviourProps { nullptr };
 
 private:
   AnimationNodeStateMachinePlayback *m_LowerBodyStateMachine { nullptr };

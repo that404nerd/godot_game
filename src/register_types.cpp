@@ -70,6 +70,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_RUNTIME_CLASS(CameraController); 
 
   GDREGISTER_CLASS(Weapon);
+  GDREGISTER_CLASS(AIBehaviourProps);
 
   GDREGISTER_RUNTIME_CLASS(StateMachine);
   GDREGISTER_RUNTIME_CLASS(MovementStateMachine);

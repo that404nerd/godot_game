@@ -10,6 +10,8 @@ void AIManager::_init()
   m_LowerBodyStateMachine = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/LowerBodyStateMachine/playback"));
   m_UpperBodyStateMachine = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/UpperBodyStateMachine/playback"));
 
+  m_AIBehaviourProps = ai_character_component->get_ai_behaviour_props();
+
   m_Target = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
   env_query3d->connect("query_finished", Callable(this, "_on_query_finished"));
 
@@ -32,12 +34,9 @@ void AIManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AIManager, InputCommandSystem, input_cmd_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, NavigationAgent3D, nav_agent_3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, EnvironmentQuery3D, env_query3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationPlayer, anim_player, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationTree, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, LookAtPlayerComponent, lookat_player_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, VisionComponent, ai_vision_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-
-  GD_BIND_PROPERTY(AIManager, ai_query_timer, Variant::FLOAT);
 }
 
 void AIManager::_on_query_finished(QueryResult3D* queryResult)
@@ -175,7 +174,7 @@ void AIManager::_shoot(double delta)
   if(m_QueryTimer <= 0.0f)
   {
     env_query3d->request_query();
-    m_QueryTimer = ai_query_timer;
+    m_QueryTimer = m_AIBehaviourProps->get_enemyCombatNewPosQueryTime();
   }
 
   m_QueryTimer -= delta;

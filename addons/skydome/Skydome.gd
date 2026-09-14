@@ -5,7 +5,6 @@ extends Node
 signal time_changed(day: int, time: float)
 signal day_changed(day: int)
 
-const SUN_SHAFTS_EFFECT_SCRIPT := preload("res://addons/skydome/SunShaftsCompositorEffect.gd")
 const FILMIC_SKY_SHADER := preload("res://addons/skydome/filmic_procedural_sky.gdshader")
 const EDITOR_ACCESS_SCRIPT_PATH := "res://addons/skydome/EditorAccess.gd"
 
@@ -21,7 +20,6 @@ var _last_cloud_total_hours: float = 0.0
 var _cloud_motion_time: float = 0.0
 var _cloud_evolution_time: float = 0.0
 var _sky_material: ShaderMaterial
-var _compositor_effect: CompositorEffect
 var _light: DirectionalLight3D
 var _is_ready: bool = false
 var _is_daytime: bool = true
@@ -62,6 +60,12 @@ func _success(x):
 		latitude = v
 		_update_sun_transform()
 @export var time_transition_duration: float = 1.0
+
+@export_group("Performance")
+@export var shader_high_quality_sky: bool = true:
+	set(v):
+		shader_high_quality_sky = v
+		_set_shader_param("high_quality_sky", v)
 
 @export_group("Sunset", "sunset")
 @export_subgroup("Light", "sunset_light")
@@ -557,6 +561,11 @@ func _success(x):
 		_update_sun_transform()
 
 @export_group("Fog")
+enum FogModeOverride { UNMANAGED, EXPONENTIAL, DEPTH }
+@export var fog_mode: FogModeOverride = FogModeOverride.UNMANAGED:
+	set(v):
+		fog_mode = v
+		_update_sun_transform()
 @export_range(0.0, 1.0, 0.001) var fog_density: float = 0.0:
 	set(v):
 		var next := clampf(v, 0.0, 1.0)
@@ -646,13 +655,8 @@ func _ready() -> void:
 	set_process(true)
 
 
-func _exit_tree():
-	_remove_sunshafts_compositor_effect()
-
 func _process(_delta: float) -> void:
 	_advance_time_transition(_delta)
-	_process_sunshafts()
-
 
 func apply_now() -> void:
 	_init_sky()
@@ -671,8 +675,6 @@ func _refresh() -> void:
 	_environment = _get_environment()
 	_light = _get_directional_light()
 
-	_remove_sunshafts_compositor_effect()
-	#_install_sunshafts_compositor_effect()
 	_init_sky()
 	_update_sun_transform()
 	_update_cloud_time()
@@ -804,10 +806,6 @@ func _init_sky() -> void:
 	_cloud_texture_b.noise.frequency = clouds_generator_frequency_b * 0.01
 
 	_environment.sky.sky_material = _sky_material
-
-	#if not _compositor_effect:
-		#_install_sunshafts_compositor_effect()
-
 	_sync_sky_shader_params()
 	_reset_cloud_time_tracking()
 
@@ -835,6 +833,7 @@ func _sync_sky_shader_params() -> void:
 	_sky_material.set_shader_parameter("atmosphere_sunset_boost", shader_atmosphere_sunset_boost)
 	_sky_material.set_shader_parameter("rainbow_intensity", rainbow_intensity)
 	_sky_material.set_shader_parameter("rainbow_secondary_intensity", rainbow_secondary_intensity)
+	_sky_material.set_shader_parameter("high_quality_sky", shader_high_quality_sky)
 
 	_sky_material.set_shader_parameter("sunset_bottom_color", shader_sunset_bottom_color)
 	_sky_material.set_shader_parameter("sunset_horizon_color", shader_sunset_horizon_color)
@@ -1090,6 +1089,19 @@ func _update_sun_transform() -> void:
 	var sun_energy = day_light_energy * smoothstep(-0.05, 0.08, s_alt)
 	var moon_energy = night_light_energy * smoothstep(0.0, 0.05, m_alt) * (1.0 - smoothstep(-0.1, 0.0, s_alt))
 
+	if sun_energy >= moon_energy:
+		if light:
+			light.global_transform.basis = dir_to_basis.call(sun_dir)
+			light.light_color = day_light_color.lerp(sunset_light_color, _sunset_blend)
+			light.light_energy = sun_energy
+		_is_daytime = true
+	else:
+		if light:
+			light.global_transform.basis = dir_to_basis.call(moon_dir)
+			light.light_color = night_light_color
+			light.light_energy = moon_energy
+		_is_daytime = false
+
 	_set_shader_param("gi_tint", gi_night_tint.lerp(gi_day_tint, _day_blend))
 	_set_shader_param("gi_energy_multiplier", lerp(gi_night_energy, gi_day_energy, _day_blend) + _sunset_blend * 0.5)
 
@@ -1097,6 +1109,11 @@ func _update_sun_transform() -> void:
 		var env = _environment
 
 		var fog_day_mix =  night_fog_color.lerp( day_fog_color, _day_blend)
+		match fog_mode:
+			FogModeOverride.EXPONENTIAL:
+				env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
+			FogModeOverride.DEPTH:
+				env.fog_mode = Environment.FOG_MODE_DEPTH
 		env.fog_light_color = fog_day_mix.lerp(sunset_light_color, _sunset_blend * 0.5)
 		env.fog_density = lerp( night_fog_density,  day_fog_density, _day_blend)
 		env.fog_sky_affect = lerp( night_fog_sky_affect,  day_fog_sky_affect, _day_blend)
@@ -1149,6 +1166,11 @@ func _apply_state_params(env: Environment, light: DirectionalLight3D) -> void:
 	_set_shader_param("moon_size", lerpf(moon_size, moon_size * 0.72, cloud_mix * 0.85))
 	_set_shader_param("moon_glow_strength", maxf(0.0, moon_glow_strength * (1.0 - cloud_mix * 0.96)))
 
+	if light:
+		light.light_energy += current_lightning_flash * lerpf(storm_flash_light_energy_clear, storm_flash_light_energy_overcast, sky_overcast)
+		light.light_color = light.light_color.lerp(Color(0.58, 0.62, 0.68, 1.0), overcast_cooling * 0.94)
+		light.light_color = light.light_color.lerp(storm_flash_light_color, current_lightning_flash * 0.8)
+
 	if env == null:
 		return
 
@@ -1198,59 +1220,10 @@ func _get_all_compositors() -> Array[Compositor]:
 
 	return compositors
 
-#func _install_sunshafts_compositor_effect() -> void:
-	#_remove_sunshafts_compositor_effect()
-#
-	#var compositor := _get_compositor()
-	#if not compositor:
-		#var has_target := false
-		#if _get_world_environment():
-			#has_target = true
-		#elif Engine.is_editor_hint():
-			#var editor_camera = _get_editor_access().get_editor_camera_3d(0) if _get_editor_access() != null else null
-			#if editor_camera:
-				#has_target = true
-		#else:
-			#var vp := get_viewport()
-			#if vp and vp.get_camera_3d(): has_target = true
-			#elif _find_active_camera(): has_target = true
-#
-		#if has_target:
-			#compositor = Compositor.new()
-			#_set_compositor(compositor)
-		#else:
-			#return
-#
-	#if not compositor.resource_path.is_empty():
-		#compositor = compositor.duplicate(true) as Compositor
-		#_set_compositor(compositor)
-#
-	#_compositor_effect = SUN_SHAFTS_EFFECT_SCRIPT.new()
-	#_compositor_effect.set("sun_visible", true)
-	#var effects = compositor.compositor_effects
-	#effects.insert(0, _compositor_effect)
-	#compositor.compositor_effects = effects
-	#_success("Installed sunshafts compositor effect")
 
-
-func _remove_sunshafts_compositor_effect() -> void:
-	for comp in _get_all_compositors():
-		var effects = comp.compositor_effects
-		var changed = false
-		var i := effects.size() - 1
-		while i >= 0:
-			if effects[i] != null and effects[i].get_script() == SUN_SHAFTS_EFFECT_SCRIPT:
-				effects.remove_at(i)
-				changed = true
-			i -= 1
-		if changed:
-			comp.compositor_effects = effects
-
-	_compositor_effect = null
 
 func _update_effect() -> void:
-	if not _compositor_effect:
-		return
+
 	_viewport_size = _get_active_viewport_size()
 	_camera = _find_active_camera()
 	_light = _get_directional_light()
@@ -1259,23 +1232,6 @@ func _update_effect() -> void:
 
 	var cloud_occlusion := clampf(_get_final_cloud_density() * 0.85, 0.0, 0.96)
 	var shafts_visibility := 1.0 - cloud_occlusion
-
-	_compositor_effect.set("shaft_color", current_base_color.lerp(Color(0.72, 0.74, 0.78, 1.0), cloud_occlusion * 0.5))
-	_compositor_effect.set("density", sunshafts_density * shafts_visibility * lerpf(0.7, 1.0, _day_blend))
-	_compositor_effect.set("bright_threshold", sunshafts_bright_threshold)
-	_compositor_effect.set("weight", sunshafts_weight * shafts_visibility * lerpf(1.5, 1.0, _day_blend))
-	_compositor_effect.set("decay", sunshafts_decay)
-	_compositor_effect.set("exposure", sunshafts_exposure * shafts_visibility * lerpf(1.3, 1.0, _day_blend))
-	_compositor_effect.set("max_radius", sunshafts_max_radius)
-	_compositor_effect.set("sample_count", sunshafts_perf_sample_count)
-	_compositor_effect.set("dither_strength", sunshafts_perf_dither_strength)
-
-func _process_sunshafts() -> void:
-	if _compositor_effect and _camera and _light:
-		var sun_dir = _light.global_transform.basis.z.normalized()
-		var sun_world_pos = _camera.global_position + (sun_dir * sunshafts_distance)
-		var screen_pos = _camera.unproject_position(sun_world_pos)
-		_compositor_effect.set("sun_screen_uv", Vector2(screen_pos.x / _viewport_size.x, screen_pos.y / _viewport_size.y))
 
 func _find_active_camera() -> Camera3D:
 	if not is_inside_tree(): return null

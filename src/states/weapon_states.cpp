@@ -114,7 +114,6 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
     if(m_InputCmdSystem->wants_to_shoot_weapon())
     {
       m_WeaponManager->set_trigger_press_status(true);
-      EventBus::get_singleton()->emit_signal("weapon_fire_pressed");
     }
     
     if(m_InputCmdSystem->wants_to_reload_weapon())

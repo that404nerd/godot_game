@@ -9,6 +9,7 @@
 #include <unordered_map>
 
 #include "state.h"
+#include "../resources/ai_behaviour_props.h"
 #include "../components/ai/ai_character_component.h"
 #include "../utils/damped_spring.h"
 #include "../input_command_system.h"
@@ -42,6 +43,10 @@ public:
 protected:
   AIManager* m_AIManagerInst { nullptr };
   AIStateMachine* m_AIStateMachine { nullptr };
+
+  AICharacterComponent* m_AICharacterComp { nullptr };
+  Ref<AIBehaviourProps> m_AIBehaviourProps { nullptr };
+
   InputCommandSystem* m_InputCmdSystem { nullptr };
   const AIStateCtx& m_AIStateCtxInst;
 };
@@ -74,57 +79,6 @@ public:
 class AIPatrolState : public BaseAIState {
 public:
   AIPatrolState(const AIStateData& aiStateData); 
-
-  void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
-  void _update(double delta) override;
-  void _physics_update(double delta) override;
-
-  void _exit() override;
-
-};
-
-class AIShootState;
-class AIReloadState;
-enum class AICombatStates;
-
-class AICombatState : public BaseAIState {
-public:
-  AICombatState(const AIStateData& aiStateData); 
-
-  void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
-  void _update(double delta) override;
-  void _physics_update(double delta) override;
-
-  void _exit() override;
-
-private:
-  std::unordered_map<int, std::unique_ptr<AICombatState>> m_CombatStates;
-
-  State* m_CurrentState { nullptr };
-  State* m_PrevState { nullptr };
-  State* m_InitialState { nullptr };
-};
-
-class AIShootState : public AICombatState 
-{
-public:
-  AIShootState(const AIStateData& aiStateData); 
-
-  void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
-  void _update(double delta) override;
-  void _physics_update(double delta) override;
-
-  void _exit() override;
-
-};
-
-class AIReloadState : public AICombatState
-{
-public:
-  AIReloadState(const AIStateData& aiStateData); 
 
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;

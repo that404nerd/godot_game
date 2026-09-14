@@ -18,9 +18,8 @@ void AICharacterComponent::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(AICharacterComponent, AIManager, ai_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AICharacterComponent, AIStateMachine, ai_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AICharacterComponent, AIBehaviourProps, ai_behaviour_props, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
 
-  ADD_GROUP("Enemy Vision Properties", "");
-  GD_BIND_PROPERTY(AICharacterComponent, vision_trigger_dist, Variant::FLOAT);
 }
 
 void AICharacterComponent::_unhandled_input(const Ref<InputEvent>& event)

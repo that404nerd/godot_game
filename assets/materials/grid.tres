@@ -63,12 +63,11 @@ void fragment() {
 [resource]
 render_priority = 0
 shader = SubResource("Shader_cwof1")
-shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/albedo = Color(0.446777, 0.44677705, 0.44677705, 1)
 shader_parameter/texture_albedo = ExtResource("1_57ppx")
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 0.5
+shader_parameter/point_size = 0.0
+shader_parameter/roughness = 0.50000002375
 shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
-shader_parameter/texture_roughness = ExtResource("1_57ppx")
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_blend_sharpness = 1.0

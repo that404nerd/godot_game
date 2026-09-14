@@ -2,6 +2,7 @@
 
 #include <godot_cpp/godot.hpp>
 
+#include "../../resources/ai_behaviour_props.h"
 #include "../character_component.h"
 #include "vision_component.h"
 
@@ -24,6 +25,7 @@ public:
 private:
   GD_DEFINE_PROPERTY(AIManager*, ai_manager, nullptr);
   GD_DEFINE_PROPERTY(AIStateMachine*, ai_state_machine, nullptr);
+  GD_DEFINE_PROPERTY(Ref<AIBehaviourProps>, ai_behaviour_props, nullptr);
 
   GD_DEFINE_PROPERTY(float, vision_trigger_dist, 30.0f);
 };

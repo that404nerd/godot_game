@@ -16,7 +16,6 @@ void WeaponManager::_init()
   _init_weapon_manager_data(weapon_node, weapon_wrapper);
   m_AmmoComp._init_data(weapon_component->get_weapon_list());
 
-  EventBus::get_singleton()->connect("weapon_fire_pressed", Callable(this, "_on_weapon_fire_pressed"));
 
   if(input_command_system == nullptr)
   {
@@ -178,7 +177,6 @@ void WeaponManager::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_started", "anim_name"), &WeaponManager::_on_weapon_anim_started);
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
-  ClassDB::bind_method(D_METHOD("_on_weapon_fire_pressed"), &WeaponManager::_on_weapon_fire_pressed);
   
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, WeaponStateMachine, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -387,10 +385,6 @@ void WeaponManager::_unequip_weapon()
   } else {
     m_WeaponStateCtx.IsUnequipped = true;
   }
-}
-
-void WeaponManager::_on_weapon_fire_pressed()
-{
 }
 
 void WeaponManager::_shoot_weapon(double delta)

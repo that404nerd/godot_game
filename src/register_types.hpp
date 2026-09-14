@@ -20,6 +20,8 @@
 #include "singletons/event_bus.h"
 
 #include "input_command_system.h"
+
+#include "resources/ai_behaviour_props.h"
 #include "resources/weapon.h"
 
 #include "components/ai/vision_component.h"
