@@ -14,10 +14,10 @@
 #include "managers/weapon_manager.h"
 #include "managers/ai_manager.h"
 
+#include "states/ai_states.h"
 #include "state_machines/state_machine.h"
 #include "state_machines/movement_state_machine.h"
 #include "state_machines/weapon_state_machine.h"
-#include "state_machines/ai_state_machine.h"
 
 #include "singletons/event_bus.h"
 #include "singletons/event_bus.h"
@@ -30,6 +30,7 @@
 #include "components/ai/vision_component.h"
 #include "components/ai/detection_area_component.h"
 #include "components/ai/ai_character_component.h"
+#include "components/ai/ai_play_anim_from_tree.h"
 
 #include "components/weapon_effects_components.h"
 #include "components/input_component.h"

@@ -6,29 +6,16 @@
 #include <godot_cpp/classes/animation_node_state_machine_playback.hpp>
 #include <godot_cpp/classes/animation_tree.hpp>
 
+#include "hsm/limbo_hsm.h"
+
 #include "../components/ai/ai_character_component.h"
-#include "../state_machines/ai_state_machine.h"
 #include "../input_command_system.h"
 #include "../components/ai/lookat_player_component.h"
 #include "../components/ai/vision_component.h"
 
 #include "environment_query3d.h"
-#include "hsm/limbo_state.h"
 
 using namespace godot;
-
-class LimboTestState : public LimboState {
-  GDCLASS(LimboTestState, LimboState);
-public:
-  void _enter() override
-  {
-    print_line("Hello!");
-    LimboState::_enter();
-  }
-
-protected:
-  static void _bind_methods() {};
-};
 
 class AIManager : public Node {
   GDCLASS(AIManager, Node);
@@ -37,8 +24,6 @@ protected:
   static void _bind_methods();
 
 public:
-  AIManager();
-
   void _init();
 
   void _idle(double delta);
@@ -63,11 +48,11 @@ public:
   void _physics_update(double delta);
 
 public:
-  const AIStateCtx& get_ai_state_ctx() { return m_AIStateCtxInst; }
+  // const AIStateCtx& get_ai_state_ctx() { return m_AIStateCtxInst; }
 
   void _on_query_finished(QueryResult3D* queryResult);
 
-  float get_to_player_dist() { return m_AIStateCtxInst.ToPlayerDistance; }
+  // float get_to_player_dist() { return m_AIStateCtxInst.ToPlayerDistance; }
 
 private:
 
@@ -89,5 +74,5 @@ private:
 
   Player* m_Target { nullptr };
 
-  AIStateCtx m_AIStateCtxInst;
+  // AIStateCtx m_AIStateCtxInst;
 };

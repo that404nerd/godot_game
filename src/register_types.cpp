@@ -39,8 +39,13 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_RUNTIME_CLASS(StateMachine);
   GDREGISTER_RUNTIME_CLASS(MovementStateMachine);
   GDREGISTER_RUNTIME_CLASS(WeaponStateMachine);
-  GDREGISTER_RUNTIME_CLASS(AIStateMachine);
-  GDREGISTER_CLASS(LimboTestState);
+  
+  GDREGISTER_CLASS(BaseAIState);
+  GDREGISTER_CLASS(AIIdleState);
+  GDREGISTER_CLASS(AIPatrolState);
+  GDREGISTER_CLASS(AIMoveState);
+  GDREGISTER_CLASS(AIChaseState);
+  LIMBO_REGISTER_TASK(AIPlayAnimFromTree);
 
   GDREGISTER_RUNTIME_CLASS(WeaponManager);
   GDREGISTER_RUNTIME_CLASS(MovementManager);

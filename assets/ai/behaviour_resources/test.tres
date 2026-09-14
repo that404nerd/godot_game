@@ -2,13 +2,19 @@
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_v5qog"]
 
-[sub_resource type="BTConsolePrint" id="BTConsolePrint_v5qog"]
-text = "Hello
-"
+[sub_resource type="BTAlwaysSucceed" id="BTAlwaysSucceed_8h88u"]
+
+[sub_resource type="AIPlayAnimFromTree" id="AIPlayAnimFromTree_v5qog"]
+anim_tree = Object(AnimationTree,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","active":true,"deterministic":true,"reset_on_save":true,"root_node":NodePath("../enemy_operative1"),"root_motion_track":NodePath(""),"root_motion_local":false,"audio_max_polyphony":32,"callback_mode_process":1,"callback_mode_method":0,"callback_mode_discrete":2,"tree_root":null,"advance_expression_base_node":NodePath("."),"anim_player":NodePath("../enemy_operative1/AnimationPlayer"),"parameters/LowerBodyTimeScale/scale":1.0,"parameters/UpperBodyBlend/blend_amount":1.0,"parameters/LowerBodyStateMachine/Crouch/blend_position":Vector2(1, 0.016286612),"parameters/LowerBodyStateMachine/Run/blend_position":Vector2(0.9830189, 0.009772062),"parameters/LowerBodyStateMachine/Walk/blend_position":Vector2(0.99245286, 0.02280128),"parameters/UpperBodyTimeScale/scale":1.0,"script":null)
+
 
 [sub_resource type="BTSequence" id="BTSequence_v5qog"]
-children = [SubResource("BTConsolePrint_v5qog")]
+custom_name = "Idle Sequence"
+children = [SubResource("BTAlwaysSucceed_8h88u"), SubResource("AIPlayAnimFromTree_v5qog")]
+
+[sub_resource type="BTSelector" id="BTSelector_k4aqv"]
+children = [SubResource("BTSequence_v5qog")]
 
 [resource]
 blackboard_plan = SubResource("BlackboardPlan_v5qog")
-root_task = SubResource("BTSequence_v5qog")
+root_task = SubResource("BTSelector_k4aqv")
