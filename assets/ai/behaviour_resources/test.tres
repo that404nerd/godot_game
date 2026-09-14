@@ -1,0 +1,14 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://css0ql3u1tia4"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_v5qog"]
+
+[sub_resource type="BTConsolePrint" id="BTConsolePrint_v5qog"]
+text = "Hello
+"
+
+[sub_resource type="BTSequence" id="BTSequence_v5qog"]
+children = [SubResource("BTConsolePrint_v5qog")]
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_v5qog")
+root_task = SubResource("BTSequence_v5qog")

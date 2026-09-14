@@ -16,7 +16,7 @@
 using namespace godot;
 
 enum class AIStates {
-  NONE = -1, IDLE, CHASE, PATROL, COMBAT
+  NONE = -1, IDLE, MOVE, CHASE, PATROL, COMBAT
 };
 
 enum class AICombatStates {

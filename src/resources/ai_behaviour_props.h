@@ -17,7 +17,7 @@ public:
 private:
   GD_DEFINE_PROPERTY(float, enemyDistToTriggerCombat, 10.0f);
   GD_DEFINE_PROPERTY(float, enemyDistToShoot, 5.0f);
-  GD_DEFINE_PROPERTY(float, enemyChaseDistFromPlayer, 5.0f);
+  GD_DEFINE_PROPERTY(float, enemyDistBetweenPlayer, 5.0f);
   GD_DEFINE_PROPERTY(float, playerDistToTriggerChase, 15.0f);
   GD_DEFINE_PROPERTY(float, enemyCombatNewPosQueryTime, 1.0f);
 };

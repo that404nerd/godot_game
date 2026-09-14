@@ -28,12 +28,18 @@ struct AIStateCtx
   Vector3 ToPlayerDirection = Vector3(0.0f, 0.0f, 0.0f);
   Vector3 AIDirection = Vector3(0.0f, 0.0f, 0.0f);
   Vector3 AIVelocity = Vector3(0.0f, 0.0f, 0.0f);
+  Vector3 AIMovePosition = Vector3(0.0f, 0.0f, 0.0f);
 
   float ToPlayerDistance = 0.0f;
 
+  bool MovePointAvailable = false;
+  bool TargetForShootReached = false;
   bool CanSeePlayer = false;
-  bool WantsToPatrol = false;
+
+  bool WantsToIdle = false;
+  bool WantsToShoot = false;
   bool WantsToChase = false;
+
   bool IsNavigationFinished = false;
 };
 
@@ -55,6 +61,18 @@ protected:
 class AIIdleState : public BaseAIState {
 public:
   AIIdleState(const AIStateData& aiStateData); 
+
+  void _enter() override;
+  void _handle_input(const Ref<InputEvent>& event) override;
+  void _update(double delta) override;
+  void _physics_update(double delta) override;
+
+  void _exit() override;
+};
+
+class AIMoveState : public BaseAIState {
+public:
+  AIMoveState(const AIStateData& aiStateData); 
 
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;

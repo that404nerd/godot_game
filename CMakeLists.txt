@@ -142,10 +142,11 @@ endif()
 
 set( GODOT_CPP_SYSTEM_HEADERS ON CACHE BOOL "" FORCE )
 set( GODOTCPP_API_VERSION 4.7 CACHE BOOL "" FORCE )
-set( GODOTCPP_USE_HOT_RELOAD ON CACHE BOOL "Enable hot reloading" )
 
 add_subdirectory( addons/godot-cpp )
 add_subdirectory( addons/magic_enum )
+add_subdirectory( addons/geqo )
+add_subdirectory( addons/limboai )
 
 set_target_properties( godot-cpp
 	PROPERTIES
@@ -156,4 +157,6 @@ target_link_libraries( ${PROJECT_NAME}
 	PRIVATE
 	godot-cpp
   magic_enum::magic_enum
+	geqo
+	limboai
 )

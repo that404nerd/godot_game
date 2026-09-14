@@ -7,58 +7,22 @@
 using namespace godot;
 
 static EventBus *s_EventBus = nullptr;
-static GEQODebug *_geqo_debug_singleton;
 
 void initialize_module(ModuleInitializationLevel p_level) {
 
+  initialize_limboai_module(p_level);
+  initialize_geqo_module(p_level);
+  
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-		return;
+    return;
 	}
-
-  ClassDB::register_class<EventBus>();
+  
+  GDREGISTER_CLASS(EventBus);
   s_EventBus = memnew(EventBus);
   Engine::get_singleton()->register_singleton("EventBus", EventBus::get_singleton());
 
   // the game runs, the checks are required prevents error spam (DO NOT CHANGE THE Game from GDREGISTER_RUNTIME_CLASS)
   GDREGISTER_RUNTIME_CLASS(Game); 
-
-  // Godot Environment Query System
-  ClassDB::register_abstract_class<GEQOEnums>();
-	ClassDB::register_class<GEQODebug>();
-	_geqo_debug_singleton = memnew(GEQODebug);
-	Engine::get_singleton()->register_singleton("GEQODebug", GEQODebug::get_singleton());
-	_geqo_debug_singleton->init();
-	ClassDB::register_class<GEQODebugSpheres3D>();
-
-	ClassDB::register_class<QueryItem3D>();
-	ClassDB::register_class<QueryResult3D>();
-	ClassDB::register_class<QueryInstance3D>();
-	ClassDB::register_class<EnvironmentQuery3D>();
-	ClassDB::register_class<QueryContext3D>();
-	ClassDB::register_class<QueryGenerator3D>();
-	ClassDB::register_class<QueryTest3D>();
-
-	// Generators
-	ClassDB::register_class<GeneratorGridShape3D>();
-	ClassDB::register_class<GeneratorCircleShape3D>();
-	ClassDB::register_class<GeneratorInGroup3D>();
-	ClassDB::register_class<GeneratorInArray3D>();
-	ClassDB::register_class<GeneratorComposite3D>();
-
-	// Contexts
-	ClassDB::register_class<ContextQuerier3D>();
-	ClassDB::register_class<ContextTargetNode3D>();
-	ClassDB::register_class<ContextTargetArray3D>();
-	ClassDB::register_class<ContextInGroup3D>();
-	ClassDB::register_class<ContextQueryItems3D>();
-
-	// Tests
-	ClassDB::register_class<TestDistanceTo3D>();
-
-	ClassDB::register_class<TestRaycastTo3D>();
-	ClassDB::register_class<TestDotProduct3D>();
-	ClassDB::register_class<TestPathFindTo3D>();
-	ClassDB::register_class<TestIntersectsArea3D>();
 
   /*
     CharacterComponent is registered first because Player inherits from CharacterComponent
@@ -76,6 +40,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_RUNTIME_CLASS(MovementStateMachine);
   GDREGISTER_RUNTIME_CLASS(WeaponStateMachine);
   GDREGISTER_RUNTIME_CLASS(AIStateMachine);
+  GDREGISTER_CLASS(LimboTestState);
 
   GDREGISTER_RUNTIME_CLASS(WeaponManager);
   GDREGISTER_RUNTIME_CLASS(MovementManager);
@@ -99,14 +64,14 @@ void initialize_module(ModuleInitializationLevel p_level) {
 
 
 void uninitialize_module(ModuleInitializationLevel p_level) {
+  uninitialize_limboai_module(p_level);
+  uninitialize_geqo_module(p_level);
+
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
 
   Engine::get_singleton()->unregister_singleton("EventBus");
-  Engine::get_singleton()->unregister_singleton("GEQODebug");
-
-	memdelete(_geqo_debug_singleton);
   memdelete(s_EventBus);
 }
 
@@ -122,6 +87,7 @@ extern "C" {
 
       init_obj.register_initializer(initialize_module);
       init_obj.register_terminator(uninitialize_module);
+
       init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
 
       return init_obj.init();

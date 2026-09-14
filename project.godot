@@ -143,8 +143,8 @@ request_query={
 
 [limbo_ai]
 
-behavior_tree/behavior_tree_default_dir="res://assets/ai/trees"
-behavior_tree/user_task_dirs=PackedStringArray("res://assets/ai/trees")
+behavior_tree/behavior_tree_default_dir="res://assets/ai/behaviour_resources"
+behavior_tree/user_task_dirs=PackedStringArray("res://assets/ai/behaviour_resources")
 
 [physics]
 

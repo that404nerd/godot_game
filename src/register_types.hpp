@@ -3,6 +3,9 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/engine.hpp>
 
+#include "limbo_register_types.h"
+#include "geqo_register_types.h"
+
 #include "game.h"
 #include "camera/camera_controller.h"
 #include "player.h"
@@ -33,39 +36,6 @@
 #include "components/muzzle_flash_component.h"
 #include "components/weapon_wrapper.h"
 #include "components/ai/vision_component.h"
-
-// Godot Environment Query System Headers
-#include "geqo/query_enums.h"
-#include "geqo/query_instance.h"
-#include "geqo/query_item.h"
-#include "geqo/contexts/query_context3d.h"
-#include "geqo/generators/query_generator3d.h"
-#include "geqo/query_result.h"
-#include "geqo/tests/query_test3d.h"
-#include "geqo/debug/geqo_debug.h"
-#include "geqo/debug/geqo_debug_spheres3d.h"
-#include "geqo/environment_query3d.h"
-
-// Contexts
-#include "geqo/contexts/context_querier3d.h"
-#include "geqo/contexts/context_in_group3d.h"
-#include "geqo/contexts/context_target_array3d.h"
-#include "geqo/contexts/context_target_node3d.h"
-#include "geqo/contexts/context_query_items3d.h"
-
-// Generators
-#include "geqo/generators/generator_circle_shape3d.h"
-#include "geqo/generators/generator_grid_shape3d.h"
-#include "geqo/generators/generator_in_array3d.h"
-#include "geqo/generators/generator_in_group3d.h"
-#include "geqo/generators/generator_composite3d.h"
-
-// Tests
-#include "geqo/tests/test_distance_to3d.h"
-#include "geqo/tests/test_dot_product3d.h"
-#include "geqo/tests/test_raycast_to3d.h"
-#include "geqo/tests/test_path_find_to3d.h"
-#include "geqo/tests/test_intersects_area3d.h"
 
 using namespace godot;
 

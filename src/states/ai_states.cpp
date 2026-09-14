@@ -20,7 +20,7 @@ AIIdleState::AIIdleState(const AIStateData& aiStateData)
 void AIIdleState::_enter()
 {
   m_InputCmdSystem->set_wants_to_idle(true);
-  print_line("Going idle! Player not visible!");
+  print_line("Going idle!");
 }
 
 void AIIdleState::_handle_input(const Ref<InputEvent>& event)
@@ -32,9 +32,17 @@ void AIIdleState::_update(double delta)
 {
   m_AIManagerInst->_idle(delta);  
 
-  if(m_AIStateCtxInst.CanSeePlayer)
+  float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
+
+  if((m_AIStateCtxInst.CanSeePlayer && !m_AIStateCtxInst.WantsToShoot) || 
+     (m_AIStateCtxInst.WantsToShoot && toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase()))
   {
     m_AIStateMachine->_change_state(static_cast<int>(AIStates::CHASE));
+  }
+  
+  if(m_AIStateCtxInst.MovePointAvailable && m_AIStateCtxInst.WantsToShoot)
+  {
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::MOVE));
   }
 }
 
@@ -47,6 +55,52 @@ void AIIdleState::_physics_update(double delta)
 void AIIdleState::_exit()
 {
   m_InputCmdSystem->set_wants_to_idle(false);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Move AI State //////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+AIMoveState::AIMoveState(const AIStateData& aiStateData)
+  : BaseAIState(AIStates::MOVE, aiStateData)
+{
+
+}
+
+void AIMoveState::_enter()
+{
+  m_InputCmdSystem->set_wants_to_walk(true);
+  print_line("Gonna move!");
+}
+
+void AIMoveState::_handle_input(const Ref<InputEvent>& event)
+{
+  
+}
+
+void AIMoveState::_update(double delta)
+{
+  m_AIManagerInst->_move(delta);  
+
+  // if(!m_AIStateCtxInst.CanSeePlayer)
+  // {
+  //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::PATROL));
+  // }
+
+  // if(m_AIStateCtxInst.TargetForShootReached)
+  // {
+  //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
+  // }
+}
+
+void AIMoveState::_physics_update(double delta)
+{
+
+}
+
+void AIMoveState::_exit()
+{
+  m_InputCmdSystem->set_wants_to_walk(false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,16 +128,14 @@ void AIChaseState::_update(double delta)
 {
   m_AIManagerInst->_chase(delta);  
 
-  float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
-
-  if(toPlayerDist <= m_AIBehaviourProps->get_enemyDistToTriggerCombat() && m_AIStateCtxInst.CanSeePlayer)
-  {
-    m_AIStateMachine->_change_state(static_cast<int>(AIStates::COMBAT));
-  }
-
   if(!m_AIStateCtxInst.CanSeePlayer)
   {
     m_AIStateMachine->_change_state(static_cast<int>(AIStates::PATROL));
+  }
+
+  if(m_AIStateCtxInst.TargetForShootReached)
+  {
+    m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
   }
 }
 

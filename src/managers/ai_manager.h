@@ -12,9 +12,23 @@
 #include "../components/ai/lookat_player_component.h"
 #include "../components/ai/vision_component.h"
 
-#include "../geqo/environment_query3d.h"
+#include "environment_query3d.h"
+#include "hsm/limbo_state.h"
 
 using namespace godot;
+
+class LimboTestState : public LimboState {
+  GDCLASS(LimboTestState, LimboState);
+public:
+  void _enter() override
+  {
+    print_line("Hello!");
+    LimboState::_enter();
+  }
+
+protected:
+  static void _bind_methods() {};
+};
 
 class AIManager : public Node {
   GDCLASS(AIManager, Node);
@@ -28,6 +42,7 @@ public:
   void _init();
 
   void _idle(double delta);
+  void _move(double delta);
   void _chase(double delta);
 
   void _patrol_enter();
@@ -37,7 +52,10 @@ public:
 
   void _patrol(double delta);
 
-  void _shoot(double delta);
+  void _target_reached();
+
+  void _activate_shoot_state(double delta);
+  void _deactivate_shoot_state(double delta);
 
   void _rotate_character(double delta);
 
