@@ -3,6 +3,7 @@
 #include <godot_cpp/godot.hpp>
 
 #include "hsm/limbo_hsm.h"
+#include "bt/bt_player.h"
 
 #include "../../resources/ai_behaviour_props.h"
 #include "../character_component.h"
@@ -27,6 +28,7 @@ private:
   GD_DEFINE_PROPERTY(AIManager*, ai_manager, nullptr);
   GD_DEFINE_PROPERTY(LimboHSM*, ai_state_machine, nullptr);
   GD_DEFINE_PROPERTY(LimboState*, initial_state, nullptr);
+  GD_DEFINE_PROPERTY(BTPlayer*, bt_player_inst, nullptr);
   GD_DEFINE_PROPERTY(Ref<AIBehaviourProps>, ai_behaviour_props, nullptr);
 
   GD_DEFINE_PROPERTY(float, vision_trigger_dist, 30.0f);

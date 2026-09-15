@@ -45,7 +45,6 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_CLASS(AIPatrolState);
   GDREGISTER_CLASS(AIMoveState);
   GDREGISTER_CLASS(AIChaseState);
-  LIMBO_REGISTER_TASK(AIPlayAnimFromTree);
 
   GDREGISTER_RUNTIME_CLASS(WeaponManager);
   GDREGISTER_RUNTIME_CLASS(MovementManager);

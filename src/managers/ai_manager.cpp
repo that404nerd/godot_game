@@ -6,9 +6,8 @@ void AIManager::_init()
   m_LowerBodyStateMachine = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/LowerBodyStateMachine/playback"));
   m_UpperBodyStateMachine = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/UpperBodyStateMachine/playback"));
 
-
-
   m_AIBehaviourProps = ai_character_component->get_ai_behaviour_props();
+  m_BlackboardPlan = ai_character_component->get_bt_player_inst()->get_blackboard_plan();
 
   m_Target = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
   env_query3d->connect("query_finished", Callable(this, "_on_query_finished"));
@@ -61,21 +60,18 @@ void AIManager::_update(double delta)
   if(lookat_player_component)
     lookat_player_component->_update(delta);
 
-  // m_AIStateCtxInst.AIVelocity = ai_character_component->get_velocity();
-  // m_AIStateCtxInst.ToPlayerDistance = (m_Target->get_global_position() - ai_character_component->get_global_position()).length();
-  // m_AIStateCtxInst.NextNavigationPoint = nav_agent_3d->get_next_path_position();
+  m_BlackboardPlan->set("AIVelocity", ai_character_component->get_velocity());
+  m_BlackboardPlan->set("ToPlayerDistance", (m_Target->get_global_position() - ai_character_component->get_global_position()).length());
+  m_BlackboardPlan->set("NextNavigationPoint", nav_agent_3d->get_next_path_position());
 
-  // m_AIStateCtxInst.ToPlayerDirection = m_Target->get_global_position() - ai_character_component->get_global_position();
-  // m_AIStateCtxInst.AIDirection = (m_AIStateCtxInst.NextNavigationPoint - ai_character_component->get_global_position()).normalized();
+  m_BlackboardPlan->set("ToPlayerDirection", m_Target->get_global_position() - ai_character_component->get_global_position());
+  m_BlackboardPlan->set("AIDirection", (nav_agent_3d->get_next_path_position() - ai_character_component->get_global_position()).normalized());
 
-  // if(ai_vision_component)
-  //   m_AIStateCtxInst.CanSeePlayer = ai_vision_component->can_see_player();
+  if(ai_vision_component)
+    m_BlackboardPlan->set("CanSeePlayer", ai_vision_component->can_see_player());
 
-
-  // ai_character_component->set_wish_dir(m_AIStateCtxInst.AIDirection);
+  ai_character_component->set_wish_dir(m_BlackboardPlan->get_var("AIDirection").get_value());
   nav_agent_3d->set_velocity(ai_character_component->get_velocity());
-
-  
 }
 
 void AIManager::_physics_update(double delta)
@@ -86,7 +82,8 @@ void AIManager::_physics_update(double delta)
 
 void AIManager::_rotate_character(double delta)
 {
-  // if(m_AIStateCtxInst.ToPlayerDirection.length() > 0.01f)
+  Vector3 direction = m_BlackboardPlan->get_var("ToPlayerDirection").get_value();
+  if(direction.length() > 0.01f)
   {
     Vector3 enemyForward = (ai_character_component->get_basis().get_column(2)).normalized();
     Vector3 toTarget = (m_Target->get_global_position() - ai_character_component->get_global_position()).normalized();
@@ -107,18 +104,16 @@ void AIManager::_rotate_character(double delta)
 
 void AIManager::_idle(double delta)
 {
-  // float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
-
   lookat_player_component->set_look_status(false);
+  m_BlackboardPlan->set("IsNavigationFinished", true);
 
-  // m_AIStateCtxInst.IsNavigationFinished = false;
-  // m_LowerBodyStateMachine->travel("Idle");
-
+  m_LowerBodyStateMachine->travel("Idle");
+  _rotate_character(delta);
+  
   // if(m_AIStateCtxInst.WantsToShoot)
   // {
-  //   _rotate_character(delta);
-  //   lookat_player_component->set_look_status(false);
-  //   _activate_shoot_state(delta);
+    //   lookat_player_component->set_look_status(false);
+    //   _activate_shoot_state(delta);
   // } else if(toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase())
   // {
   //   m_AIStateCtxInst.TargetForShootReached = false;

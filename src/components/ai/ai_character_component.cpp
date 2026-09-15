@@ -19,6 +19,7 @@ void AICharacterComponent::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AICharacterComponent, AIBehaviourProps, ai_behaviour_props, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AICharacterComponent, LimboHSM, ai_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AICharacterComponent, LimboState, initial_state, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AICharacterComponent, BTPlayer, bt_player_inst, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
 }
 

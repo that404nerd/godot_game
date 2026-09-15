@@ -1,0 +1,20 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://css0ql3u1tia4"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_v5qog"]
+
+[sub_resource type="BTConsolePrint" id="BTConsolePrint_xe5j1"]
+text = "Test"
+
+[sub_resource type="BTAlwaysSucceed" id="BTAlwaysSucceed_8h88u"]
+children = [SubResource("BTConsolePrint_xe5j1")]
+
+[sub_resource type="BTSequence" id="BTSequence_v5qog"]
+custom_name = "Idle Sequence"
+children = [SubResource("BTAlwaysSucceed_8h88u")]
+
+[sub_resource type="BTSelector" id="BTSelector_k4aqv"]
+children = [SubResource("BTSequence_v5qog")]
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_v5qog")
+root_task = SubResource("BTSelector_k4aqv")

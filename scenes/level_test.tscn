@@ -3,30 +3,29 @@
 [ext_resource type="Shader" uid="uid://ck1w2pkpwin11" path="res://addons/skydome/filmic_procedural_sky.gdshader" id="1_r2no1"]
 [ext_resource type="Script" uid="uid://blkilnimp0sck" path="res://addons/skydome/Skydome.gd" id="2_7dxvt"]
 [ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="2_qsrgx"]
-[ext_resource type="Resource" uid="uid://bmr8r3dexg0iq" path="res://trenchbroom/fpsproject_map_settings.tres" id="3_2h6oo"]
 [ext_resource type="PackedScene" uid="uid://2c0bf6m5ugct" path="res://scenes/player.tscn" id="4_vkcgd"]
 [ext_resource type="Texture2D" uid="uid://d3u4ab5fyivaq" path="res://assets/textures/grid.jpg" id="5_r2no1"]
 [ext_resource type="PackedScene" uid="uid://8vkq041s8uuh" path="res://scenes/enemies/enemy_swat_operator1.tscn" id="5_yvmk3"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_r2no1"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gvy72"]
 seed = 10
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7dxvt"]
-noise = SubResource("FastNoiseLite_r2no1")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_743fr"]
+noise = SubResource("FastNoiseLite_gvy72")
 seamless = true
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_6g5uf"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dych1"]
 seed = 100
 frequency = 0.008
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vogc1"]
-noise = SubResource("FastNoiseLite_6g5uf")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wp3iw"]
+noise = SubResource("FastNoiseLite_dych1")
 seamless = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tdoqa"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_41cy1"]
 shader = ExtResource("1_r2no1")
-shader_parameter/cloud_tex_a = SubResource("NoiseTexture2D_7dxvt")
-shader_parameter/cloud_tex_b = SubResource("NoiseTexture2D_vogc1")
+shader_parameter/cloud_tex_a = SubResource("NoiseTexture2D_743fr")
+shader_parameter/cloud_tex_b = SubResource("NoiseTexture2D_wp3iw")
 shader_parameter/lower_sky_color = Color(0.655, 0.706, 0.79, 1)
 shader_parameter/horizon_color = Color(0.832, 0.86, 0.886, 1)
 shader_parameter/zenith_color = Color(0.2373352, 0.4190016, 0.7890625, 1)
@@ -106,12 +105,12 @@ shader_parameter/cloud_evolution_time = 0.0
 shader_parameter/cloud_evolution_strength = 0.18
 shader_parameter/cloud_evolution_scale = 0.018
 
-[sub_resource type="Sky" id="Sky_ddr63"]
-sky_material = SubResource("ShaderMaterial_tdoqa")
+[sub_resource type="Sky" id="Sky_qe52d"]
+sky_material = SubResource("ShaderMaterial_41cy1")
 
 [sub_resource type="Environment" id="Environment_vkcgd"]
 background_mode = 2
-sky = SubResource("Sky_ddr63")
+sky = SubResource("Sky_qe52d")
 ambient_light_source = 3
 reflected_light_source = 2
 tonemap_mode = 4
@@ -327,7 +326,6 @@ navigation_mesh = SubResource("NavigationMesh_b0qfj")
 [node name="FuncGodotMap" type="Node3D" parent="NavigationRegion3D" unique_id=1203353924]
 script = ExtResource("2_qsrgx")
 local_map_file = "uid://cn5wqrskkp4mj"
-map_settings = ExtResource("3_2h6oo")
 metadata/_custom_type_script = "uid://cwu5cf7a0awcd"
 
 [node name="entity_0_worldspawn" type="StaticBody3D" parent="NavigationRegion3D/FuncGodotMap" unique_id=320590965]

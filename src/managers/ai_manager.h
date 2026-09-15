@@ -48,11 +48,7 @@ public:
   void _physics_update(double delta);
 
 public:
-  // const AIStateCtx& get_ai_state_ctx() { return m_AIStateCtxInst; }
-
   void _on_query_finished(QueryResult3D* queryResult);
-
-  // float get_to_player_dist() { return m_AIStateCtxInst.ToPlayerDistance; }
 
 private:
 
@@ -67,12 +63,11 @@ private:
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
 
   Ref<AIBehaviourProps> m_AIBehaviourProps { nullptr };
+  Ref<BlackboardPlan> m_BlackboardPlan { nullptr };
 
 private:
   AnimationNodeStateMachinePlayback *m_LowerBodyStateMachine { nullptr };
   AnimationNodeStateMachinePlayback *m_UpperBodyStateMachine { nullptr };
 
   Player* m_Target { nullptr };
-
-  // AIStateCtx m_AIStateCtxInst;
 };
