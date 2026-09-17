@@ -42,9 +42,11 @@ void initialize_module(ModuleInitializationLevel p_level) {
   
   GDREGISTER_CLASS(BaseAIState);
   GDREGISTER_CLASS(AIIdleState);
-  GDREGISTER_CLASS(AIPatrolState);
-  GDREGISTER_CLASS(AIMoveState);
-  GDREGISTER_CLASS(AIChaseState);
+  GDREGISTER_CLASS(AIAlertState);
+  GDREGISTER_CLASS(AICombatState);
+  GDREGISTER_CLASS(AIDeadState);
+
+  LIMBO_REGISTER_TASK(BTMoveToTarget);
 
   GDREGISTER_RUNTIME_CLASS(WeaponManager);
   GDREGISTER_RUNTIME_CLASS(MovementManager);

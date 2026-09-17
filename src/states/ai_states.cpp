@@ -3,18 +3,17 @@
 
 void BaseAIState::_setup()
 {
-  ERR_FAIL_COND_MSG(get_parent()->get_class() != StringName("LimboHSM"), "Parent node must be of type LimboHSM");
+  // ERR_FAIL_COND_MSG(get_parent()->get_class() != StringName("LimboHSM"), "Parent node must be of type LimboHSM");
   m_AIManager = get_node<AIManager>(ai_manager_node_path);
 
   if(m_AIManager)
   {
-    print_line("Initialized");
     m_AICharacterComp = m_AIManager->get_ai_character_component();
     m_InputCmdSystem = m_AIManager->get_input_cmd_system();
     m_AIHsm = m_AICharacterComp->get_ai_state_machine();
     m_AIBehaviourProps = m_AICharacterComp->get_ai_behaviour_props();
     m_BTPlayerInst = m_AICharacterComp->get_bt_player_inst();
-    m_BlackboardPlan = m_BTPlayerInst->get_blackboard_plan();
+    m_Blackboard = m_BTPlayerInst->get_blackboard();
   }
 }
 
@@ -40,7 +39,6 @@ void BaseAIState::_bind_methods()
 
 void AIIdleState::_enter()
 {
-  m_InputCmdSystem->set_wants_to_idle(true);
   m_BTPlayerInst->set_behavior_tree(get_bt_resource());
   m_BTPlayerInst->set_active(true);
   print_line("Going idle!");
@@ -48,66 +46,61 @@ void AIIdleState::_enter()
 
 void AIIdleState::_update(double delta)
 {
-  m_AIManager->_idle(delta);  
+  float toPlayerDist = m_Blackboard->get_var("ToPlayerDistance");
+  bool canSeePlayer = m_Blackboard->get_var("CanSeePlayer");
 
-  float toPlayerDist = m_BlackboardPlan->get_var("ToPlayerDistance").get_value();
-  bool canSeePlayer = m_BlackboardPlan->get_var("CanSeePlayer").get_value();
-  // bool wantsToShoot = m_BlackboardPlan->get_var("WantsToShoot").get_value();
-
-  if(canSeePlayer && toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase())
-  {
-    m_AIHsm->change_active_state(get_state("Chase"));
-  }
-  
-  // if(m_AIStateCtxInst.MovePointAvailable && m_AIStateCtxInst.WantsToShoot)
+  // if(canSeePlayer && toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase())
   // {
-  //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::MOVE));
+  //   m_AIHsm->change_active_state(get_state("Combat"));
   // }
 }
 
 
 void AIIdleState::_exit()
 {
-  m_InputCmdSystem->set_wants_to_idle(false);
+  m_BTPlayerInst->set_active(false);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Alert AI State /////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+void AIAlertState::_enter()
+{
+  m_BTPlayerInst->set_behavior_tree(get_bt_resource());
   m_BTPlayerInst->set_active(true);
+  print_line("Going idle!");
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////// Move AI State //////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-void AIMoveState::_enter()
+void AIAlertState::_update(double delta)
 {
-  // get_input_cmd_system()->set_wants_to_walk(true);
-  print_line("Gonna move!");
+  float toPlayerDist = m_Blackboard->get_var("ToPlayerDistance");
+  bool canSeePlayer = m_Blackboard->get_var("CanSeePlayer");
+
+  // if(canSeePlayer && toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase())
+  // {
+  //   m_AIHsm->change_active_state(get_state("Combat"));
+  // }
 }
 
-void AIMoveState::_update(double delta)
-{
-  // get_ai_manager()->_move(delta);  
 
-}
-
-void AIMoveState::_exit()
+void AIAlertState::_exit()
 {
-  // get_input_cmd_system()->set_wants_to_walk(false);
+  m_BTPlayerInst->set_active(false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// Chase AI State //////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-void AIChaseState::_enter()
+void AICombatState::_enter()
 {
-  // get_input_cmd_system()->set_wants_to_sprint(true);
-  print_line("Gonna chase!");
+  m_BTPlayerInst->set_behavior_tree(get_bt_resource());
+  m_BTPlayerInst->set_active(true);
 }
 
-
-void AIChaseState::_update(double delta)
+void AICombatState::_update(double delta)
 {
-  // get_ai_manager()->_chase(delta);  
-
   // if(!m_AIStateCtxInst.CanSeePlayer)
   // {
   //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::PATROL));
@@ -119,26 +112,26 @@ void AIChaseState::_update(double delta)
   // }
 }
 
-void AIChaseState::_exit()
+void AICombatState::_exit()
 {
-  // get_input_cmd_system()->set_wants_to_sprint(false);
+  m_BTPlayerInst->set_active(false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////// Patrol AI State //////////////////////////////////////////////////
+///////////////////////////////// Dead AI State //////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-void AIPatrolState::_enter()
+void AIDeadState::_enter()
 {
   // m_InputCmdSystem->set_wants_to_walk(true);
-  // m_AIManagerInst->_patrol_enter();
+  // m_AIManager->_patrol_enter();
 
   print_line("Patrolling!");
 }
 
-void AIPatrolState::_update(double delta)
+void AIDeadState::_update(double delta)
 {
-  // m_AIManagerInst->_patrol(delta);  
+  // m_AIManager->_patrol(delta);  
 
   // if(m_AIStateCtxInst.CanSeePlayer)
   // {
@@ -151,7 +144,7 @@ void AIPatrolState::_update(double delta)
   // }
 }
 
-void AIPatrolState::_exit()
+void AIDeadState::_exit()
 {
   // m_InputCmdSystem->set_wants_to_walk(false);
 }

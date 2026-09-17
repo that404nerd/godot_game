@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/animation_node_state_machine_playback.hpp>
 #include <godot_cpp/classes/animation_tree.hpp>
 
+#include "blackboard/blackboard.h"
 #include "hsm/limbo_hsm.h"
 
 #include "../components/ai/ai_character_component.h"
@@ -28,7 +29,7 @@ public:
 
   void _idle(double delta);
   void _move(double delta);
-  void _chase(double delta);
+  BT::Status _chase(double delta);
 
   void _patrol_enter();
 
@@ -63,7 +64,7 @@ private:
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
 
   Ref<AIBehaviourProps> m_AIBehaviourProps { nullptr };
-  Ref<BlackboardPlan> m_BlackboardPlan { nullptr };
+  Ref<Blackboard> m_BlackboardInst { nullptr };
 
 private:
   AnimationNodeStateMachinePlayback *m_LowerBodyStateMachine { nullptr };

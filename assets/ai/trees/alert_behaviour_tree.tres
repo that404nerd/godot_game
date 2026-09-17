@@ -1,0 +1,85 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://bjf3u3qvvltyk"]
+
+[ext_resource type="BlackboardPlan" uid="uid://do2gs88brsu8" path="res://assets/ai/behaviour_resources/swat_op_type1_blackboard_plan.tres" id="1_jmrnx"]
+
+[sub_resource type="BBVariant" id="BBVariant_03ib8"]
+type = 3
+saved_value = 10.0
+resource_name = "10.0"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_60305"]
+variable = &"ToPlayerDistance"
+check_type = 4
+value = SubResource("BBVariant_03ib8")
+custom_name = "Check Distance To Stop Shooting"
+
+[sub_resource type="BBNode" id="BBNode_60305"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_03ib8"]
+node = SubResource("BBNode_60305")
+method = &"_deactivate_shoot_state"
+args_include_delta = true
+
+[sub_resource type="BBNode" id="BBNode_duivc"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_60305"]
+node = SubResource("BBNode_duivc")
+method = &"_chase"
+args_include_delta = true
+
+[sub_resource type="BTSequence" id="BTSequence_duivc"]
+custom_name = "Chase Sequence"
+children = [SubResource("BTCheckVar_60305"), SubResource("BTCallMethod_03ib8"), SubResource("BTCallMethod_60305")]
+
+[sub_resource type="BBVariant" id="BBVariant_60305"]
+type = 3
+saved_value = 10.0
+resource_name = "10.0"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_03ib8"]
+variable = &"ToPlayerDistance"
+check_type = 2
+value = SubResource("BBVariant_60305")
+custom_name = "Check Distance To Start Shooting"
+
+[sub_resource type="BBNode" id="BBNode_xvut4"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_26h7i"]
+node = SubResource("BBNode_xvut4")
+method = &"_activate_shoot_state"
+args_include_delta = true
+
+[sub_resource type="BBNode" id="BBNode_03ib8"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_xvut4"]
+node = SubResource("BBNode_03ib8")
+method = &"_idle"
+args_include_delta = true
+
+[sub_resource type="BBNode" id="BBNode_26h7i"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_yv0i4"]
+node = SubResource("BBNode_26h7i")
+method = &"_rotate_character"
+args_include_delta = true
+
+[sub_resource type="BTSequence" id="BTSequence_yv0i4"]
+custom_name = "Shooting Sequence"
+children = [SubResource("BTCheckVar_03ib8"), SubResource("BTCallMethod_26h7i"), SubResource("BTCallMethod_xvut4"), SubResource("BTCallMethod_yv0i4")]
+
+[sub_resource type="BTSelector" id="BTSelector_60305"]
+children = [SubResource("BTSequence_duivc"), SubResource("BTSequence_yv0i4")]
+
+[resource]
+blackboard_plan = ExtResource("1_jmrnx")
+root_task = SubResource("BTSelector_60305")

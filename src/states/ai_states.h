@@ -40,7 +40,7 @@ protected:
   BTPlayer* m_BTPlayerInst { nullptr };
   LimboHSM* m_AIHsm { nullptr };
   Ref<AIBehaviourProps> m_AIBehaviourProps { nullptr };
-  Ref<BlackboardPlan> m_BlackboardPlan { nullptr };
+  Ref<Blackboard> m_Blackboard { nullptr };
 
 private:
   GD_DEFINE_PROPERTY(NodePath, ai_manager_node_path, NodePath());
@@ -57,11 +57,21 @@ public:
   void _exit() override;
 protected:
   static void _bind_methods() {};
-
 };
 
-class AIMoveState : public BaseAIState {
-  GDCLASS(AIMoveState, BaseAIState);
+class AIAlertState : public BaseAIState {
+  GDCLASS(AIAlertState, BaseAIState);
+public:
+  void _enter() override;
+  void _update(double delta) override;
+
+  void _exit() override;
+protected:
+  static void _bind_methods() {};
+};
+
+class AICombatState : public BaseAIState {
+  GDCLASS(AICombatState, BaseAIState);
 public:
   void _enter() override;
   void _update(double delta) override;
@@ -70,23 +80,10 @@ public:
 protected:
   static void _bind_methods() {};
 
-
 };
 
-class AIChaseState : public BaseAIState {
-  GDCLASS(AIChaseState, BaseAIState);
-public:
-  void _enter() override;
-  void _update(double delta) override;
-
-  void _exit() override;
-protected:
-  static void _bind_methods() {};
-
-};
-
-class AIPatrolState : public BaseAIState {
-  GDCLASS(AIPatrolState, BaseAIState);
+class AIDeadState : public BaseAIState {
+  GDCLASS(AIDeadState, BaseAIState);
 public:
   void _enter() override;
   void _update(double delta) override;

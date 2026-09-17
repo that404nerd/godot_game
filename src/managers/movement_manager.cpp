@@ -119,8 +119,8 @@ void MovementManager::_walk(double delta)
   //   m_MovementStateCtx.DashCooldown = character_component->get_dash_cooldown();
   // }
 
-  characterVel.x = Math::move_toward(characterVel.x, character_component->get_walk_speed() * character_component->get_wish_dir().x, character_component->get_ground_decel() * (float)delta);
-  characterVel.z = Math::move_toward(characterVel.z, character_component->get_walk_speed() * character_component->get_wish_dir().z, character_component->get_ground_decel() * (float)delta);
+  characterVel.x = Math::move_toward(characterVel.x, character_component->get_walk_speed() * character_component->get_wish_dir().x, character_component->get_ground_accel() * (float)delta);
+  characterVel.z = Math::move_toward(characterVel.z, character_component->get_walk_speed() * character_component->get_wish_dir().z, character_component->get_ground_accel() * (float)delta);
 
   character_component->set_velocity(characterVel);
 }
@@ -141,8 +141,8 @@ void MovementManager::_sprint(double delta)
   //   m_MovementStateCtx.DashCooldown = character_component->get_dash_cooldown();
   // }
 
-  characterVel.x = Math::move_toward(characterVel.x, character_component->get_sprint_speed() * character_component->get_wish_dir().x, character_component->get_ground_decel() * (float)delta);
-  characterVel.z = Math::move_toward(characterVel.z, character_component->get_sprint_speed() * character_component->get_wish_dir().z, character_component->get_ground_decel() * (float)delta);
+  characterVel.x = Math::move_toward(characterVel.x, character_component->get_sprint_speed() * character_component->get_wish_dir().x, character_component->get_ground_accel() * (float)delta);
+  characterVel.z = Math::move_toward(characterVel.z, character_component->get_sprint_speed() * character_component->get_wish_dir().z, character_component->get_ground_accel() * (float)delta);
 
   character_component->set_velocity(characterVel);
 }

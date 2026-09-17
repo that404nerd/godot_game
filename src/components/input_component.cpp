@@ -2,11 +2,6 @@
 
 InputComponent::InputComponent()
 {
-
-}
-
-void InputComponent::_init()
-{
   set_physics_process(false);
   set_process(false);
   print_line("Input Command System Initialized");
@@ -23,12 +18,12 @@ void InputComponent::_input(const Ref<InputEvent>& event)
 
   set_input_dir(Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized());
 
-  if(Input::get_singleton()->is_action_just_pressed("jump"))  set_wants_to_jump(true);
-  if(Input::get_singleton()->is_action_just_pressed("crouch")) set_wants_to_crouch(true);
+  if(Input::get_singleton()->is_action_just_pressed("jump"))  command(InputCommands::JUMP);
+  if(Input::get_singleton()->is_action_just_pressed("crouch")) command(InputCommands::CROUCH);
 
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) set_wants_to_shoot_weapon(true);
-  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) set_wants_to_release_shoot(true);
-  if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) set_wants_to_reload_weapon(true);
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) command(InputCommands::SHOOT);
+  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) command(InputCommands::RELEASE_SHOOT);
+  if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) command(InputCommands::RELOAD);
 
   if(event->is_class("InputEventMouseMotion")) {
     float swayIntensity = 0.005f; 
@@ -44,7 +39,7 @@ void InputComponent::_input(const Ref<InputEvent>& event)
     if(Input::get_singleton()->is_action_just_pressed(inputAction))
     {
       set_weapon_idx(i);
-      set_wants_to_switch_weapon(true);
+      command(InputCommands::SWITCH_WEAPON);
     }
   }
 }
@@ -53,14 +48,12 @@ void InputComponent::_update(double delta)
 {
   if(get_input_dir() != Vector2(0.0f, 0.0f) || get_character_wish_dir() != Vector3(0.0f, 0.0f, 0.0f))
   {
-    set_wants_to_sprint(true);
-    set_wants_to_idle(false);
+    command(InputCommands::SPRINT);
   }
 
   if(get_input_dir() == Vector2(0.0f, 0.0f) && get_character_wish_dir() == Vector3(0.0f, 0.0f, 0.0f))
   {
-    set_wants_to_sprint(false);
-    set_wants_to_idle(true);
+    command(InputCommands::IDLE);
   }
 
   if(Input::get_singleton()->is_action_pressed("shoot_weapon"))
@@ -68,16 +61,9 @@ void InputComponent::_update(double delta)
     m_HoldCounter += delta;
     if(m_HoldCounter >= get_max_hold_time())
     {
-      set_wants_to_hold_shoot(true);
+      command(InputCommands::HOLD_SHOOT);
     }
   }
 
-  if(wants_to_release_shoot()) set_wants_to_hold_shoot(false);
-
-  set_wants_to_shoot_weapon(false);
-  set_wants_to_release_shoot(false);
-  set_wants_to_switch_weapon(false);
-  set_wants_to_reload_weapon(false);
-  set_wants_to_jump(false);
-  set_wants_to_crouch(false);
+  if(wants_to_release_shoot()) command(InputCommands::HOLD_SHOOT, false);
 }

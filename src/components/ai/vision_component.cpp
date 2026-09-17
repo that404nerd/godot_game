@@ -116,6 +116,9 @@ void VisionComponent::_physics_update(double delta)
       }
     }
   }
+
+  if(m_RememberTime <= 0.0f)
+    m_CanSeePlayer = false;
   
   // print_line("Vision Status: ", m_CanSeePlayer, ", Remember Time: ", m_RememberTime, " Max Remember Time: ", max_remember_time);
 }

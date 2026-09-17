@@ -30,6 +30,7 @@
 #include "components/ai/vision_component.h"
 #include "components/ai/detection_area_component.h"
 #include "components/ai/ai_character_component.h"
+#include "components/ai/move_to_target.h"
 
 #include "components/weapon_effects_components.h"
 #include "components/input_component.h"

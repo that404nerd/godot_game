@@ -1,0 +1,43 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://css0ql3u1tia4"]
+
+[ext_resource type="BlackboardPlan" uid="uid://do2gs88brsu8" path="res://assets/ai/behaviour_resources/swat_op_type1_blackboard_plan.tres" id="1_2ln5x"]
+
+[sub_resource type="BBNode" id="BBNode_xe5j1"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_j1j00"]
+node = SubResource("BBNode_xe5j1")
+method = &"_idle"
+args_include_delta = true
+
+[sub_resource type="BTWait" id="BTWait_2ln5x"]
+duration = 3.0
+
+[sub_resource type="BTInvert" id="BTInvert_2ln5x"]
+children = [SubResource("BTWait_2ln5x")]
+
+[sub_resource type="BTSequence" id="BTSequence_v5qog"]
+custom_name = "Idle Sequence"
+children = [SubResource("BTCallMethod_j1j00"), SubResource("BTInvert_2ln5x")]
+
+[sub_resource type="BTMoveToTarget" id="BTMoveToTarget_2ln5x"]
+
+[sub_resource type="BTWait" id="BTWait_246lk"]
+duration = 4.0
+
+[sub_resource type="BTInvert" id="BTInvert_wsabn"]
+children = [SubResource("BTWait_246lk")]
+
+[sub_resource type="BTSequence" id="BTSequence_246lk"]
+children = [SubResource("BTMoveToTarget_2ln5x"), SubResource("BTInvert_wsabn")]
+
+[sub_resource type="BTRepeatUntilFailure" id="BTRepeatUntilFailure_rfif4"]
+children = [SubResource("BTSequence_246lk")]
+
+[sub_resource type="BTSelector" id="BTSelector_2ln5x"]
+children = [SubResource("BTSequence_v5qog"), SubResource("BTRepeatUntilFailure_rfif4")]
+
+[resource]
+blackboard_plan = ExtResource("1_2ln5x")
+root_task = SubResource("BTSelector_2ln5x")

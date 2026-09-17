@@ -1,11 +1,20 @@
 #pragma once
 
+#include <functional>
+
 #include <godot_cpp/godot.hpp>
 
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/variant/vector2.hpp>
+#include <unordered_map>
 
 using namespace godot;
+
+enum class InputCommands
+{
+  IDLE, WALK, SPRINT, JUMP, CROUCH,
+  SHOOT, HOLD_SHOOT, RELEASE_SHOOT, RELOAD, SWITCH_WEAPON
+};
 
 struct InputCommandData 
 {
@@ -37,22 +46,22 @@ class InputCommandSystem : public Node
   GDCLASS(InputCommandSystem, Node);
 public:
 
-  virtual void _init() {};
+  void _init();
 
-  void set_wants_to_idle(bool status) { m_InputCmdData.WantsToIdle = status; }
-  void set_wants_to_walk(bool status) { m_InputCmdData.WantsToWalk = status; }
-  void set_wants_to_sprint(bool status) { m_InputCmdData.WantsToSprint = status; }
-  void set_wants_to_jump(bool status) { m_InputCmdData.WantsToJump = status; }
-  void set_wants_to_crouch(bool status) { m_InputCmdData.WantsToCrouch = status; }
-  void set_wants_to_shoot_weapon(bool status) { m_InputCmdData.WantsToShootWeapon = status; }
-  void set_wants_to_hold_shoot(bool status) { m_InputCmdData.WantsToHoldShoot = status; }
-  void set_wants_to_release_shoot(bool status) { m_InputCmdData.WantsToReleaseShoot = status; }
-  void set_wants_to_reload_weapon(bool status) { m_InputCmdData.WantsToReloadWeapon = status; }
-  void set_wants_to_switch_weapon(bool status) { m_InputCmdData.WantsToSwitchWeapon = status; }
+  virtual void _update(double delta) {};
+
+  void command(InputCommands inputCommand, bool clearPrevCommands=true);
 
   void set_wish_dir(Vector3 wishDir) { m_InputCmdData.CharacterWishDir = wishDir; }
   void set_input_dir(Vector2 inputDir) { m_InputCmdData.InputDir = inputDir; }
   void set_mouse_vel(Vector2 mouseVel) { m_InputCmdData.MouseVel = mouseVel; }
+
+  void set_max_hold_time(float val) { m_InputCmdData.MaxHoldTime = val; }
+  float get_max_hold_time() { return m_InputCmdData.MaxHoldTime; }
+
+  Vector3 get_character_wish_dir() { return m_InputCmdData.CharacterWishDir; };
+  Vector2 get_mouse_vel() { return m_InputCmdData.MouseVel; };
+  Vector2 get_input_dir() { return m_InputCmdData.InputDir; };
 
   bool wants_to_idle() { return m_InputCmdData.WantsToIdle; };
   bool wants_to_walk() { return m_InputCmdData.WantsToWalk; };
@@ -73,17 +82,22 @@ public:
   void set_weapon_list_size(int val) { m_InputCmdData.WeaponListSize = val; }
   int get_weapon_list_size() { return m_InputCmdData.WeaponListSize; }
 
-  Vector3 get_character_wish_dir() { return m_InputCmdData.CharacterWishDir; };
-  Vector2 get_mouse_vel() { return m_InputCmdData.MouseVel; };
-  Vector2 get_input_dir() { return m_InputCmdData.InputDir; };
+private:
+  void set_wants_to_idle(bool status) { m_InputCmdData.WantsToIdle = status; }
+  void set_wants_to_walk(bool status) { m_InputCmdData.WantsToWalk = status; }
+  void set_wants_to_sprint(bool status) { m_InputCmdData.WantsToSprint = status; }
+  void set_wants_to_jump(bool status) { m_InputCmdData.WantsToJump = status; }
+  void set_wants_to_crouch(bool status) { m_InputCmdData.WantsToCrouch = status; }
+  void set_wants_to_shoot_weapon(bool status) { m_InputCmdData.WantsToShootWeapon = status; }
+  void set_wants_to_hold_shoot(bool status) { m_InputCmdData.WantsToHoldShoot = status; }
+  void set_wants_to_release_shoot(bool status) { m_InputCmdData.WantsToReleaseShoot = status; }
+  void set_wants_to_reload_weapon(bool status) { m_InputCmdData.WantsToReloadWeapon = status; }
+  void set_wants_to_switch_weapon(bool status) { m_InputCmdData.WantsToSwitchWeapon = status; }
 
-  void set_max_hold_time(float val) { m_InputCmdData.MaxHoldTime = val; }
-  float get_max_hold_time() { return m_InputCmdData.MaxHoldTime; }
-
-  virtual void _update(double delta) {};
 
 public:
-  static void _bind_methods() {};
+  static void _bind_methods();
 private:
+  std::unordered_map<InputCommands, std::function<void(bool)>> m_InputCommandList {};
   InputCommandData m_InputCmdData;
 };

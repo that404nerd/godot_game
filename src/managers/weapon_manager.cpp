@@ -113,7 +113,6 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
 {
   for(int weaponCount = 0; weaponCount < hold_point_node->get_children().size(); weaponCount++)
   { 
-    m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[weaponCount]));
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[weaponCount]);
     weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
 
