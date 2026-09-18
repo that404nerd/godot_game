@@ -3,7 +3,6 @@
 
 void BaseAIState::_setup()
 {
-  // ERR_FAIL_COND_MSG(get_parent()->get_class() != StringName("LimboHSM"), "Parent node must be of type LimboHSM");
   m_AIManager = get_node<AIManager>(ai_manager_node_path);
 
   if(m_AIManager)
@@ -49,10 +48,10 @@ void AIIdleState::_update(double delta)
   float toPlayerDist = m_Blackboard->get_var("ToPlayerDistance");
   bool canSeePlayer = m_Blackboard->get_var("CanSeePlayer");
 
-  // if(canSeePlayer && toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase())
-  // {
-  //   m_AIHsm->change_active_state(get_state("Combat"));
-  // }
+  if(canSeePlayer)
+  {
+    m_AIHsm->change_active_state(get_state("Combat"));
+  }
 }
 
 
@@ -69,7 +68,8 @@ void AIAlertState::_enter()
 {
   m_BTPlayerInst->set_behavior_tree(get_bt_resource());
   m_BTPlayerInst->set_active(true);
-  print_line("Going idle!");
+
+  print_line("Alert!");
 }
 
 void AIAlertState::_update(double delta)
@@ -97,19 +97,13 @@ void AICombatState::_enter()
 {
   m_BTPlayerInst->set_behavior_tree(get_bt_resource());
   m_BTPlayerInst->set_active(true);
+
+  print_line("Combat!");
 }
 
 void AICombatState::_update(double delta)
 {
-  // if(!m_AIStateCtxInst.CanSeePlayer)
-  // {
-  //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::PATROL));
-  // }
 
-  // if(m_AIStateCtxInst.TargetForShootReached)
-  // {
-  //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
-  // }
 }
 
 void AICombatState::_exit()
@@ -123,28 +117,13 @@ void AICombatState::_exit()
 
 void AIDeadState::_enter()
 {
-  // m_InputCmdSystem->set_wants_to_walk(true);
-  // m_AIManager->_patrol_enter();
-
-  print_line("Patrolling!");
+  print_line("Dead!");
 }
 
 void AIDeadState::_update(double delta)
 {
-  // m_AIManager->_patrol(delta);  
-
-  // if(m_AIStateCtxInst.CanSeePlayer)
-  // {
-  //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::CHASE));
-  // }
-
-  // if(m_AIStateCtxInst.IsNavigationFinished)
-  // {
-  //   m_AIStateMachine->_change_state(static_cast<int>(AIStates::IDLE));
-  // }
 }
 
 void AIDeadState::_exit()
 {
-  // m_InputCmdSystem->set_wants_to_walk(false);
 }

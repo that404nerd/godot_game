@@ -1,0 +1,68 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://dvtttjkg0kbl7"]
+
+[ext_resource type="BlackboardPlan" uid="uid://do2gs88brsu8" path="res://assets/ai/behaviour_resources/swat_op_type1_blackboard_plan.tres" id="1_3sgys"]
+
+[sub_resource type="BBVariant" id="BBVariant_3sgys"]
+type = 3
+saved_value = 15.0
+resource_name = "15.0"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_8ecev"]
+variable = &"ToPlayerDistance"
+check_type = 4
+value = SubResource("BBVariant_3sgys")
+custom_name = "Distance to Start Chasing"
+
+[sub_resource type="BTMoveToTarget" id="BTMoveToTarget_3sgys"]
+move_type = 1
+should_rotate_towards_player = true
+
+[sub_resource type="BBVariant" id="BBVariant_8ecev"]
+type = 1
+saved_value = true
+resource_name = "true"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_cuh4b"]
+variable = &"IsNavigationFinished"
+value = SubResource("BBVariant_8ecev")
+
+[sub_resource type="BTSequence" id="BTSequence_3sgys"]
+custom_name = "Chase Sequence"
+children = [SubResource("BTCheckVar_8ecev"), SubResource("BTMoveToTarget_3sgys"), SubResource("BTCheckVar_cuh4b")]
+
+[sub_resource type="BBVariant" id="BBVariant_cuh4b"]
+type = 3
+saved_value = 5.0
+resource_name = "5.0"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_yyx4r"]
+variable = &"ToPlayerDistance"
+check_type = 2
+value = SubResource("BBVariant_cuh4b")
+custom_name = "Distance to Start Chasing"
+
+[sub_resource type="BBNode" id="BBNode_yyx4r"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_0lqdb"]
+node = SubResource("BBNode_yyx4r")
+method = &"_idle"
+args_include_delta = true
+
+[sub_resource type="BTShootAtTarget" id="BTShootAtTarget_cdbfr"]
+
+[sub_resource type="BTSequence" id="BTSequence_aqpcg"]
+custom_name = "Shoot Sequence"
+children = [SubResource("BTCheckVar_yyx4r"), SubResource("BTCallMethod_0lqdb"), SubResource("BTShootAtTarget_cdbfr")]
+
+[sub_resource type="BTParallel" id="BTParallel_3sgys"]
+custom_name = "Combat Sequence"
+children = [SubResource("BTSequence_3sgys"), SubResource("BTSequence_aqpcg")]
+
+[sub_resource type="BTSelector" id="BTSelector_60305"]
+children = [SubResource("BTParallel_3sgys")]
+
+[resource]
+blackboard_plan = ExtResource("1_3sgys")
+root_task = SubResource("BTSelector_60305")

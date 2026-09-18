@@ -179,7 +179,7 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate)
 
 BT::Status AIManager::_shoot(double delta)
 {
-  if(ai_vision_component->can_see_player())
+  if(ai_vision_component->can_see_player() && m_Target)
   {
     if(m_QueryTimer <= 0.0f)
     {

@@ -11,58 +11,12 @@ node = SubResource("BBNode_xe5j1")
 method = &"_idle"
 args_include_delta = true
 
-[sub_resource type="BTWait" id="BTWait_2ln5x"]
-duration = 3.0
-
-[sub_resource type="BTInvert" id="BTInvert_2ln5x"]
-children = [SubResource("BTWait_2ln5x")]
-
 [sub_resource type="BTSequence" id="BTSequence_v5qog"]
 custom_name = "Idle Sequence"
-children = [SubResource("BTCallMethod_j1j00"), SubResource("BTInvert_2ln5x")]
-
-[sub_resource type="BTMoveToTarget" id="BTMoveToTarget_2ln5x"]
-move_type = 1
-should_rotate_towards_player = true
-
-[sub_resource type="BBVariant" id="BBVariant_2ln5x"]
-type = 1
-saved_value = true
-resource_name = "true"
-
-[sub_resource type="BTCheckVar" id="BTCheckVar_246lk"]
-variable = &"IsNavigationFinished"
-value = SubResource("BBVariant_2ln5x")
-
-[sub_resource type="BBNode" id="BBNode_2ln5x"]
-saved_value = NodePath("AIManager")
-resource_name = "AIManager"
-
-[sub_resource type="BTCallMethod" id="BTCallMethod_246lk"]
-node = SubResource("BBNode_2ln5x")
-method = &"_idle"
-args_include_delta = true
-
-[sub_resource type="BTShootAtTarget" id="BTShootAtTarget_2ln5x"]
-
-[sub_resource type="BTSequence" id="BTSequence_2ln5x"]
-custom_name = "Shoot Sequence"
-children = [SubResource("BTCallMethod_246lk"), SubResource("BTShootAtTarget_2ln5x")]
-
-[sub_resource type="BTWait" id="BTWait_246lk"]
-duration = 4.0
-
-[sub_resource type="BTInvert" id="BTInvert_wsabn"]
-children = [SubResource("BTWait_246lk")]
-
-[sub_resource type="BTSequence" id="BTSequence_246lk"]
-children = [SubResource("BTMoveToTarget_2ln5x"), SubResource("BTCheckVar_246lk"), SubResource("BTSequence_2ln5x"), SubResource("BTInvert_wsabn")]
-
-[sub_resource type="BTRepeatUntilFailure" id="BTRepeatUntilFailure_rfif4"]
-children = [SubResource("BTSequence_246lk")]
+children = [SubResource("BTCallMethod_j1j00")]
 
 [sub_resource type="BTSelector" id="BTSelector_2ln5x"]
-children = [SubResource("BTSequence_v5qog"), SubResource("BTRepeatUntilFailure_rfif4")]
+children = [SubResource("BTSequence_v5qog")]
 
 [resource]
 blackboard_plan = ExtResource("1_2ln5x")

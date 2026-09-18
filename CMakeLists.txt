@@ -148,6 +148,61 @@ add_subdirectory( addons/magic_enum )
 add_subdirectory( addons/geqo )
 add_subdirectory( addons/limboai )
 
+# --------------------------------------------------------------------------
+# Combined GDExtension documentation
+# --------------------------------------------------------------------------
+
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
+set(FPSPROJECT_DOC_CPP
+    "${CMAKE_CURRENT_BINARY_DIR}/gen/doc_data.gen.cpp"
+)
+
+file(GLOB GEQO_DOC_XML CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/addons/geqo/doc_classes/*.xml"
+)
+
+file(GLOB LIMBOAI_DOC_XML CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/addons/limboai/doc_classes/*.xml"
+)
+
+set(FPSPROJECT_DOC_XML
+    ${GEQO_DOC_XML}
+    ${LIMBOAI_DOC_XML}
+)
+
+add_custom_command(
+    OUTPUT "${FPSPROJECT_DOC_CPP}"
+
+    COMMAND
+        "${CMAKE_COMMAND}" -E make_directory
+        "${CMAKE_CURRENT_BINARY_DIR}/gen"
+
+    COMMAND
+        "${Python3_EXECUTABLE}"
+        -c
+        "import sys; sys.path.insert(0, r'${CMAKE_CURRENT_SOURCE_DIR}/addons/godot-cpp'); from doc_source_generator import generate_doc_source; generate_doc_source(r'${FPSPROJECT_DOC_CPP}', sys.argv[1:])"
+        -- ${FPSPROJECT_DOC_XML}
+
+    DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/addons/godot-cpp/doc_source_generator.py"
+        ${FPSPROJECT_DOC_XML}
+
+    VERBATIM
+)
+
+add_custom_target(FPSProject_docs
+    DEPENDS "${FPSPROJECT_DOC_CPP}"
+)
+
+target_sources(FPSProject PRIVATE
+    "${FPSPROJECT_DOC_CPP}"
+)
+
+add_dependencies(FPSProject
+    FPSProject_docs
+)
+
 set_target_properties( godot-cpp
 	PROPERTIES
 		CXX_VISIBILITY_PRESET hidden    # visibility needs to be the same as the main library
