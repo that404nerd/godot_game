@@ -31,7 +31,7 @@ public:
   };
 
   // Temporary (Must be in the same order as the one defined in _get_property_list())
-  enum class States { IDLE, WALK, RUN, JUMP };
+  // enum class States { IDLE, WALK, RUN, JUMP };
 
 
 private:

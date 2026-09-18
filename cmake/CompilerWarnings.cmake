@@ -56,7 +56,8 @@ target_compile_options( ${PROJECT_NAME}
             -Wno-sign-compare
             -Wno-non-virtual-dtor
             -Wno-unused-parameter
-            -Wno-deprecated-enum-enum-conversion
+            -Wno-unused-variable
+            -Wno-unused-but-set-variable
             -Wno-ctor-dtor-privacy
         >
 

@@ -10,9 +10,13 @@
 
 using namespace godot;
 
-enum class InputCommands
+enum class MovementInputCommands
 {
   IDLE, WALK, SPRINT, JUMP, CROUCH,
+};
+
+enum class WeaponInputCommands
+{
   SHOOT, HOLD_SHOOT, RELEASE_SHOOT, RELOAD, SWITCH_WEAPON
 };
 
@@ -50,7 +54,8 @@ public:
 
   virtual void _update(double delta) {};
 
-  void command(InputCommands inputCommand, bool clearPrevCommands=true);
+  void command(MovementInputCommands inputCommand);
+  void command(WeaponInputCommands inputCommand);
 
   void set_wish_dir(Vector3 wishDir) { m_InputCmdData.CharacterWishDir = wishDir; }
   void set_input_dir(Vector2 inputDir) { m_InputCmdData.InputDir = inputDir; }
@@ -98,6 +103,7 @@ private:
 public:
   static void _bind_methods();
 private:
-  std::unordered_map<InputCommands, std::function<void(bool)>> m_InputCommandList {};
+  std::unordered_map<MovementInputCommands, std::function<void(bool)>> m_MovementInputCommandList {};
+  std::unordered_map<WeaponInputCommands, std::function<void(bool)>> m_WeaponInputCommandList {};
   InputCommandData m_InputCmdData;
 };

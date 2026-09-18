@@ -47,6 +47,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_CLASS(AIDeadState);
 
   LIMBO_REGISTER_TASK(BTMoveToTarget);
+  LIMBO_REGISTER_TASK(BTShootAtTarget);
 
   GDREGISTER_RUNTIME_CLASS(WeaponManager);
   GDREGISTER_RUNTIME_CLASS(MovementManager);

@@ -18,12 +18,12 @@ void InputComponent::_input(const Ref<InputEvent>& event)
 
   set_input_dir(Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized());
 
-  if(Input::get_singleton()->is_action_just_pressed("jump"))  command(InputCommands::JUMP);
-  if(Input::get_singleton()->is_action_just_pressed("crouch")) command(InputCommands::CROUCH);
+  if(Input::get_singleton()->is_action_just_pressed("jump"))  command(MovementInputCommands::JUMP);
+  if(Input::get_singleton()->is_action_just_pressed("crouch")) command(MovementInputCommands::CROUCH);
 
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) command(InputCommands::SHOOT);
-  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) command(InputCommands::RELEASE_SHOOT);
-  if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) command(InputCommands::RELOAD);
+  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) command(WeaponInputCommands::SHOOT);
+  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) command(WeaponInputCommands::RELEASE_SHOOT);
+  if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) command(WeaponInputCommands::RELOAD);
 
   if(event->is_class("InputEventMouseMotion")) {
     float swayIntensity = 0.005f; 
@@ -39,7 +39,7 @@ void InputComponent::_input(const Ref<InputEvent>& event)
     if(Input::get_singleton()->is_action_just_pressed(inputAction))
     {
       set_weapon_idx(i);
-      command(InputCommands::SWITCH_WEAPON);
+      command(WeaponInputCommands::SWITCH_WEAPON);
     }
   }
 }
@@ -48,12 +48,12 @@ void InputComponent::_update(double delta)
 {
   if(get_input_dir() != Vector2(0.0f, 0.0f) || get_character_wish_dir() != Vector3(0.0f, 0.0f, 0.0f))
   {
-    command(InputCommands::SPRINT);
+    command(MovementInputCommands::SPRINT);
   }
 
   if(get_input_dir() == Vector2(0.0f, 0.0f) && get_character_wish_dir() == Vector3(0.0f, 0.0f, 0.0f))
   {
-    command(InputCommands::IDLE);
+    command(MovementInputCommands::IDLE);
   }
 
   if(Input::get_singleton()->is_action_pressed("shoot_weapon"))
@@ -61,9 +61,9 @@ void InputComponent::_update(double delta)
     m_HoldCounter += delta;
     if(m_HoldCounter >= get_max_hold_time())
     {
-      command(InputCommands::HOLD_SHOOT);
+      command(WeaponInputCommands::HOLD_SHOOT);
     }
   }
 
-  if(wants_to_release_shoot()) command(InputCommands::HOLD_SHOOT, false);
+  if(wants_to_release_shoot()) command(WeaponInputCommands::RELEASE_SHOOT);
 }

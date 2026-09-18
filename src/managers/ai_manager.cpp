@@ -1,6 +1,5 @@
 #include "ai_manager.h"
 #include "../components/ai/ai_character_component.h"
-#include "bt/tasks/bt_task.h"
 
 void AIManager::_init()
 {
@@ -22,21 +21,12 @@ void AIManager::_init()
     print_error("Look at player component is null!");
     return;
   }
-
-  nav_agent_3d->connect("target_reached", Callable(this, "_target_reached"));
 }
 
 void AIManager::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_query_finished", "queryResult"), &AIManager::_on_query_finished);
-  ClassDB::bind_method(D_METHOD("_target_reached"), &AIManager::_target_reached);
   ClassDB::bind_method(D_METHOD("_idle", "delta"), &AIManager::_idle);
-  ClassDB::bind_method(D_METHOD("_move", "delta"), &AIManager::_move);
-  ClassDB::bind_method(D_METHOD("_chase", "delta"), &AIManager::_chase);
-  ClassDB::bind_method(D_METHOD("_patrol", "delta"), &AIManager::_patrol);
-  ClassDB::bind_method(D_METHOD("_activate_shoot_state", "delta"), &AIManager::_activate_shoot_state);
-  ClassDB::bind_method(D_METHOD("_deactivate_shoot_state", "delta"), &AIManager::_deactivate_shoot_state);
-  ClassDB::bind_method(D_METHOD("_rotate_character", "delta"), &AIManager::_rotate_character);
 
   GD_BIND_CUSTOM_PROPERTY(AIManager, AICharacterComponent, ai_character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, InputCommandSystem, input_cmd_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -45,12 +35,6 @@ void AIManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationTree, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, LookAtPlayerComponent, lookat_player_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, VisionComponent, ai_vision_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-}
-
-void AIManager::_target_reached()
-{
-  // m_AIStateCtxInst.TargetForShootReached = true;
-  // m_AIStateCtxInst.MovePointAvailable = true;
 }
 
 void AIManager::_on_query_finished(QueryResult3D* queryResult)
@@ -112,29 +96,21 @@ void AIManager::_rotate_character(double delta)
 
 void AIManager::_idle(double delta)
 {
-  input_cmd_system->command(InputCommands::IDLE);
+  input_cmd_system->command(MovementInputCommands::IDLE);
   lookat_player_component->set_look_status(false);
   m_BlackboardInst->set("IsNavigationFinished", true);
 
   m_LowerBodyStateMachine->travel("Idle");
-  // if(m_AIStateCtxInst.WantsToShoot)
-  // {
-    //   lookat_player_component->set_look_status(false);
-    //   _activate_shoot_state(delta);
-  // } else if(toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase())
-  // {
-  //   m_AIStateCtxInst.TargetForShootReached = false;
-  //   _deactivate_shoot_state(delta);
-  // }
 }
 
 void AIManager::_blend_chase_states(double delta)
 {
-  // Vector2 dir = Vector2(m_AIStateCtxInst.AIDirection.x, m_AIStateCtxInst.AIDirection.z).normalized();
-  // anim_tree->set("parameters/LowerBodyStateMachine/Run/blend_position", dir);
+  Vector3 aiDir = m_BlackboardInst->get_var("AIDirection", Vector3(0.0f, 0.0f, 0.0f));
+  Vector2 dir = Vector2(aiDir.x, aiDir.z).normalized();
+  anim_tree->set("parameters/LowerBodyStateMachine/Run/blend_position", dir);
 }
 
-BT::Status AIManager::_chase(double delta)
+BT::Status AIManager::_chase(double delta, bool shouldRotate)
 {
   if(!m_Target)
   {
@@ -142,98 +118,86 @@ BT::Status AIManager::_chase(double delta)
     return BT::FAILURE;
   }
 
-  input_cmd_system->command(InputCommands::SPRINT);
+  input_cmd_system->command(MovementInputCommands::SPRINT);
 
   _blend_chase_states(delta);
-  _rotate_character(delta);
-  lookat_player_component->set_look_status(true);
+
+  if(shouldRotate)
+    _rotate_character(delta);
+  lookat_player_component->set_look_status(shouldRotate);
 
   m_LowerBodyStateMachine->travel("Run");
-  nav_agent_3d->set_target_position(m_Target->get_global_position());
+
   nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
+  nav_agent_3d->set_target_position(m_Target->get_global_position());
 
-
+  if(nav_agent_3d->is_navigation_finished())
+  {
+    m_BlackboardInst->set_var("IsNavigationFinished", true);
+    return BT::SUCCESS;
+  }
 
   return BT::RUNNING;
 }
 
-void AIManager::_patrol_enter()
-{
-  // m_AIStateCtxInst.LastPlayerPosBeforePatrol = m_Target->get_global_position();
-}
-
 void AIManager::_blend_patrol_states(double delta)
 {
-  // Vector2 dir = Vector2(m_AIStateCtxInst.AIDirection.x, m_AIStateCtxInst.AIDirection.z).normalized();
-  // anim_tree->set("parameters/Patrol/blend_position", dir);
+  Vector3 aiDir = m_BlackboardInst->get_var("AIDirection", Vector3(0.0f, 0.0f, 0.0f));
+  Vector2 dir = Vector2(aiDir.x, aiDir.z).normalized();
+  anim_tree->set("parameters/Patrol/blend_position", dir);
 }
 
-void AIManager::_move(double delta)
-{
-  _rotate_character(delta);
-  _blend_patrol_states(delta);
-  lookat_player_component->set_look_status(true);
-  m_LowerBodyStateMachine->travel("Walk");
-  // nav_agent_3d->set_target_position(m_AIStateCtxInst.AIMovePosition);
-
-  // float toPlayerDist = m_AIStateCtxInst.ToPlayerDistance;
-
-  Vector3 horizPos = Vector3(ai_character_component->get_global_position().x, 0.0f, ai_character_component->get_global_position().z);
-  // Vector3 movePos = Vector3(m_AIStateCtxInst.AIMovePosition.x, 0.0f, m_AIStateCtxInst.AIMovePosition.z);
-
-  // if(horizPos.is_equal_approx(movePos))
-  {
-  }
-
-  // if(m_AIStateCtxInst.WantsToShoot)
-  {
-    _activate_shoot_state(delta);
-  }
-  // else if(toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase())
-  {
-    // m_AIStateCtxInst.TargetForShootReached = false;
-    _deactivate_shoot_state(delta);
-  }
-}
-
-void AIManager::_patrol(double delta)
+BT::Status AIManager::_patrol(double delta, bool shouldRotate)
 {
   if(!m_Target)
   {
     print_error("Player not found to chase!");
-    return;
+    return BT::FAILURE;
   }
   
+  input_cmd_system->command(MovementInputCommands::WALK);
+
+  if(shouldRotate)
+    _rotate_character(delta);
+  lookat_player_component->set_look_status(shouldRotate);
+
   _blend_patrol_states(delta);
-  lookat_player_component->set_look_status(false);
   m_LowerBodyStateMachine->travel("Walk");
 
-  // nav_agent_3d->set_target_position(m_AIStateCtxInst.LastPlayerPosBeforePatrol);
+  nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
+  nav_agent_3d->set_target_position(m_Target->get_global_position());
 
   if(nav_agent_3d->is_navigation_finished())
   {
-    // m_AIStateCtxInst.IsNavigationFinished = true;
+    m_BlackboardInst->set_var("IsNavigationFinished", true);
+    return BT::SUCCESS;
   }
+
+  return BT::RUNNING;
 
 }
 
-void AIManager::_activate_shoot_state(double delta)
+BT::Status AIManager::_shoot(double delta)
 {
-  if(m_QueryTimer <= 0.0f)
+  if(ai_vision_component->can_see_player())
   {
-    env_query3d->request_query();
-    m_QueryTimer = m_AIBehaviourProps->get_enemyCombatNewPosQueryTime();
+    if(m_QueryTimer <= 0.0f)
+    {
+      env_query3d->request_query();
+      m_QueryTimer = m_AIBehaviourProps->get_enemyCombatNewPosQueryTime();
+    }
+  
+    m_QueryTimer -= delta;
+  
+    _rotate_character(delta);
+    lookat_player_component->set_look_status(true);
+  
+    anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
+    m_UpperBodyStateMachine->travel("Shoot");
+    
+    return BT::RUNNING;
   }
 
-  m_QueryTimer -= delta;
-  // m_AIStateCtxInst.WantsToShoot = true;
-
-  anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
-  m_UpperBodyStateMachine->travel("Shoot");
-}
-
-void AIManager::_deactivate_shoot_state(double delta)
-{
-  // m_AIStateCtxInst.WantsToShoot = false;
   m_UpperBodyStateMachine->travel("Idle");
+  return BT::FAILURE;
 }

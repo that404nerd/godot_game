@@ -144,7 +144,7 @@ request_query={
 [limbo_ai]
 
 behavior_tree/behavior_tree_default_dir="res://assets/ai/behaviour_resources"
-behavior_tree/user_task_dirs=PackedStringArray("res://assets/ai/tasks", "res://src/components/ai")
+behavior_tree/user_task_dirs=PackedStringArray("res://src/components/ai")
 
 [physics]
 
@@ -158,4 +158,3 @@ textures/canvas_textures/default_texture_filter=0
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=4
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=4
 anti_aliasing/quality/msaa_3d=3
-occlusion_culling/use_occlusion_culling=true
