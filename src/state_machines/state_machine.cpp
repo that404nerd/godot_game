@@ -54,9 +54,10 @@ void StateMachine::_change_state(int stateID)
     m_CurrentState->_exit();
   }
 
-  newState->_enter();
   m_PrevState = m_CurrentState;
   m_CurrentState = newState;
+
+  newState->_enter();
 }
 
 int StateMachine::get_current_state()

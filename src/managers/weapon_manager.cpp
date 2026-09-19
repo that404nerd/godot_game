@@ -234,16 +234,6 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
   m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
 
   m_DecalScene = nextWeapon->get_weaponDecalResource();
-  // m_RecoilResource = nextWeapon->get_weaponRecoilPatternResource();
-
-  // m_RecoilPathNode = m_RecoilResource->instantiate();
-  // m_RecoilPath = Object::cast_to<Path2D>(m_RecoilPathNode);
-
-  // m_RecoilCurve = m_RecoilPath->get_curve();
-
-  // Free the node immediately
-  // m_RecoilPathNode->queue_free();
-  // m_RecoilPath->queue_free();
 }
 
 void WeaponManager::generate_decal()
@@ -279,6 +269,11 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
   }
 
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponEquipAnimName()))
+  {
+    m_WeaponStateCtx.IsEquipOver = false;
+  }
+
   if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
   {
     EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D);
@@ -293,9 +288,9 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
     m_WeaponStateCtx.IsReloading = false;
   }
 
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponUnequipAnimName()))
+  if(anim_name == StringName(m_CurrentWeapon->get_weaponEquipAnimName()))
   {
-    m_WeaponStateCtx.IsUnequipped = true;
+    m_WeaponStateCtx.IsEquipOver = true;
   }
 
   if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
@@ -360,8 +355,6 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 ///////////////////////////////////////////////////////////////////////
 void WeaponManager::_equip_weapon()
 {
-  m_WeaponStateCtx.IsUnequipped = false;
-
   if(m_CurrentWeaponAnimPlayer == nullptr)
   {
     print_error("Anim player is null!");
@@ -374,15 +367,22 @@ void WeaponManager::_equip_weapon()
 
 void WeaponManager::_unequip_weapon()
 {
+  // This function takes the weapon index from the input system and then inside assigns to the actual m_WeaponIdx used by the manager
+  _switch_weapon_data(input_command_system->get_weapon_idx());
+
   if(weapon_component->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
   {
     if(m_CurrentWeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
     {
+      print_line("Current anim: ", m_CurrentWeaponAnimPlayer->get_current_animation(), " Unequip anim is: ", m_CurrentWeapon->get_weaponUnequipAnimName());
+      m_WeaponStateCtx.CanUnequip = true;
+
+      // The unequip anim for the current weapon is played here.
       m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
         m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
     } 
   } else {
-    m_WeaponStateCtx.IsUnequipped = true;
+    m_WeaponStateCtx.CanUnequip = false;
   }
 }
 
@@ -423,7 +423,7 @@ void WeaponManager::_shoot_weapon(double delta)
 
   {
     // Check whether the fire key is held or not (for automatic weapons)
-    if(input_command_system->wants_to_hold_shoot() &&
+    if(input_command_system->has(InputCommands::HOLD_SHOOT) &&
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
       m_WeaponStateCtx.TriggerHeld = true;
@@ -489,7 +489,7 @@ void WeaponManager::_reload_weapon()
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
     // If we shoot mid-reload just cancel the entire reload
-    if(input_command_system->wants_to_shoot_weapon())
+    if(input_command_system->has(InputCommands::SHOOT))
     {
       m_WeaponStateCtx.IsReloading = false;
       m_WeaponStateCtx.IsReloadStarted = false;
@@ -524,28 +524,36 @@ void WeaponManager::_reload_weapon()
 void WeaponManager::_weapon_unequip_over()
 {
   m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
-  weapon_component->set_current_weapon(weapon_component->get_next_weapon_data());
+  weapon_component->set_current_weapon(weapon_component->get_next_weapon());
   EventBus::get_singleton()->emit_signal("weapon_switched", weapon_component->get_current_weapon_data());
 }
 
 
 void WeaponManager::_weapon_switch()
 {
-  for (int i = 0; i < weapon_component->get_weapon_list().size(); i++) {
-    Ref<Weapon> res = weapon_component->get_weapon_list()[i]; 
+  Array weapon_list = weapon_component->get_weapon_list();
+  m_WeaponIndex = -1;
+  for (int i = 0; i < weapon_list.size(); i++) {
+    Ref<Weapon> weaponRes = weapon_list[i]; 
 
-    if (res.is_valid() && res->get_weaponName() == weapon_component->get_next_weapon_name()) {
+    if(!weaponRes.is_valid())
+      continue;
+
+    if (weaponRes->get_weaponName() == weapon_component->get_next_weapon_name()) {
       m_WeaponIndex = i;
       break;
     }
   }
   
+  // If the weapon is valid
   if(m_WeaponIndex != -1)
   {
-    Ref<Weapon> nextWeapon = weapon_component->get_weapon_list()[m_WeaponIndex];
+    Ref<Weapon> nextWeapon = weapon_list[m_WeaponIndex];
     weapon_component->set_current_weapon(nextWeapon);
-    
     _update_weapon_data(nextWeapon);
+    m_WeaponStateCtx.IsWeaponSwitched = true;
+  } else {
+    print_error("Can't switch weapon, weapon not found!");
   }
 }
 

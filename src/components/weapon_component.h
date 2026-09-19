@@ -44,7 +44,7 @@ public:
   }
 
   void set_next_weapon(Ref<Weapon> nextWeapon) { m_NextWeapon = nextWeapon; }
-  Ref<Weapon> get_next_weapon_data() const { return m_NextWeapon; }
+  Ref<Weapon> get_next_weapon() const { return m_NextWeapon; }
 
   void set_next_weapon_name(StringName nextWeaponName) { m_NextWeaponName = nextWeaponName; }
   StringName get_next_weapon_name() { return m_NextWeaponName; }

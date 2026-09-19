@@ -43,10 +43,9 @@ void WeaponStateMachine::_handle_state_machine_input(const Ref<InputEvent>& even
     return;
   }
 
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_switch_weapon())
+  if(m_InputCmdSystem->has(InputCommands::SWITCH_WEAPON))
   {
-    weapon_manager->get_weapon_state_ctx().IsReloading = false;
-    weapon_manager->_switch_weapon_data(m_InputCmdSystem->get_weapon_idx());
+    // If the player wants to switch weapons, we immediately unequip the current weapon which enters the Unequip weapon state
     _change_state(static_cast<int>(WeaponStates::UNEQUIP));
   }
 }
@@ -70,6 +69,7 @@ StringName WeaponStateMachine::get_current_state_name()
 
 void WeaponStateMachine::_on_animation_finished(const StringName& anim_name)
 {
+  // This is executed if the current weapon's unequip animation has been finished
   if(anim_name == weapon_component->get_current_weapon_data()->get_weaponUnequipAnimName())
   {
     weapon_manager->_weapon_unequip_over();

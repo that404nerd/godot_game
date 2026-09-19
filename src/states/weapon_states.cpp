@@ -28,15 +28,17 @@ WeaponIdleState::WeaponIdleState(const WeaponStateData& weaponStateData)
 
 void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_shoot_weapon())
+  if(!m_InputCmdSystem)
+    return;
+
+  if(m_InputCmdSystem->has(InputCommands::SHOOT))
   {
     m_WeaponManager->set_trigger_press_status(true);
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
 
-  if((m_InputCmdSystem && m_InputCmdSystem->wants_to_reload_weapon()) ||
-    (m_InputCmdSystem->wants_to_shoot_weapon() && 
-    m_WeaponManager->current_weapon_has_auto_reload() && 
+  if(m_InputCmdSystem->has(InputCommands::RELOAD) ||
+    ((m_InputCmdSystem->has(InputCommands::SHOOT) && m_WeaponManager->current_weapon_has_auto_reload()) && 
     (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->get_current_reserve_ammo() > 0)))
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
@@ -87,7 +89,8 @@ void WeaponEquipState::_enter()
 
 void WeaponEquipState::_update(double delta)
 {
-  m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::IDLE));
+  if(m_WeaponStateContext.IsEquipOver)
+    m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::IDLE));
 }
 
 
@@ -111,12 +114,12 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
   if(m_InputCmdSystem)
   {
-    if(m_InputCmdSystem->wants_to_shoot_weapon())
+    if(m_InputCmdSystem->has(InputCommands::SHOOT))
     {
       m_WeaponManager->set_trigger_press_status(true);
     }
     
-    if(m_InputCmdSystem->wants_to_reload_weapon())
+    if(m_InputCmdSystem->has(InputCommands::RELOAD))
     {
       m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
     }
@@ -127,19 +130,20 @@ void WeaponShootState::_update(double delta)
 {
   m_WeaponManager->_shoot_weapon(delta);
 
-  if((m_InputCmdSystem->wants_to_shoot_weapon() || m_WeaponStateContext.TriggerHeld) &&
-  m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload())
+  if(!m_InputCmdSystem)
+    return;
+
+  if((m_InputCmdSystem->has(InputCommands::SHOOT) || m_WeaponStateContext.TriggerHeld) &&
+     (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload()))
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
   
-  // Waits a complete second before it switches from the shoot state
+  // Waits some time before it goes to idle
   if(m_WeaponStateContext.ShootTimeBeforeIdle <= 0.0f)
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::IDLE));
   }
-
-
 }
 
 void WeaponShootState::_exit()
@@ -168,7 +172,10 @@ void WeaponReloadState::_update(double delta)
 {
   m_WeaponManager->_reload_weapon();
 
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_shoot_weapon() && m_WeaponManager->get_current_weapon_ammo() > 0)
+  if(!m_InputCmdSystem)
+    return;
+
+  if(m_InputCmdSystem->has(InputCommands::SHOOT))
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
@@ -205,12 +212,14 @@ void WeaponUnequipState::_enter()
 
 void WeaponUnequipState::_update(double delta)
 {
-  m_WeaponManager->_unequip_weapon();
-
-  if(m_WeaponStateContext.IsUnequipped)
+  // Don't bother switching to the next state if we the same weapon is equipped 
+  if(!m_WeaponStateContext.CanUnequip)
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::IDLE));
   }
+
+  // Calls the unequip weapon function here.
+  m_WeaponManager->_unequip_weapon();
 }
 
 void WeaponUnequipState::_exit()
@@ -233,12 +242,14 @@ void WeaponSwitchState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponSwitchState::_enter()
 {
+  // After the current weapon is unequipped, we switch to the next weapon we want.
   m_WeaponManager->_weapon_switch();
 }
 
 void WeaponSwitchState::_update(double delta)
 {
-  m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::EQUIP));
+  if(m_WeaponStateContext.IsWeaponSwitched)
+    m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::EQUIP));
 }
 
 void WeaponSwitchState::_exit()

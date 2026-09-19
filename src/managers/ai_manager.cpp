@@ -96,7 +96,7 @@ void AIManager::_rotate_character(double delta)
 
 void AIManager::_idle(double delta)
 {
-  input_cmd_system->command(MovementInputCommands::IDLE);
+  input_cmd_system->command(InputCommands::IDLE);
   lookat_player_component->set_look_status(false);
   m_BlackboardInst->set("IsNavigationFinished", true);
 
@@ -118,7 +118,7 @@ BT::Status AIManager::_chase(double delta, bool shouldRotate)
     return BT::FAILURE;
   }
 
-  input_cmd_system->command(MovementInputCommands::SPRINT);
+  input_cmd_system->command(InputCommands::SPRINT);
 
   _blend_chase_states(delta);
 
@@ -155,7 +155,7 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate)
     return BT::FAILURE;
   }
   
-  input_cmd_system->command(MovementInputCommands::WALK);
+  input_cmd_system->command(InputCommands::WALK);
 
   if(shouldRotate)
     _rotate_character(delta);
