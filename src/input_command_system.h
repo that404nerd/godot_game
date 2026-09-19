@@ -2,8 +2,6 @@
 
 #include <functional>
 
-#include "magic_enum/magic_enum.hpp"
-
 #include <godot_cpp/godot.hpp>
 
 #include <godot_cpp/classes/node.hpp>
@@ -11,6 +9,10 @@
 #include <unordered_map>
 
 using namespace godot;
+
+/*
+  Rewrite the whole damn thing because this is terrible!!!
+*/
 
 enum class InputCommands
 {
@@ -20,6 +22,19 @@ enum class InputCommands
 
 struct InputCommandData 
 {
+  bool WantsToIdle = false;
+  bool WantsToWalk = false;
+  bool WantsToSprint = false;
+  bool WantsToJump = false;
+  bool WantsToCrouch = false;
+
+  bool WantsToShootWeapon = false;
+  bool WantsToHoldShoot = false;
+  bool WantsToReleaseShoot = false;
+
+  bool WantsToReloadWeapon = false;
+  bool WantsToSwitchWeapon = false;
+
   int WeaponListSize = 0;
   int WeaponIdx = 0;
 
@@ -39,9 +54,7 @@ public:
 
   virtual void _update(double delta) {};
 
-  void command(InputCommands inputCommand);
-  bool has(InputCommands inputCommand);
-  void clear();
+  void command(InputCommands inputCommand, bool clearPrevCommands=true);
 
   void set_wish_dir(Vector3 wishDir) { m_InputCmdData.CharacterWishDir = wishDir; }
   void set_input_dir(Vector2 inputDir) { m_InputCmdData.InputDir = inputDir; }
@@ -53,16 +66,41 @@ public:
   Vector3 get_character_wish_dir() { return m_InputCmdData.CharacterWishDir; };
   Vector2 get_mouse_vel() { return m_InputCmdData.MouseVel; };
   Vector2 get_input_dir() { return m_InputCmdData.InputDir; };
-  void set_next_weapon_idx(int val) { m_InputCmdData.WeaponIdx = val; }
+
+  bool wants_to_idle() { return m_InputCmdData.WantsToIdle; };
+  bool wants_to_walk() { return m_InputCmdData.WantsToWalk; };
+  bool wants_to_sprint() { return m_InputCmdData.WantsToSprint; };
+  bool wants_to_jump() { return m_InputCmdData.WantsToJump; };
+  bool wants_to_crouch() { return m_InputCmdData.WantsToCrouch; };
+
+  bool wants_to_hold_shoot() { return m_InputCmdData.WantsToHoldShoot; };
+  bool wants_to_shoot_weapon() { return m_InputCmdData.WantsToShootWeapon; };
+  bool wants_to_release_shoot() { return m_InputCmdData.WantsToReleaseShoot; };
+
+  bool wants_to_reload_weapon() { return m_InputCmdData.WantsToReloadWeapon; };
+  bool wants_to_switch_weapon() { return m_InputCmdData.WantsToSwitchWeapon; };
+
+  void set_weapon_idx(int val) { m_InputCmdData.WeaponIdx = val; }
   int get_weapon_idx() { return m_InputCmdData.WeaponIdx; }
 
   void set_weapon_list_size(int val) { m_InputCmdData.WeaponListSize = val; }
   int get_weapon_list_size() { return m_InputCmdData.WeaponListSize; }
 
-protected:
-  static void _bind_methods();
+  void set_wants_to_idle(bool status) { m_InputCmdData.WantsToIdle = status; }
+  void set_wants_to_walk(bool status) { m_InputCmdData.WantsToWalk = status; }
+  void set_wants_to_sprint(bool status) { m_InputCmdData.WantsToSprint = status; }
+  void set_wants_to_jump(bool status) { m_InputCmdData.WantsToJump = status; }
+  void set_wants_to_crouch(bool status) { m_InputCmdData.WantsToCrouch = status; }
+  void set_wants_to_shoot_weapon(bool status) { m_InputCmdData.WantsToShootWeapon = status; }
+  void set_wants_to_hold_shoot(bool status) { m_InputCmdData.WantsToHoldShoot = status; }
+  void set_wants_to_release_shoot(bool status) { m_InputCmdData.WantsToReleaseShoot = status; }
+  void set_wants_to_reload_weapon(bool status) { m_InputCmdData.WantsToReloadWeapon = status; }
+  void set_wants_to_switch_weapon(bool status) { m_InputCmdData.WantsToSwitchWeapon = status; }
 
+
+public:
+  static void _bind_methods();
 private:
-  LocalVector<InputCommands> m_InputCommands;
+  std::unordered_map<InputCommands, std::function<void(bool)>> m_InputCommandList {};
   InputCommandData m_InputCmdData;
 };

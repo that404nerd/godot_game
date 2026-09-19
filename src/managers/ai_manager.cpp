@@ -40,7 +40,8 @@ void AIManager::_bind_methods()
 void AIManager::_on_query_finished(QueryResult3D* queryResult)
 {
   Vector3 best_pos = queryResult->get_highest_score_position();
-  // m_AIStateCtxInst.AIMovePosition = best_pos;
+
+  m_BlackboardInst->set_var("AIMovePosition", best_pos);
 }
 
 void AIManager::_update(double delta)
@@ -117,6 +118,8 @@ BT::Status AIManager::_chase(double delta, bool shouldRotate)
     print_error("Player not found to chase!");
     return BT::FAILURE;
   }
+
+  Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
 
   input_cmd_system->command(InputCommands::SPRINT);
 

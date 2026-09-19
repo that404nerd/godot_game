@@ -31,14 +31,14 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
   if(!m_InputCmdSystem)
     return;
 
-  if(m_InputCmdSystem->has(InputCommands::SHOOT))
+  if(m_InputCmdSystem->wants_to_shoot_weapon())
   {
     m_WeaponManager->set_trigger_press_status(true);
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
 
-  if(m_InputCmdSystem->has(InputCommands::RELOAD) ||
-    ((m_InputCmdSystem->has(InputCommands::SHOOT) && m_WeaponManager->current_weapon_has_auto_reload()) && 
+  if(m_InputCmdSystem->wants_to_reload_weapon() ||
+    ((m_InputCmdSystem->wants_to_shoot_weapon() && m_WeaponManager->current_weapon_has_auto_reload()) && 
     (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->get_current_reserve_ammo() > 0)))
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
@@ -114,12 +114,12 @@ void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
   if(m_InputCmdSystem)
   {
-    if(m_InputCmdSystem->has(InputCommands::SHOOT))
+    if(m_InputCmdSystem->wants_to_shoot_weapon())
     {
       m_WeaponManager->set_trigger_press_status(true);
     }
     
-    if(m_InputCmdSystem->has(InputCommands::RELOAD))
+    if(m_InputCmdSystem->wants_to_reload_weapon())
     {
       m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
     }
@@ -133,7 +133,7 @@ void WeaponShootState::_update(double delta)
   if(!m_InputCmdSystem)
     return;
 
-  if((m_InputCmdSystem->has(InputCommands::SHOOT) || m_WeaponStateContext.TriggerHeld) &&
+  if((m_InputCmdSystem->wants_to_shoot_weapon() || m_WeaponStateContext.TriggerHeld) &&
      (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload()))
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
@@ -175,7 +175,7 @@ void WeaponReloadState::_update(double delta)
   if(!m_InputCmdSystem)
     return;
 
-  if(m_InputCmdSystem->has(InputCommands::SHOOT))
+  if(m_InputCmdSystem->wants_to_shoot_weapon())
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }

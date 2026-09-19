@@ -18,7 +18,6 @@ void BTMoveToTarget::_bind_methods()
   GD_BIND_PROPERTY(BTMoveToTarget, should_rotate_towards_player, Variant::BOOL);
 }
 
-
 BT::Status BTMoveToTarget::_tick(double delta)
 {
   if(move_type == MoveType::RUN)

@@ -41,7 +41,6 @@ void WeaponManager::_init()
     return;
   }
 
-
   print_line("Weapon Manager Initialized");
 }
 
@@ -423,7 +422,7 @@ void WeaponManager::_shoot_weapon(double delta)
 
   {
     // Check whether the fire key is held or not (for automatic weapons)
-    if(input_command_system->has(InputCommands::HOLD_SHOOT) &&
+    if(input_command_system->wants_to_hold_shoot() &&
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
       m_WeaponStateCtx.TriggerHeld = true;
@@ -489,7 +488,7 @@ void WeaponManager::_reload_weapon()
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
     // If we shoot mid-reload just cancel the entire reload
-    if(input_command_system->has(InputCommands::SHOOT))
+    if(input_command_system->wants_to_shoot_weapon())
     {
       m_WeaponStateCtx.IsReloading = false;
       m_WeaponStateCtx.IsReloadStarted = false;

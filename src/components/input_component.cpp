@@ -22,12 +22,7 @@ void InputComponent::_input(const Ref<InputEvent>& event)
   if(Input::get_singleton()->is_action_just_pressed("crouch")) command(InputCommands::CROUCH);
 
   if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) command(InputCommands::SHOOT);
-
-  if(Input::get_singleton()->is_action_just_released("shoot_weapon"))
-  {
-    command(InputCommands::RELEASE_SHOOT);
-  }
-
+  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) command(InputCommands::RELEASE_SHOOT);
   if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) command(InputCommands::RELOAD);
 
   if(event->is_class("InputEventMouseMotion")) {
@@ -43,9 +38,8 @@ void InputComponent::_input(const Ref<InputEvent>& event)
     String inputAction = "weapon_" + String::num(i + 1, 0); // INFO: Need to match the set input action in the editor
     if(Input::get_singleton()->is_action_just_pressed(inputAction))
     {
-      set_next_weapon_idx(i);
+      set_weapon_idx(i);
       command(InputCommands::SWITCH_WEAPON);
-      break;
     }
   }
 }
@@ -71,5 +65,7 @@ void InputComponent::_update(double delta)
     }
   }
 
-  clear();
+  if(wants_to_release_shoot()) command(InputCommands::HOLD_SHOOT, false);
+
+  set_wants_to_switch_weapon(false);
 }

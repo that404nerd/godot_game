@@ -43,7 +43,7 @@ void WeaponStateMachine::_handle_state_machine_input(const Ref<InputEvent>& even
     return;
   }
 
-  if(m_InputCmdSystem->has(InputCommands::SWITCH_WEAPON))
+  if(m_InputCmdSystem->wants_to_switch_weapon())
   {
     // If the player wants to switch weapons, we immediately unequip the current weapon which enters the Unequip weapon state
     _change_state(static_cast<int>(WeaponStates::UNEQUIP));
