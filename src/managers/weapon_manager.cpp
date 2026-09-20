@@ -366,6 +366,9 @@ void WeaponManager::_equip_weapon()
 
 void WeaponManager::_unequip_weapon()
 {
+  // Make sure to set IsReloading to false so that if the player switches a weapon mid reload the transforms don't mess and make IsReloading to true indefinitely
+  m_WeaponStateCtx.IsReloading = false;
+
   // This function takes the weapon index from the input system and then inside assigns to the actual m_WeaponIdx used by the manager
   _switch_weapon_data(input_command_system->get_weapon_idx());
 
@@ -373,7 +376,6 @@ void WeaponManager::_unequip_weapon()
   {
     if(m_CurrentWeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
     {
-      print_line("Current anim: ", m_CurrentWeaponAnimPlayer->get_current_animation(), " Unequip anim is: ", m_CurrentWeapon->get_weaponUnequipAnimName());
       m_WeaponStateCtx.CanUnequip = true;
 
       // The unequip anim for the current weapon is played here.

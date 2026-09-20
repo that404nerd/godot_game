@@ -33,6 +33,7 @@ private:
 
   GD_DEFINE_PROPERTY(MoveType, move_type, MoveType::WALK);
   GD_DEFINE_PROPERTY(bool, should_rotate_towards_player, false);
+  GD_DEFINE_PROPERTY(bool, should_move_to_player, false);
 };
 
 VARIANT_ENUM_CAST(BTMoveToTarget::MoveType);

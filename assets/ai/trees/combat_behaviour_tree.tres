@@ -16,6 +16,7 @@ custom_name = "Distance to Start Chasing"
 [sub_resource type="BTMoveToTarget" id="BTMoveToTarget_3sgys"]
 move_type = 1
 should_rotate_towards_player = true
+should_move_to_player = true
 
 [sub_resource type="BBVariant" id="BBVariant_8ecev"]
 type = 1
@@ -30,38 +31,68 @@ value = SubResource("BBVariant_8ecev")
 custom_name = "Chase Sequence"
 children = [SubResource("BTCheckVar_8ecev"), SubResource("BTMoveToTarget_3sgys"), SubResource("BTCheckVar_cuh4b")]
 
+[sub_resource type="BTMoveToTarget" id="BTMoveToTarget_8ecev"]
+should_rotate_towards_player = true
+custom_name = "Move to the best query position"
+
+[sub_resource type="BBVariant" id="BBVariant_yyx4r"]
+type = 1
+saved_value = true
+resource_name = "true"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_0lqdb"]
+variable = &"IsNavigationFinished"
+value = SubResource("BBVariant_yyx4r")
+
+[sub_resource type="BBNode" id="BBNode_8ecev"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_cuh4b"]
+node = SubResource("BBNode_8ecev")
+method = &"_idle"
+args_include_delta = true
+
+[sub_resource type="BTWait" id="BTWait_3sgys"]
+duration = 0.5
+
+[sub_resource type="BTSequence" id="BTSequence_8ecev"]
+custom_name = "Move to query sequence"
+children = [SubResource("BTMoveToTarget_8ecev"), SubResource("BTCheckVar_0lqdb"), SubResource("BTCallMethod_cuh4b"), SubResource("BTWait_3sgys")]
+
 [sub_resource type="BBVariant" id="BBVariant_cuh4b"]
 type = 3
-saved_value = 5.0
-resource_name = "5.0"
+saved_value = 20.0
+resource_name = "20.0"
 
 [sub_resource type="BTCheckVar" id="BTCheckVar_yyx4r"]
 variable = &"ToPlayerDistance"
 check_type = 2
 value = SubResource("BBVariant_cuh4b")
-custom_name = "Distance to Start Chasing"
+custom_name = "Distance to Start Shooting"
 
-[sub_resource type="BBNode" id="BBNode_yyx4r"]
+[sub_resource type="BBNode" id="BBNode_3sgys"]
 saved_value = NodePath("AIManager")
 resource_name = "AIManager"
 
-[sub_resource type="BTCallMethod" id="BTCallMethod_0lqdb"]
-node = SubResource("BBNode_yyx4r")
+[sub_resource type="BTCallMethod" id="BTCallMethod_8ecev"]
+node = SubResource("BBNode_3sgys")
 method = &"_idle"
 args_include_delta = true
 
-[sub_resource type="BTShootAtTarget" id="BTShootAtTarget_cdbfr"]
+[sub_resource type="BTShootAtTarget" id="BTShootAtTarget_3sgys"]
 
-[sub_resource type="BTSequence" id="BTSequence_aqpcg"]
-custom_name = "Shoot Sequence"
-children = [SubResource("BTCheckVar_yyx4r"), SubResource("BTCallMethod_0lqdb"), SubResource("BTShootAtTarget_cdbfr")]
+[sub_resource type="BTSequence" id="BTSequence_cuh4b"]
+custom_name = "Shoot sequence"
+children = [SubResource("BTCheckVar_yyx4r"), SubResource("BTCallMethod_8ecev"), SubResource("BTShootAtTarget_3sgys")]
 
 [sub_resource type="BTParallel" id="BTParallel_3sgys"]
-custom_name = "Combat Sequence"
-children = [SubResource("BTSequence_3sgys"), SubResource("BTSequence_aqpcg")]
+custom_name = "Shoot Parallel"
+children = [SubResource("BTSequence_8ecev"), SubResource("BTSequence_cuh4b")]
 
 [sub_resource type="BTSelector" id="BTSelector_60305"]
-children = [SubResource("BTParallel_3sgys")]
+custom_name = "Combat Selector"
+children = [SubResource("BTSequence_3sgys"), SubResource("BTParallel_3sgys")]
 
 [resource]
 blackboard_plan = ExtResource("1_3sgys")

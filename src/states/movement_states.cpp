@@ -56,14 +56,13 @@ void IdleMovementState::_physics_update(double delta)
     return;
 
   if(m_InputCmdSystem->wants_to_sprint() && m_MovementStateCtx.IsOnFloor) {
-    print_line("Damn!");
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
   }
 
-  // if(m_InputCmdSystem->wants_to_walk())
-  // {
-  //   m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::WALK));
-  // }
+  if(m_InputCmdSystem->wants_to_walk())
+  {
+    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::WALK));
+  }
 
   if(m_MovementStateCtx.CharacterVelocity.y < 0.0f || !m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));

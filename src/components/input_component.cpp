@@ -61,11 +61,16 @@ void InputComponent::_update(double delta)
     m_HoldCounter += delta;
     if(m_HoldCounter >= get_max_hold_time())
     {
-      command(InputCommands::HOLD_SHOOT);
+      set_wants_to_hold_shoot(true);
     }
   }
 
-  if(wants_to_release_shoot()) command(InputCommands::HOLD_SHOOT, false);
+  if(wants_to_release_shoot()) set_wants_to_hold_shoot(false);
 
+  set_wants_to_shoot_weapon(false);
+  set_wants_to_release_shoot(false);
   set_wants_to_switch_weapon(false);
+  set_wants_to_reload_weapon(false);
+  set_wants_to_jump(false);
+  set_wants_to_crouch(false);
 }

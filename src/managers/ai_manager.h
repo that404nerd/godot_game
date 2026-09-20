@@ -28,12 +28,12 @@ public:
   void _init();
 
   void _idle(double delta);
-  
+
   void _blend_patrol_states(double delta);
   void _blend_chase_states(double delta);
   
-  BT::Status _chase(double delta, bool shouldRotate);
-  BT::Status _patrol(double delta, bool shouldRotate);
+  BT::Status _chase(double delta, bool shouldRotate, bool toPlayer);
+  BT::Status _patrol(double delta, bool shouldRotate, bool toPlayer);
 
   BT::Status _shoot(double delta);
 

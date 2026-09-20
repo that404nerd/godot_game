@@ -21,6 +21,7 @@ void AIManager::_init()
     print_error("Look at player component is null!");
     return;
   }
+
 }
 
 void AIManager::_bind_methods()
@@ -41,36 +42,45 @@ void AIManager::_on_query_finished(QueryResult3D* queryResult)
 {
   Vector3 best_pos = queryResult->get_highest_score_position();
 
-  m_BlackboardInst->set_var("AIMovePosition", best_pos);
+  // if(nav_agent_3d->is_navigation_finished())
+  {
+    m_BlackboardInst->set_var("AIMovePosition", best_pos);
+  }
 }
 
 void AIManager::_update(double delta)
 {
   if(ai_vision_component)
     ai_vision_component->_update(delta);
-
-  m_BlackboardInst->set_var("AIVelocity", ai_character_component->get_velocity());
-  m_BlackboardInst->set_var("ToPlayerDistance", (m_Target->get_global_position() - ai_character_component->get_global_position()).length());
-  m_BlackboardInst->set_var("NextNavigationPoint", nav_agent_3d->get_next_path_position());
-  
-  m_BlackboardInst->set_var("ToPlayerDirection", m_Target->get_global_position() - ai_character_component->get_global_position());
-  m_BlackboardInst->set_var("AIDirection", (nav_agent_3d->get_next_path_position() - ai_character_component->get_global_position()).normalized());
-  
-  if(ai_vision_component)
-    m_BlackboardInst->set_var("CanSeePlayer", ai_vision_component->can_see_player());
-  
-  ai_character_component->set_wish_dir(m_BlackboardInst->get_var("AIDirection"));
-  nav_agent_3d->set_velocity(ai_character_component->get_velocity());
-
-  if(lookat_player_component)
-    lookat_player_component->_update(delta);
-
 }
 
 void AIManager::_physics_update(double delta)
 {
+  if(lookat_player_component)
+    lookat_player_component->_update(delta);
+
   if(ai_vision_component)
+  {
     ai_vision_component->_physics_update(delta);
+    m_BlackboardInst->set_var("CanSeePlayer", ai_vision_component->can_see_player());
+  }
+
+  m_BlackboardInst->set_var("AIVelocity", ai_character_component->get_velocity());
+  m_BlackboardInst->set_var("ToPlayerDistance", (m_Target->get_global_position() - ai_character_component->get_global_position()).length());
+
+  if(!nav_agent_3d->is_navigation_finished())
+  {
+    Vector3 nextPathPos = nav_agent_3d->get_next_path_position();
+    m_BlackboardInst->set_var("NextNavigationPoint", nextPathPos);
+    m_BlackboardInst->set_var("AIDirection", (nextPathPos - ai_character_component->get_global_position()).normalized());
+  }
+
+  m_BlackboardInst->set_var("IsNavigationFinished", nav_agent_3d->is_navigation_finished());
+  m_BlackboardInst->set_var("ToPlayerDirection", m_Target->get_global_position() - ai_character_component->get_global_position());
+
+  ai_character_component->set_wish_dir(m_BlackboardInst->get_var("AIDirection"));
+  nav_agent_3d->set_velocity(ai_character_component->get_velocity());
+
 }
 
 void AIManager::_rotate_character(double delta)
@@ -99,7 +109,6 @@ void AIManager::_idle(double delta)
 {
   input_cmd_system->command(InputCommands::IDLE);
   lookat_player_component->set_look_status(false);
-  m_BlackboardInst->set("IsNavigationFinished", true);
 
   m_LowerBodyStateMachine->travel("Idle");
 }
@@ -111,12 +120,20 @@ void AIManager::_blend_chase_states(double delta)
   anim_tree->set("parameters/LowerBodyStateMachine/Run/blend_position", dir);
 }
 
-BT::Status AIManager::_chase(double delta, bool shouldRotate)
+BT::Status AIManager::_chase(double delta, bool shouldRotate, bool toPlayer)
 {
   if(!m_Target)
   {
     print_error("Player not found to chase!");
     return BT::FAILURE;
+  }
+
+  if(toPlayer)
+  {
+    m_BlackboardInst->set_var("AIMovePosition", m_Target->get_global_position());
+    nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
+  } else {
+    nav_agent_3d->set_target_desired_distance(0.01f);
   }
 
   Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
@@ -131,12 +148,10 @@ BT::Status AIManager::_chase(double delta, bool shouldRotate)
 
   m_LowerBodyStateMachine->travel("Run");
 
-  nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
-  nav_agent_3d->set_target_position(m_Target->get_global_position());
+  nav_agent_3d->set_target_position(aiMovePos);
 
   if(nav_agent_3d->is_navigation_finished())
   {
-    m_BlackboardInst->set_var("IsNavigationFinished", true);
     return BT::SUCCESS;
   }
 
@@ -150,34 +165,44 @@ void AIManager::_blend_patrol_states(double delta)
   anim_tree->set("parameters/Patrol/blend_position", dir);
 }
 
-BT::Status AIManager::_patrol(double delta, bool shouldRotate)
+BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
 {
   if(!m_Target)
   {
     print_error("Player not found to chase!");
     return BT::FAILURE;
   }
-  
+
+  if(toPlayer)
+  {
+    m_BlackboardInst->set_var("AIMovePosition", m_Target->get_global_position());
+    nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
+  } else {
+    print_line("Set desired distance");
+    nav_agent_3d->set_target_desired_distance(0.01f);
+  }
+
+  Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
+
   input_cmd_system->command(InputCommands::WALK);
+
+  _blend_patrol_states(delta);
 
   if(shouldRotate)
     _rotate_character(delta);
   lookat_player_component->set_look_status(shouldRotate);
 
-  _blend_patrol_states(delta);
   m_LowerBodyStateMachine->travel("Walk");
 
-  nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
-  nav_agent_3d->set_target_position(m_Target->get_global_position());
+  nav_agent_3d->set_target_position(aiMovePos);
 
   if(nav_agent_3d->is_navigation_finished())
   {
-    m_BlackboardInst->set_var("IsNavigationFinished", true);
     return BT::SUCCESS;
-  }
+  } 
+  
 
   return BT::RUNNING;
-
 }
 
 BT::Status AIManager::_shoot(double delta)
