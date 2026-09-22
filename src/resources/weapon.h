@@ -40,6 +40,7 @@ private:
   GD_DEFINE_PROPERTY(String, weaponReloadRootBoneName, "");
 
   GD_DEFINE_PROPERTY(float, weaponFOV, 50.0f);
+  GD_DEFINE_PROPERTY(float, weaponZClipScale, 0.65f);
 
   GD_DEFINE_PROPERTY(float, weapon_equip_anim_speed, 1.0f);
   GD_DEFINE_PROPERTY(float, weapon_equip_anim_blend, -1.0f);

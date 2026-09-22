@@ -11,6 +11,7 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, magAmmoCount, Variant::INT);
   GD_BIND_PROPERTY(Weapon, is_incremental_reload, Variant::BOOL);
   GD_BIND_PROPERTY(Weapon, weaponFOV, Variant::FLOAT);
+  GD_BIND_PROPERTY(Weapon, weaponZClipScale, Variant::FLOAT);
   
   ADD_GROUP("Weapon Sway Values", "");
   GD_BIND_PROPERTY(Weapon, weaponSwayAngularFreq, Variant::FLOAT);

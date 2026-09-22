@@ -24,6 +24,5 @@ normal_enabled = true
 normal_texture = SubResource("CompressedTexture2D_lidcj")
 ao_enabled = true
 ao_texture = SubResource("CompressedTexture2D_6qnol")
-use_z_clip_scale = true
 z_clip_scale = 0.65
 fov_override = 50.0

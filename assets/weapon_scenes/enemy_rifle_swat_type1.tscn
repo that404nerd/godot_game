@@ -327,7 +327,7 @@ mesh_instances = [NodePath(""), NodePath("")]
 libraries/ = SubResource("AnimationLibrary_h3lly")
 
 [node name="gun_rifle" type="Node3D" parent="WeaponWrapper" unique_id=490263074]
-transform = Transform3D(-0.7, 0, -1.0569706e-07, 0, 0.7, 0, 1.0569706e-07, 0, -0.7, 0.07, -0.197, -0.015)
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0)
 
 [node name="Armature" type="Node3D" parent="WeaponWrapper/gun_rifle" unique_id=1750441366]
 
@@ -415,3 +415,11 @@ surface_material_override/0 = ExtResource("1_yopgy")
 surface_material_override/1 = ExtResource("2_yh23j")
 surface_material_override/2 = ExtResource("3_gj14b")
 surface_material_override/3 = ExtResource("4_cg1ea")
+
+[node name="WeaponRightHandMarker" type="Marker3D" parent="WeaponWrapper/gun_rifle" unique_id=1010341604]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058035098, 0, 0.1680182)
+gizmo_extents = 0.1
+
+[node name="WeaponLeftHandMarker" type="Marker3D" parent="WeaponWrapper/gun_rifle" unique_id=321925792]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058035098, 0.08285463, 0.5482899)
+gizmo_extents = 0.1

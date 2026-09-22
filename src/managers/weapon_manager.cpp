@@ -96,16 +96,6 @@ void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper
   m_CurrentWeapon = weapon_component->get_current_weapon_data();
   m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
   m_CharacterBody = character_component;
-
-  // m_RecoilResource = m_CurrentWeapon->get_weaponRecoilPatternResource();
-
-  // m_RecoilPathNode = m_RecoilResource->instantiate();
-  // m_RecoilPath = Object::cast_to<Path2D>(m_RecoilPathNode);
-  // m_RecoilCurve = m_RecoilPath->get_curve();
-
-  // Free the node immediately
-  // m_RecoilPathNode->queue_free();
-  // m_RecoilPath->queue_free();
 }
 
 void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
@@ -128,7 +118,8 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
         NOTE: This is for future me, just in case. 
 
         Godot basically has two ways of setting materials. Surface overrides materials and just material overrides. 
-        By default every mesh has 1 empty surface override materials, this is for setting materials for individual meshes and it depends on how the model is imported and structured.
+        By default every mesh has 1 empty surface override materials, this is for setting materials for 
+        individual meshes and it depends on how the model is created.
         Then there's the Material Overrides, which is a single material that is applied to the entire mesh instead of individual parts/meshes.
 
       */
@@ -137,19 +128,26 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
         /*
           If the mesh has surface override materials then loop through all the available ones.
         */
-        for(int surfaceMaterials = 0; surfaceMaterials < mesh->get_surface_override_material_count(); surfaceMaterials++)
+        for(int surfaceMatCount = 0; surfaceMatCount < mesh->get_surface_override_material_count(); surfaceMatCount++)
         {
-          Ref<Material> material = mesh->get_active_material(surfaceMaterials);
+          Ref<Material> material = mesh->get_active_material(surfaceMatCount);
+          Ref<Material> dupMat = material->duplicate();
          
           /*
             First we set the existing material to the mesh before we hold another reference to material (References basically).
-            Also, just in case. If a material is shared between two meshes then setting the override later on will affect the material of the other mesh since both hold a reference to the same object.
-            I have unique meshes so i didn't duplicate it before setting the m_StdMaterial to the duplicated material and then setting the fov_override. 
+
+            Also, just in case. If a material is shared between two meshes then setting the override will affect the material
+            of the other mesh since both hold a reference to the same object.
+
+            I have unique meshes so i didn't duplicate it before setting the m_StdMaterial 
+            to the duplicated material and then setting the fov_override. 
           */
-          mesh->set_surface_override_material(surfaceMaterials, material);
+          mesh->set_surface_override_material(surfaceMatCount, dupMat);
           
-          m_StdMaterial = material;
+          m_StdMaterial = dupMat;
           if(m_StdMaterial.is_valid()) {
+            m_StdMaterial->set_flag(BaseMaterial3D::FLAG_USE_Z_CLIP_SCALE, true);
+            m_StdMaterial->set_z_clip_scale(m_CurrentWeapon->get_weaponZClipScale());
             m_StdMaterial->set_flag(BaseMaterial3D::FLAG_USE_FOV_OVERRIDE, true);
             m_StdMaterial->set_fov_override(m_CurrentWeapon->get_weaponFOV());
           }
@@ -163,6 +161,8 @@ void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapp
         m_StdMaterial = material;
         if(m_StdMaterial.is_valid())
         {
+          m_StdMaterial->set_flag(BaseMaterial3D::FLAG_USE_Z_CLIP_SCALE, true);
+          m_StdMaterial->set_z_clip_scale(m_CurrentWeapon->get_weaponZClipScale());
           m_StdMaterial->set_flag(BaseMaterial3D::FLAG_USE_FOV_OVERRIDE, true);
           m_StdMaterial->set_fov_override(m_CurrentWeapon->get_weaponFOV());
         }
