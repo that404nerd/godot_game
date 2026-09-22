@@ -1,0 +1,24 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cp20v4ksgfu6q"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rl2xm"]
+load_path = "res://.godot/imported/Silencer_albedo.jpeg-a95934868278683be2eb72b3619c4b16.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4q25o"]
+load_path = "res://.godot/imported/Silencer_metallic.jpeg-f6e1af57cf3538a3532cad51aeb69092.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2qedj"]
+load_path = "res://.godot/imported/Silencer_normal.jpeg-62f3968353f64ad4bbdf4ca997b93942.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2dv4o"]
+load_path = "res://.godot/imported/Silencer_roughness.jpeg-3e0ff2704ca27e9dda6fbb0db8fd9f55.s3tc.ctex"
+
+[resource]
+albedo_texture = SubResource("CompressedTexture2D_rl2xm")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_4q25o")
+roughness_texture = SubResource("CompressedTexture2D_2dv4o")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_2qedj")
+use_z_clip_scale = true
+z_clip_scale = 0.65
+fov_override = 50.0

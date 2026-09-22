@@ -362,7 +362,8 @@ void WeaponActionEffects::_weapon_reload_effect(double delta)
     m_ReloadBoneRot = m_ReloadBoneTransform.basis.get_euler();
   }
  
-  
+  m_ReloadBoneRot = Utils::exp_decay(m_ReloadBoneRot, Vector3(0.0f, 0.0f, 0.0f), m_CurrentWeapon->get_reloadShakeResetMultiplier(), delta);
+  m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
 }
 
 void WeaponActionEffects::_update(double delta)
@@ -375,9 +376,6 @@ void WeaponActionEffects::_update(double delta)
 
   _weapon_recoil_effect(delta);
   _weapon_reload_effect(delta);
-
-  m_ReloadBoneRot = Utils::exp_decay(m_ReloadBoneRot, Vector3(0.0f, 0.0f, 0.0f), m_CurrentWeapon->get_reloadShakeResetMultiplier(), delta);
-  m_ReloadBoneRot = Vector3(m_ReloadBoneRot.x, m_ReloadBoneRot.y, 0.0f);
   
   m_WeaponActionEffectsRot = m_RecoilSpringRot + (m_ReloadBoneRot * m_CurrentWeapon->get_reloadShakeSpeedMultiplier());
 }

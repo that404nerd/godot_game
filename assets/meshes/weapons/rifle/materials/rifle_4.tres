@@ -1,0 +1,24 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://duwqmi72o2wnc"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hc6ms"]
+load_path = "res://.godot/imported/Pmag_albedo.jpeg-e85477e1ac13ab7185d136fc668c269f.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_myb22"]
+load_path = "res://.godot/imported/Pmag_metallic.jpeg-ae47788d1fca801a4751633d97ea2777.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_l8kbx"]
+load_path = "res://.godot/imported/Pmag_normal.jpeg-746a0467759042f1ac1a71ed1f62e2d8.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_13cxs"]
+load_path = "res://.godot/imported/Pmag_roughness.jpeg-a0ab173fb8bbddfd12e71637a622f665.s3tc.ctex"
+
+[resource]
+albedo_texture = SubResource("CompressedTexture2D_hc6ms")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_myb22")
+roughness_texture = SubResource("CompressedTexture2D_13cxs")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_l8kbx")
+use_z_clip_scale = true
+z_clip_scale = 0.65
+fov_override = 50.0

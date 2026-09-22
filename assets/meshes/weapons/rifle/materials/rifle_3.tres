@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://d06p75337fu77"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_1hegd"]
+load_path = "res://.godot/imported/Scope_albedo.jpeg-f768e7d186f00b0bae2f09d46bfdfc0c.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_omc5c"]
+load_path = "res://.godot/imported/Scope_metallic.jpeg-99697f37cbc5d51a050d31b4c9104610.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y4n5m"]
+load_path = "res://.godot/imported/Scope_roughness.jpeg-1fdf378384f44ca50040a1db40f4d357.s3tc.ctex"
+
+[resource]
+albedo_texture = SubResource("CompressedTexture2D_1hegd")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_omc5c")
+roughness_texture = SubResource("CompressedTexture2D_y4n5m")
+emission_enabled = true
+use_z_clip_scale = true
+z_clip_scale = 0.65
+fov_override = 50.0

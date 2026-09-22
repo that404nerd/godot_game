@@ -1,0 +1,29 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://degq8qg0teo2c"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_we1mk"]
+load_path = "res://.godot/imported/Rifle_albedo.jpeg-ada2e6c383aaadea850c38e10f9a781b.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6qnol"]
+load_path = "res://.godot/imported/Rifle_AO.jpeg-04a07c3483aac872148c80bbcdfd3d64.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_iehkx"]
+load_path = "res://.godot/imported/Rifle_metallic.jpeg-7b2d2a9caf466411a875f0ea14f45464.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lidcj"]
+load_path = "res://.godot/imported/Rifle_normal.jpeg-8debe992bc66501c0d686afcfe13a78a.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_q47kb"]
+load_path = "res://.godot/imported/Rifle_roughness.jpeg-73b59ca8cd8d06b6a3ead1712ce40dd6.s3tc.ctex"
+
+[resource]
+albedo_texture = SubResource("CompressedTexture2D_we1mk")
+metallic = 1.0
+metallic_texture = SubResource("CompressedTexture2D_iehkx")
+roughness_texture = SubResource("CompressedTexture2D_q47kb")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_lidcj")
+ao_enabled = true
+ao_texture = SubResource("CompressedTexture2D_6qnol")
+use_z_clip_scale = true
+z_clip_scale = 0.65
+fov_override = 50.0
