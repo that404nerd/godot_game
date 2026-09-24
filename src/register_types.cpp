@@ -65,7 +65,6 @@ void initialize_module(ModuleInitializationLevel p_level) {
 
   GDREGISTER_RUNTIME_CLASS(AICharacterComponent);
   GDREGISTER_RUNTIME_CLASS(DetectionAreaComponent);
-  GDREGISTER_RUNTIME_CLASS(LookAtPlayerComponent);
   GDREGISTER_RUNTIME_CLASS(VisionComponent);
 }
 

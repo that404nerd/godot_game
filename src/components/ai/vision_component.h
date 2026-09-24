@@ -72,7 +72,6 @@ private:
 private:
   GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component, nullptr);
   GD_DEFINE_PROPERTY(Skeleton3D*, character_skeleton, nullptr);
-  GD_DEFINE_PROPERTY(SkeletonModifier3D*, lookat_skeleton_modifier, nullptr);
   GD_DEFINE_PROPERTY(DetectionAreaComponent*, inner_detection_area, nullptr);
   GD_DEFINE_PROPERTY(StringName, character_bone_name, StringName());
 

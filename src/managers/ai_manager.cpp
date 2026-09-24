@@ -1,6 +1,10 @@
 #include "ai_manager.h"
 #include "../components/ai/ai_character_component.h"
 
+/*
+  Shoot - -66.8, 38.8, 95.1
+*/
+
 void AIManager::_init()
 {
   m_LowerBodyStateMachine = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/LowerBodyStateMachine/playback"));
@@ -15,13 +19,6 @@ void AIManager::_init()
   if(ai_vision_component)
     ai_vision_component->_init();
 
-  if(lookat_player_component)
-    lookat_player_component->_init(m_Target);
-  else {
-    print_error("Look at player component is null!");
-    return;
-  }
-
 }
 
 void AIManager::_bind_methods()
@@ -34,7 +31,6 @@ void AIManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AIManager, NavigationAgent3D, nav_agent_3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, EnvironmentQuery3D, env_query3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationTree, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(AIManager, LookAtPlayerComponent, lookat_player_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, VisionComponent, ai_vision_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
@@ -56,9 +52,6 @@ void AIManager::_update(double delta)
 
 void AIManager::_physics_update(double delta)
 {
-  if(lookat_player_component)
-    lookat_player_component->_update(delta);
-
   if(ai_vision_component)
   {
     ai_vision_component->_physics_update(delta);
@@ -108,7 +101,6 @@ void AIManager::_rotate_character(double delta)
 void AIManager::_idle(double delta)
 {
   input_cmd_system->command(InputCommands::IDLE);
-  lookat_player_component->set_look_status(false);
 
   m_LowerBodyStateMachine->travel("Idle");
 }
@@ -144,7 +136,6 @@ BT::Status AIManager::_chase(double delta, bool shouldRotate, bool toPlayer)
 
   if(shouldRotate)
     _rotate_character(delta);
-  lookat_player_component->set_look_status(shouldRotate);
 
   m_LowerBodyStateMachine->travel("Run");
 
@@ -190,7 +181,6 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
 
   if(shouldRotate)
     _rotate_character(delta);
-  lookat_player_component->set_look_status(shouldRotate);
 
   m_LowerBodyStateMachine->travel("Walk");
 
@@ -218,7 +208,6 @@ BT::Status AIManager::_shoot(double delta)
     m_QueryTimer -= delta;
   
     _rotate_character(delta);
-    lookat_player_component->set_look_status(true);
   
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
     m_UpperBodyStateMachine->travel("Shoot");

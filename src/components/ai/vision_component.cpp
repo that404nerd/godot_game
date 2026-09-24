@@ -18,8 +18,6 @@ void VisionComponent::_init()
     return;
   }
 
-  lookat_skeleton_modifier->connect("modification_processed", Callable(this, "_on_skeleton_modified"));
-
   inner_detection_area->connect("body_entered", Callable(this, "_on_body_entered_inner_area"));
   inner_detection_area->connect("body_exited", Callable(this, "_on_body_exited_inner_area"));
 }
@@ -32,7 +30,6 @@ void VisionComponent::_bind_methods()
 
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, AICharacterComponent, ai_character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, Skeleton3D, character_skeleton, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(VisionComponent, SkeletonModifier3D, lookat_skeleton_modifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(VisionComponent, DetectionAreaComponent, inner_detection_area, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_PROPERTY(VisionComponent, character_bone_name, Variant::STRING_NAME);
   

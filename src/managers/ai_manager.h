@@ -11,7 +11,6 @@
 
 #include "../components/ai/ai_character_component.h"
 #include "../input_command_system.h"
-#include "../components/ai/lookat_player_component.h"
 #include "../components/ai/vision_component.h"
 
 #include "environment_query3d.h"
@@ -54,7 +53,6 @@ private:
   GD_DEFINE_PROPERTY(EnvironmentQuery3D*, env_query3d, nullptr);
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
-  GD_DEFINE_PROPERTY(LookAtPlayerComponent*, lookat_player_component, nullptr);
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
 
   Ref<AIBehaviourProps> m_AIBehaviourProps { nullptr };
