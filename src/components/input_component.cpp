@@ -33,7 +33,7 @@ void InputComponent::_input(const Ref<InputEvent>& event)
     set_mouse_vel(Vector2(-relative.x * swayIntensity, -relative.y * swayIntensity));
   }
   
-  for(int i = 0; i < get_weapon_list_size(); i++)
+  for(int i = 0; i < get_weapon_res_list_size(); i++)
   {
     String inputAction = "weapon_" + String::num(i + 1, 0); // INFO: Need to match the set input action in the editor
     if(Input::get_singleton()->is_action_just_pressed(inputAction))

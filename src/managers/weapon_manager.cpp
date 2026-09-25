@@ -14,8 +14,7 @@ void WeaponManager::_init()
 
   // Init the weapon wrapper instance nodes
   _init_weapon_manager_data(weapon_node, weapon_wrapper);
-  m_AmmoComp._init_data(weapon_component->get_weapon_list());
-
+  m_AmmoComp._init_data(weapon_component->get_weapon_res_list());
 
   if(input_command_system == nullptr)
   {
@@ -35,24 +34,30 @@ void WeaponManager::_init()
     return;
   }
 
-  if(hold_point_node == nullptr)
-  {
-    print_error("[color=WHITE][Weapon Manager]: [color=RED]HoldPoint Node is null");
-    return;
-  }
-
   print_line("Weapon Manager Initialized");
 }
 
 void WeaponManager::_init_weapons()
 {
-  for(int i = 0; i < weapon_component->get_weapon_list().size(); i++)
-  {
-    weapon_component->set_current_weapon(weapon_component->get_weapon_list()[i]);
-    m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  Node* weaponNode = nullptr;
+  Array weaponResList = weapon_component->get_weapon_res_list();
+  Array weaponSceneList = weapon_component->get_weapon_scene_list();
 
-    Ref<PackedScene> packedScene = weapon_component->get_weapon_scene_list()[i];
-    hold_point_node->add_child(packedScene->instantiate());
+  if(weaponResList.size() == 0)
+  {
+    print_error("No Weapons in the Weapon Component!");
+    return;
+  }
+
+  for(int i = 0; i < weaponResList.size(); i++)
+  {
+    weapon_component->set_current_weapon_res(weaponResList[i]);
+    m_CurrentWeapon = weapon_component->get_current_weapon_res();
+
+    Ref<PackedScene> packedScene = weaponSceneList[i];
+    weaponNode = packedScene->instantiate();
+    hold_point_node->add_child(weaponNode);
+    m_WeaponNodes.push_back(Object::cast_to<Node3D>(weaponNode));
   }
 }
 
@@ -60,53 +65,65 @@ void WeaponManager::_init_weapon_anim_connections(Node3D* weapon_node, WeaponWra
 {
   /* This took me 2 hours to find lol, i forgot that i was dealing with different animation
       players for different weapon scene, this connects the _on_animation_finished to all animation players */
-  for(int i = 0; i < hold_point_node->get_children().size(); i++)
+  for(int i = 0; i < m_WeaponNodes.size(); i++)
   {
-    m_WeaponNodes.push_back(Object::cast_to<Node3D>(hold_point_node->get_children()[i]));
+    print_line("Weapon Nodes Count: ", m_WeaponNodes.size());
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
     weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
 
     weapon_node->set_visible(false);
-
     m_WeaponAnims.push_back(weapon_wrapper->get_weapon_anim_player());
+
+    
     anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
-
-    anim_player->connect("animation_started", Callable(this, "_on_weapon_anim_started"));
-
-    /* I have seperate functions in both the weapon state machine and this class that connect to the same signal
-    but the state machine's animation finished function only handles the state part only! */
-    anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
-    anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
+    if(anim_player)
+    {
+      anim_player->connect("animation_started", Callable(this, "_on_weapon_anim_started"));
+      
+      /* I have seperate functions in both the weapon state machine and this class that connect to the same signal
+      but the state machine's animation finished function only handles the state part only! */
+      anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
+      anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
+    } else {
+      print_error("Animations not found!");
+    }
   }
 }
 
 void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
 {
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
-  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
-  m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
-  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
-  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
-  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+
+  if(m_WeaponWrapperInst)
+  {
+    m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+    m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
+    m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+    m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
+    m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+  } else {
+    print_error("Weapon Wrapper Instance is null!");
+    return;
+  }
 
   // Make sure to change the fov before performing the rest of the initializations
   _change_fov(weapon_node, weapon_wrapper);
 
-  weapon_component->set_current_weapon(weapon_component->get_weapon_list()[m_WeaponIndex]);
-  m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  weapon_component->set_current_weapon_res(weapon_component->get_weapon_res_list()[m_WeaponIndex]);
+  m_CurrentWeapon = weapon_component->get_current_weapon_res();
   m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
   m_CharacterBody = character_component;
 }
 
 void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
 {
-  for(int weaponCount = 0; weaponCount < hold_point_node->get_children().size(); weaponCount++)
+  for(int weaponCount = 0; weaponCount < m_WeaponNodes.size(); weaponCount++)
   { 
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[weaponCount]);
     weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
 
-    weapon_component->set_current_weapon(weapon_component->get_weapon_list()[weaponCount]);
-    m_CurrentWeapon = weapon_component->get_current_weapon_data();
+    weapon_component->set_current_weapon_res(weapon_component->get_weapon_res_list()[weaponCount]);
+    m_CurrentWeapon = weapon_component->get_current_weapon_res();
 
     
     for(int meshes = 0; meshes < weapon_wrapper->get_mesh_instances().size(); meshes++)
@@ -175,7 +192,10 @@ void WeaponManager::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_started", "anim_name"), &WeaponManager::_on_weapon_anim_started);
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
-  
+ 
+  GD_BIND_PROPERTY(WeaponManager, weapons_init_required, Variant::BOOL);
+
+  ADD_GROUP("Manager Nodes", "");
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, WeaponStateMachine, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, WeaponComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -193,7 +213,7 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_update(double delta)
 {
-  m_CurrentWeapon = weapon_component->get_current_weapon_data();
+  m_CurrentWeapon = weapon_component->get_current_weapon_res();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
   m_MuzzleComp->set_global_position(m_WeaponMuzzleMarker->get_global_position());
@@ -354,14 +374,14 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 ///////////////////////////////////////////////////////////////////////
 void WeaponManager::_equip_weapon()
 {
-  if(m_CurrentWeaponAnimPlayer == nullptr)
+  if(m_CurrentWeaponAnimPlayer)
   {
-    print_error("Anim player is null!");
-    return;
+    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
+                              m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
+  } else {
+    print_error("Equip: Anim player is null!");
   }
 
-  m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
-                            m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
 }
 
 void WeaponManager::_unequip_weapon()
@@ -379,8 +399,13 @@ void WeaponManager::_unequip_weapon()
       m_WeaponStateCtx.CanUnequip = true;
 
       // The unequip anim for the current weapon is played here.
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
-        m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
+      if(m_CurrentWeaponAnimPlayer)
+      {
+        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
+          m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
+      } else {
+        print_error("Unequip: Anim player is null!");
+      }
     } 
   } else {
     m_WeaponStateCtx.CanUnequip = false;
@@ -399,6 +424,8 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.TriggerPressed = false;
     return;
   }
+
+  print_line("Shooting!");
 
   m_WeaponStateCtx.IsShooting = true;
 
@@ -428,16 +455,27 @@ void WeaponManager::_shoot_weapon(double delta)
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
       m_WeaponStateCtx.TriggerHeld = true;
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-                                      m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+
+      if(m_CurrentWeaponAnimPlayer)
+      {
+        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+            m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+      } else {
+        print_error("Shoot: Anim player is null!");
+      }
     }  
     
     // Check whether we pressed the fire key (manual), we don't check for wants_to_shoot_weapon() because it's one frame-state and not a persistent state
     if(m_WeaponStateCtx.TriggerPressed && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-                                      m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+      if(m_CurrentWeaponAnimPlayer)
+      {
+        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
+                                        m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+      } else {
+        print_error("Shoot: Anim player is null!");
+      }
     }
       
     if(m_WeaponStateCtx.TriggerHeld || m_WeaponStateCtx.TriggerPressed)
@@ -525,14 +563,14 @@ void WeaponManager::_reload_weapon()
 void WeaponManager::_weapon_unequip_over()
 {
   m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
-  weapon_component->set_current_weapon(weapon_component->get_next_weapon());
-  EventBus::get_singleton()->emit_signal("weapon_switched", weapon_component->get_current_weapon_data());
+  weapon_component->set_current_weapon_res(weapon_component->get_next_weapon());
+  EventBus::get_singleton()->emit_signal("weapon_switched", weapon_component->get_current_weapon_res());
 }
 
 
 void WeaponManager::_weapon_switch()
 {
-  Array weapon_list = weapon_component->get_weapon_list();
+  Array weapon_list = weapon_component->get_weapon_res_list();
   m_WeaponIndex = -1;
   for (int i = 0; i < weapon_list.size(); i++) {
     Ref<Weapon> weaponRes = weapon_list[i]; 
@@ -550,7 +588,7 @@ void WeaponManager::_weapon_switch()
   if(m_WeaponIndex != -1)
   {
     Ref<Weapon> nextWeapon = weapon_list[m_WeaponIndex];
-    weapon_component->set_current_weapon(nextWeapon);
+    weapon_component->set_current_weapon_res(nextWeapon);
     _update_weapon_data(nextWeapon);
     m_WeaponStateCtx.IsWeaponSwitched = true;
   } else {
@@ -562,7 +600,7 @@ void WeaponManager::_weapon_switch()
 void WeaponManager::_switch_weapon_data(int weaponIndex)
 {
   // We are still in the previous weapon and didn't switch to the next one yet
-  Ref<Weapon> next_weapon = weapon_component->get_weapon_list()[weaponIndex];
+  Ref<Weapon> next_weapon = weapon_component->get_weapon_res_list()[weaponIndex];
   
   weapon_component->set_next_weapon(next_weapon);
   weapon_component->set_next_weapon_name(next_weapon->get_weaponName());

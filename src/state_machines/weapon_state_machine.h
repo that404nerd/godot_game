@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "godot_cpp/classes/animation_player.hpp"
 #include "magic_enum/magic_enum.hpp"
 
 #include "../input_command_system.h"

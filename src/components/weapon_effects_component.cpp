@@ -5,7 +5,7 @@ void WeaponBobComponent::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
   m_CharacterBody = weaponEffectsData.CharacterCompInst;
   m_MovementManager = weaponEffectsData.MovementManagerInst;
-  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_data();
+  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_res();
   m_HoldPointNode = weaponEffectsData.HoldPointNode;
 
   if (!weaponEffectsData.CharacterCompInst || !weaponEffectsData.WeaponCompInst) {
@@ -65,7 +65,7 @@ void WeaponSwayComponent::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
   m_CharacterBody = weaponEffectsData.CharacterCompInst;
   m_MovementManager = weaponEffectsData.MovementManagerInst;
-  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_data();
+  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_res();
 
   if(!weaponEffectsData.CharacterCompInst || !weaponEffectsData.WeaponCompInst) {
     print_error("Character component is null!");
@@ -133,7 +133,7 @@ void WeaponJumpEffect::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
   m_CharacterBody = weaponEffectsData.CharacterCompInst;
   m_MovementManager = weaponEffectsData.MovementManagerInst;
-  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_data();
+  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_res();
   m_WeaponManager = weaponEffectsData.WeaponManagerInst;
 
   m_WeaponArmatureNode = m_WeaponManager->get_weapon_armature_node();
@@ -213,7 +213,7 @@ void WeaponSlideEffect::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
   m_CharacterBody = weaponEffectsData.CharacterCompInst;
   m_MovementManager = weaponEffectsData.MovementManagerInst;
-  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_data();
+  m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_res();
   m_WeaponManager = weaponEffectsData.WeaponManagerInst;
   m_WeaponArmatureNode = m_WeaponManager->get_weapon_armature_node();
 

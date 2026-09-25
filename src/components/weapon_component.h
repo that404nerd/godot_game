@@ -29,11 +29,11 @@ public:
     print_line("Weapon Component Initialized");
   }
 
-  void set_current_weapon(Ref<Weapon> newWeapon) { 
+  void set_current_weapon_res(Ref<Weapon> newWeapon) { 
     m_CurrentWeapon = newWeapon; 
   }
 
-  Ref<Weapon> get_current_weapon_data() const { 
+  Ref<Weapon> get_current_weapon_res() const { 
     if(!m_CurrentWeapon.is_valid())
     {
       print_error("Get weapon: Current weapon is null!");
@@ -49,7 +49,7 @@ public:
   void set_next_weapon_name(StringName nextWeaponName) { m_NextWeaponName = nextWeaponName; }
   StringName get_next_weapon_name() { return m_NextWeaponName; }
 
-  Array get_weapon_list() { return weapon_resource_list.keys(); }
+  Array get_weapon_res_list() { return weapon_resource_list.keys(); }
   Array get_weapon_scene_list() { return weapon_resource_list.values(); }
 
 protected:
@@ -57,7 +57,7 @@ protected:
   {
     GD_BIND_PROPERTY(WeaponComponent, weapon_resource_list, Variant::DICTIONARY); 
 
-    ClassDB::bind_method(D_METHOD("get_current_weapon_data"), &WeaponComponent::get_current_weapon_data);
+    ClassDB::bind_method(D_METHOD("get_current_weapon_res"), &WeaponComponent::get_current_weapon_res);
   }
 
 private:

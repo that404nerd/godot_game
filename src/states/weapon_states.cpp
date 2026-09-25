@@ -71,10 +71,6 @@ WeaponEquipState::WeaponEquipState(const WeaponStateData& weaponStateData)
 {
 }
 
-void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
-{
- 
-}
 
 void WeaponEquipState::_enter()
 {
@@ -83,8 +79,13 @@ void WeaponEquipState::_enter()
     print_error("Weapon Equip state data is null!");
     return;
   }
-
+  
   m_WeaponManager->_equip_weapon();
+}
+
+void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
+{
+  
 }
 
 void WeaponEquipState::_update(double delta)

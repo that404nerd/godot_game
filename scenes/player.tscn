@@ -120,6 +120,7 @@ weapon_component = NodePath("../WeaponComponent")
 unique_name_in_owner = true
 
 [node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("input_command_system", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
+weapons_init_required = true
 input_command_system = NodePath("../InputComponent")
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")

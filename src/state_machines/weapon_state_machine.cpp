@@ -20,8 +20,7 @@ void WeaponStateMachine::_init_data()
   m_InitialState = m_States.at(static_cast<int>(WeaponStates::EQUIP)).get();
 
   m_InputCmdSystem = weapon_manager->get_input_command_system_instance();
-  m_InputCmdSystem->set_weapon_list_size(weapon_component->get_weapon_list().size());
-
+  m_InputCmdSystem->set_weapon_list_size(weapon_component->get_weapon_res_list().size());
 
   print_line("Weapon State Machine Initialized");
 }
@@ -70,7 +69,7 @@ StringName WeaponStateMachine::get_current_state_name()
 void WeaponStateMachine::_on_animation_finished(const StringName& anim_name)
 {
   // This is executed if the current weapon's unequip animation has been finished
-  if(anim_name == weapon_component->get_current_weapon_data()->get_weaponUnequipAnimName())
+  if(anim_name == weapon_component->get_current_weapon_res()->get_weaponUnequipAnimName())
   {
     weapon_manager->_weapon_unequip_over();
     _change_state(static_cast<int>(WeaponStates::WEAPON_SWITCH));

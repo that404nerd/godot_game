@@ -148,9 +148,9 @@ behavior_tree/user_task_dirs=PackedStringArray("res://src/components/ai")
 
 [physics]
 
-common/physics_jitter_fix=0.0
 3d/physics_engine="Jolt Physics"
 common/physics_interpolation=true
+3d/physics_jitter_fix=0.0
 
 [rendering]
 

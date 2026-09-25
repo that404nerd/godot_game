@@ -1,10 +1,6 @@
 #include "ai_manager.h"
 #include "../components/ai/ai_character_component.h"
 
-/*
-  Shoot - -66.8, 38.8, 95.1
-*/
-
 void AIManager::_init()
 {
   m_LowerBodyStateMachine = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/LowerBodyStateMachine/playback"));
@@ -32,6 +28,9 @@ void AIManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AIManager, EnvironmentQuery3D, env_query3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationTree, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, VisionComponent, ai_vision_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, rArmCopyModifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, rHandCopyModifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, spineCopyModifer, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
 void AIManager::_on_query_finished(QueryResult3D* queryResult)
@@ -73,7 +72,6 @@ void AIManager::_physics_update(double delta)
 
   ai_character_component->set_wish_dir(m_BlackboardInst->get_var("AIDirection"));
   nav_agent_3d->set_velocity(ai_character_component->get_velocity());
-
 }
 
 void AIManager::_rotate_character(double delta)
@@ -98,10 +96,24 @@ void AIManager::_rotate_character(double delta)
 
 }
 
+void AIManager::_enable_shootIK(bool enable)
+{
+  if(enable)
+  {
+    rArmCopyModifier->set("settings/0/amount", 1.0f);
+    rHandCopyModifier->set("settings/0/amount", 1.0f);
+    spineCopyModifer->set("settings/0/amount", 1.0f);
+  } else {
+    rArmCopyModifier->set("settings/0/amount", 0.0f);
+    rHandCopyModifier->set("settings/0/amount", 0.0f);
+    spineCopyModifer->set("settings/0/amount", 0.0f);
+  }
+}
+
 void AIManager::_idle(double delta)
 {
   input_cmd_system->command(InputCommands::IDLE);
-
+  _enable_shootIK(false);
   m_LowerBodyStateMachine->travel("Idle");
 }
 
@@ -131,6 +143,7 @@ BT::Status AIManager::_chase(double delta, bool shouldRotate, bool toPlayer)
   Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
 
   input_cmd_system->command(InputCommands::SPRINT);
+  _enable_shootIK(false);
 
   _blend_chase_states(delta);
 
@@ -169,13 +182,13 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
     m_BlackboardInst->set_var("AIMovePosition", m_Target->get_global_position());
     nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
   } else {
-    print_line("Set desired distance");
     nav_agent_3d->set_target_desired_distance(0.01f);
   }
 
   Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
 
   input_cmd_system->command(InputCommands::WALK);
+  _enable_shootIK(false);
 
   _blend_patrol_states(delta);
 
@@ -206,9 +219,11 @@ BT::Status AIManager::_shoot(double delta)
     }
   
     m_QueryTimer -= delta;
-  
     _rotate_character(delta);
   
+    // input_cmd_system->command(InputCommands::SHOOT);
+    _enable_shootIK(true);
+
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
     m_UpperBodyStateMachine->travel("Shoot");
     

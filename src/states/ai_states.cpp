@@ -40,7 +40,6 @@ void AIIdleState::_enter()
 {
   m_BTPlayerInst->set_behavior_tree(get_bt_resource());
   m_BTPlayerInst->set_active(true);
-  print_line("Going idle!");
 }
 
 void AIIdleState::_update(double delta)
@@ -69,7 +68,6 @@ void AIAlertState::_enter()
   m_BTPlayerInst->set_behavior_tree(get_bt_resource());
   m_BTPlayerInst->set_active(true);
 
-  print_line("Alert!");
 }
 
 void AIAlertState::_update(double delta)
@@ -98,7 +96,6 @@ void AICombatState::_enter()
   m_BTPlayerInst->set_behavior_tree(get_bt_resource());
   m_BTPlayerInst->set_active(true);
 
-  print_line("Combat!");
 }
 
 void AICombatState::_update(double delta)
@@ -117,7 +114,6 @@ void AICombatState::_exit()
 
 void AIDeadState::_enter()
 {
-  print_line("Dead!");
 }
 
 void AIDeadState::_update(double delta)

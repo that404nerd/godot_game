@@ -84,7 +84,7 @@ public:
   int get_weapon_idx() { return m_InputCmdData.WeaponIdx; }
 
   void set_weapon_list_size(int val) { m_InputCmdData.WeaponListSize = val; }
-  int get_weapon_list_size() { return m_InputCmdData.WeaponListSize; }
+  int get_weapon_res_list_size() { return m_InputCmdData.WeaponListSize; }
 
   void set_wants_to_idle(bool status) { m_InputCmdData.WantsToIdle = status; }
   void set_wants_to_walk(bool status) { m_InputCmdData.WantsToWalk = status; }
