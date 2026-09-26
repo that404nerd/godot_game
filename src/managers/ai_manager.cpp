@@ -115,6 +115,7 @@ void AIManager::_idle(double delta)
   input_cmd_system->command(InputCommands::IDLE);
   _enable_shootIK(false);
   m_LowerBodyStateMachine->travel("Idle");
+  m_UpperBodyStateMachine->travel("Idle");
 }
 
 void AIManager::_blend_chase_states(double delta)

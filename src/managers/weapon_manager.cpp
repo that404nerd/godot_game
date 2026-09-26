@@ -425,8 +425,6 @@ void WeaponManager::_shoot_weapon(double delta)
     return;
   }
 
-  print_line("Shooting!");
-
   m_WeaponStateCtx.IsShooting = true;
 
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
