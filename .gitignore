@@ -6,7 +6,7 @@
 compile_commands.json
 assets/**/*.import
 assets/meshes/**/*.png
-assets/meshes/**/*.blend1
+assets/blend_files/*.blend1
 assets/meshes/**/*.jpg
 assets/meshes/**/*.import
 export_presets.cfg
