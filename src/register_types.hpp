@@ -27,17 +27,21 @@
 #include "resources/ai_behaviour_props.h"
 #include "resources/weapon.h"
 
+#include "components/weapon_effects_components.h"
+#include "components/input_component.h"
+#include "components/muzzle_flash_component.h"
+#include "components/weapon_wrapper.h"
+#include "components/play_anim_component.h"
+#include "components/play_anim_from_player.h"
+#include "components/play_anim_from_tree.h"
+
+#include "components/ai/vision_component.h"
 #include "components/ai/vision_component.h"
 #include "components/ai/detection_area_component.h"
 #include "components/ai/ai_character_component.h"
 #include "components/ai/move_to_target.h"
 #include "components/ai/shoot_at_target.h"
 
-#include "components/weapon_effects_components.h"
-#include "components/input_component.h"
-#include "components/muzzle_flash_component.h"
-#include "components/weapon_wrapper.h"
-#include "components/ai/vision_component.h"
 
 using namespace godot;
 

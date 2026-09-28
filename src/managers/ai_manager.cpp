@@ -115,7 +115,7 @@ void AIManager::_idle(double delta)
   input_cmd_system->command(InputCommands::IDLE);
   _enable_shootIK(false);
   m_LowerBodyStateMachine->travel("Idle");
-  m_UpperBodyStateMachine->travel("Idle");
+  anim_tree->set("parameters/UpperBodyBlend/blend_amount", 0.0f);
 }
 
 void AIManager::_blend_chase_states(double delta)
@@ -223,6 +223,7 @@ BT::Status AIManager::_shoot(double delta)
     _rotate_character(delta);
   
     // input_cmd_system->command(InputCommands::SHOOT);
+    // anim_system->command("Shoot", [](){  });
     _enable_shootIK(true);
 
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bto5u4rf2xb5a"]
+
+[ext_resource type="Script" uid="uid://cudeo8kl0h6wl" path="res://src/scripts/enemy_info_component.gd" id="1_2ghs5"]
+
+[node name="EnemyInfo" type="Node3D" unique_id=878782930]
+script = ExtResource("1_2ghs5")
+
+[node name="Movement State Label" type="Label3D" parent="." unique_id=712629258]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.122131, 0)
+billboard = 1
+text = "1"
+
+[node name="Weapon State Label" type="Label3D" parent="." unique_id=1637166178]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9753864, 0)
+billboard = 1
+text = "2
+"

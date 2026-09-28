@@ -67,16 +67,19 @@ void WeaponManager::_init_weapon_anim_connections(Node3D* weapon_node, WeaponWra
       players for different weapon scene, this connects the _on_animation_finished to all animation players */
   for(int i = 0; i < m_WeaponNodes.size(); i++)
   {
-    print_line("Weapon Nodes Count: ", m_WeaponNodes.size());
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
     weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
 
     weapon_node->set_visible(false);
-    m_WeaponAnims.push_back(weapon_wrapper->get_weapon_anim_player());
+    if(weapon_wrapper->get_weapon_anim_player())
+    {
+      m_WeaponAnims.push_back(weapon_wrapper->get_weapon_anim_player());
+      anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
+    }
 
-    
-    anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
-    if(anim_player)
+    /*
+    */
+    if(m_WeaponAnims.size() != 0)
     {
       anim_player->connect("animation_started", Callable(this, "_on_weapon_anim_started"));
       
@@ -84,9 +87,7 @@ void WeaponManager::_init_weapon_anim_connections(Node3D* weapon_node, WeaponWra
       but the state machine's animation finished function only handles the state part only! */
       anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
       anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
-    } else {
-      print_error("Animations not found!");
-    }
+    } 
   }
 }
 
@@ -107,7 +108,8 @@ void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper
   }
 
   // Make sure to change the fov before performing the rest of the initializations
-  _change_fov(weapon_node, weapon_wrapper);
+  if(weapon_fov_override_required)
+    _change_fov(weapon_node, weapon_wrapper);
 
   weapon_component->set_current_weapon_res(weapon_component->get_weapon_res_list()[m_WeaponIndex]);
   m_CurrentWeapon = weapon_component->get_current_weapon_res();
@@ -194,12 +196,14 @@ void WeaponManager::_bind_methods()
   ClassDB::bind_method(D_METHOD("_on_weapon_anim_finished", "anim_name"), &WeaponManager::_on_weapon_anim_finished);
  
   GD_BIND_PROPERTY(WeaponManager, weapons_init_required, Variant::BOOL);
+  GD_BIND_PROPERTY(WeaponManager, weapon_fov_override_required, Variant::BOOL);
 
   ADD_GROUP("Manager Nodes", "");
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, WeaponStateMachine, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, WeaponComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, CharacterComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, PlayAnimComponent, play_anim_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, Node3D, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ClassDB::bind_method(D_METHOD("get_current_weapon_ammo"), &WeaponManager::get_current_weapon_ammo);
@@ -454,10 +458,13 @@ void WeaponManager::_shoot_weapon(double delta)
     {
       m_WeaponStateCtx.TriggerHeld = true;
 
+      // play_anim_component->execute_anim();
+
       if(m_CurrentWeaponAnimPlayer)
       {
         m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
             m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
+        // anim_system->command("ShootWeapon");
       } else {
         print_error("Shoot: Anim player is null!");
       }

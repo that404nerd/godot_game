@@ -3,7 +3,7 @@
 
 BaseWeaponState::BaseWeaponState(WeaponStates weaponState, const WeaponStateData& weaponStateData)
   : State(static_cast<int>(weaponState)), m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
-    m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx()), m_InputCmdSystem(m_WeaponManager->get_input_command_system_instance())
+    m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx()), m_InputCmdSystem(m_WeaponManager->get_input_command_system())
 {
   if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
   {

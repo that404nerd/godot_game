@@ -28,6 +28,7 @@
 #include "../components/weapon_component.h"
 #include "../components/weapon_effects_components.h"
 #include "../components/weapon_wrapper.h"
+#include "../components/play_anim_component.h"
 
 #include "../dd3d_cpp_api.hpp"
 
@@ -89,8 +90,6 @@ public:
   float get_time_between_shots() { return m_TimeBetweenShots; }
 
   // Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
-  InputCommandSystem* get_input_command_system_instance() { return input_command_system; }
-
   void set_trigger_press_status(bool status) { m_WeaponStateCtx.TriggerPressed = status; }
 
   int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
@@ -161,7 +160,9 @@ private:
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
+  GD_DEFINE_PROPERTY(PlayAnimComponent*, play_anim_component, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
 
   GD_DEFINE_PROPERTY(bool, weapons_init_required, false);
+  GD_DEFINE_PROPERTY(bool, weapon_fov_override_required, false);
 };

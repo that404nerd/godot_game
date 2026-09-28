@@ -16,10 +16,12 @@ void WeaponStateMachine::_init_data()
   m_States[static_cast<int>(WeaponStates::RELOAD)] = std::make_unique<WeaponReloadState>(m_WeaponStateData);
   m_States[static_cast<int>(WeaponStates::UNEQUIP)] = std::make_unique<WeaponUnequipState>(m_WeaponStateData);
   m_States[static_cast<int>(WeaponStates::WEAPON_SWITCH)] = std::make_unique<WeaponSwitchState>(m_WeaponStateData);
-  
-  m_InitialState = m_States.at(static_cast<int>(WeaponStates::EQUIP)).get();
 
-  m_InputCmdSystem = weapon_manager->get_input_command_system_instance();
+  // The default state by default is equip because the player needs to play his equip animation. 
+  // Some enemies might have their weapon equipped already, so this allows us to set the default state to idle instead
+  m_InitialState = m_States.at(default_weapon_state).get();
+
+  m_InputCmdSystem = weapon_manager->get_input_command_system();
   m_InputCmdSystem->set_weapon_list_size(weapon_component->get_weapon_res_list().size());
 
   print_line("Weapon State Machine Initialized");
@@ -29,6 +31,10 @@ void WeaponStateMachine::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(WeaponStateMachine, WeaponManager, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponStateMachine, WeaponComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+
+  BIND_ENUM_CONSTANT(IDLE);
+  BIND_ENUM_CONSTANT(EQUIP);
+  GD_BIND_ENUM(WeaponStateMachine, default_weapon_state, "Idle,Equip");
 
   ClassDB::bind_method(D_METHOD("_on_animation_finished", "anim_name"), &WeaponStateMachine::_on_animation_finished);
   ClassDB::bind_method(D_METHOD("get_current_state_name"), &WeaponStateMachine::get_current_state_name);

@@ -121,6 +121,7 @@ unique_name_in_owner = true
 
 [node name="WeaponManager" type="WeaponManager" parent="." unique_id=757047114 node_paths=PackedStringArray("input_command_system", "weapon_state_machine", "weapon_component", "character_component", "hold_point_node")]
 weapons_init_required = true
+weapon_fov_override_required = true
 input_command_system = NodePath("../InputComponent")
 weapon_state_machine = NodePath("../WeaponStateMachine")
 weapon_component = NodePath("../WeaponComponent")
@@ -148,3 +149,5 @@ unique_name_in_owner = true
 character_component = NodePath("..")
 movement_manager = NodePath("../MovementManager")
 unique_name_in_owner = true
+
+[node name="PlayAnimFromPlayer" type="PlayAnimFromPlayer" parent="." unique_id=51517378]

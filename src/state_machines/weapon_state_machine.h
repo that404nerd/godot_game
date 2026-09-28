@@ -11,7 +11,7 @@
 
 class WeaponManager;
 
-enum class WeaponStates {
+enum WeaponStates {
   NONE = -1, IDLE, EQUIP, SHOOT, RELOAD, UNEQUIP, WEAPON_SWITCH
 };
 
@@ -41,8 +41,10 @@ protected:
 private:
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
+  GD_DEFINE_PROPERTY(WeaponStates, default_weapon_state, WeaponStates::EQUIP);
 
   InputCommandSystem* m_InputCmdSystem { nullptr };
   WeaponStateData m_WeaponStateData;
   Ref<Weapon> m_CurrentWeapon { nullptr };
 };
+VARIANT_ENUM_CAST(WeaponStates);

@@ -59,6 +59,9 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_RUNTIME_CLASS(InputComponent);
   GDREGISTER_RUNTIME_CLASS(WeaponEffects);
   GDREGISTER_RUNTIME_CLASS(WeaponActionEffects);
+  GDREGISTER_ABSTRACT_CLASS(PlayAnimComponent);
+  GDREGISTER_CLASS(PlayAnimFromPlayer);
+  GDREGISTER_CLASS(PlayAnimFromTree);
   GDREGISTER_CLASS(WeaponWrapper);
   GDREGISTER_CLASS(WeaponComponent);
   GDREGISTER_CLASS(MuzzleFlashComponent);
