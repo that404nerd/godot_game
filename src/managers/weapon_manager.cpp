@@ -102,12 +102,17 @@ void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper
     m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
     m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
     m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
+
+    if(animations_from_weapon)
+    {
+      play_anim_component = m_WeaponWrapperInst->get_play_anim_component();
+    }
   } else {
     print_error("Weapon Wrapper Instance is null!");
     return;
   }
 
-  // Make sure to change the fov before performing the rest of the initializations
+  // Make sure to change the fov before performing the rest of the initializations only if required
   if(weapon_fov_override_required)
     _change_fov(weapon_node, weapon_wrapper);
 
@@ -197,6 +202,7 @@ void WeaponManager::_bind_methods()
  
   GD_BIND_PROPERTY(WeaponManager, weapons_init_required, Variant::BOOL);
   GD_BIND_PROPERTY(WeaponManager, weapon_fov_override_required, Variant::BOOL);
+  GD_BIND_PROPERTY(WeaponManager, animations_from_weapon, Variant::BOOL);
 
   ADD_GROUP("Manager Nodes", "");
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -256,6 +262,9 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
   m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
   m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
 
+  if(animations_from_weapon)
+    play_anim_component = m_WeaponWrapperInst->get_play_anim_component();
+
   m_DecalScene = nextWeapon->get_weaponDecalResource();
 }
 
@@ -282,7 +291,7 @@ void WeaponManager::generate_decal()
 
 void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 {
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
+  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_SHOOT))
   {
     m_MuzzleComp->_set_particles_status(true);
     m_MuzzleLightTimeout = m_MuzzleComp->get_particle_lifetime();
@@ -292,12 +301,12 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
   }
 
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponEquipAnimName()))
+  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_EQUIP))
   {
     m_WeaponStateCtx.IsEquipOver = false;
   }
 
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
+  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_RELOAD))
   {
     EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D);
   }
@@ -306,17 +315,17 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
   // Make sure the reload state is over for any type of reload once the animation ends
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
+  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_RELOAD))
   {
     m_WeaponStateCtx.IsReloading = false;
   }
 
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponEquipAnimName()))
+  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_EQUIP))
   {
     m_WeaponStateCtx.IsEquipOver = true;
   }
 
-  if(anim_name == StringName(m_CurrentWeapon->get_weaponShootingAnimName()))
+  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_SHOOT))
   {
     m_MuzzleComp->_set_particles_status(false);
   }
@@ -334,13 +343,12 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
   // make sure this only triggers for weapons with incremental reloads only!!!!!
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
-    if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadStartAnimName()))
+    if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_RELOAD_START))
     {
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(),
-        m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+      play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD);
     }
 
-    if(anim_name == StringName(m_CurrentWeapon->get_weaponReloadAnimName()))
+    if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_RELOAD))
     {
       m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
       m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - 1);
@@ -353,8 +361,7 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 
       if(ammoToBeReloaded == 0)
       {
-        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadEndAnimName(),
-          m_CurrentWeapon->get_weapon_reload_end_anim_blend(), m_CurrentWeapon->get_weapon_reload_end_anim_speed());
+        play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD_END);
 
         m_WeaponStateCtx.IsReloading = false;
         m_WeaponStateCtx.IsReloadStarted = false;
@@ -362,8 +369,7 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
       
       if(ammoToBeReloaded > 0)
       {
-        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadAnimName(),
-          m_CurrentWeapon->get_weapon_reload_anim_blend(), m_CurrentWeapon->get_weapon_reload_anim_speed());
+        play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD);
       }
       
     }
@@ -378,14 +384,7 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 ///////////////////////////////////////////////////////////////////////
 void WeaponManager::_equip_weapon()
 {
-  if(m_CurrentWeaponAnimPlayer)
-  {
-    m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponEquipAnimName(), 
-                              m_CurrentWeapon->get_weapon_equip_anim_blend(), m_CurrentWeapon->get_weapon_equip_anim_speed());
-  } else {
-    print_error("Equip: Anim player is null!");
-  }
-
+  play_anim_component->execute_anim(AnimTypes::WEAPON_EQUIP);
 }
 
 void WeaponManager::_unequip_weapon()
@@ -398,18 +397,12 @@ void WeaponManager::_unequip_weapon()
 
   if(weapon_component->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
   {
-    if(m_CurrentWeaponAnimPlayer->get_current_animation() != m_CurrentWeapon->get_weaponUnequipAnimName())
+    if(m_CurrentWeaponAnimPlayer->get_current_animation() != play_anim_component->get_anim(AnimTypes::WEAPON_UNEQUIP))
     {
       m_WeaponStateCtx.CanUnequip = true;
 
       // The unequip anim for the current weapon is played here.
-      if(m_CurrentWeaponAnimPlayer)
-      {
-        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponUnequipAnimName(), 
-          m_CurrentWeapon->get_weapon_unequip_anim_blend(), m_CurrentWeapon->get_weapon_unequip_anim_speed());
-      } else {
-        print_error("Unequip: Anim player is null!");
-      }
+      play_anim_component->execute_anim(AnimTypes::WEAPON_UNEQUIP);
     } 
   } else {
     m_WeaponStateCtx.CanUnequip = false;
@@ -458,29 +451,14 @@ void WeaponManager::_shoot_weapon(double delta)
     {
       m_WeaponStateCtx.TriggerHeld = true;
 
-      // play_anim_component->execute_anim();
-
-      if(m_CurrentWeaponAnimPlayer)
-      {
-        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-            m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
-        // anim_system->command("ShootWeapon");
-      } else {
-        print_error("Shoot: Anim player is null!");
-      }
+      play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }  
     
     // Check whether we pressed the fire key (manual), we don't check for wants_to_shoot_weapon() because it's one frame-state and not a persistent state
     if(m_WeaponStateCtx.TriggerPressed && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
-      if(m_CurrentWeaponAnimPlayer)
-      {
-        m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponShootingAnimName(), 
-                                        m_CurrentWeapon->get_weapon_shoot_anim_blend(), m_CurrentWeapon->get_weapon_shoot_anim_speed());
-      } else {
-        print_error("Shoot: Anim player is null!");
-      }
+      play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }
       
     if(m_WeaponStateCtx.TriggerHeld || m_WeaponStateCtx.TriggerPressed)
@@ -543,25 +521,17 @@ void WeaponManager::_reload_weapon()
     if(m_WeaponStateCtx.IsReloadStarted == false)
     {
       m_WeaponStateCtx.IsReloadStarted = true;
-      m_CurrentWeaponAnimPlayer->play(m_CurrentWeapon->get_weaponReloadStartAnimName(),
-      m_CurrentWeapon->get_weapon_reload_start_anim_blend(), m_CurrentWeapon->get_weapon_reload_start_anim_speed());
+
+      play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD);
     }
 
   } else {
-    m_CurrentWeaponAnimPlayer->play(
-      m_CurrentWeapon->get_weaponReloadAnimName(), 
-      m_CurrentWeapon->get_weapon_reload_anim_blend(), 
-      m_CurrentWeapon->get_weapon_reload_anim_speed()
-    );
+    play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD);
 
     // This will work for weapons that are not using incremental reloads
     // The ammo won't be set if you change the weapon before the mag is entered
-    if(get_current_anim_length() >= m_CurrentWeapon->get_magEnteredTimestamp())
-    {
-      m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
-      m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
-    }
-    
+    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
+    m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
   }
 }
 

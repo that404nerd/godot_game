@@ -1,7 +1,13 @@
 #include "play_anim_from_player.h"
 
-void PlayAnimFromPlayer::execute_anim(const StringName& anim_name)
+void PlayAnimFromPlayer::_ready()
 {
+  PlayAnimComponent::_ready();
+}
+
+void PlayAnimFromPlayer::execute_anim(AnimTypes anim_type)
+{
+  StringName anim_name = get_anim(anim_type);
   anim_player->play(anim_name);
 }
 

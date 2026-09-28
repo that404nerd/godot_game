@@ -75,7 +75,8 @@ StringName WeaponStateMachine::get_current_state_name()
 void WeaponStateMachine::_on_animation_finished(const StringName& anim_name)
 {
   // This is executed if the current weapon's unequip animation has been finished
-  if(anim_name == weapon_component->get_current_weapon_res()->get_weaponUnequipAnimName())
+  PlayAnimComponent* play_anim_comp = weapon_manager->get_play_anim_component();
+  if(anim_name == play_anim_comp->get_anim(AnimTypes::WEAPON_UNEQUIP))
   {
     weapon_manager->_weapon_unequip_over();
     _change_state(static_cast<int>(WeaponStates::WEAPON_SWITCH));

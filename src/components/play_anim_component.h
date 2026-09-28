@@ -1,6 +1,9 @@
 #pragma once
 
+#include <unordered_map>
+
 #include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/engine.hpp>
 
 #include "../globals.h"
 
@@ -9,20 +12,28 @@
 
 using namespace godot;
 
-typedef TypedDictionary<StringName, StringName> AnimList;
+enum class AnimTypes
+{
+  IDLE, WALK, SPRINT, CROUCH,
+  WEAPON_EQUIP, WEAPON_SHOOT, WEAPON_RELOAD_START, WEAPON_RELOAD, WEAPON_RELOAD_END, WEAPON_UNEQUIP
+};
 
-// enum class AnimList 
-// {
-//   IDLE, WALK, SPRINT, CROUCH,
-//   WEAPON_IDLE, WEAPON_EQUIP, WEAPON_SHOOT, WEAPON_RELOAD, WEAPON_UNEQUIP
-// };
+typedef TypedDictionary<StringName, StringName> AnimList;
 
 class PlayAnimComponent : public Node {
   GDCLASS(PlayAnimComponent, Node);
 public:
-  virtual void execute_anim(const StringName& anim_name) = 0;
+
+  void _ready() override;
+  virtual void execute_anim(AnimTypes anim_type) = 0;
+
+  StringName get_anim(AnimTypes animType);
+
 protected:
   static void _bind_methods();
-private:
-  GD_DEFINE_PROPRERTY(AnimList, anim_list, AnimList());
+
+
+protected:
+  GD_DEFINE_PROPERTY(AnimList, anim_list, AnimList());
+  std::unordered_map<AnimTypes, std::string> m_AnimsMap;
 };

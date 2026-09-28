@@ -2,9 +2,10 @@
 
 #include <memory>
 
-#include "godot_cpp/classes/animation_player.hpp"
+#include <godot_cpp/classes/animation_player.hpp>
 #include "magic_enum/magic_enum.hpp"
 
+#include "../components/play_anim_component.h"
 #include "../input_command_system.h"
 #include "../components/weapon_component.h"
 #include "./state_machine.h"
@@ -43,6 +44,7 @@ private:
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(WeaponStates, default_weapon_state, WeaponStates::EQUIP);
 
+  PlayAnimComponent* m_PlayAnimComp { nullptr };
   InputCommandSystem* m_InputCmdSystem { nullptr };
   WeaponStateData m_WeaponStateData;
   Ref<Weapon> m_CurrentWeapon { nullptr };

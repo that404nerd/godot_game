@@ -42,30 +42,6 @@ private:
   GD_DEFINE_PROPERTY(float, weaponFOV, 50.0f);
   GD_DEFINE_PROPERTY(float, weaponZClipScale, 0.65f);
 
-  GD_DEFINE_PROPERTY(float, weapon_equip_anim_speed, 1.0f);
-  GD_DEFINE_PROPERTY(float, weapon_equip_anim_blend, -1.0f);
-  GD_DEFINE_PROPERTY(String, weaponEquipAnimName, "");
-
-  GD_DEFINE_PROPERTY(float, weapon_shoot_anim_speed, 1.0f);
-  GD_DEFINE_PROPERTY(float, weapon_shoot_anim_blend, -1.0f);
-  GD_DEFINE_PROPERTY(String, weaponShootingAnimName, "");
-
-  GD_DEFINE_PROPERTY(float, weapon_reload_start_anim_speed, 1.0f);
-  GD_DEFINE_PROPERTY(float, weapon_reload_start_anim_blend, -1.0f);
-  GD_DEFINE_PROPERTY(String, weaponReloadStartAnimName, "");
-
-  GD_DEFINE_PROPERTY(float, weapon_reload_anim_speed, 1.0f);
-  GD_DEFINE_PROPERTY(float, weapon_reload_anim_blend, -1.0f);
-  GD_DEFINE_PROPERTY(String, weaponReloadAnimName, "");
-
-  GD_DEFINE_PROPERTY(float, weapon_reload_end_anim_speed, 1.0f);
-  GD_DEFINE_PROPERTY(float, weapon_reload_end_anim_blend, -1.0f);
-  GD_DEFINE_PROPERTY(String, weaponReloadEndAnimName, "");
-
-  GD_DEFINE_PROPERTY(float, weapon_unequip_anim_speed, 1.0f);
-  GD_DEFINE_PROPERTY(float, weapon_unequip_anim_blend, -1.0f);
-  GD_DEFINE_PROPERTY(String, weaponUnequipAnimName, "");
-
   GD_DEFINE_PROPERTY(float, hold_max_time, 0.5f);
 
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponDecalResource, nullptr);

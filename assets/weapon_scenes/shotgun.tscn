@@ -254,21 +254,33 @@ blend_shape_mode = 0
 
 [node name="Shotgun" type="Node3D" unique_id=670607748]
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=1829011072 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=1829011072 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton", "weapon_anim_player", "play_anim_component")]
+mesh_instances = [NodePath("gun_shotgun/Armature/Skeleton3D/arm"), NodePath("gun_shotgun/Armature/Skeleton3D/boomstick")]
 armature_node = NodePath("gun_shotgun/Armature")
 muzzle_point_marker = NodePath("gun_shotgun/Armature/Marker3D")
 muzzle_flash_component = NodePath("gun_shotgun/Armature/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_shotgun/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
-mesh_instances = [NodePath("gun_shotgun/Armature/Skeleton3D/arm"), NodePath("gun_shotgun/Armature/Skeleton3D/boomstick")]
+play_anim_component = NodePath("PlayAnimFromPlayer")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="WeaponWrapper" unique_id=128986582]
+root_node = NodePath("../gun_shotgun")
+libraries/ = ExtResource("9_5blxk")
 
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=945955197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0551762, 0.0214645, 0.18502736)
 visible = false
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="WeaponWrapper" unique_id=128986582]
-root_node = NodePath("../gun_shotgun")
-libraries/ = ExtResource("9_5blxk")
+[node name="PlayAnimFromPlayer" type="PlayAnimFromPlayer" parent="WeaponWrapper" unique_id=424335301 node_paths=PackedStringArray("anim_player")]
+anim_player = NodePath("../AnimationPlayer")
+anim_list = Dictionary[StringName, StringName]({
+&"equip_anim": &"shotgun_equip",
+&"reload_anim": &"shotgun_reload",
+&"reload_end_anim": &"shotgun_reload_end",
+&"reload_start_anim": &"shotgun_reload_start",
+&"shoot_anim": &"shotgun_shoot",
+&"unequip_anim": &"shotgun_unequip"
+})
 
 [node name="gun_shotgun" type="Node3D" parent="WeaponWrapper" unique_id=657098799]
 transform = Transform3D(-0.6, 0, 9.059749e-08, 0, 0.6, 0, -9.059749e-08, 0, -0.6, 0.085, -0.106, -0.163)

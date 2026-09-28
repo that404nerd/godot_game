@@ -258,13 +258,14 @@ blend_shape_mode = 0
 
 [node name="Pistol" type="Node3D" unique_id=22962097]
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton", "weapon_anim_player")]
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton", "weapon_anim_player", "play_anim_component")]
+mesh_instances = [NodePath("gun_pistol/Armature/Skeleton3D/arm"), NodePath("gun_pistol/Armature/Skeleton3D/pistol")]
 armature_node = NodePath("gun_pistol/Armature")
 muzzle_point_marker = NodePath("gun_pistol/Armature/Marker3D")
 muzzle_flash_component = NodePath("gun_pistol/Armature/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_pistol/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
-mesh_instances = [NodePath("gun_pistol/Armature/Skeleton3D/arm"), NodePath("gun_pistol/Armature/Skeleton3D/pistol")]
+play_anim_component = NodePath("PlayAnimFromPlayer")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="WeaponWrapper" unique_id=1683560631]
 root_node = NodePath("../gun_pistol")
@@ -272,6 +273,17 @@ libraries/ = ExtResource("5_q6rp4")
 
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=1788948957]
 visible = false
+
+[node name="PlayAnimFromPlayer" type="PlayAnimFromPlayer" parent="WeaponWrapper" unique_id=2038629825 node_paths=PackedStringArray("anim_player")]
+anim_player = NodePath("../AnimationPlayer")
+anim_list = Dictionary[StringName, StringName]({
+&"equip_anim": &"pistol_equip",
+&"reload_anim": &"pistol_reload",
+&"reload_end_anim": &"pistol_reload_end",
+&"reload_start_anim": &"pistol_reload_start",
+&"shoot_anim": &"pistol_shoot",
+&"unequip_anim": &"pistol_unequip"
+})
 
 [node name="gun_pistol" type="Node3D" parent="WeaponWrapper" unique_id=571869154]
 transform = Transform3D(-0.7, 0, 1.0569706e-07, 0, 0.7, 0, -1.0569706e-07, 0, -0.7, 0.105, -0.205, -0.182)

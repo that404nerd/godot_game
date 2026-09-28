@@ -15,7 +15,7 @@ class PlayAnimFromTree : public PlayAnimComponent
 public:
   void _ready() override;
 
-  void execute_anim(const StringName& anim_name) override;
+  void execute_anim(AnimTypes anim_type) override;
 
 protected:
   static void _bind_methods();

@@ -4,6 +4,8 @@
 
 #include "../resources/weapon.h"
 
+using namespace godot;
+
 /*
   The TypedDictionary for some reason in the editor is buggy as hell and needs a lot of improvement.
    

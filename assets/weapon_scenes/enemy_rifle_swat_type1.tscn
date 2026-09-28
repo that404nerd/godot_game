@@ -174,22 +174,22 @@ particles_anim_loop = false
 material = SubResource("StandardMaterial3D_vk5ba")
 size = Vector2(0.05, 0.05)
 
-[node name="Rifle" type="Node3D" unique_id=836484677]
-transform = Transform3D(-7.450581e-09, 1, 4.371124e-08, 3.5527137e-14, -4.371139e-08, 1.0000001, 1, -4.4703484e-08, -3.5527137e-15, 0, 0, 0)
+[node name="Rifle" type="Node3D" unique_id=1052168126]
+transform = Transform3D(1.1350494e-09, 1.0000002, 2.3841858e-07, 6.109476e-07, -3.2037497e-07, 1.0000007, 1, 4.627509e-08, -4.4656917e-07, 0, 0, 0)
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=1150337898 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton")]
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=1681881635 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton")]
+mesh_instances = [NodePath("")]
 armature_node = NodePath("gun_rifle/Armature")
 muzzle_point_marker = NodePath("gun_rifle/Armature/MuzzleMarker")
 muzzle_flash_component = NodePath("gun_rifle/Armature/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_rifle/Armature/Skeleton3D")
-mesh_instances = [NodePath("")]
 
-[node name="gun_rifle" type="Node3D" parent="WeaponWrapper" unique_id=1617068463]
+[node name="gun_rifle" type="Node3D" parent="WeaponWrapper" unique_id=1074308750]
 transform = Transform3D(0.69999975, -9.313229e-09, -7.450583e-09, 9.313226e-09, 0.7, -1.7347243e-16, 7.450581e-09, 7.43453e-17, 0.7, -0.059175722, 0.024145842, -0.10150996)
 
-[node name="Armature" type="Node3D" parent="WeaponWrapper/gun_rifle" unique_id=1275404756]
+[node name="Armature" type="Node3D" parent="WeaponWrapper/gun_rifle" unique_id=2043155260]
 
-[node name="Skeleton3D" type="Skeleton3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=1594788669]
+[node name="Skeleton3D" type="Skeleton3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=542714765]
 transform = Transform3D(0.9999998, 0, 1.1641532e-10, 0, 0.99999994, 4.5838533e-10, 5.820766e-11, -5.0931703e-10, 0.9999999, 0, 0, 0)
 bones/0/name = "ACRRifle_2"
 bones/0/parent = -1
@@ -241,7 +241,7 @@ bones/6/position = Vector3(3.711567e-16, 0.22899692, -4.8894435e-09)
 bones/6/rotation = Quaternion(0, 1.7981566e-09, 1.7495528e-16, 1)
 bones/6/scale = Vector3(1, 0.9999999, 0.99999994)
 
-[node name="ACRRifle" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/Skeleton3D" unique_id=1949535678]
+[node name="ACRRifle" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/Skeleton3D" unique_id=1259831389]
 mesh = SubResource("ArrayMesh_xl61i")
 skin = SubResource("Skin_exfl8")
 skeleton = NodePath("..")
@@ -250,41 +250,41 @@ surface_material_override/1 = ExtResource("3_gj14b")
 surface_material_override/2 = ExtResource("4_cg1ea")
 surface_material_override/3 = ExtResource("5_46nm7")
 
-[node name="GunTargets" type="Node3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=704588471]
+[node name="GunTargets" type="Node3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=1184594996]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 2.910383e-11, 0, -2.910383e-11, 1, 0, 0, 0)
 
-[node name="RightHandTarget" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/GunTargets" unique_id=1708340191]
+[node name="RightHandTarget" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/GunTargets" unique_id=922269612]
 transform = Transform3D(0.84267145, 0.17326875, -0.50978744, -0.20142977, 0.97950363, -4.2907894e-05, 0.49933055, 0.10272248, 0.86030126, -0.05948901, 0.01290899, 0.1700487)
 visible = false
 material_override = SubResource("StandardMaterial3D_3sgys")
 cast_shadow = 0
 mesh = SubResource("BoxMesh_kfp3r")
 
-[node name="LeftHandTarget" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/GunTargets" unique_id=1881285714]
-transform = Transform3D(-0.6996317, -0.6994537, 0.14587937, 0.11329316, 0.09298783, 0.9891999, -0.7054625, 0.7086059, 0.014186065, -0.008017503, 0.050951004, 0.4496216)
+[node name="LeftHandTarget" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/GunTargets" unique_id=1742906267]
+transform = Transform3D(-0.69963187, -0.6994536, 0.14587943, 0.113293186, 0.092987806, 0.9891998, -0.7054625, 0.7086066, 0.014186181, 0.007854875, 0.049751997, 0.4267113)
 visible = false
 material_override = SubResource("StandardMaterial3D_3sgys")
 cast_shadow = 0
 mesh = SubResource("BoxMesh_kfp3r")
 
-[node name="LeftHandThumbTarget" type="Marker3D" parent="WeaponWrapper/gun_rifle/Armature/GunTargets" unique_id=1815471198]
+[node name="LeftHandThumbTarget" type="Marker3D" parent="WeaponWrapper/gun_rifle/Armature/GunTargets" unique_id=1361438130]
 transform = Transform3D(-0.94142616, -0.13919683, -0.30714595, -0.3365247, 0.32955053, 0.8821265, -0.021568988, 0.9338231, -0.3570901, -0.025970623, 0.10633385, 0.58293116)
 visible = false
 
-[node name="MuzzleMarker" type="Marker3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=899560970]
+[node name="MuzzleMarker" type="Marker3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=1572897052]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.045805067, 0.1388365, 1.069986)
 
-[node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_rifle/Armature" unique_id=62651733 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
+[node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_rifle/Armature" unique_id=327344355 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
 gpu_particles_inst = NodePath("GPUParticles3D")
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.046710834, 0.13971318, 1.070245)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_rifle/Armature/MuzzleFlashComponent" unique_id=2105056116]
+[node name="OmniLight3D" type="OmniLight3D" parent="WeaponWrapper/gun_rifle/Armature/MuzzleFlashComponent" unique_id=1197749572]
 visible = false
 light_color = Color(0.96862745, 0.7529412, 0.29803923, 1)
 light_indirect_energy = 2.236
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="WeaponWrapper/gun_rifle/Armature/MuzzleFlashComponent" unique_id=1574119113]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="WeaponWrapper/gun_rifle/Armature/MuzzleFlashComponent" unique_id=626474428]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.022223651, -0.0019440502, 0)
 emitting = false
 amount = 300

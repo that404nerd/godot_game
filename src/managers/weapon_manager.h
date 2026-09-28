@@ -95,12 +95,13 @@ public:
   int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
   int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
   StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
-  double get_current_anim_length() { return m_CurrentWeaponAnimPlayer->get_current_animation_position(); }
 
   Ref<Weapon> get_current_weapon() { return m_CurrentWeapon; }
 
   Node3D* get_weapon_armature_node() { return m_WeaponWrapperInst->get_armature_node(); }
   Skeleton3D* get_armature_skeleton() { return m_Skeleton3D; }
+
+  WeaponWrapper* get_weapon_wrapper_inst() { return m_WeaponWrapperInst; }
 
   Vector<Node3D*> get_weapon_nodes() { return m_WeaponNodes; }
 
@@ -165,4 +166,5 @@ private:
 
   GD_DEFINE_PROPERTY(bool, weapons_init_required, false);
   GD_DEFINE_PROPERTY(bool, weapon_fov_override_required, false);
+  GD_DEFINE_PROPERTY(bool, animations_from_weapon, false);
 };
