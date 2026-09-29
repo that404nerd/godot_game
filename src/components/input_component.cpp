@@ -22,7 +22,11 @@ void InputComponent::_input(const Ref<InputEvent>& event)
   if(Input::get_singleton()->is_action_just_pressed("crouch")) command(InputCommands::CROUCH);
 
   if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) command(InputCommands::SHOOT);
-  if(Input::get_singleton()->is_action_just_released("shoot_weapon")) command(InputCommands::RELEASE_SHOOT);
+  if(Input::get_singleton()->is_action_just_released("shoot_weapon"))
+  {
+    m_HoldCounter = 0.0f;    
+    command(InputCommands::RELEASE_SHOOT);
+  }
   if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) command(InputCommands::RELOAD);
 
   if(event->is_class("InputEventMouseMotion")) {

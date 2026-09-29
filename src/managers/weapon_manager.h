@@ -54,9 +54,9 @@ public:
 public:
 
   void _init_weapons();
-  void _init_weapon_anim_connections(Node3D* weapon_node, WeaponWrapper* weapon_wrapper, AnimationPlayer* anim_player);
-  void _init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper* weapon_wrapper);
-  void _change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper);
+  void _init_weapon_anim_connections();
+  void _init_weapon_manager_data();
+  void _change_fov();
 
   void _equip_weapon();
   void _unequip_weapon();
@@ -109,17 +109,16 @@ protected:
   static void _bind_methods();
 
 private:
-  Vector2 m_ScreenCenter {};
-
-  Ref<StandardMaterial3D> m_StdMaterial { nullptr };
   // Ref<PackedScene> m_RecoilResource { nullptr };
   // Ref<Curve2D> m_RecoilCurve { nullptr };
+  // Node* m_RecoilPathNode { nullptr };
+  // Path2D* m_RecoilPath { nullptr };
+  
+  Ref<StandardMaterial3D> m_StdMaterial { nullptr };
 
-  Vector<AnimationPlayer*> m_WeaponAnims;
+  Vector<PlayAnimComponent*> m_WeaponCompList;
   Vector<Node3D*> m_WeaponNodes;
   Vector<Node3D*> m_WeaponSceneNodes;
-
-  AnimationPlayer* m_CurrentWeaponAnimPlayer { nullptr };
 
   PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
@@ -127,8 +126,6 @@ private:
   Ref<Weapon> m_CurrentWeapon { nullptr };
   Ref<PackedScene> m_DecalScene { nullptr };
 
-  // Node* m_RecoilPathNode { nullptr };
-  // Path2D* m_RecoilPath { nullptr };
 
   Marker3D* m_WeaponMuzzleMarker { nullptr };
   Node* m_BulletDecalInstNode { nullptr };

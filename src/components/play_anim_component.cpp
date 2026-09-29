@@ -9,7 +9,9 @@ void PlayAnimComponent::_ready()
   m_AnimsMap[AnimTypes::WEAPON_RELOAD_END] = "reload_end_anim"; 
   m_AnimsMap[AnimTypes::WEAPON_UNEQUIP] = "unequip_anim"; 
 
-  if(Engine::get_singleton()->is_editor_hint())
+  is_init = true;
+  // A small little trick to not set the dictionary values to empty string everytime the editor restarts (is_init is serialized)
+  if(Engine::get_singleton()->is_editor_hint() && !is_init)
   {
     anim_list.set(m_AnimsMap.at(AnimTypes::WEAPON_EQUIP).c_str(), StringName());
     anim_list.set(m_AnimsMap.at(AnimTypes::WEAPON_SHOOT).c_str(), StringName());
@@ -22,7 +24,11 @@ void PlayAnimComponent::_ready()
 
 void PlayAnimComponent::_bind_methods()
 {
+  GD_BIND_PROPERTY(PlayAnimComponent, is_init, Variant::BOOL);
   GD_BIND_PROPERTY(PlayAnimComponent, anim_list, Variant::DICTIONARY);
+
+  ClassDB::bind_method(D_METHOD("_on_anim_started", "animName"), &PlayAnimComponent::_on_anim_started);
+  ClassDB::bind_method(D_METHOD("_on_anim_finished", "animName"), &PlayAnimComponent::_on_anim_finished);
 }
 
 StringName PlayAnimComponent::get_anim(AnimTypes animType)

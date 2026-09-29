@@ -222,12 +222,10 @@ BT::Status AIManager::_shoot(double delta)
     m_QueryTimer -= delta;
     _rotate_character(delta);
   
-    // input_cmd_system->command(InputCommands::SHOOT);
-    // anim_system->command("Shoot", [](){  });
+    input_cmd_system->command(InputCommands::SHOOT);
     _enable_shootIK(true);
 
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
-    m_UpperBodyStateMachine->travel("Shoot");
     
     return BT::RUNNING;
   }

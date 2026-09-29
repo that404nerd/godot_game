@@ -5,15 +5,11 @@ void WeaponManager::_init()
   set_physics_process(false);
   set_process(false);
 
-  AnimationPlayer* anim_player = nullptr;
-  Node3D* weapon_node = nullptr;
-  WeaponWrapper* weapon_wrapper = nullptr;
-
   _init_weapons();
-  _init_weapon_anim_connections(weapon_node, weapon_wrapper, anim_player);
+  _init_weapon_anim_connections();
 
   // Init the weapon wrapper instance nodes
-  _init_weapon_manager_data(weapon_node, weapon_wrapper);
+  _init_weapon_manager_data();
   m_AmmoComp._init_data(weapon_component->get_weapon_res_list());
 
   if(input_command_system == nullptr)
@@ -61,47 +57,33 @@ void WeaponManager::_init_weapons()
   }
 }
 
-void WeaponManager::_init_weapon_anim_connections(Node3D* weapon_node, WeaponWrapper* weapon_wrapper, AnimationPlayer* anim_player)
+void WeaponManager::_init_weapon_anim_connections()
 {
-  /* This took me 2 hours to find lol, i forgot that i was dealing with different animation
-      players for different weapon scene, this connects the _on_animation_finished to all animation players */
-  for(int i = 0; i < m_WeaponNodes.size(); i++)
-  {
-    weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
-    weapon_wrapper = weapon_node->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+  Node3D* weapon_node = nullptr;
+  WeaponWrapper* weapon_wrapper = nullptr;
+  PlayAnimComponent* anim_comp = nullptr;
 
-    weapon_node->set_visible(false);
-    if(weapon_wrapper->get_weapon_anim_player())
-    {
-      m_WeaponAnims.push_back(weapon_wrapper->get_weapon_anim_player());
-      anim_player = Object::cast_to<AnimationPlayer>(m_WeaponAnims[i]);
-    }
+  EventBus::get_singleton()->connect("anim_started", Callable(this, "_on_weapon_anim_started"));
+    
+  /* I have seperate functions in both the weapon state machine and this class that connect to the same signal
+  but the state machine's animation finished function only handles the state part only! */
+  EventBus::get_singleton()->connect("anim_finished", Callable(weapon_state_machine, "_on_animation_finished"));
+  EventBus::get_singleton()->connect("anim_finished", Callable(this, "_on_weapon_anim_finished"));
 
-    /*
-    */
-    if(m_WeaponAnims.size() != 0)
-    {
-      anim_player->connect("animation_started", Callable(this, "_on_weapon_anim_started"));
-      
-      /* I have seperate functions in both the weapon state machine and this class that connect to the same signal
-      but the state machine's animation finished function only handles the state part only! */
-      anim_player->connect("animation_finished", Callable(weapon_state_machine, "_on_animation_finished"));
-      anim_player->connect("animation_finished", Callable(this, "_on_weapon_anim_finished"));
-    } 
-  }
 }
 
-void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
+void WeaponManager::_init_weapon_manager_data()
 {
+  Node3D* weapon_node = nullptr;
+  WeaponWrapper* weapon_wrapper = nullptr;
+
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
 
   if(m_WeaponWrapperInst)
   {
     m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
     m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
-    m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
     m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
-    m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
 
     if(animations_from_weapon)
     {
@@ -114,7 +96,7 @@ void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper
 
   // Make sure to change the fov before performing the rest of the initializations only if required
   if(weapon_fov_override_required)
-    _change_fov(weapon_node, weapon_wrapper);
+    _change_fov();
 
   weapon_component->set_current_weapon_res(weapon_component->get_weapon_res_list()[m_WeaponIndex]);
   m_CurrentWeapon = weapon_component->get_current_weapon_res();
@@ -122,8 +104,11 @@ void WeaponManager::_init_weapon_manager_data(Node3D* weapon_node, WeaponWrapper
   m_CharacterBody = character_component;
 }
 
-void WeaponManager::_change_fov(Node3D* weapon_node, WeaponWrapper* weapon_wrapper)
+void WeaponManager::_change_fov()
 {
+  Node3D* weapon_node = nullptr;
+  WeaponWrapper* weapon_wrapper = nullptr;
+
   for(int weaponCount = 0; weaponCount < m_WeaponNodes.size(); weaponCount++)
   { 
     weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[weaponCount]);
@@ -259,7 +244,6 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
   m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
   m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
-  m_CurrentWeaponAnimPlayer = m_WeaponWrapperInst->get_weapon_anim_player();
   m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
 
   if(animations_from_weapon)
@@ -397,7 +381,7 @@ void WeaponManager::_unequip_weapon()
 
   if(weapon_component->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
   {
-    if(m_CurrentWeaponAnimPlayer->get_current_animation() != play_anim_component->get_anim(AnimTypes::WEAPON_UNEQUIP))
+    // if(m_CurrentWeaponAnimPlayer->get_current_animation() != play_anim_component->get_anim(AnimTypes::WEAPON_UNEQUIP))
     {
       m_WeaponStateCtx.CanUnequip = true;
 
@@ -460,7 +444,7 @@ void WeaponManager::_shoot_weapon(double delta)
     {
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }
-      
+    
     if(m_WeaponStateCtx.TriggerHeld || m_WeaponStateCtx.TriggerPressed)
     {
       m_MuzzleComp->_enable_light_status(true);
@@ -537,7 +521,6 @@ void WeaponManager::_reload_weapon()
 
 void WeaponManager::_weapon_unequip_over()
 {
-  m_CurrentWeaponAnimPlayer = m_WeaponAnims[m_WeaponIndex];
   weapon_component->set_current_weapon_res(weapon_component->get_next_weapon());
   EventBus::get_singleton()->emit_signal("weapon_switched", weapon_component->get_current_weapon_res());
 }

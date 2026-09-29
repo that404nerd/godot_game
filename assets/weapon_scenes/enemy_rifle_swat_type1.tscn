@@ -178,7 +178,8 @@ size = Vector2(0.05, 0.05)
 transform = Transform3D(1.1350494e-09, 1.0000002, 2.3841858e-07, 6.109476e-07, -3.2037497e-07, 1.0000007, 1, 4.627509e-08, -4.4656917e-07, 0, 0, 0)
 
 [node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=1681881635 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton")]
-mesh_instances = [NodePath("")]
+mesh_instances = [NodePath("gun_rifle/Armature/Skeleton3D/ACRRifle"), NodePath("gun_rifle/Armature/GunTargets/RightHandTarget"), NodePath("gun_rifle/Armature/GunTargets/LeftHandTarget")]
+anim_component_required = false
 armature_node = NodePath("gun_rifle/Armature")
 muzzle_point_marker = NodePath("gun_rifle/Armature/MuzzleMarker")
 muzzle_flash_component = NodePath("gun_rifle/Armature/MuzzleFlashComponent")

@@ -9,4 +9,6 @@ extends Node3D
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	movement_state_label.text = "Movement State: " + movement_state_machine.get_current_state_name()
-	weapon_state_label.text = "Weapon State: " + weapon_state_machine.get_current_state_name()
+	
+	if(weapon_state_machine):
+		weapon_state_label.text = "Weapon State: " + weapon_state_machine.get_current_state_name()

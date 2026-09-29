@@ -284,6 +284,7 @@ anim_list = Dictionary[StringName, StringName]({
 &"shoot_anim": &"pistol_shoot",
 &"unequip_anim": &"pistol_unequip"
 })
+is_init = true
 
 [node name="gun_pistol" type="Node3D" parent="WeaponWrapper" unique_id=571869154]
 transform = Transform3D(-0.7, 0, 1.0569706e-07, 0, 0.7, 0, -1.0569706e-07, 0, -0.7, 0.105, -0.205, -0.182)

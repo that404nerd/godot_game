@@ -3,6 +3,19 @@
 void PlayAnimFromPlayer::_ready()
 {
   PlayAnimComponent::_ready();
+
+  anim_player->connect("animation_started", Callable(this, "_on_anim_started"));
+  anim_player->connect("animation_finished", Callable(this, "_on_anim_finished"));
+}
+
+void PlayAnimFromPlayer::_on_anim_started(StringName animName)
+{
+  EventBus::get_singleton()->emit_signal("anim_started", animName); 
+}
+
+void PlayAnimFromPlayer::_on_anim_finished(StringName animName)
+{
+  EventBus::get_singleton()->emit_signal("anim_finished", animName); 
 }
 
 void PlayAnimFromPlayer::execute_anim(AnimTypes anim_type)
