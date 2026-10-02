@@ -8,11 +8,29 @@ void PlayAnimFromTree::_ready()
     m_AnimTreePlayback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get(playback_state_path));
   else
     print_error("Playback state path is empty!");
+
+  anim_tree->connect("animation_started", Callable(this, "_on_anim_started"));
+  anim_tree->connect("animation_finished", Callable(this, "_on_anim_finished"));
+}
+
+void PlayAnimFromTree::_on_anim_started(StringName animName)
+{
+  EventBus::get_singleton()->emit_signal("anim_started", animName); 
+}
+
+void PlayAnimFromTree::_on_anim_finished(StringName animName)
+{
+  EventBus::get_singleton()->emit_signal("anim_finished", animName); 
+}
+
+StringName PlayAnimFromTree::get_anim_name(AnimTypes animType)
+{
+  return "";
 }
 
 void PlayAnimFromTree::execute_anim(AnimTypes anim_type)
 {
-  StringName anim_name = get_anim(anim_type);
+  StringName anim_name = get_anim_name(anim_type);
   m_AnimTreePlayback->travel(anim_name);
 }
 

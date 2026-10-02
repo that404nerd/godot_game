@@ -49,7 +49,6 @@ albedo_texture = ExtResource("2_1f5yj")
 roughness_texture = ExtResource("1_macd0")
 normal_enabled = true
 normal_texture = ExtResource("3_2d33d")
-use_z_clip_scale = true
 z_clip_scale = 0.65
 fov_override = 50.0
 
@@ -228,7 +227,6 @@ metallic_texture = ExtResource("4_vk5ba")
 roughness_texture = ExtResource("6_2d33d")
 normal_enabled = true
 normal_texture = ExtResource("5_1f5yj")
-use_z_clip_scale = true
 z_clip_scale = 0.65
 fov_override = 50.0
 
@@ -274,8 +272,9 @@ libraries/ = ExtResource("5_q6rp4")
 [node name="Camera3D" type="Camera3D" parent="WeaponWrapper" unique_id=1788948957]
 visible = false
 
-[node name="PlayAnimFromPlayer" type="PlayAnimFromPlayer" parent="WeaponWrapper" unique_id=2038629825 node_paths=PackedStringArray("anim_player")]
+[node name="PlayAnimFromPlayer" type="PlayAnimFromPlayer" parent="WeaponWrapper" unique_id=1752132487 node_paths=PackedStringArray("anim_player")]
 anim_player = NodePath("../AnimationPlayer")
+is_init = true
 anim_list = Dictionary[StringName, StringName]({
 &"equip_anim": &"pistol_equip",
 &"reload_anim": &"pistol_reload",
@@ -284,7 +283,6 @@ anim_list = Dictionary[StringName, StringName]({
 &"shoot_anim": &"pistol_shoot",
 &"unequip_anim": &"pistol_unequip"
 })
-is_init = true
 
 [node name="gun_pistol" type="Node3D" parent="WeaponWrapper" unique_id=571869154]
 transform = Transform3D(-0.7, 0, 1.0569706e-07, 0, 0.7, 0, -1.0569706e-07, 0, -0.7, 0.105, -0.205, -0.182)

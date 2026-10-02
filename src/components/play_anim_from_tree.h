@@ -2,6 +2,9 @@
 
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/animation_tree.hpp>
+#include <godot_cpp/classes/animation_node_animation.hpp>
+#include <godot_cpp/classes/animation_node_blend_tree.hpp>
+#include <godot_cpp/classes/animation_node_state_machine.hpp>
 #include <godot_cpp/classes/animation_node_state_machine_playback.hpp>
 
 #include "../globals.h"
@@ -16,8 +19,10 @@ public:
   void _ready() override;
 
   void execute_anim(AnimTypes anim_type) override;
-  void _on_anim_started(StringName animName) override {};
-  void _on_anim_finished(StringName animName) override {};
+  void _on_anim_started(StringName animName) override;
+  void _on_anim_finished(StringName animName) override;
+
+  StringName get_anim_name(AnimTypes animType) override;
 
 protected:
   static void _bind_methods();

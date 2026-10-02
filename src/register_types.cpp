@@ -35,6 +35,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 
   GDREGISTER_CLASS(Weapon);
   GDREGISTER_CLASS(AIBehaviourProps);
+  GDREGISTER_CLASS(AnimListData);
 
   GDREGISTER_RUNTIME_CLASS(StateMachine);
   GDREGISTER_RUNTIME_CLASS(MovementStateMachine);

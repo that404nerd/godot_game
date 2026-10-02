@@ -25,6 +25,7 @@
 #include "input_command_system.h"
 
 #include "resources/ai_behaviour_props.h"
+#include "resources/anim_list_data.h"
 #include "resources/weapon.h"
 
 #include "components/weapon_effects_components.h"

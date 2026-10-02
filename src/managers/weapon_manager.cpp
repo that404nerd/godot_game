@@ -14,19 +14,19 @@ void WeaponManager::_init()
 
   if(input_command_system == nullptr)
   {
-    print_error("[color=WHITE][Weapon Manager]: [color=RED]Input Command System is null");
+    print_error("[Weapon Manager]: Input Command System is null");
     return;
   }
 
   if(weapon_state_machine == nullptr)
   {
-    print_error("[color=WHITE][Weapon Manager]: [color=RED]Weapon State Machine is null");
+    print_error("[Weapon Manager]: Weapon State Machine is null");
     return;
   }
 
   if(weapon_component == nullptr)
   {
-    print_error("[color=WHITE][Weapon Manager]: [color=RED]Weapon Component is null");
+    print_error("[Weapon Manager]: Weapon Component is null");
     return;
   }
 
@@ -60,8 +60,13 @@ void WeaponManager::_init_weapons()
 void WeaponManager::_init_weapon_anim_connections()
 {
   Node3D* weapon_node = nullptr;
-  WeaponWrapper* weapon_wrapper = nullptr;
-  PlayAnimComponent* anim_comp = nullptr;
+
+  // Hide all the weapons since the first weapon's equip anim will set the visible to true anyways.
+  for(int i = 0; i < m_WeaponNodes.size(); i++)
+  {
+    weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
+    weapon_node->set_visible(false);
+  }
 
   EventBus::get_singleton()->connect("anim_started", Callable(this, "_on_weapon_anim_started"));
     
@@ -69,7 +74,6 @@ void WeaponManager::_init_weapon_anim_connections()
   but the state machine's animation finished function only handles the state part only! */
   EventBus::get_singleton()->connect("anim_finished", Callable(weapon_state_machine, "_on_animation_finished"));
   EventBus::get_singleton()->connect("anim_finished", Callable(this, "_on_weapon_anim_finished"));
-
 }
 
 void WeaponManager::_init_weapon_manager_data()
@@ -275,7 +279,8 @@ void WeaponManager::generate_decal()
 
 void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 {
-  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_SHOOT))
+  print_line("Started: ", anim_name);
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT))
   {
     m_MuzzleComp->_set_particles_status(true);
     m_MuzzleLightTimeout = m_MuzzleComp->get_particle_lifetime();
@@ -285,12 +290,12 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
   }
 
-  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_EQUIP))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP))
   {
     m_WeaponStateCtx.IsEquipOver = false;
   }
 
-  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_RELOAD))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD))
   {
     EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D);
   }
@@ -298,18 +303,19 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
+  print_line("Finished: ", anim_name);
   // Make sure the reload state is over for any type of reload once the animation ends
-  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_RELOAD))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD))
   {
     m_WeaponStateCtx.IsReloading = false;
   }
 
-  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_EQUIP))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP))
   {
     m_WeaponStateCtx.IsEquipOver = true;
   }
 
-  if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_SHOOT))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT))
   {
     m_MuzzleComp->_set_particles_status(false);
   }
@@ -327,12 +333,12 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
   // make sure this only triggers for weapons with incremental reloads only!!!!!
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
-    if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_RELOAD_START))
+    if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD_START))
     {
       play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD);
     }
 
-    if(anim_name == play_anim_component->get_anim(AnimTypes::WEAPON_RELOAD))
+    if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD))
     {
       m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
       m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - 1);
@@ -381,7 +387,7 @@ void WeaponManager::_unequip_weapon()
 
   if(weapon_component->get_next_weapon_name() != m_CurrentWeapon->get_weaponName())
   {
-    // if(m_CurrentWeaponAnimPlayer->get_current_animation() != play_anim_component->get_anim(AnimTypes::WEAPON_UNEQUIP))
+    // if(m_CurrentWeaponAnimPlayer->get_current_animation() != play_anim_component->get_anim_name(AnimTypes::WEAPON_UNEQUIP))
     {
       m_WeaponStateCtx.CanUnequip = true;
 

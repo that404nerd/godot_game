@@ -101,15 +101,29 @@ namespace Utils {
       }
       
     }
+
+    p_list->push_back(propInfo);
    
   }
   
-  template <typename T, typename ClassInstance>
-  inline bool set_properties(const StringName& p_name, const StringName& targetPropName, const Variant& p_value, T& propVariable, ClassInstance* cInstance)
+  template <typename T>
+  inline bool set_property(const StringName& p_name, const StringName& targetPropName, const Variant& p_value, T& propVariable)
   {
     if(p_name == targetPropName)
     {
       propVariable = p_value;
+      return true;
+    }
+
+    return false;
+  }
+
+  template <typename Type, typename T>
+  inline bool set_custom_property(const StringName& p_name, const StringName& targetPropName, const Variant& p_value, T& propVariable)
+  {
+    if(p_name == targetPropName)
+    {
+      propVariable = Object::cast_to<Type>(p_value);
       return true;
     }
 

@@ -8,6 +8,8 @@
 
 using namespace godot;
 
+typedef TypedDictionary<StringName, StringName> AnimList;
+
 class PlayAnimFromPlayer : public PlayAnimComponent {
   GDCLASS(PlayAnimFromPlayer, PlayAnimComponent);
 
@@ -17,10 +19,16 @@ public:
 
   void _on_anim_started(StringName animName) override;
   void _on_anim_finished(StringName animName) override;
+  StringName get_anim_name(AnimTypes animType) override;
 
 protected:
   static void _bind_methods();
 
 private:
+  int m_SelectedAnim { 0 };
+
+private:
   GD_DEFINE_PROPERTY(AnimationPlayer*, anim_player, nullptr);
+  GD_DEFINE_PROPERTY(AnimList, anim_list, AnimList());
+  GD_DEFINE_PROPERTY(bool, is_init, false);
 };

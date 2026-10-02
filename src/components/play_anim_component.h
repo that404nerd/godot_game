@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/engine.hpp>
 
 #include "../globals.h"
+#include "../resources/anim_list_data.h"
 #include "../singletons/event_bus.h"
 
 #include <godot_cpp/classes/node.hpp>
@@ -19,7 +20,6 @@ enum class AnimTypes
   WEAPON_EQUIP, WEAPON_SHOOT, WEAPON_RELOAD_START, WEAPON_RELOAD, WEAPON_RELOAD_END, WEAPON_UNEQUIP
 };
 
-typedef TypedDictionary<StringName, StringName> AnimList;
 
 class PlayAnimComponent : public Node {
   GDCLASS(PlayAnimComponent, Node);
@@ -30,14 +30,11 @@ public:
   virtual void _on_anim_started(StringName animName) = 0;
   virtual void _on_anim_finished(StringName animName) = 0;
 
-  StringName get_anim(AnimTypes animType);
-
+  virtual StringName get_anim_name(AnimTypes animType) = 0;
+  
 protected:
   static void _bind_methods();
 
 protected:
-  GD_DEFINE_PROPERTY(AnimList, anim_list, AnimList());
-  GD_DEFINE_PROPERTY(bool, is_init, false);
-
   std::unordered_map<AnimTypes, std::string> m_AnimsMap;
 };
