@@ -31,6 +31,7 @@ public:
   virtual void _on_anim_finished(StringName animName) = 0;
 
   virtual StringName get_anim_name(AnimTypes animType) = 0;
+  virtual bool has_valid_anim(AnimTypes animType) = 0;
   
 protected:
   static void _bind_methods();

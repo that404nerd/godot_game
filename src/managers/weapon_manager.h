@@ -151,7 +151,7 @@ private:
 
   Vector3 m_TargetRot {}, m_CurrentRot {};
 
-  const float MAX_SHOOT_STATE_TIME { 0.5f };
+  const float MAX_SHOOT_STATE_TIME { 1.0f };
 
 private:
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);

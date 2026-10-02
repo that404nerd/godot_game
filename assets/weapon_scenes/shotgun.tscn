@@ -48,7 +48,6 @@ albedo_texture = ExtResource("2_5blxk")
 roughness_texture = ExtResource("4_pv1oe")
 normal_enabled = true
 normal_texture = ExtResource("3_hnpij")
-use_z_clip_scale = true
 z_clip_scale = 0.65
 fov_override = 50.0
 
@@ -224,7 +223,6 @@ metallic_texture = ExtResource("3_trrci")
 roughness_texture = ExtResource("5_iuvhe")
 normal_enabled = true
 normal_texture = ExtResource("4_yyh7y")
-use_z_clip_scale = true
 z_clip_scale = 0.65
 fov_override = 50.0
 
@@ -273,6 +271,7 @@ visible = false
 
 [node name="PlayAnimFromPlayer" type="PlayAnimFromPlayer" parent="WeaponWrapper" unique_id=424335301 node_paths=PackedStringArray("anim_player")]
 anim_player = NodePath("../AnimationPlayer")
+is_init = true
 anim_list = Dictionary[StringName, StringName]({
 &"equip_anim": &"shotgun_equip",
 &"reload_anim": &"shotgun_reload",
@@ -281,7 +280,6 @@ anim_list = Dictionary[StringName, StringName]({
 &"shoot_anim": &"shotgun_shoot",
 &"unequip_anim": &"shotgun_unequip"
 })
-is_init = true
 
 [node name="gun_shotgun" type="Node3D" parent="WeaponWrapper" unique_id=657098799]
 transform = Transform3D(-0.6, 0, 9.059749e-08, 0, 0.6, 0, -9.059749e-08, 0, -0.6, 0.085, -0.106, -0.163)

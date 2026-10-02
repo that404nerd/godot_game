@@ -21,11 +21,10 @@ public:
   void _on_anim_finished(StringName animName) override;
   StringName get_anim_name(AnimTypes animType) override;
 
+  bool has_valid_anim(AnimTypes animType) override { return true; }
+
 protected:
   static void _bind_methods();
-
-private:
-  int m_SelectedAnim { 0 };
 
 private:
   GD_DEFINE_PROPERTY(AnimationPlayer*, anim_player, nullptr);

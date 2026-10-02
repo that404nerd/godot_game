@@ -279,8 +279,7 @@ void WeaponManager::generate_decal()
 
 void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 {
-  print_line("Started: ", anim_name);
-  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_SHOOT))
   {
     m_MuzzleComp->_set_particles_status(true);
     m_MuzzleLightTimeout = m_MuzzleComp->get_particle_lifetime();
@@ -290,12 +289,12 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
   }
 
-  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_EQUIP))
   {
     m_WeaponStateCtx.IsEquipOver = false;
   }
 
-  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_RELOAD))
   {
     EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D);
   }
@@ -303,19 +302,18 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
 void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 {
-  print_line("Finished: ", anim_name);
   // Make sure the reload state is over for any type of reload once the animation ends
-  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_RELOAD))
   {
     m_WeaponStateCtx.IsReloading = false;
   }
 
-  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_EQUIP))
   {
     m_WeaponStateCtx.IsEquipOver = true;
   }
 
-  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT))
+  if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_SHOOT))
   {
     m_MuzzleComp->_set_particles_status(false);
   }
