@@ -17,6 +17,7 @@ custom_name = "Distance to Start Chasing"
 move_type = 1
 should_rotate_towards_player = true
 should_move_to_player = true
+custom_name = "Move Towards The Player"
 
 [sub_resource type="BBVariant" id="BBVariant_0lqdb"]
 type = 3
@@ -37,6 +38,7 @@ resource_name = "AIManager"
 node = SubResource("BBNode_cuh4b")
 method = &"_idle"
 args_include_delta = true
+custom_name = "Stop Immediately"
 
 [sub_resource type="BTWait" id="BTWait_8ecev"]
 duration = 0.1
@@ -87,6 +89,7 @@ value = SubResource("BBVariant_cuh4b")
 custom_name = "Distance to Start Shooting"
 
 [sub_resource type="BTShootAtTarget" id="BTShootAtTarget_3sgys"]
+custom_name = "Start Shooting"
 
 [sub_resource type="BTSequence" id="BTSequence_cuh4b"]
 custom_name = "Shoot sequence"

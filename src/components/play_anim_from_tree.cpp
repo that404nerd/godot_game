@@ -59,14 +59,13 @@ void PlayAnimFromTree::execute_anim(AnimTypes animType)
   if(!data.is_valid())
     return;
 
-  
   StringName playback_path = data->get_playback_path();
   m_AnimTreePlayback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get(playback_path));
 
   StringName action_name = data->get_action_name();
   StringName travel_path = playback_path.path_join(action_name);
 
-  m_AnimTreePlayback->travel(action_name);
+  m_AnimTreePlayback->start(action_name);
 }
 
 void PlayAnimFromTree::_bind_methods()

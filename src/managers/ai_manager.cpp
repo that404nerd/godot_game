@@ -227,9 +227,8 @@ BT::Status AIManager::_shoot(double delta)
 
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
     
-    return BT::RUNNING;
+    return BT::SUCCESS;
   }
 
-  m_UpperBodyStateMachine->travel("Idle");
   return BT::FAILURE;
 }

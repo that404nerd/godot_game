@@ -1,5 +1,4 @@
 #include "weapon_manager.h"
-#include "godot_cpp/core/error_macros.hpp"
 
 void WeaponManager::_init()
 {
@@ -264,8 +263,6 @@ void WeaponManager::generate_decal()
       m_BulletDecalNode->set_global_position(position);
       m_BulletDecalNode->look_at(m_BulletDecalNode->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
       m_BulletDecalNode->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
-
-      DebugDraw3D::draw_sphere(position, 5.0f);
 
     }
   }
