@@ -28,13 +28,11 @@ void PlayAnimFromTree::_ready()
 
 void PlayAnimFromTree::_on_anim_started(StringName animName)
 {
-  print_line("Started: ", animName);
   EventBus::get_singleton()->emit_signal("anim_started", animName); 
 }
 
 void PlayAnimFromTree::_on_anim_finished(StringName animName)
 {
-  print_line("Finished: ", animName);
   EventBus::get_singleton()->emit_signal("anim_finished", animName); 
 }
 
@@ -47,12 +45,20 @@ bool PlayAnimFromTree::has_valid_anim(AnimTypes animType)
 StringName PlayAnimFromTree::get_anim_name(AnimTypes animType)
 {
   Ref<AnimListData> data = anim_list.get(m_AnimsMap.at(animType).c_str(), nullptr);
+
+  if(!data.is_valid())
+    return "";
+
   return data->get_underlying_anim_name();
 }
 
 void PlayAnimFromTree::execute_anim(AnimTypes animType)
 {
   Ref<AnimListData> data = anim_list.get(m_AnimsMap.at(animType).c_str(), nullptr);
+
+  if(!data.is_valid())
+    return;
+
   
   StringName playback_path = data->get_playback_path();
   m_AnimTreePlayback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get(playback_path));

@@ -1,9 +1,14 @@
 #include "weapon_manager.h"
+#include "godot_cpp/core/error_macros.hpp"
 
 void WeaponManager::_init()
 {
   set_physics_process(false);
   set_process(false);
+    
+  ERR_FAIL_COND_MSG(!input_command_system, "[Weapon Manager]: Input Command System is null");
+  ERR_FAIL_COND_MSG(!weapon_state_machine, "[Weapon Manager]: Weapon State Machine is null");
+  ERR_FAIL_COND_MSG(!weapon_component, "[Weapon Manager]: Weapon Component is null");
 
   _init_weapons();
   _init_weapon_anim_connections();
@@ -12,30 +17,12 @@ void WeaponManager::_init()
   _init_weapon_manager_data();
   m_AmmoComp._init_data(weapon_component->get_weapon_res_list());
 
-  if(input_command_system == nullptr)
-  {
-    print_error("[Weapon Manager]: Input Command System is null");
-    return;
-  }
-
-  if(weapon_state_machine == nullptr)
-  {
-    print_error("[Weapon Manager]: Weapon State Machine is null");
-    return;
-  }
-
-  if(weapon_component == nullptr)
-  {
-    print_error("[Weapon Manager]: Weapon Component is null");
-    return;
-  }
-
   print_line("Weapon Manager Initialized");
 }
 
 void WeaponManager::_init_weapons()
 {
-  Node* weaponNode = nullptr;
+  Node3D* weaponNode = nullptr;
   Array weaponResList = weapon_component->get_weapon_res_list();
   Array weaponSceneList = weapon_component->get_weapon_scene_list();
 
@@ -50,23 +37,32 @@ void WeaponManager::_init_weapons()
     weapon_component->set_current_weapon_res(weaponResList[i]);
     m_CurrentWeapon = weapon_component->get_current_weapon_res();
 
-    Ref<PackedScene> packedScene = weaponSceneList[i];
-    weaponNode = packedScene->instantiate();
-    hold_point_node->add_child(weaponNode);
-    m_WeaponNodes.push_back(Object::cast_to<Node3D>(weaponNode));
+    if(weapons_init_required)
+    {
+      Ref<PackedScene> packedScene = weaponSceneList[i];
+      weaponNode = Object::cast_to<Node3D>(packedScene->instantiate());
+
+      // Hide all the weapons since the first weapon's equip anim will set the visible to true anyways.
+      weaponNode->set_visible(false);
+
+      m_WeaponNodes.push_back(weaponNode);
+      hold_point_node->add_child(weaponNode);
+
+    } else {
+
+      Array weapons = hold_point_node->get_children();
+      for(int i = 0; i < weapons.size(); i++)
+      {
+        m_WeaponNodes.push_back(Object::cast_to<Node3D>(weapons[i]));
+      }
+
+    }
+
   }
 }
 
 void WeaponManager::_init_weapon_anim_connections()
 {
-  Node3D* weapon_node = nullptr;
-
-  // Hide all the weapons since the first weapon's equip anim will set the visible to true anyways.
-  for(int i = 0; i < m_WeaponNodes.size(); i++)
-  {
-    weapon_node = Object::cast_to<Node3D>(m_WeaponNodes[i]);
-    weapon_node->set_visible(false);
-  }
 
   EventBus::get_singleton()->connect("anim_started", Callable(this, "_on_weapon_anim_started"));
     
@@ -82,21 +78,15 @@ void WeaponManager::_init_weapon_manager_data()
   WeaponWrapper* weapon_wrapper = nullptr;
 
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+  
+  ERR_FAIL_COND_MSG(!m_WeaponWrapperInst, "[Weapon Manager]: Weapon Wrapper is null!");
 
-  if(m_WeaponWrapperInst)
-  {
-    m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
-    m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
-    m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
+  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+  m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
+  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
 
-    if(animations_from_weapon)
-    {
-      play_anim_component = m_WeaponWrapperInst->get_play_anim_component();
-    }
-  } else {
-    print_error("Weapon Wrapper Instance is null!");
-    return;
-  }
+  if(animations_from_weapon)
+    play_anim_component = m_WeaponWrapperInst->get_play_anim_component();
 
   // Make sure to change the fov before performing the rest of the initializations only if required
   if(weapon_fov_override_required)
@@ -215,7 +205,7 @@ void WeaponManager::_update(double delta)
   m_CurrentWeapon = weapon_component->get_current_weapon_res();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
-  m_MuzzleComp->set_global_position(m_WeaponMuzzleMarker->get_global_position());
+  m_MuzzleComp->set_global_transform(m_WeaponMuzzleMarker->get_global_transform());
 
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
   input_command_system->set_max_hold_time(m_HoldMaxTime);
@@ -237,8 +227,10 @@ void WeaponManager::_physics_update(double delta)
   m_SpaceState = m_CharacterBody->get_world_3d()->get_direct_space_state();
   m_Query = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
 
-  m_Query->set_collide_with_bodies(true);
+  ERR_FAIL_COND_MSG(!m_Query.is_valid(), "Query is not valid!");
+  ERR_FAIL_COND_MSG(!m_SpaceState, "Space State is not valid!");
 
+  m_Query->set_collide_with_bodies(true);
   m_Result = m_SpaceState->intersect_ray(m_Query);
 }
 
@@ -273,18 +265,22 @@ void WeaponManager::generate_decal()
       m_BulletDecalNode->look_at(m_BulletDecalNode->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
       m_BulletDecalNode->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
 
+      DebugDraw3D::draw_sphere(position, 5.0f);
+
     }
   }
 }
 
 void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 {
+
   if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_SHOOT))
   {
     m_MuzzleComp->_set_particles_status(true);
     m_MuzzleLightTimeout = m_MuzzleComp->get_particle_lifetime();
 
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
+
     generate_decal();
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
   }
@@ -438,14 +434,15 @@ void WeaponManager::_shoot_weapon(double delta)
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
       m_WeaponStateCtx.TriggerHeld = true;
-
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }  
     
     // Check whether we pressed the fire key (manual), we don't check for wants_to_shoot_weapon() because it's one frame-state and not a persistent state
     if(m_WeaponStateCtx.TriggerPressed && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
-    {
+      {
+      StringName execute_anim = play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT);
+  
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }
     

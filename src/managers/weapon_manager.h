@@ -126,7 +126,6 @@ private:
   Ref<Weapon> m_CurrentWeapon { nullptr };
   Ref<PackedScene> m_DecalScene { nullptr };
 
-
   Marker3D* m_WeaponMuzzleMarker { nullptr };
   Node* m_BulletDecalInstNode { nullptr };
   Decal* m_BulletDecalNode { nullptr };
@@ -138,7 +137,6 @@ private:
   WeaponWrapper* m_WeaponWrapperInst { nullptr };
   
   Skeleton3D* m_Skeleton3D { nullptr };
-  Transform3D m_BoneTransform {};
   CharacterBody3D* m_CharacterBody { nullptr };
   Dictionary m_Result;
 

@@ -273,7 +273,7 @@ transform = Transform3D(-0.94142616, -0.13919683, -0.30714595, -0.3365247, 0.329
 visible = false
 
 [node name="MuzzleMarker" type="Marker3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=1572897052]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.045805067, 0.1388365, 1.069986)
+transform = Transform3D(0.99999994, 0, -2.842171e-14, 0, 0.99999994, 6.6019315e-15, 5.684342e-14, 7.927564e-15, 0.99999994, -0.015752949, 0.13883649, 1.069986)
 
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_rifle/Armature" unique_id=327344355 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]
 omni_light_inst = NodePath("OmniLight3D")
