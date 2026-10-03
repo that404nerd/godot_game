@@ -17,6 +17,42 @@ void MovementStateMachine::_init_data()
   print_line("Movement State Machine Initialized");
 }
 
+StringName MovementStateMachine::get_current_state_name()
+{
+  auto none_name = magic_enum::enum_name(MovementStates::NONE);
+  StringName noneString = std::string(none_name).c_str();
+  if(m_CurrentState == nullptr)
+  {
+    print_error("Current state is null!");
+    return noneString;
+  }
+
+  auto state = magic_enum::enum_cast<MovementStates>(m_CurrentState->get_current_state());
+  auto stateName = magic_enum::enum_name(state.value());
+  StringName finalStateName = std::string(stateName).c_str();
+
+  return finalStateName;
+}
+
+StringName MovementStateMachine::get_prev_state_name()
+{
+  auto none_name = magic_enum::enum_name(MovementStates::NONE);
+  StringName noneString = std::string(none_name).c_str();
+
+  if(m_PrevState == nullptr)
+  {
+    print_error("Prev state doesn't exist!");
+    return noneString;
+  }
+
+  auto state = magic_enum::enum_cast<MovementStates>(m_PrevState->get_current_state());
+  auto stateName = magic_enum::enum_name(state.value());
+  StringName finalStateName = std::string(stateName).c_str();
+
+
+  return finalStateName;
+}
+
 void MovementStateMachine::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(MovementStateMachine, CharacterComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);

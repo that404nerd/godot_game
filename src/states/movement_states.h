@@ -26,6 +26,7 @@ struct MovementStateCtx
   uint64_t LastFrameOnFloor = -INFINITY;
 
   float CharacterSprintSpeed = 0.0f;
+  float FallThreshold = -1.0f;
   float SlideTimer = 0.0f;
   float DashCooldown { 0.0f };
 

@@ -16,7 +16,7 @@ using namespace godot;
 
 enum class InputCommands
 {
-  IDLE, WALK, SPRINT, JUMP, CROUCH,
+  IDLE, WALK, SPRINT, JUMP, FALL, CROUCH,
   SHOOT, HOLD_SHOOT, RELEASE_SHOOT, RELOAD, SWITCH_WEAPON
 };
 

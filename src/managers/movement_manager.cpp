@@ -94,6 +94,9 @@ void MovementManager::_physics_update(double delta)
 
 void MovementManager::_idle(double delta)
 {
+  if(!character_component->is_on_floor())
+    return;
+
   m_MovementStateCtx.IsIdle = true;
 
   Vector3 characterVel = character_component->get_velocity();
@@ -111,6 +114,9 @@ void MovementManager::_idle_exit()
 
 void MovementManager::_walk(double delta)
 {
+  if(!character_component->is_on_floor())
+    return;
+
   m_MovementStateCtx.IsWalking = true;
   Vector3 characterVel = character_component->get_velocity();
   // if(m_MovementStateCtx.DashCooldown <= 0.0f)
@@ -132,6 +138,9 @@ void MovementManager::_walk_end()
 
 void MovementManager::_sprint(double delta)
 {
+  if(!character_component->is_on_floor())
+    return;
+
   m_MovementStateCtx.IsSprinting = true;
   Vector3 characterVel = character_component->get_velocity();
 
@@ -154,6 +163,9 @@ void MovementManager::_sprint_end()
 
 void MovementManager::_jump()
 {
+  if(!character_component->is_on_floor())
+    return;
+
   Vector3 characterVel = character_component->get_velocity();
   m_MovementStateCtx.IsJumping = true;
   m_MovementStateCtx.IsJumpEnded = false;
@@ -172,6 +184,11 @@ void MovementManager::_jump_end()
 void MovementManager::_fall(double delta)
 {
   m_MovementStateCtx.IsFalling = true;
+
+  if(input_command_system->wants_to_crouch() && m_MovementStateCtx.IsCrouchPressed == false)
+  {
+    m_MovementStateCtx.IsCrouchPressed = true;
+  }
 
   Vector3 characterVel = character_component->get_velocity();
   Vector3 wishDir = character_component->get_wish_dir().normalized();
@@ -196,11 +213,15 @@ void MovementManager::_fall(double delta)
 void MovementManager::_fall_end()
 {
   m_MovementStateCtx.IsFalling = false;
+  m_MovementStateCtx.IsJumpPressed = false;
   m_MovementStateCtx.IsCrouchPressed = false;
 }
 
 void MovementManager::_crouch(double delta)
 {
+  if(!character_component->is_on_floor())
+    return;
+
   m_MovementStateCtx.IsCrouching = true;
 
   Vector3 characterVel = character_component->get_velocity();
@@ -258,6 +279,9 @@ void MovementManager::_slide_crouch_effect(double delta)
 
 void MovementManager::_on_slide_start()
 {
+  if(!character_component->is_on_floor() || (character_component->get_velocity().length() <= m_MovementStateCtx.CharacterSprintSpeed * 0.85f))
+    return;
+
   m_MovementStateCtx.IsSlideStarted = true;
   m_MovementStateCtx.IsSlideOver = false;
   m_MovementStateCtx.SlideTimer = character_component->get_slide_timer();

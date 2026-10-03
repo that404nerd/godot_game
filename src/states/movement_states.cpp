@@ -35,11 +35,11 @@ void IdleMovementState::_handle_input(const Ref<InputEvent>& event)
 {
   if(m_InputCmdSystem)
   {
-    if(m_InputCmdSystem->wants_to_jump() && m_MovementStateCtx.IsOnFloor) {
+    if(m_InputCmdSystem->wants_to_jump()) {
       m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
     }
     
-    if(m_InputCmdSystem->wants_to_crouch() && m_MovementStateCtx.IsOnFloor)
+    if(m_InputCmdSystem->wants_to_crouch())
     {
       m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
     }
@@ -55,7 +55,7 @@ void IdleMovementState::_physics_update(double delta)
   if(!m_InputCmdSystem)
     return;
 
-  if(m_InputCmdSystem->wants_to_sprint() && m_MovementStateCtx.IsOnFloor) {
+  if(m_InputCmdSystem->wants_to_sprint()) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
   }
 
@@ -90,11 +90,11 @@ void WalkMovementState::_handle_input(const Ref<InputEvent>& event)
 {
   if(m_InputCmdSystem)
   {
-    if(m_InputCmdSystem->wants_to_jump() && m_MovementStateCtx.IsOnFloor) {
+    if(m_InputCmdSystem->wants_to_jump()) {
       m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
     }
     
-    if(m_InputCmdSystem->wants_to_crouch() && m_MovementStateCtx.IsOnFloor)
+    if(m_InputCmdSystem->wants_to_crouch())
     {
       m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
     }
@@ -106,7 +106,7 @@ void WalkMovementState::_physics_update(double delta)
 {
   m_MovementManager->_walk(delta);
 
-  if(m_InputCmdSystem && m_MovementStateCtx.IsOnFloor)
+  if(m_InputCmdSystem)
   {
     if(m_InputCmdSystem->wants_to_idle())
     {
@@ -117,10 +117,6 @@ void WalkMovementState::_physics_update(double delta)
       m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
     }
     
-  }
-
-  if(m_MovementStateCtx.CharacterVelocity.y < 0.0f || !m_MovementStateCtx.IsOnFloor) {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
 
@@ -144,16 +140,19 @@ void SprintMovementState::_enter()
 
 void SprintMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_jump()) {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
-  }
-  
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_crouch() && m_MovementStateCtx.IsOnFloor)
+  if(m_InputCmdSystem)
   {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
+    if(m_InputCmdSystem->wants_to_jump()) {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
+    }
+    
+    if(m_InputCmdSystem->wants_to_crouch())
+    {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
+    }
   }
   
-  if(m_MovementStateCtx.CharacterVelocity.length() > (m_MovementStateCtx.CharacterSprintSpeed * 0.85f) && m_InputCmdSystem->wants_to_crouch())
+  if(m_InputCmdSystem->wants_to_crouch())
   {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SLIDE));
   }
@@ -171,11 +170,11 @@ void SprintMovementState::_physics_update(double delta)
   
   Vector3 characterVel = m_MovementStateCtx.CharacterVelocity;
 
-  if(m_InputCmdSystem->wants_to_idle() && m_MovementStateCtx.IsOnFloor) {
+  if(m_InputCmdSystem->wants_to_idle()) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
 
-  if(characterVel.y < 0.0f || !m_MovementStateCtx.IsOnFloor) {
+  if(m_MovementStateCtx.CharacterVelocity.y < m_MovementStateCtx.FallThreshold || !m_MovementStateCtx.IsOnFloor) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
@@ -206,12 +205,8 @@ void JumpMovementState::_physics_update(double delta)
 {
   Vector3 characterVel = m_MovementStateCtx.CharacterVelocity;
 
-  if(characterVel.y < 0.0f) {
+  if(characterVel.y < m_MovementStateCtx.FallThreshold) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
-  }
-  
-  if (characterVel.y < 0.0f && m_MovementStateCtx.IsOnFloor) {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
   }
 }
 
@@ -238,11 +233,6 @@ void FallMovementState::_handle_input(const Ref<InputEvent>& event)
   // {
   //   m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
   // }
-
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_crouch() && m_MovementStateCtx.IsCrouchPressed == false)
-  {
-    m_MovementManager->set_crouch_pressed(true);
-  }
 }
 
 void FallMovementState::_physics_update(double delta) 
@@ -251,11 +241,11 @@ void FallMovementState::_physics_update(double delta)
 
   if(m_MovementStateCtx.IsOnFloor)
   {
-    if(m_MovementStateCtx.IsCrouchPressed == true)
+    if(m_MovementStateCtx.IsCrouchPressed)
     {
       m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
     } else {
-      m_MovementManager->set_jump_pressed(false);
+      m_MovementManager->_fall_end();
       m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
     }
   }
@@ -279,15 +269,18 @@ void CrouchMovementState::_enter()
 
 void CrouchMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if (m_InputCmdSystem->wants_to_crouch() && !m_MovementStateCtx.IsCrouchRayCastColliding) {
-    m_MovementManager->_on_crouch_finished();
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
-  }
-  
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_jump() && !m_MovementStateCtx.IsCrouchRayCastColliding)
+  if(m_InputCmdSystem)
   {
-    m_MovementManager->_on_crouch_finished();
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
+    if (m_InputCmdSystem->wants_to_crouch() && !m_MovementStateCtx.IsCrouchRayCastColliding) {
+      m_MovementManager->_on_crouch_finished();
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::IDLE));
+    }
+    
+    if(m_InputCmdSystem->wants_to_jump() && !m_MovementStateCtx.IsCrouchRayCastColliding)
+    {
+      m_MovementManager->_on_crouch_finished();
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
+    }
   }
 }
 
@@ -303,7 +296,7 @@ void CrouchMovementState::_physics_update(double delta)
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
   }
 
-  if(characterVel.y < 0.0f || !m_MovementStateCtx.IsOnFloor) 
+  if(characterVel.y < m_MovementStateCtx.FallThreshold || !m_MovementStateCtx.IsOnFloor) 
   {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
@@ -327,7 +320,10 @@ void SlideMovementState::_enter()
 
 void SlideMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  if(m_InputCmdSystem && m_InputCmdSystem->wants_to_jump() && !m_MovementStateCtx.IsCrouchRayCastColliding) {
+  if(!m_InputCmdSystem)
+    return;
+
+  if(m_InputCmdSystem->wants_to_jump() && !m_MovementStateCtx.IsCrouchRayCastColliding) {
     m_MovementManager->_on_slide_finished();
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::JUMP));
   }
@@ -350,7 +346,7 @@ void SlideMovementState::_physics_update(double delta)
     }
   }
 
-  if(characterVel.y < 0.0f || !m_MovementStateCtx.IsOnFloor) 
+  if(characterVel.y < m_MovementStateCtx.FallThreshold || !m_MovementStateCtx.IsOnFloor) 
   {
     m_MovementManager->_on_slide_finished();
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));

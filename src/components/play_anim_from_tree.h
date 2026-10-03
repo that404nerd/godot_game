@@ -35,6 +35,5 @@ private:
   GD_DEFINE_PROPERTY(bool, is_init, false);
   GD_DEFINE_PROPERTY(AnimTreeList, anim_list, AnimTreeList());
 
-
   AnimationNodeStateMachinePlayback* m_AnimTreePlayback { nullptr };
 };

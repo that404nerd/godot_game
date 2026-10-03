@@ -74,9 +74,6 @@ public:
 
   Vector3& GetCharacterVel() { return m_MovementStateCtx.CharacterVelocity; }
 
-  void set_jump_pressed(bool status) { m_MovementStateCtx.IsJumpPressed = status; }
-  void set_crouch_pressed(bool status) { m_MovementStateCtx.IsCrouchPressed = status; }
-
   MovementStateCtx& get_movement_state_ctx() { return m_MovementStateCtx; }
   InputCommandSystem* get_input_command_system_instance() { return input_command_system; }
  
