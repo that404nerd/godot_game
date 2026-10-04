@@ -1,4 +1,5 @@
 #include "input_component.h"
+#include "character_component.h"
 
 InputComponent::InputComponent()
 {
@@ -16,10 +17,8 @@ void InputComponent::_input(const Ref<InputEvent>& event)
 {
   Ref<InputEventMouseMotion> mouseEvent = event;
 
-  set_input_dir(Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized());
-
-  if(Input::get_singleton()->is_action_just_pressed("jump"))  command(InputCommands::JUMP);
-  if(Input::get_singleton()->is_action_just_pressed("crouch")) command(InputCommands::CROUCH);
+  m_MoveCmd.WantsToCrouch = Input::get_singleton()->is_action_just_pressed("crouch");
+  m_MoveCmd.WantsToJump = Input::get_singleton()->is_action_just_pressed("jump");
 
   if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) command(InputCommands::SHOOT);
   if(Input::get_singleton()->is_action_just_released("shoot_weapon"))
@@ -48,18 +47,21 @@ void InputComponent::_input(const Ref<InputEvent>& event)
   }
 }
 
+void InputComponent::build_move_command(CharacterComponent *character_comp)
+{
+  m_MoveCmd = {
+    .CharacterWishDir = character_comp->get_wish_dir(),
+    .CharacterVelocity = character_comp->get_velocity(),
+    .InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized(),
+    .IsOnFloor = character_comp->is_on_floor(),
+    .WantsToMove = (m_MoveCmd.InputDir != Vector2(0.0f, 0.0f)),
+    .WantsToSprint = (m_MoveCmd.InputDir != Vector2(0.0f, 0.0f)),
+    .WantsToIdle = (m_MoveCmd.InputDir == Vector2(0.0f, 0.0f))
+  };
+}
+
 void InputComponent::_update(double delta)
 {
-  if(get_input_dir() != Vector2(0.0f, 0.0f) || get_character_wish_dir() != Vector3(0.0f, 0.0f, 0.0f))
-  {
-    command(InputCommands::SPRINT);
-  }
-
-  if(get_input_dir() == Vector2(0.0f, 0.0f) && get_character_wish_dir() == Vector3(0.0f, 0.0f, 0.0f))
-  {
-    command(InputCommands::IDLE);
-  }
-
   if(Input::get_singleton()->is_action_pressed("shoot_weapon"))
   {
     m_HoldCounter += delta;
@@ -75,6 +77,4 @@ void InputComponent::_update(double delta)
   set_wants_to_release_shoot(false);
   set_wants_to_switch_weapon(false);
   set_wants_to_reload_weapon(false);
-  set_wants_to_jump(false);
-  set_wants_to_crouch(false);
 }

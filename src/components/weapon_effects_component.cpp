@@ -41,7 +41,7 @@ void WeaponBobComponent::weapon_bob(double delta)
   bool onFloor = m_CharacterBody->is_on_floor();
   float velocityMag = m_CharacterVel.length();
 
-  if(!m_MovementManager->IsSprinting() && !m_MovementManager->IsCrouching())
+  if(!m_MovementManager->WantsToSprint() && !m_MovementManager->IsCrouching())
   {
     Vector3 currentHoldPoint = m_HoldPointNode->get_position();
     m_BobOffset = m_BobOffset.lerp(currentHoldPoint, (float)delta);

@@ -15,11 +15,9 @@ class MovementStateMachine;
 struct MovementStateData;
 enum class MovementStates;
 
+// This struct contains data that is persistent and depends on the state of the character
 struct MovementStateCtx
 {
-  Vector3 CharacterVelocity = Vector3(0.0f, 0.0f, 0.0f);
-  Vector3 CharacterWishDir = Vector3(0.0f, 0.0f, 0.0f);
-  Vector2 CharacterInputDir = Vector2(0.0f, 0.0f);
   Vector3 CharacterSlideVector = Vector3(0.0f, 0.0f, 0.0f);
   Vector3 CharacterHeadPos = Vector3(0.0f, 0.0f, 0.0f);
 
@@ -30,19 +28,12 @@ struct MovementStateCtx
   float SlideTimer = 0.0f;
   float DashCooldown { 0.0f };
 
-  bool IsIdle = false;
-  bool IsWalking = false;
-  bool IsSprinting = false;
-  bool IsCrouching = false;
   bool IsFalling = false;
   
   bool IsSlideStarted = false;
   bool IsSliding = false;
   bool IsSlideOver = false;
 
-  bool IsOnFloor = false;
-
-  bool IsJumpPressed = false;
   bool IsJumping = false;
   bool IsJumpEnded = false;
 
@@ -60,6 +51,8 @@ protected:
   MovementStateMachine* m_MovementStateMachine { nullptr };
   MovementManager* m_MovementManager { nullptr };
   InputCommandSystem* m_InputCmdSystem { nullptr };
+
+  const MoveCommand& m_MoveCmd;
   const MovementStateCtx& m_MovementStateCtx;
 };
 

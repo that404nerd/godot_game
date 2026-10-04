@@ -90,7 +90,7 @@ void CameraController::_tilt_player(double delta)
 {
   m_SideTiltRot = get_rotation();
 
-  if(movement_manager->IsSprinting())
+  if(movement_manager->WantsToSprint())
   {
     m_SideTiltRot.z = Utils::exp_decay(m_SideTiltRot.z, Math::deg_to_rad(side_tilt_angle) * -input_command_system->get_input_dir().x, side_tilt_transition_value, (float)delta);
   }

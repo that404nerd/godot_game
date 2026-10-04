@@ -25,19 +25,15 @@ void WeaponManager::_init_weapons()
   Array weaponResList = weapon_component->get_weapon_res_list();
   Array weaponSceneList = weapon_component->get_weapon_scene_list();
 
-  if(weaponResList.size() == 0)
-  {
-    print_error("No Weapons in the Weapon Component!");
-    return;
-  }
+  ERR_FAIL_COND_MSG(weaponResList.size() == 0, "No weapons in the weapon component");
 
-  for(int i = 0; i < weaponResList.size(); i++)
+  if(weapons_init_required)
   {
-    weapon_component->set_current_weapon_res(weaponResList[i]);
-    m_CurrentWeapon = weapon_component->get_current_weapon_res();
-
-    if(weapons_init_required)
+    for(int i = 0; i < weaponResList.size(); i++)
     {
+      weapon_component->set_current_weapon_res(weaponResList[i]);
+      m_CurrentWeapon = weapon_component->get_current_weapon_res();
+      
       Ref<PackedScene> packedScene = weaponSceneList[i];
       weaponNode = Object::cast_to<Node3D>(packedScene->instantiate());
 
@@ -46,23 +42,19 @@ void WeaponManager::_init_weapons()
 
       m_WeaponNodes.push_back(weaponNode);
       hold_point_node->add_child(weaponNode);
-
-    } else {
-
-      Array weapons = hold_point_node->get_children();
-      for(int i = 0; i < weapons.size(); i++)
-      {
-        m_WeaponNodes.push_back(Object::cast_to<Node3D>(weapons[i]));
-      }
-
     }
 
+  } else {
+    Array weapons = hold_point_node->get_children();
+    for(int i = 0; i < weapons.size(); i++)
+    {
+      m_WeaponNodes.push_back(Object::cast_to<Node3D>(weapons[i]));
+    }
   }
 }
 
 void WeaponManager::_init_weapon_anim_connections()
 {
-
   EventBus::get_singleton()->connect("anim_started", Callable(this, "_on_weapon_anim_started"));
     
   /* I have seperate functions in both the weapon state machine and this class that connect to the same signal

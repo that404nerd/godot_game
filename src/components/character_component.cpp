@@ -114,6 +114,12 @@ void CharacterComponent::_process(double delta)
     weapon_effects_component->_update(delta);
 }
 
+void CharacterComponent::_input(const Ref<InputEvent> &event)
+{
+  if(movement_manager)
+    movement_manager->_handle_input(event);
+}
+
 void CharacterComponent::_physics_process(double delta)
 {
   if(movement_manager)

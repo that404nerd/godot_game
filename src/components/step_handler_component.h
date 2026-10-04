@@ -16,6 +16,7 @@ struct StepHandlerData
   RayCast3D* StairsBelowRaycast = nullptr;
   RayCast3D* StairsAheadRaycast = nullptr;
   const MovementStateCtx& MovementCtx;
+  const MoveCommand& MoveCmd;
 };
 
 class StepHandlerComponent

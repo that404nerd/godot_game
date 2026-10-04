@@ -15,7 +15,7 @@ void StepHandlerComponent::_snap_down_to_stairs_check()
   bool floor_below = m_StepHandlerData.StairsBelowRaycast->is_colliding() && !is_surface_too_steep(m_StepHandlerData.StairsBelowRaycast->get_collision_normal());
   bool was_on_floor_last_frame = Engine::get_singleton()->get_physics_frames() - m_StepHandlerData.MovementCtx.LastFrameOnFloor == 1;
 
-  if(!m_StepHandlerData.MovementCtx.IsOnFloor && m_StepHandlerData.MovementCtx.CharacterVelocity.y <= 0.0f && (was_on_floor_last_frame || _snapped_to_stairs_last_frame) && floor_below)
+  if(!m_StepHandlerData.MoveCmd.IsOnFloor && m_StepHandlerData.MoveCmd.CharacterVelocity.y <= 0.0f && (was_on_floor_last_frame || _snapped_to_stairs_last_frame) && floor_below)
   {
     Ref<PhysicsTestMotionResult3D> body_test_result;
     body_test_result.instantiate();
@@ -48,9 +48,9 @@ bool StepHandlerComponent::_snap_up_stairs_check(double delta)
     return false;
   }
 
-  if(m_StepHandlerData.MovementCtx.IsOnFloor)
+  if(m_StepHandlerData.MoveCmd.IsOnFloor)
   {
-    Vector3 expected_move_pos = m_StepHandlerData.MovementCtx.CharacterVelocity * Vector3(1.0f, 0.0f, 1.0f) * delta; // Forward vector (x, z)
+    Vector3 expected_move_pos = m_StepHandlerData.MoveCmd.CharacterVelocity * Vector3(1.0f, 0.0f, 1.0f) * delta; // Forward vector (x, z)
     
     Transform3D step_pos_with_clearance = m_StepHandlerData.CharacterCompInst->get_global_transform().translated(expected_move_pos + Vector3(0.0f, MAX_STEP_HEIGHT * 2.0f, 0.0f));
     

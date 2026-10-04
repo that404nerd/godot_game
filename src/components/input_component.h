@@ -15,8 +15,9 @@ class InputComponent : public InputCommandSystem
   GDCLASS(InputComponent, InputCommandSystem);
 
 public:
-
   InputComponent();
+
+  void build_move_command(CharacterComponent* character_comp) override;
 
   void _input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
@@ -26,4 +27,5 @@ protected:
 
 private:
   float m_HoldCounter { 0.0f };
+  bool m_CanJump { false };
 };

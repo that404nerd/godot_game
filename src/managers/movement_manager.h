@@ -27,16 +27,12 @@ public:
   void _init();
   void _update(double delta);
   void _physics_update(double delta);
+  void _handle_input(const Ref<InputEvent>& event);
 
 public:
   void _idle(double delta);
-  void _idle_exit();
-
   void _walk(double delta);
-  void _walk_end();
-
   void _sprint(double delta);
-  void _sprint_end();
 
   void _jump();
   void _jump_end();
@@ -65,17 +61,21 @@ public:
   bool IsSliding() { return m_MovementStateCtx.IsSliding; }
   bool IsSlideOver() { return m_MovementStateCtx.IsSlideOver; }
 
-  bool IsCrouching() { return m_MovementStateCtx.IsCrouching; }
-  bool IsSprinting() { return m_MovementStateCtx.IsSprinting; }
+  bool IsCrouching() { 
+    MoveCommand& move_cmd = input_command_system->get_move_command();
+    return move_cmd.WantsToCrouch;
+  }
+
+  bool WantsToSprint() { 
+    MoveCommand& move_cmd = input_command_system->get_move_command();
+    return move_cmd.WantsToSprint;
+  }
 
   bool IsJumping() { return m_MovementStateCtx.IsJumping; }
   bool IsJumpEnded() { return m_MovementStateCtx.IsJumpEnded; }
   bool IsFalling() { return m_MovementStateCtx.IsFalling; }
 
-  Vector3& GetCharacterVel() { return m_MovementStateCtx.CharacterVelocity; }
-
   MovementStateCtx& get_movement_state_ctx() { return m_MovementStateCtx; }
-  InputCommandSystem* get_input_command_system_instance() { return input_command_system; }
  
 private:
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);

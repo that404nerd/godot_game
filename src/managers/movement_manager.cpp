@@ -13,9 +13,10 @@ void MovementManager::_init()
     print_error("[color=RED][Movement Manager]: [color=RED]Character Head is Null!");
   }
 
+  MoveCommand& move_cmd = input_command_system->get_move_command();
   m_StepHandlerComponent = memnew(StepHandlerComponent(
     StepHandlerData {
-      character_component, m_StairsBelowRaycast, m_StairsAheadRayCast, m_MovementStateCtx
+      character_component, m_StairsBelowRaycast, m_StairsAheadRayCast, m_MovementStateCtx, move_cmd
     }
   ));
 
@@ -47,12 +48,10 @@ void MovementManager::_bind_methods()
 
 void MovementManager::_update(double delta)
 {
-  m_MovementStateCtx.CharacterVelocity = character_component->get_velocity();
-  m_MovementStateCtx.CharacterWishDir = character_component->get_wish_dir();
-  m_MovementStateCtx.CharacterInputDir = character_component->get_input_dir();
-  m_MovementStateCtx.IsOnFloor = character_component->is_on_floor();
   m_MovementStateCtx.CharacterSprintSpeed = character_component->get_sprint_speed();
   m_MovementStateCtx.CharacterHeadPos = m_CharacterHead->get_position();
+
+  input_command_system->build_move_command(character_component);
 
   if(character_component->get_crouch_raycast())
   {
@@ -72,9 +71,14 @@ void MovementManager::_update(double delta)
 
 }
 
+void MovementManager::_handle_input(const Ref<InputEvent> &event)
+{
+}
+
 void MovementManager::_physics_update(double delta)
 {
-  if(m_MovementStateCtx.IsOnFloor)
+  MoveCommand& move_cmd = input_command_system->get_move_command();
+  if(move_cmd.IsOnFloor)
   {
     m_MovementStateCtx.LastFrameOnFloor = Engine::get_singleton()->get_physics_frames();
   }
@@ -94,12 +98,13 @@ void MovementManager::_physics_update(double delta)
 
 void MovementManager::_idle(double delta)
 {
-  if(!character_component->is_on_floor())
+  MoveCommand& move_cmd = input_command_system->get_move_command();
+
+  if(!move_cmd.IsOnFloor)
     return;
 
-  m_MovementStateCtx.IsIdle = true;
 
-  Vector3 characterVel = character_component->get_velocity();
+  Vector3 characterVel = move_cmd.CharacterVelocity;
 
   characterVel.x = Math::move_toward(characterVel.x, 0.0f, character_component->get_ground_decel() * (float)delta);
   characterVel.z = Math::move_toward(characterVel.z, 0.0f, character_component->get_ground_decel() * (float)delta);
@@ -107,23 +112,13 @@ void MovementManager::_idle(double delta)
   character_component->set_velocity(characterVel);
 }
 
-void MovementManager::_idle_exit()
-{
-  m_MovementStateCtx.IsIdle = false;
-}
-
 void MovementManager::_walk(double delta)
 {
-  if(!character_component->is_on_floor())
+  MoveCommand& move_cmd = input_command_system->get_move_command();
+  if(!move_cmd.IsOnFloor)
     return;
-
-  m_MovementStateCtx.IsWalking = true;
-  Vector3 characterVel = character_component->get_velocity();
-  // if(m_MovementStateCtx.DashCooldown <= 0.0f)
-  // {
-  //   m_MovementStateCtx.CanDash = true;
-  //   m_MovementStateCtx.DashCooldown = character_component->get_dash_cooldown();
-  // }
+  
+  Vector3 characterVel = move_cmd.CharacterVelocity;
 
   characterVel.x = Math::move_toward(characterVel.x, character_component->get_walk_speed() * character_component->get_wish_dir().x, character_component->get_ground_accel() * (float)delta);
   characterVel.z = Math::move_toward(characterVel.z, character_component->get_walk_speed() * character_component->get_wish_dir().z, character_component->get_ground_accel() * (float)delta);
@@ -131,24 +126,13 @@ void MovementManager::_walk(double delta)
   character_component->set_velocity(characterVel);
 }
 
-void MovementManager::_walk_end()
-{
-  m_MovementStateCtx.IsWalking = false;
-}
-
 void MovementManager::_sprint(double delta)
 {
-  if(!character_component->is_on_floor())
+  MoveCommand& move_cmd = input_command_system->get_move_command();
+  if(!move_cmd.IsOnFloor)
     return;
 
-  m_MovementStateCtx.IsSprinting = true;
-  Vector3 characterVel = character_component->get_velocity();
-
-  // if(m_MovementStateCtx.DashCooldown <= 0.0f)
-  // {
-  //   m_MovementStateCtx.CanDash = true;
-  //   m_MovementStateCtx.DashCooldown = character_component->get_dash_cooldown();
-  // }
+  Vector3 characterVel = move_cmd.CharacterVelocity;
 
   characterVel.x = Math::move_toward(characterVel.x, character_component->get_sprint_speed() * character_component->get_wish_dir().x, character_component->get_ground_accel() * (float)delta);
   characterVel.z = Math::move_toward(characterVel.z, character_component->get_sprint_speed() * character_component->get_wish_dir().z, character_component->get_ground_accel() * (float)delta);
@@ -156,17 +140,14 @@ void MovementManager::_sprint(double delta)
   character_component->set_velocity(characterVel);
 }
 
-void MovementManager::_sprint_end()
-{
-  m_MovementStateCtx.IsSprinting = false;
-}
-
 void MovementManager::_jump()
 {
-  if(!character_component->is_on_floor())
+  MoveCommand& move_cmd = input_command_system->get_move_command();
+
+  if(!move_cmd.IsOnFloor)
     return;
 
-  Vector3 characterVel = character_component->get_velocity();
+  Vector3 characterVel = move_cmd.CharacterVelocity;
   m_MovementStateCtx.IsJumping = true;
   m_MovementStateCtx.IsJumpEnded = false;
 
@@ -183,9 +164,10 @@ void MovementManager::_jump_end()
 
 void MovementManager::_fall(double delta)
 {
+  MoveCommand& move_cmd = input_command_system->get_move_command();
   m_MovementStateCtx.IsFalling = true;
 
-  if(input_command_system->wants_to_crouch() && m_MovementStateCtx.IsCrouchPressed == false)
+  if(move_cmd.WantsToCrouch && m_MovementStateCtx.IsCrouchPressed == false)
   {
     m_MovementStateCtx.IsCrouchPressed = true;
   }
@@ -213,7 +195,6 @@ void MovementManager::_fall(double delta)
 void MovementManager::_fall_end()
 {
   m_MovementStateCtx.IsFalling = false;
-  m_MovementStateCtx.IsJumpPressed = false;
   m_MovementStateCtx.IsCrouchPressed = false;
 }
 
@@ -221,8 +202,6 @@ void MovementManager::_crouch(double delta)
 {
   if(!character_component->is_on_floor())
     return;
-
-  m_MovementStateCtx.IsCrouching = true;
 
   Vector3 characterVel = character_component->get_velocity();
   Vector3 characterHeadPos = m_MovementStateCtx.CharacterHeadPos;
@@ -251,8 +230,6 @@ void MovementManager::_on_crouch_finished()
 
   m_CrouchTween = character_component->create_tween();
   m_CrouchTween->tween_property(m_CharacterHead, "position:y", 0.0f, 0.1f);
-
-  m_MovementStateCtx.IsCrouching = false;
 }
 
 void MovementManager::_slide_crouch_effect(double delta)
@@ -279,13 +256,12 @@ void MovementManager::_slide_crouch_effect(double delta)
 
 void MovementManager::_on_slide_start()
 {
-  if(!character_component->is_on_floor() || (character_component->get_velocity().length() <= m_MovementStateCtx.CharacterSprintSpeed * 0.85f))
-    return;
+  MoveCommand& move_cmd = input_command_system->get_move_command();
 
   m_MovementStateCtx.IsSlideStarted = true;
   m_MovementStateCtx.IsSlideOver = false;
   m_MovementStateCtx.SlideTimer = character_component->get_slide_timer();
-  m_MovementStateCtx.CharacterSlideVector = m_MovementStateCtx.CharacterWishDir;
+  m_MovementStateCtx.CharacterSlideVector = move_cmd.CharacterWishDir;
 }
 
 void MovementManager::_slide(double delta)

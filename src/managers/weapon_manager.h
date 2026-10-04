@@ -89,7 +89,6 @@ public:
   WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
   float get_time_between_shots() { return m_TimeBetweenShots; }
 
-  // Ref<Curve2D> get_recoil_curve() { return m_RecoilCurve; }
   void set_trigger_press_status(bool status) { m_WeaponStateCtx.TriggerPressed = status; }
 
   int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
