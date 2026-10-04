@@ -23,7 +23,6 @@ struct WeaponStateContext
   bool IsEquipOver { false };
   bool IsShooting { false };
   bool IsReloading { false }, IsReloadStarted { false };
-  bool TriggerPressed { false }, TriggerHeld { false };
   bool CanUnequip { false };
   bool IsWeaponSwitched { false };
 };
@@ -36,8 +35,9 @@ public:
 protected:
   WeaponManager* m_WeaponManager { nullptr };
   WeaponStateMachine* m_WeaponStateMachine { nullptr };
-  const WeaponStateContext& m_WeaponStateContext;
   InputCommandSystem* m_InputCmdSystem { nullptr };
+  const WeaponStateContext& m_WeaponStateContext;
+  const WeaponCommand& m_WeaponCmd {};
 };
 
 ///////////////////////////// Weapon States Declaration //////////////////////////////////

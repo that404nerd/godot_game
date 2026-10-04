@@ -20,19 +20,14 @@ void InputComponent::_input(const Ref<InputEvent>& event)
   m_MoveCmd.WantsToCrouch = Input::get_singleton()->is_action_just_pressed("crouch");
   m_MoveCmd.WantsToJump = Input::get_singleton()->is_action_just_pressed("jump");
 
-  if(Input::get_singleton()->is_action_just_pressed("shoot_weapon")) command(InputCommands::SHOOT);
-  if(Input::get_singleton()->is_action_just_released("shoot_weapon"))
-  {
-    m_HoldCounter = 0.0f;    
-    command(InputCommands::RELEASE_SHOOT);
-  }
-  if(Input::get_singleton()->is_action_just_pressed("reload_weapon")) command(InputCommands::RELOAD);
+  m_WeaponCmd.WantsToShootWeapon = Input::get_singleton()->is_action_just_pressed("shoot_weapon");
+  m_WeaponCmd.WantsToReleaseShoot = Input::get_singleton()->is_action_just_released("shoot_weapon");
+  m_WeaponCmd.WantsToReloadWeapon = Input::get_singleton()->is_action_just_pressed("reload_weapon");
 
   if(event->is_class("InputEventMouseMotion")) {
     float swayIntensity = 0.005f; 
 
     Vector2 relative = mouseEvent->get_relative(); 
-
     set_mouse_vel(Vector2(-relative.x * swayIntensity, -relative.y * swayIntensity));
   }
   
@@ -41,9 +36,10 @@ void InputComponent::_input(const Ref<InputEvent>& event)
     String inputAction = "weapon_" + String::num(i + 1, 0); // INFO: Need to match the set input action in the editor
     if(Input::get_singleton()->is_action_just_pressed(inputAction))
     {
+      m_WeaponCmd.WantsToSwitchWeapon = true;
       set_weapon_idx(i);
-      command(InputCommands::SWITCH_WEAPON);
     }
+
   }
 }
 
@@ -67,14 +63,15 @@ void InputComponent::_update(double delta)
     m_HoldCounter += delta;
     if(m_HoldCounter >= get_max_hold_time())
     {
-      set_wants_to_hold_shoot(true);
+      m_WeaponCmd.WantsToHoldTrigger = true;
     }
   }
 
-  if(wants_to_release_shoot()) set_wants_to_hold_shoot(false);
+  if(m_WeaponCmd.WantsToReleaseShoot)
+  {
+    m_HoldCounter = 0.0f;   
+    m_WeaponCmd.WantsToHoldTrigger = false;
+  }
 
-  set_wants_to_shoot_weapon(false);
-  set_wants_to_release_shoot(false);
-  set_wants_to_switch_weapon(false);
-  set_wants_to_reload_weapon(false);
+  m_WeaponCmd.WantsToSwitchWeapon = false;
 }

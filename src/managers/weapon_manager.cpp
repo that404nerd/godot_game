@@ -390,11 +390,10 @@ void WeaponManager::_shoot_weapon(double delta)
   {
     m_MuzzleComp->_enable_light_status(false);
     m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
-    m_WeaponStateCtx.TriggerHeld = false;
-    m_WeaponStateCtx.TriggerPressed = false;
     return;
   }
 
+  WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
   m_WeaponStateCtx.IsShooting = true;
 
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
@@ -404,44 +403,38 @@ void WeaponManager::_shoot_weapon(double delta)
   }
  
   /*
-    Two mouse states (for now), one for automatic handling (mouse hold) and the other for just manual handling (single click). 
-    We can't check for the single mouse click again HERE because the input state was already consumed to handle the shoot state in the first place.
+    Two states (for now), one for automatic handling (mouse hold) and the other for just manual handling (single click). 
 
     ShootTimeBeforeIdle should be self-explainatory and it resets every time you shoot the weapon to 1.0f.
     This function triggers if the weapon's time_between_shots (again should be self-explainatory) is 0.0f which is checked in weapon_states.
 
     The state goes to idle if ShootTimeBeforeIdle is 0.0f only. Checking for inputs could break semi-auto, full-auto weapons, so a timer is more solid.
     The Muzzle flash is handled by using a timeout variable which is set to every weapon's particle's lifetime. It's managed using a simple timer.
-
-    The ReleaseStatus is to indicate the mouse click has been released, this doesn't modify the TriggerHeld or TriggerPressed, it only modifies IsWeaponFired which
-    is only used for recoil and not in the shooting state.
   */
 
   {
     // Check whether the fire key is held or not (for automatic weapons)
-    if(input_command_system->wants_to_hold_shoot() &&
+    if(weapon_cmd.WantsToHoldTrigger &&
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
-      m_WeaponStateCtx.TriggerHeld = true;
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }  
     
     // Check whether we pressed the fire key (manual), we don't check for wants_to_shoot_weapon() because it's one frame-state and not a persistent state
-    if(m_WeaponStateCtx.TriggerPressed && 
+    if(weapon_cmd.WantsToShootWeapon && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
-      {
+    {
       StringName execute_anim = play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT);
   
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }
     
-    if(m_WeaponStateCtx.TriggerHeld || m_WeaponStateCtx.TriggerPressed)
+    if(weapon_cmd.WantsToHoldTrigger || weapon_cmd.WantsToShootWeapon)
     {
       m_MuzzleComp->_enable_light_status(true);
 
       m_WeaponStateCtx.ShootTimeBeforeIdle = MAX_SHOOT_STATE_TIME;
-      m_WeaponStateCtx.TriggerHeld = false;
-      m_WeaponStateCtx.TriggerPressed = false;
+      weapon_cmd.WantsToShootWeapon = false;
     }
   }
       
@@ -459,8 +452,6 @@ void WeaponManager::_shoot_weapon(double delta)
 
 void WeaponManager::_shoot_weapon_over()
 {
-  m_WeaponStateCtx.TriggerPressed = false;
-  m_WeaponStateCtx.TriggerHeld = false;
   m_WeaponStateCtx.IsShooting = false;
   m_HoldCounter = 0.0f;
   
@@ -473,6 +464,8 @@ void WeaponManager::_reload_weapon()
   int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
   int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
   
+  WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
+
   if(current_ammo >= max_mag_capacity || current_reserve_ammo <= 0)
     return;
 
@@ -485,13 +478,6 @@ void WeaponManager::_reload_weapon()
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
     // If we shoot mid-reload just cancel the entire reload
-    if(input_command_system->wants_to_shoot_weapon())
-    {
-      m_WeaponStateCtx.IsReloading = false;
-      m_WeaponStateCtx.IsReloadStarted = false;
-      return;
-    }
-
     if(m_WeaponStateCtx.IsReloadStarted == false)
     {
       m_WeaponStateCtx.IsReloadStarted = true;

@@ -112,7 +112,6 @@ void AIManager::_enable_shootIK(bool enable)
 
 void AIManager::_idle(double delta)
 {
-  // input_cmd_system->command(InputCommands::IDLE);
   _enable_shootIK(false);
   m_LowerBodyStateMachine->travel("Idle");
   anim_tree->set("parameters/UpperBodyBlend/blend_amount", 0.0f);
@@ -143,7 +142,6 @@ BT::Status AIManager::_chase(double delta, bool shouldRotate, bool toPlayer)
 
   Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
 
-  // input_cmd_system->command(InputCommands::SPRINT);
   _enable_shootIK(false);
 
   _blend_chase_states(delta);
@@ -188,9 +186,6 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
 
   Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
 
-  // input_cmd_system->set_wants_to_idle(false);
-  // input_cmd_system->set_wants_to_walk(true);
-  input_cmd_system->set_wants_to_shoot_weapon(true);
   _enable_shootIK(false);
 
   _blend_patrol_states(delta);
@@ -224,7 +219,6 @@ BT::Status AIManager::_shoot(double delta)
     m_QueryTimer -= delta;
     _rotate_character(delta);
   
-    input_cmd_system->set_wants_to_hold_shoot(true);
     _enable_shootIK(true);
 
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);

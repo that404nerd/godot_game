@@ -3,7 +3,8 @@
 
 BaseWeaponState::BaseWeaponState(WeaponStates weaponState, const WeaponStateData& weaponStateData)
   : State(static_cast<int>(weaponState)), m_WeaponManager(weaponStateData.weaponManager), m_WeaponStateMachine(weaponStateData.weaponStateMachine),
-    m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx()), m_InputCmdSystem(m_WeaponManager->get_input_command_system())
+    m_InputCmdSystem(m_WeaponManager->get_input_command_system()), m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx()), 
+    m_WeaponCmd(m_InputCmdSystem->get_weapon_command())
 {
   if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
   {
@@ -28,17 +29,13 @@ WeaponIdleState::WeaponIdleState(const WeaponStateData& weaponStateData)
 
 void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(!m_InputCmdSystem)
-    return;
-
-  if(m_InputCmdSystem->wants_to_shoot_weapon())
+  if(m_WeaponCmd.WantsToShootWeapon)
   {
-    m_WeaponManager->set_trigger_press_status(true);
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
 
-  if(m_InputCmdSystem->wants_to_reload_weapon() ||
-    ((m_InputCmdSystem->wants_to_shoot_weapon() && m_WeaponManager->current_weapon_has_auto_reload()) && 
+  if(m_WeaponCmd.WantsToReloadWeapon ||
+    ((m_WeaponCmd.WantsToShootWeapon && m_WeaponManager->current_weapon_has_auto_reload()) && 
     (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->get_current_reserve_ammo() > 0)))
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
@@ -48,11 +45,6 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 
 void WeaponIdleState::_enter()
 {
-  if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
-  {
-    print_error("Weapon Idle state data is null!");
-    return;
-  }
 }
 
 void WeaponIdleState::_update(double delta)
@@ -74,12 +66,6 @@ WeaponEquipState::WeaponEquipState(const WeaponStateData& weaponStateData)
 
 void WeaponEquipState::_enter()
 {
-  if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
-  {
-    print_error("Weapon Equip state data is null!");
-    return;
-  }
-  
   m_WeaponManager->_equip_weapon();
 }
 
@@ -113,17 +99,9 @@ void WeaponShootState::_enter()
 
 void WeaponShootState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(m_InputCmdSystem)
+  if(m_WeaponCmd.WantsToReloadWeapon)
   {
-    if(m_InputCmdSystem->wants_to_shoot_weapon())
-    {
-      m_WeaponManager->set_trigger_press_status(true);
-    }
-    
-    if(m_InputCmdSystem->wants_to_reload_weapon())
-    {
-      m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
-    }
+    m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
 }
 
@@ -131,10 +109,7 @@ void WeaponShootState::_update(double delta)
 {
   m_WeaponManager->_shoot_weapon(delta);
 
-  if(!m_InputCmdSystem)
-    return;
-
-  if((m_InputCmdSystem->wants_to_shoot_weapon() || m_WeaponStateContext.TriggerHeld) &&
+  if((m_WeaponCmd.WantsToShootWeapon || m_WeaponCmd.WantsToHoldTrigger) &&
      (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload()))
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
@@ -173,15 +148,12 @@ void WeaponReloadState::_update(double delta)
 {
   m_WeaponManager->_reload_weapon();
 
-  if(!m_InputCmdSystem)
-    return;
+  // if(m_WeaponCmd.WantsToShootWeapon)
+  // {
+  //   m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
+  // }
 
-  if(m_InputCmdSystem->wants_to_shoot_weapon())
-  {
-    m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
-  }
-
-  if(m_WeaponStateContext.IsReloading == false)
+  if(!m_WeaponStateContext.IsReloading)
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::IDLE));
   }

@@ -89,8 +89,6 @@ public:
   WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
   float get_time_between_shots() { return m_TimeBetweenShots; }
 
-  void set_trigger_press_status(bool status) { m_WeaponStateCtx.TriggerPressed = status; }
-
   int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
   int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
   StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
