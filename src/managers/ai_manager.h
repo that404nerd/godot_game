@@ -48,8 +48,7 @@ public:
   void _on_query_finished(QueryResult3D* queryResult);
 
 private:
-
-  float m_QueryTimer { 0.0f };
+  Vector3 m_NextPathPos {};
 
   GD_DEFINE_PROPERTY(AICharacterComponent*, ai_character_component, nullptr);
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_cmd_system, nullptr);

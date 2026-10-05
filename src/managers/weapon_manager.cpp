@@ -388,6 +388,7 @@ void WeaponManager::_shoot_weapon(double delta)
   if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon) ||
     (m_AmmoComp.is_ammo_empty(m_CurrentWeapon) && m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon) == 0))
   {
+    print_line(get_owner()->get_name(), ": ", "Ammo empty!");
     m_MuzzleComp->_enable_light_status(false);
     m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
     return;
@@ -413,28 +414,31 @@ void WeaponManager::_shoot_weapon(double delta)
   */
 
   {
+    print_line(get_owner()->get_name(), ": ", weapon_cmd.WantsToHoldTrigger);
     // Check whether the fire key is held or not (for automatic weapons)
     if(weapon_cmd.WantsToHoldTrigger &&
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
+      print_line("Hold Shoot!");
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }  
     
     // Check whether we pressed the fire key (manual), we don't check for wants_to_shoot_weapon() because it's one frame-state and not a persistent state
-    if(weapon_cmd.WantsToShootWeapon && 
+    if(weapon_cmd.WantsToPressTrigger && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
+      print_line("Manual Shoot!");
       StringName execute_anim = play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT);
   
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }
     
-    if(weapon_cmd.WantsToHoldTrigger || weapon_cmd.WantsToShootWeapon)
+    if(weapon_cmd.WantsToHoldTrigger || weapon_cmd.WantsToPressTrigger)
     {
       m_MuzzleComp->_enable_light_status(true);
 
       m_WeaponStateCtx.ShootTimeBeforeIdle = MAX_SHOOT_STATE_TIME;
-      weapon_cmd.WantsToShootWeapon = false;
+      weapon_cmd.WantsToPressTrigger = false;
     }
   }
       

@@ -7,15 +7,15 @@ BaseMovementState::BaseMovementState(MovementStates movementState, const Movemen
       m_MovementManager(movementStateData.MovementManagerInst), m_InputCmdSystem(m_MovementManager->get_input_command_system()),
       m_MoveCmd(m_InputCmdSystem->get_move_command()), m_MovementStateCtx(m_MovementManager->get_movement_state_ctx())
 {
-  if(m_MovementManager == nullptr || m_MovementStateMachine == nullptr)
+  if(!m_MovementManager || !m_MovementStateMachine)
   {
-    print_error("[color=WHITE][Movement State]: [color=RED]Movement Manager or Movement State Machine is null");
+    print_error("[Movement State]: Movement Manager or Movement State Machine is null");
     return;
   }
 
-  if(m_InputCmdSystem == nullptr)
+  if(!m_InputCmdSystem)
   {
-    print_error("[color=WHITE][Movement State]: [color=RED]Input Command System is null");
+    print_error("[Movement State]: Input Command System is null");
     return;
   }
 }
@@ -49,18 +49,14 @@ void IdleMovementState::_physics_update(double delta)
   m_MovementManager->_idle(delta);
 
   Vector3 char_vel = m_MoveCmd.CharacterVelocity;
-
+  
   if(m_MoveCmd.WantsToSprint) {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SPRINT));
   }
-
+  
   if(m_MoveCmd.WantsToWalk)
   {
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::WALK));
-  }
-
-  if(char_vel.y < 0.0f || !m_MoveCmd.IsOnFloor) {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::FALL));
   }
 }
 
@@ -140,11 +136,6 @@ void SprintMovementState::_handle_input(const Ref<InputEvent>& event)
     m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SLIDE));
   }
   
-  // if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
-  // {
-  //   m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
-  // }
-
 }
 
 void SprintMovementState::_physics_update(double delta) 
@@ -211,10 +202,7 @@ void FallMovementState::_enter()
 
 void FallMovementState::_handle_input(const Ref<InputEvent>& event) 
 {
-  // if(Input::get_singleton()->is_action_just_pressed("dash") && m_MovementStateCtx.CanDash == true)
-  // {
-  //   m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::DASH));
-  // }
+
 }
 
 void FallMovementState::_physics_update(double delta) 

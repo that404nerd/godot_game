@@ -2,41 +2,30 @@
 
 void MovementManager::_init()
 {
+  set_physics_process(false);
+  set_process(false);
+
+  ERR_FAIL_COND_MSG(!character_component, "[Movement Manager]: Character Component is null");
+  ERR_FAIL_COND_MSG(!input_command_system, "[Movement Manager]: Input Command System is null");
+
+  MoveCommand& move_cmd = input_command_system->get_move_command();
+
   m_CharacterHead = character_component->get_character_head();
   m_StairsBelowRaycast = character_component->get_stairs_below_raycast();
   m_StairsAheadRayCast = character_component->get_stairs_ahead_raycast();
 
-  if(m_CharacterHead)
-  {
-    m_FinalPos = m_CharacterHead->get_position().y - character_component->get_crouch_translate();
-  } else {
-    print_error("[color=RED][Movement Manager]: [color=RED]Character Head is Null!");
-  }
+  ERR_FAIL_COND_MSG(!m_CharacterHead, "[Movement Manager]: Character Head is null");
 
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  m_FinalPos = m_CharacterHead->get_position().y - character_component->get_crouch_translate();
+
   m_StepHandlerComponent = memnew(StepHandlerComponent(
     StepHandlerData {
       character_component, m_StairsBelowRaycast, m_StairsAheadRayCast, m_MovementStateCtx, move_cmd
     }
   ));
 
-  if(m_StepHandlerComponent == nullptr)
-    print_error("[color=WHITE][Movement Manager]: [color=RED]Step Handler Component is null");
+  ERR_FAIL_COND_MSG(!m_StepHandlerComponent, "[Movement Manager]: Step Handler Component is null");
 
-  if(character_component == nullptr)
-  {
-    print_error("[color=WHITE][Movement Manager]: [color=RED]Character Component is null");
-    return;
-  }
-
-  if(input_command_system == nullptr)
-  {
-    print_error("[color=WHITE][Movement Manager]: [color=RED]Input Command System is null");
-    return;
-  }
-
-  set_physics_process(false);
-  set_process(false);
   print_line("Movement Manager Initialized");
 }
 
@@ -48,26 +37,22 @@ void MovementManager::_bind_methods()
 
 void MovementManager::_update(double delta)
 {
+  ERR_FAIL_COND_MSG(!character_component->get_crouch_raycast(), "[Movement Manager]: Crouch Raycast is null");
+
   m_MovementStateCtx.CharacterSprintSpeed = character_component->get_sprint_speed();
   m_MovementStateCtx.CharacterHeadPos = m_CharacterHead->get_position();
+  m_MovementStateCtx.IsCrouchRayCastColliding = character_component->get_crouch_raycast()->is_colliding();
 
   input_command_system->build_move_command(character_component);
 
-  if(character_component->get_crouch_raycast())
-  {
-    m_MovementStateCtx.IsCrouchRayCastColliding = character_component->get_crouch_raycast()->is_colliding();
-  } else {
-    print_error("[color=WHITE][Movement Manager]: [color=RED]Character Component Crouch Raycast is null");
-  }
+  // m_DashDir = character_component->get_wish_dir();
 
-  m_DashDir = character_component->get_wish_dir();
-
-  if(m_MovementStateCtx.CanDash == false)
-  {
-    m_MovementStateCtx.DashCooldown -= delta;
-    if(m_MovementStateCtx.DashCooldown < 0.0f)
-      return;
-  }
+  // if(m_MovementStateCtx.CanDash == false)
+  // {
+  //   m_MovementStateCtx.DashCooldown -= delta;
+  //   if(m_MovementStateCtx.DashCooldown < 0.0f)
+  //     return;
+  // }
 
 }
 
@@ -103,7 +88,6 @@ void MovementManager::_idle(double delta)
   if(!move_cmd.IsOnFloor)
     return;
 
-
   Vector3 characterVel = move_cmd.CharacterVelocity;
 
   characterVel.x = Math::move_toward(characterVel.x, 0.0f, character_component->get_ground_decel() * (float)delta);
@@ -115,6 +99,7 @@ void MovementManager::_idle(double delta)
 void MovementManager::_walk(double delta)
 {
   MoveCommand& move_cmd = input_command_system->get_move_command();
+
   if(!move_cmd.IsOnFloor)
     return;
   
@@ -129,6 +114,7 @@ void MovementManager::_walk(double delta)
 void MovementManager::_sprint(double delta)
 {
   MoveCommand& move_cmd = input_command_system->get_move_command();
+
   if(!move_cmd.IsOnFloor)
     return;
 

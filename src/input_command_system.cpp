@@ -3,3 +3,7 @@
 void InputCommandSystem::_bind_methods()
 {
 }
+
+void InputCommandSystem::_update(double delta)
+{
+}

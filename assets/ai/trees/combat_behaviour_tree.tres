@@ -51,15 +51,6 @@ children = [SubResource("BTCheckVar_8ecev"), SubResource("BTMoveToTarget_3sgys")
 should_rotate_towards_player = true
 custom_name = "Move to the best query position"
 
-[sub_resource type="BBVariant" id="BBVariant_yyx4r"]
-type = 1
-saved_value = true
-resource_name = "true"
-
-[sub_resource type="BTCheckVar" id="BTCheckVar_0lqdb"]
-variable = &"IsNavigationFinished"
-value = SubResource("BBVariant_yyx4r")
-
 [sub_resource type="BBNode" id="BBNode_8ecev"]
 saved_value = NodePath("AIManager")
 resource_name = "AIManager"
@@ -70,12 +61,12 @@ method = &"_idle"
 args_include_delta = true
 
 [sub_resource type="BTWait" id="BTWait_3sgys"]
-duration = 0.5
+duration = 0.2
 custom_name = "Time to stay near the query point"
 
 [sub_resource type="BTSequence" id="BTSequence_8ecev"]
 custom_name = "Move to query sequence"
-children = [SubResource("BTMoveToTarget_8ecev"), SubResource("BTCheckVar_0lqdb"), SubResource("BTCallMethod_cuh4b"), SubResource("BTWait_3sgys")]
+children = [SubResource("BTMoveToTarget_8ecev"), SubResource("BTCallMethod_cuh4b"), SubResource("BTWait_3sgys")]
 
 [sub_resource type="BBVariant" id="BBVariant_cuh4b"]
 type = 3

@@ -20,7 +20,7 @@ void InputComponent::_input(const Ref<InputEvent>& event)
   m_MoveCmd.WantsToCrouch = Input::get_singleton()->is_action_just_pressed("crouch");
   m_MoveCmd.WantsToJump = Input::get_singleton()->is_action_just_pressed("jump");
 
-  m_WeaponCmd.WantsToShootWeapon = Input::get_singleton()->is_action_just_pressed("shoot_weapon");
+  m_WeaponCmd.WantsToPressTrigger = Input::get_singleton()->is_action_just_pressed("shoot_weapon");
   m_WeaponCmd.WantsToReleaseShoot = Input::get_singleton()->is_action_just_released("shoot_weapon");
   m_WeaponCmd.WantsToReloadWeapon = Input::get_singleton()->is_action_just_pressed("reload_weapon");
 
@@ -50,7 +50,6 @@ void InputComponent::build_move_command(CharacterComponent *character_comp)
     .CharacterVelocity = character_comp->get_velocity(),
     .InputDir = Input::get_singleton()->get_vector("left", "right", "forward", "back").normalized(),
     .IsOnFloor = character_comp->is_on_floor(),
-    .WantsToMove = (m_MoveCmd.InputDir != Vector2(0.0f, 0.0f)),
     .WantsToSprint = (m_MoveCmd.InputDir != Vector2(0.0f, 0.0f)),
     .WantsToIdle = (m_MoveCmd.InputDir == Vector2(0.0f, 0.0f))
   };

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <functional>
-#include <unordered_map>
-
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/node.hpp>
 
@@ -23,7 +20,6 @@ struct MoveCommand
 
   bool IsOnFloor = false;
 
-  bool WantsToMove = false;
   bool WantsToSprint = false;
   bool WantsToWalk = false;
   bool WantsToIdle = false;
@@ -37,7 +33,7 @@ struct WeaponCommand
   int WeaponIdx = 0;
   float MaxHoldTime = 0.0f;
 
-  bool WantsToShootWeapon = false;
+  bool WantsToPressTrigger = false;
   bool WantsToHoldTrigger = false;
   bool WantsToReleaseShoot = false;
   bool WantsToReloadWeapon = false;
@@ -50,7 +46,7 @@ class InputCommandSystem : public Node
 public:
   void _init() {};
 
-  virtual void _update(double delta) {};
+  virtual void _update(double delta);
 
   virtual void build_move_command(CharacterComponent* characterComp) {};
   void set_mouse_vel(Vector2 mouseVel) { m_InputCmdData.MouseVel = mouseVel; }

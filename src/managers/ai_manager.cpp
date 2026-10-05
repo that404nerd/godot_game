@@ -37,7 +37,7 @@ void AIManager::_on_query_finished(QueryResult3D* queryResult)
 {
   Vector3 best_pos = queryResult->get_highest_score_position();
 
-  // if(nav_agent_3d->is_navigation_finished())
+  if(nav_agent_3d->is_navigation_finished())
   {
     m_BlackboardInst->set_var("AIMovePosition", best_pos);
   }
@@ -51,27 +51,32 @@ void AIManager::_update(double delta)
 
 void AIManager::_physics_update(double delta)
 {
+  MoveCommand& move_cmd = input_cmd_system->get_move_command();
+
+  Vector3 target_pos = m_Target->get_global_position();
+  Vector3 ai_pos = ai_character_component->get_global_position();
+  
   if(ai_vision_component)
   {
     ai_vision_component->_physics_update(delta);
     m_BlackboardInst->set_var("CanSeePlayer", ai_vision_component->can_see_player());
   }
 
-  m_BlackboardInst->set_var("AIVelocity", ai_character_component->get_velocity());
-  m_BlackboardInst->set_var("ToPlayerDistance", (m_Target->get_global_position() - ai_character_component->get_global_position()).length());
-
   if(!nav_agent_3d->is_navigation_finished())
   {
-    Vector3 nextPathPos = nav_agent_3d->get_next_path_position();
-    m_BlackboardInst->set_var("NextNavigationPoint", nextPathPos);
-    m_BlackboardInst->set_var("AIDirection", (nextPathPos - ai_character_component->get_global_position()).normalized());
+    m_NextPathPos = nav_agent_3d->get_next_path_position();
+    m_BlackboardInst->set_var("NextNavigationPoint", m_NextPathPos);
+
+    move_cmd.CharacterWishDir = (m_NextPathPos - ai_character_component->get_global_position()).normalized(),
+    m_BlackboardInst->set_var("AIDirection", move_cmd.CharacterWishDir);
   }
 
-  m_BlackboardInst->set_var("IsNavigationFinished", nav_agent_3d->is_navigation_finished());
-  m_BlackboardInst->set_var("ToPlayerDirection", m_Target->get_global_position() - ai_character_component->get_global_position());
+  m_BlackboardInst->set_var("AIVelocity", move_cmd.CharacterVelocity);
+  m_BlackboardInst->set_var("ToPlayerDirection", target_pos - ai_pos);
+  m_BlackboardInst->set_var("ToPlayerDistance", (target_pos - ai_pos).length());
 
-  ai_character_component->set_wish_dir(m_BlackboardInst->get_var("AIDirection"));
-  nav_agent_3d->set_velocity(ai_character_component->get_velocity());
+  ai_character_component->set_wish_dir(move_cmd.CharacterWishDir);
+  nav_agent_3d->set_velocity(move_cmd.CharacterVelocity);
 }
 
 void AIManager::_rotate_character(double delta)
@@ -93,7 +98,6 @@ void AIManager::_rotate_character(double delta)
 
     ai_character_component->rotate(Vector3(0.0f, 1.0f, 0.0f), angle);
   }
-
 }
 
 void AIManager::_enable_shootIK(bool enable)
@@ -110,55 +114,11 @@ void AIManager::_enable_shootIK(bool enable)
   }
 }
 
-void AIManager::_idle(double delta)
-{
-  _enable_shootIK(false);
-  m_LowerBodyStateMachine->travel("Idle");
-  anim_tree->set("parameters/UpperBodyBlend/blend_amount", 0.0f);
-}
-
 void AIManager::_blend_chase_states(double delta)
 {
   Vector3 aiDir = m_BlackboardInst->get_var("AIDirection", Vector3(0.0f, 0.0f, 0.0f));
   Vector2 dir = Vector2(aiDir.x, aiDir.z).normalized();
   anim_tree->set("parameters/LowerBodyStateMachine/Run/blend_position", dir);
-}
-
-BT::Status AIManager::_chase(double delta, bool shouldRotate, bool toPlayer)
-{
-  if(!m_Target)
-  {
-    print_error("Player not found to chase!");
-    return BT::FAILURE;
-  }
-
-  if(toPlayer)
-  {
-    m_BlackboardInst->set_var("AIMovePosition", m_Target->get_global_position());
-    nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
-  } else {
-    nav_agent_3d->set_target_desired_distance(0.01f);
-  }
-
-  Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
-
-  _enable_shootIK(false);
-
-  _blend_chase_states(delta);
-
-  if(shouldRotate)
-    _rotate_character(delta);
-
-  m_LowerBodyStateMachine->travel("Run");
-
-  nav_agent_3d->set_target_position(aiMovePos);
-
-  if(nav_agent_3d->is_navigation_finished())
-  {
-    return BT::SUCCESS;
-  }
-
-  return BT::RUNNING;
 }
 
 void AIManager::_blend_patrol_states(double delta)
@@ -168,7 +128,22 @@ void AIManager::_blend_patrol_states(double delta)
   anim_tree->set("parameters/Patrol/blend_position", dir);
 }
 
-BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
+void AIManager::_idle(double delta)
+{
+  MoveCommand& move_cmd = input_cmd_system->get_move_command();
+
+  move_cmd = {
+    .IsOnFloor = ai_character_component->is_on_floor(),
+    .WantsToIdle = true,
+  };
+
+  _enable_shootIK(false);
+  m_LowerBodyStateMachine->travel("Idle");
+  anim_tree->set("parameters/UpperBodyBlend/blend_amount", 0.0f);
+}
+
+
+BT::Status AIManager::_chase(double delta, bool shouldRotate, bool toPlayer)
 {
   if(!m_Target)
   {
@@ -176,50 +151,89 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
     return BT::FAILURE;
   }
 
+  MoveCommand& move_cmd = input_cmd_system->get_move_command();
+  Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
+
+
+  move_cmd = {
+    .CharacterVelocity = ai_character_component->get_velocity(),
+    .IsOnFloor = ai_character_component->is_on_floor(),
+    .WantsToSprint = true,
+  };
+
   if(toPlayer)
   {
     m_BlackboardInst->set_var("AIMovePosition", m_Target->get_global_position());
     nav_agent_3d->set_target_desired_distance(m_AIBehaviourProps->get_enemyDistBetweenPlayer());
-  } else {
-    nav_agent_3d->set_target_desired_distance(0.01f);
   }
+
+  _enable_shootIK(false);
+  _blend_chase_states(delta);
+
+  if(shouldRotate)
+    _rotate_character(delta);
+
+  m_LowerBodyStateMachine->travel("Run");
+  nav_agent_3d->set_target_position(aiMovePos);
+
+  if(nav_agent_3d->is_navigation_finished())
+  {
+    return BT::SUCCESS;
+  }
+
+  return BT::RUNNING;
+}
+
+
+BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
+{
+  MoveCommand& move_cmd = input_cmd_system->get_move_command();
+
+  nav_agent_3d->set_target_desired_distance(0.01f);
 
   Vector3 aiMovePos = m_BlackboardInst->get_var("AIMovePosition", Vector3(0.0f, 0.0f, 0.0f));
 
-  _enable_shootIK(false);
+  move_cmd = {
+    .CharacterVelocity = ai_character_component->get_velocity(),
+    .IsOnFloor = ai_character_component->is_on_floor(),
+    .WantsToWalk = true,
+  };
 
+  _enable_shootIK(false);
   _blend_patrol_states(delta);
 
   if(shouldRotate)
     _rotate_character(delta);
 
   m_LowerBodyStateMachine->travel("Walk");
-
   nav_agent_3d->set_target_position(aiMovePos);
 
   if(nav_agent_3d->is_navigation_finished())
   {
     return BT::SUCCESS;
   } 
-  
 
   return BT::RUNNING;
 }
 
 BT::Status AIManager::_shoot(double delta)
 {
+  WeaponCommand& weapon_cmd = input_cmd_system->get_weapon_command();
+
   if(ai_vision_component->can_see_player() && m_Target)
   {
-    if(m_QueryTimer <= 0.0f)
+    if(nav_agent_3d->is_navigation_finished())
     {
       env_query3d->request_query();
-      m_QueryTimer = m_AIBehaviourProps->get_enemyCombatNewPosQueryTime();
     }
   
-    m_QueryTimer -= delta;
     _rotate_character(delta);
-  
     _enable_shootIK(true);
+
+    // This sets the WantsToPressTrigger to true every frame which causes the enemy to instantly shoot all the bullets
+    weapon_cmd = {
+      .WantsToHoldTrigger = true
+    };
 
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
     

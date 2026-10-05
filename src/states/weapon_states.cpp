@@ -29,13 +29,13 @@ WeaponIdleState::WeaponIdleState(const WeaponStateData& weaponStateData)
 
 void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(m_WeaponCmd.WantsToShootWeapon)
+  if(m_WeaponCmd.WantsToPressTrigger)
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }
 
   if(m_WeaponCmd.WantsToReloadWeapon ||
-    ((m_WeaponCmd.WantsToShootWeapon && m_WeaponManager->current_weapon_has_auto_reload()) && 
+    ((m_WeaponCmd.WantsToPressTrigger && m_WeaponManager->current_weapon_has_auto_reload()) && 
     (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->get_current_reserve_ammo() > 0)))
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
@@ -109,9 +109,10 @@ void WeaponShootState::_update(double delta)
 {
   m_WeaponManager->_shoot_weapon(delta);
 
-  if((m_WeaponCmd.WantsToShootWeapon || m_WeaponCmd.WantsToHoldTrigger) &&
+  if((m_WeaponCmd.WantsToPressTrigger || m_WeaponCmd.WantsToHoldTrigger) &&
      (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload()))
   {
+    // print_line(m_WeaponManager->get_owner()->get_name(), ": ", "Reload!");
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
   
@@ -148,7 +149,7 @@ void WeaponReloadState::_update(double delta)
 {
   m_WeaponManager->_reload_weapon();
 
-  // if(m_WeaponCmd.WantsToShootWeapon)
+  // if(m_WeaponCmd.WantsToPressTrigger)
   // {
   //   m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   // }
