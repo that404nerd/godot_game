@@ -27,7 +27,6 @@ public:
   void _init();
   void _update(double delta);
   void _physics_update(double delta);
-  void _handle_input(const Ref<InputEvent>& event);
 
 public:
   void _idle(double delta);

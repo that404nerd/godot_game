@@ -15,12 +15,17 @@ void AIManager::_init()
   if(ai_vision_component)
     ai_vision_component->_init();
 
+  EventBus::get_singleton()->connect("ammo_finished", Callable(this, "_on_ammo_finished"));
 }
 
 void AIManager::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_query_finished", "queryResult"), &AIManager::_on_query_finished);
   ClassDB::bind_method(D_METHOD("_idle", "delta"), &AIManager::_idle);
+  ClassDB::bind_method(D_METHOD("_shoot", "delta"), &AIManager::_shoot);
+
+  ClassDB::bind_method(D_METHOD("_on_ammo_finished"), &AIManager::_on_ammo_finished);
+  ClassDB::bind_method(D_METHOD("_reload"), &AIManager::_reload);
 
   GD_BIND_CUSTOM_PROPERTY(AIManager, AICharacterComponent, ai_character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, InputCommandSystem, input_cmd_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
@@ -112,6 +117,11 @@ void AIManager::_enable_shootIK(bool enable)
     rHandCopyModifier->set("settings/0/amount", 0.0f);
     spineCopyModifer->set("settings/0/amount", 0.0f);
   }
+}
+
+void AIManager::_on_ammo_finished()
+{
+  m_BlackboardInst->set_var("IsAmmoEmpty", true);
 }
 
 void AIManager::_blend_chase_states(double delta)
@@ -219,26 +229,34 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
 BT::Status AIManager::_shoot(double delta)
 {
   WeaponCommand& weapon_cmd = input_cmd_system->get_weapon_command();
-
+  
   if(ai_vision_component->can_see_player() && m_Target)
   {
+    // FIXME: Should be hold trigger but it works for now
+    weapon_cmd = {
+      .WantsToPressTrigger = true
+    };
+
     if(nav_agent_3d->is_navigation_finished())
     {
       env_query3d->request_query();
     }
-  
+
     _rotate_character(delta);
     _enable_shootIK(true);
 
-    // This sets the WantsToPressTrigger to true every frame which causes the enemy to instantly shoot all the bullets
-    weapon_cmd = {
-      .WantsToHoldTrigger = true
-    };
-
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
     
-    return BT::RUNNING;
+    return BT::SUCCESS;
   }
 
   return BT::FAILURE;
+}
+
+void AIManager::_reload()
+{
+  WeaponCommand& weapon_cmd = input_cmd_system->get_weapon_command();
+  weapon_cmd = {
+    .WantsToReloadWeapon = true
+  };
 }

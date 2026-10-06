@@ -15,13 +15,14 @@
 using namespace godot;
 
 class WeaponManager;
+class Player;
 
 struct WeaponEffectsData 
 {
   Node3D *HoldPointNode, *ActionEffectsHolderNode;
   MovementManager* MovementManagerInst;
   WeaponManager* WeaponManagerInst;
-  CharacterComponent* CharacterCompInst;
+  Player* CharacterCompInst;
   WeaponComponent* WeaponCompInst;
 };
 
@@ -46,7 +47,7 @@ private:
 
   Node3D* m_HoldPointNode { nullptr };
   MovementManager* m_MovementManager { nullptr };
-  CharacterBody3D* m_CharacterBody { nullptr };
+  Player* m_Player { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
 };
 
@@ -82,7 +83,7 @@ private:
   float m_WeaponSpringAngFreq { 0.0f };
   float m_WeaponDampedSpringRatio { 0.0f };
   
-  CharacterBody3D* m_CharacterBody { nullptr };
+  Player* m_Player { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
   MovementManager* m_MovementManager { nullptr };
 };
@@ -111,7 +112,7 @@ private:
 
   Node3D *m_HoldPointNode { nullptr }, *m_WeaponArmatureNode { nullptr };
   MovementManager* m_MovementManager { nullptr };
-  CharacterBody3D* m_CharacterBody { nullptr };
+  Player* m_Player { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
   WeaponManager* m_WeaponManager { nullptr };
 
@@ -142,7 +143,7 @@ private:
   Node3D *m_HoldPointNode { nullptr }, *m_WeaponArmatureNode { nullptr };
   WeaponManager* m_WeaponManager { nullptr };
   MovementManager* m_MovementManager { nullptr };
-  CharacterBody3D* m_CharacterBody { nullptr };
+  Player* m_Player { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
 
   DampedSpring m_DampedSpring {};
@@ -155,9 +156,9 @@ public:
   void _init_data(const WeaponEffectsData& weaponEffectsData);
   void _update(double delta);
 
-  void _on_weapon_reload_start(Skeleton3D* skeleton3D);
-  void _on_weapon_switched(Ref<Weapon> currentWeapon);
-  void _on_weapon_fired(Ref<Weapon> currentWeapon);
+  void _on_weapon_reload_start(Skeleton3D* skeleton3D, CharacterComponent* characterComp);
+  void _on_weapon_switched(Ref<Weapon> currentWeapon, CharacterComponent* characterComp);
+  void _on_weapon_fired(Ref<Weapon> currentWeapon, CharacterComponent* characterComp);
 
   void _weapon_recoil_effect(double delta);
   void _weapon_reload_effect(double delta);
@@ -183,6 +184,7 @@ private:
   DampedSpring m_DampedSpring;
   
   // Ref<Curve2D> m_RecoilCurve { nullptr };
+  Player* m_Player { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
   
   Skeleton3D* m_CurrentSkeleton { nullptr };
@@ -199,7 +201,7 @@ public:
   void _init();
   void _init_data(const WeaponEffectsData& weaponEffectsData);
 
-  void _on_weapon_switched(Ref<Weapon> currentWeapon);
+  void _on_weapon_switched(Ref<Weapon> currentWeapon, CharacterComponent* characterComp);
 
   void _update_data(Ref<Weapon> currentWeapon);
   void _update(double delta);
@@ -227,6 +229,6 @@ private:
   GD_DEFINE_PROPERTY(MovementManager*, movement_manager, nullptr);
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
-  GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
+  GD_DEFINE_PROPERTY(Player*, player, nullptr);
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
 };

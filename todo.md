@@ -1,15 +1,14 @@
 ## TODO 
 
 - ADD LICENSE seperately for assets []
-- Use PlayerComponent in WeaponEffects Component instead of a generic Character Component []
 - Clean up weapon manager and weapon effects component []
-- Add decal patterns for guns []
 - Add effects like landing on floor shake etc... []
 - Move the CharacterComponent properties into a custom resource file to swap between multiple profiles quickly []
 
 - Make slide detection work for objects like boxes, crates and etc.. []
 - Transition to idle state when sliding into world objects []
 - Allow sliding when crouch is toggled during falling state []
+- Add decal patterns for guns []
 
 ## DONE:
 - Sideways movement when falling [x]
@@ -53,3 +52,4 @@
 - [**CRITICAL**] Fix memory leak related to Canvas2D (HUD, Signal Lens) and Recoil Curve Resource [x]
 - Set the commands in the InputCommandSystem using setters instead of modifying the struct members directly [x]
 - [NOT CRITICAL] Fix EventBus Singleton unregisteration [x]
+- Use PlayerComponent in WeaponEffects Component instead of a generic Character Component [x]

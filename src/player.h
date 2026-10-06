@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 
 #include "components/character_component.h"
+#include "components/weapon_effects_components.h"
 
 #include "globals.h"
 
@@ -29,4 +30,6 @@ public:
 private:
   Vector2 m_InputDir {};
   InputCommandSystem* m_InputCmdSystem { nullptr };
+
+  GD_DEFINE_PROPERTY(WeaponEffects*, weapon_effects_component, nullptr);
 };

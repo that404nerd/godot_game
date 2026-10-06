@@ -65,6 +65,7 @@ void PlayAnimFromTree::execute_anim(AnimTypes animType)
   StringName action_name = data->get_action_name();
   StringName travel_path = playback_path.path_join(action_name);
 
+  m_AnimTreePlayback->travel(action_name);
   m_AnimTreePlayback->start(action_name);
 }
 

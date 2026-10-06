@@ -58,6 +58,8 @@ void StateMachine::_change_state(int stateID)
   m_CurrentState = newState;
 
   newState->_enter();
+
+  // print_line(get_owner()->get_name(), ": From ", m_PrevState->get_current_state(), "to ", m_CurrentState->get_current_state());
 }
 
 int StateMachine::get_current_state()

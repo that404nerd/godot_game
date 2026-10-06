@@ -9,9 +9,13 @@ EventBus::EventBus()
 
 void EventBus::_bind_methods()
 {
-  ADD_SIGNAL(MethodInfo("weapon_fired", PropertyInfo(Variant::OBJECT, "currentWeapon")));
-  ADD_SIGNAL(MethodInfo("weapon_reload_start", PropertyInfo(Variant::OBJECT, "skeleton")));
-  ADD_SIGNAL(MethodInfo("weapon_switched", PropertyInfo(Variant::OBJECT, "currentWeapon")));
+  // For Weapon States
+  ADD_SIGNAL(MethodInfo("weapon_fired", PropertyInfo(Variant::OBJECT, "currentWeapon"), PropertyInfo(Variant::OBJECT, "owner")));
+  ADD_SIGNAL(MethodInfo("weapon_reload_start", PropertyInfo(Variant::OBJECT, "skeleton"), PropertyInfo(Variant::OBJECT, "owner")));
+  ADD_SIGNAL(MethodInfo("weapon_switched", PropertyInfo(Variant::OBJECT, "currentWeapon"), PropertyInfo(Variant::OBJECT, "owner")));
+
+  // For Ammo stuff
+  ADD_SIGNAL(MethodInfo("ammo_finished"));
 
   // For the PlayAnimComponent interface
   ADD_SIGNAL(MethodInfo("anim_started", PropertyInfo(Variant::STRING_NAME, "animName")));

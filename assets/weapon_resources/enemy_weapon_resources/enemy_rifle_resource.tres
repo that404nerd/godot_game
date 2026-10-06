@@ -1,0 +1,39 @@
+[gd_resource type="Weapon" format=3 uid="uid://c0y0g7ydxvuea"]
+
+[ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_4cygv"]
+
+[resource]
+weaponName = "Rifle"
+totalAmmoCount = 180
+magAmmoCount = 30
+weaponFOV = 55.0
+weaponSwayAngularFreq = 40.0
+weaponSwayDampingRatio = 0.9
+weaponVerticalPush = 0.1
+weaponVerticalAngFreq = 30.0
+weaponVerticalDampingRatio = 0.2
+weapon_type = 2
+weaponDecalResource = ExtResource("1_4cygv")
+time_between_shots = 0.2
+hold_max_time = 0.0
+slide_armature_tilt_rot = Vector3(0, 0, -50)
+slide_armature_dip = Vector3(0, -0.02, 0)
+slide_armature_tilt_ang_freq = 9.0
+slide_armature_tilt_damping_ratio = 0.4
+slide_armature_tilt_end_ang_freq = 7.0
+jump_armature_weapon_rise_pos = Vector3(0, 0, 0)
+jump_armature_weapon_rise_ang_freq = 0.0
+jump_armature_weapon_rise_damping_ratio = 0.0
+jump_armature_weapon_rot_ang_freq = 0.0
+jump_armature_weapon_rot_damping_ratio = 0.0
+recoilMultiplier = 0.0
+recoil_ang_freq = 0.0
+recoil_damping_ratio = 0.0
+weaponReloadRootBoneName = "IK_Hand_Cntrl_R"
+magEnteredTimestamp = 1.0
+reloadShakeSpeedMultiplier = 0.2
+idle_weapon_bob_freq = 0.5
+idle_weapon_bob_amp = 0.02
+weapon_bob_freq = 1.0
+weapon_bob_amp = 0.04
+gun_range = 100.0

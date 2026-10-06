@@ -61,7 +61,7 @@ method = &"_idle"
 args_include_delta = true
 
 [sub_resource type="BTWait" id="BTWait_3sgys"]
-duration = 0.2
+duration = 0.4
 custom_name = "Time to stay near the query point"
 
 [sub_resource type="BTSequence" id="BTSequence_8ecev"]
@@ -86,9 +86,42 @@ custom_name = "Start Shooting"
 custom_name = "Shoot sequence"
 children = [SubResource("BTCheckVar_yyx4r"), SubResource("BTShootAtTarget_3sgys")]
 
+[sub_resource type="BBVariant" id="BBVariant_yyx4r"]
+type = 1
+saved_value = true
+resource_name = "true"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_0lqdb"]
+variable = &"IsAmmoEmpty"
+value = SubResource("BBVariant_yyx4r")
+custom_name = "Is Ammo Empty"
+
+[sub_resource type="BBNode" id="BBNode_3sgys"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_8ecev"]
+node = SubResource("BBNode_3sgys")
+method = &"_reload"
+custom_name = "Reload Weapon"
+
+[sub_resource type="BBVariant" id="BBVariant_8ecev"]
+type = 1
+saved_value = false
+resource_name = "<null>"
+
+[sub_resource type="BTSetVar" id="BTSetVar_cuh4b"]
+variable = &"IsAmmoEmpty"
+value = SubResource("BBVariant_8ecev")
+custom_name = "Set IsAmmoEmpty to false"
+
+[sub_resource type="BTSequence" id="BTSequence_yyx4r"]
+custom_name = "Reload Sequence"
+children = [SubResource("BTCheckVar_0lqdb"), SubResource("BTCallMethod_8ecev"), SubResource("BTSetVar_cuh4b")]
+
 [sub_resource type="BTParallel" id="BTParallel_3sgys"]
 custom_name = "Shoot Parallel"
-children = [SubResource("BTSequence_8ecev"), SubResource("BTSequence_cuh4b")]
+children = [SubResource("BTSequence_8ecev"), SubResource("BTSequence_cuh4b"), SubResource("BTSequence_yyx4r")]
 
 [sub_resource type="BTSelector" id="BTSelector_60305"]
 custom_name = "Combat Selector"

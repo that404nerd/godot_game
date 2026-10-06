@@ -1,11 +1,10 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://dl464t5p4j2g4"]
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jivoc"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0wq45"]
+[ext_resource type="Texture2D" uid="uid://n52h0bh504d1" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp_industrial_wall_lamp_diff_2k.jpg" id="1_voy76"]
+[ext_resource type="Texture2D" uid="uid://b2souqgqx5e5b" path="res://assets/meshes/industrial_wall_lamp/industrial_wall_lamp_industrial_wall_lamp_emissive_2k.png" id="2_fl2ft"]
 
 [resource]
-albedo_texture = SubResource("CompressedTexture2D_jivoc")
+albedo_texture = ExtResource("1_voy76")
 metallic = 0.7
 emission_enabled = true
-emission_texture = SubResource("CompressedTexture2D_0wq45")
+emission_texture = ExtResource("2_fl2ft")

@@ -37,7 +37,10 @@ public:
   BT::Status _chase(double delta, bool shouldRotate, bool toPlayer);
   BT::Status _patrol(double delta, bool shouldRotate, bool toPlayer);
 
+  void _on_ammo_finished();
+
   BT::Status _shoot(double delta);
+  void _reload();
 
   void _rotate_character(double delta);
 
@@ -67,5 +70,6 @@ private:
   AnimationNodeStateMachinePlayback *m_LowerBodyStateMachine { nullptr };
   AnimationNodeStateMachinePlayback *m_UpperBodyStateMachine { nullptr };
 
+  bool m_IsAmmoFinished { false };
   Player* m_Target { nullptr };
 };

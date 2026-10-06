@@ -22,9 +22,6 @@ void CharacterComponent::_ready()
 
   if(weapon_state_machine)
     weapon_state_machine->_init();
-
-  if(weapon_effects_component)
-    weapon_effects_component->_init();
 }
 
 void CharacterComponent::_bind_methods()
@@ -35,7 +32,6 @@ void CharacterComponent::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, WeaponComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, WeaponManager, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, WeaponStateMachine, weapon_state_machine, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(CharacterComponent, WeaponEffectsComponent, weapon_effects_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(CharacterComponent, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_GROUP("Character Nodes", "");
@@ -93,6 +89,11 @@ void CharacterComponent::_update_gravity(double delta)
   set_velocity(characterVel);
 }
 
+void CharacterComponent::_update_velocity()
+{
+  move_and_slide();
+}
+
 void CharacterComponent::_process(double delta)
 {
   if(input_command_system)
@@ -109,15 +110,6 @@ void CharacterComponent::_process(double delta)
 
   if(weapon_state_machine)
     weapon_state_machine->_update(delta);
-
-  if(weapon_effects_component)
-    weapon_effects_component->_update(delta);
-}
-
-void CharacterComponent::_input(const Ref<InputEvent> &event)
-{
-  if(movement_manager)
-    movement_manager->_handle_input(event);
 }
 
 void CharacterComponent::_physics_process(double delta)
@@ -133,9 +125,4 @@ void CharacterComponent::_physics_process(double delta)
 
   if(weapon_state_machine)
     weapon_state_machine->_physics_update(delta);
-}
-
-void CharacterComponent::_update_velocity()
-{
-  move_and_slide();
 }

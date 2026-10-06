@@ -1,4 +1,5 @@
 #include "weapon_manager.h"
+#include "godot_cpp/core/print_string.hpp"
 
 void WeaponManager::_init()
 {
@@ -200,8 +201,11 @@ void WeaponManager::_update(double delta)
 
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
   input_command_system->set_max_hold_time(m_HoldMaxTime);
-  
-  m_TimeBetweenShots -= delta;
+
+  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
+  {
+    EventBus::get_singleton()->emit_signal("ammo_finished");
+  }
 }
 
 void WeaponManager::_physics_update(double delta)
@@ -271,7 +275,7 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
 
     generate_decal();
-    EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon);
+    EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon, get_owner());
   }
 
   if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_EQUIP))
@@ -281,7 +285,7 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
   if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_RELOAD))
   {
-    EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D);
+    EventBus::get_singleton()->emit_signal("weapon_reload_start", m_Skeleton3D, get_owner());
   }
 }
 
@@ -402,6 +406,9 @@ void WeaponManager::_shoot_weapon(double delta)
   {
     m_WeaponStateCtx.ShootTimeBeforeIdle -= delta;
   }
+
+  if(m_TimeBetweenShots >= 0.0f)
+    m_TimeBetweenShots -= delta;
  
   /*
     Two states (for now), one for automatic handling (mouse hold) and the other for just manual handling (single click). 
@@ -412,14 +419,12 @@ void WeaponManager::_shoot_weapon(double delta)
     The state goes to idle if ShootTimeBeforeIdle is 0.0f only. Checking for inputs could break semi-auto, full-auto weapons, so a timer is more solid.
     The Muzzle flash is handled by using a timeout variable which is set to every weapon's particle's lifetime. It's managed using a simple timer.
   */
-
+  if(m_TimeBetweenShots <= 0.0f)
   {
-    print_line(get_owner()->get_name(), ": ", weapon_cmd.WantsToHoldTrigger);
     // Check whether the fire key is held or not (for automatic weapons)
     if(weapon_cmd.WantsToHoldTrigger &&
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
     {
-      print_line("Hold Shoot!");
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }  
     
@@ -427,7 +432,6 @@ void WeaponManager::_shoot_weapon(double delta)
     if(weapon_cmd.WantsToPressTrigger && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
-      print_line("Manual Shoot!");
       StringName execute_anim = play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT);
   
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
@@ -436,9 +440,11 @@ void WeaponManager::_shoot_weapon(double delta)
     if(weapon_cmd.WantsToHoldTrigger || weapon_cmd.WantsToPressTrigger)
     {
       m_MuzzleComp->_enable_light_status(true);
-
+      
+      m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
       m_WeaponStateCtx.ShootTimeBeforeIdle = MAX_SHOOT_STATE_TIME;
       weapon_cmd.WantsToPressTrigger = false;
+      weapon_cmd.WantsToHoldTrigger = false;
     }
   }
       
@@ -475,7 +481,6 @@ void WeaponManager::_reload_weapon()
 
   int ammoNeeded = max_mag_capacity - current_ammo;
   int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
-
   
   m_WeaponStateCtx.IsReloading = true;
   
@@ -485,7 +490,6 @@ void WeaponManager::_reload_weapon()
     if(m_WeaponStateCtx.IsReloadStarted == false)
     {
       m_WeaponStateCtx.IsReloadStarted = true;
-
       play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD);
     }
 
@@ -502,7 +506,7 @@ void WeaponManager::_reload_weapon()
 void WeaponManager::_weapon_unequip_over()
 {
   weapon_component->set_current_weapon_res(weapon_component->get_next_weapon());
-  EventBus::get_singleton()->emit_signal("weapon_switched", weapon_component->get_current_weapon_res());
+  EventBus::get_singleton()->emit_signal("weapon_switched", weapon_component->get_current_weapon_res(), get_owner());
 }
 
 

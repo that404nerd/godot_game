@@ -1,9 +1,11 @@
+#include "character_component.h"
 #include "weapon_effects_components.h"
 #include "../managers/weapon_manager.h"
+#include "../player.h"
 
 void WeaponBobComponent::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
-  m_CharacterBody = weaponEffectsData.CharacterCompInst;
+  m_Player = weaponEffectsData.CharacterCompInst;
   m_MovementManager = weaponEffectsData.MovementManagerInst;
   m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_res();
   m_HoldPointNode = weaponEffectsData.HoldPointNode;
@@ -34,11 +36,11 @@ void WeaponBobComponent::_update_bob_data(Ref<Weapon> currentWeapon)
 
 void WeaponBobComponent::weapon_bob(double delta)
 {
-  if (!m_CharacterBody) return;
+  if (!m_Player) return;
   
-  m_CharacterVel = m_CharacterBody->get_velocity();
+  m_CharacterVel = m_Player->get_velocity();
 
-  bool onFloor = m_CharacterBody->is_on_floor();
+  bool onFloor = m_Player->is_on_floor();
   float velocityMag = m_CharacterVel.length();
 
   if(!m_MovementManager->WantsToSprint() && !m_MovementManager->IsCrouching())
@@ -63,7 +65,7 @@ void WeaponBobComponent::weapon_bob(double delta)
 
 void WeaponSwayComponent::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
-  m_CharacterBody = weaponEffectsData.CharacterCompInst;
+  m_Player = weaponEffectsData.CharacterCompInst;
   m_MovementManager = weaponEffectsData.MovementManagerInst;
   m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_res();
 
@@ -96,9 +98,9 @@ void WeaponSwayComponent::_update_sway_data(Ref<Weapon> currentWeapon)
 
 void WeaponSwayComponent::weapon_idle_sway(double delta)
 {
-  if (!m_CharacterBody) return;
+  if (!m_Player) return;
 
-  m_CharacterVel = m_CharacterBody->get_velocity();
+  m_CharacterVel = m_Player->get_velocity();
 
   if(m_CharacterVel.length() > 0.1f || m_MovementManager->IsSliding())
   {
@@ -131,7 +133,7 @@ void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
 
 void WeaponJumpEffect::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
-  m_CharacterBody = weaponEffectsData.CharacterCompInst;
+  m_Player = weaponEffectsData.CharacterCompInst;
   m_MovementManager = weaponEffectsData.MovementManagerInst;
   m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_res();
   m_WeaponManager = weaponEffectsData.WeaponManagerInst;
@@ -211,7 +213,7 @@ void WeaponJumpEffect::_weapon_jump_effect(double delta)
 
 void WeaponSlideEffect::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
-  m_CharacterBody = weaponEffectsData.CharacterCompInst;
+  m_Player = weaponEffectsData.CharacterCompInst;
   m_MovementManager = weaponEffectsData.MovementManagerInst;
   m_CurrentWeapon = weaponEffectsData.WeaponCompInst->get_current_weapon_res();
   m_WeaponManager = weaponEffectsData.WeaponManagerInst;
@@ -300,6 +302,7 @@ void WeaponSlideEffect::_weapon_slide_effect(double delta)
 //////////////////////////// Weapon Action Effects ///////////////////////////////
 void WeaponActionEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 {
+  m_Player = weaponEffectsData.CharacterCompInst;
   m_WeaponManager = weaponEffectsData.WeaponManagerInst;
   m_WeaponComponent = weaponEffectsData.WeaponCompInst;
 
@@ -317,13 +320,16 @@ void WeaponActionEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 
 void WeaponActionEffects::_bind_methods()
 {
-  ClassDB::bind_method(D_METHOD("_on_weapon_fired", "currentWeapon"), &WeaponActionEffects::_on_weapon_fired);
-  ClassDB::bind_method(D_METHOD("_on_weapon_switched", "currentWeapon"), &WeaponActionEffects::_on_weapon_switched);
-  ClassDB::bind_method(D_METHOD("_on_weapon_reload_start", "skeleton3D"), &WeaponActionEffects::_on_weapon_reload_start);  
+  ClassDB::bind_method(D_METHOD("_on_weapon_fired", "currentWeapon", "characterComp"), &WeaponActionEffects::_on_weapon_fired);
+  ClassDB::bind_method(D_METHOD("_on_weapon_switched", "currentWeapon", "characterComp"), &WeaponActionEffects::_on_weapon_switched);
+  ClassDB::bind_method(D_METHOD("_on_weapon_reload_start", "skeleton3D", "characterComp"), &WeaponActionEffects::_on_weapon_reload_start);  
 }
 
-void WeaponActionEffects::_on_weapon_reload_start(Skeleton3D* skeleton3D)
+void WeaponActionEffects::_on_weapon_reload_start(Skeleton3D* skeleton3D, CharacterComponent* characterComp)
 {
+  if(characterComp != m_Player)
+    return;
+
   StringName boneName = m_CurrentWeapon->get_weaponReloadRootBoneName();
   m_BoneID = skeleton3D->find_bone(boneName);
   if(m_BoneID == -1)
@@ -333,13 +339,16 @@ void WeaponActionEffects::_on_weapon_reload_start(Skeleton3D* skeleton3D)
   m_CurrentSkeleton = skeleton3D;
 }
 
-void WeaponActionEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
+void WeaponActionEffects::_on_weapon_switched(Ref<Weapon> currentWeapon, CharacterComponent* characterComp)
 {
   m_CurrentWeapon = currentWeapon;
 }
 
-void WeaponActionEffects::_on_weapon_fired(Ref<Weapon> currentWeapon)
+void WeaponActionEffects::_on_weapon_fired(Ref<Weapon> currentWeapon, CharacterComponent* characterComp)
 {
+  if(characterComp != m_Player)
+    return;
+
   m_RecoilVel = currentWeapon->get_recoilVector();
 }
 
@@ -347,7 +356,6 @@ void WeaponActionEffects::_weapon_recoil_effect(double delta)
 {
   m_DampedSpring.CalcDampedSpringMotionParams(delta, m_CurrentWeapon->get_recoil_ang_freq(), m_CurrentWeapon->get_recoil_damping_ratio());
   m_DampedSpring.UpdateDampedSpringMotion(m_RecoilSpringRot, m_RecoilVel, Vector3(0.0f, 0.0f, 0.0f)); 
-
 }
 
 void WeaponActionEffects::_weapon_reload_effect(double delta)
@@ -397,7 +405,7 @@ void WeaponEffects::_init()
     .ActionEffectsHolderNode = weapon_actions_effect_holder,
     .MovementManagerInst = movement_manager,
     .WeaponManagerInst = weapon_manager,
-    .CharacterCompInst = character_component,
+    .CharacterCompInst = player,
     .WeaponCompInst = weapon_component
   });
   
@@ -418,19 +426,18 @@ void WeaponEffects::_init_data(const WeaponEffectsData& weaponEffectsData)
 
 void WeaponEffects::_bind_methods()
 {
-  ClassDB::bind_method(D_METHOD("_on_weapon_switched", "currentWeapon"), &WeaponEffects::_on_weapon_switched);
+  ClassDB::bind_method(D_METHOD("_on_weapon_switched", "currentWeapon", "characterComp"), &WeaponEffects::_on_weapon_switched);
 
-  
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, Node3D, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, Node3D, weapon_actions_effect_holder, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, MovementManager, movement_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, InputCommandSystem, input_command_system, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, WeaponManager, weapon_manager, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
-  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, CharacterComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponEffects, Player, player, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponEffects, WeaponComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
-void WeaponEffects::_on_weapon_switched(Ref<Weapon> currentWeapon)
+void WeaponEffects::_on_weapon_switched(Ref<Weapon> currentWeapon, CharacterComponent* characterComp)
 {
   _update_data(currentWeapon);
 }

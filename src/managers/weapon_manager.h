@@ -2,24 +2,13 @@
 
 #include <godot_cpp/godot.hpp>
 
-#include <godot_cpp/classes/resource_loader.hpp>
-#include <godot_cpp/classes/input_event_mouse_motion.hpp>
-#include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d.hpp>
 #include <godot_cpp/classes/decal.hpp>
 #include <godot_cpp/classes/world3d.hpp>
-#include <godot_cpp/classes/viewport.hpp>
-#include <godot_cpp/classes/path2d.hpp>
-#include <godot_cpp/classes/curve2d.hpp>
-#include <godot_cpp/classes/animation_player.hpp>
-#include <godot_cpp/classes/gpu_particles3d.hpp>
-#include <godot_cpp/variant/typed_array.hpp>
-#include <godot_cpp/classes/omni_light3d.hpp>
 #include <godot_cpp/classes/base_material3d.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
-#include <godot_cpp/templates/vector.hpp>
 
 #include "../input_command_system.h"
 #include "../components/ammo_component.h"

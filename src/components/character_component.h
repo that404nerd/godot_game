@@ -39,7 +39,6 @@ public:
   */
   void _ready() override;
   void _process(double delta) override;
-  void _input(const Ref<InputEvent>& event) override;
   void _physics_process(double delta) override;
 
 protected:
@@ -57,7 +56,6 @@ private:
   GD_DEFINE_PROPERTY(WeaponManager*, weapon_manager, nullptr);
   GD_DEFINE_PROPERTY(WeaponStateMachine*, weapon_state_machine, nullptr);
   GD_DEFINE_PROPERTY(InputCommandSystem*, input_command_system, nullptr);
-  GD_DEFINE_PROPERTY(WeaponEffects*, weapon_effects_component, nullptr);
 
   GD_DEFINE_PROPERTY(Node3D*, character_head, nullptr);
   GD_DEFINE_PROPERTY(Marker3D*, character_marker, nullptr);

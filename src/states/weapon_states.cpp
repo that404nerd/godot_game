@@ -38,6 +38,7 @@ void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
     ((m_WeaponCmd.WantsToPressTrigger && m_WeaponManager->current_weapon_has_auto_reload()) && 
     (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->get_current_reserve_ammo() > 0)))
   {
+    print_line(m_WeaponManager->get_owner()->get_name(), ": From Idle to Reload!");
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
 
@@ -67,11 +68,6 @@ WeaponEquipState::WeaponEquipState(const WeaponStateData& weaponStateData)
 void WeaponEquipState::_enter()
 {
   m_WeaponManager->_equip_weapon();
-}
-
-void WeaponEquipState::_handle_input(const Ref<InputEvent>& event)
-{
-  
 }
 
 void WeaponEquipState::_update(double delta)
@@ -112,7 +108,7 @@ void WeaponShootState::_update(double delta)
   if((m_WeaponCmd.WantsToPressTrigger || m_WeaponCmd.WantsToHoldTrigger) &&
      (m_WeaponManager->get_current_weapon_ammo() == 0 && m_WeaponManager->current_weapon_has_auto_reload()))
   {
-    // print_line(m_WeaponManager->get_owner()->get_name(), ": ", "Reload!");
+    print_line(m_WeaponManager->get_owner()->get_name(), ": From Shoot to Reload!");
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::RELOAD));
   }
   
@@ -133,10 +129,6 @@ void WeaponShootState::_exit()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 WeaponReloadState::WeaponReloadState(const WeaponStateData& weaponStateData)
   : BaseWeaponState(WeaponStates::RELOAD, weaponStateData)
-{
-}
-
-void WeaponReloadState::_handle_input(const Ref<InputEvent>& event)
 {
 }
 
@@ -173,11 +165,6 @@ WeaponUnequipState::WeaponUnequipState(const WeaponStateData& weaponStateData)
 {
 }
 
-void WeaponUnequipState::_handle_input(const Ref<InputEvent>& event)
-{
-  
-}
-
 void WeaponUnequipState::_enter()
 {
 
@@ -207,11 +194,6 @@ void WeaponUnequipState::_exit()
 WeaponSwitchState::WeaponSwitchState(const WeaponStateData& weaponStateData)
   : BaseWeaponState(WeaponStates::WEAPON_SWITCH, weaponStateData)
 {
-}
-
-void WeaponSwitchState::_handle_input(const Ref<InputEvent>& event)
-{
- 
 }
 
 void WeaponSwitchState::_enter()

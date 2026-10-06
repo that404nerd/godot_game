@@ -6,8 +6,8 @@
 [ext_resource type="BehaviorTree" uid="uid://css0ql3u1tia4" path="res://assets/ai/trees/idle_behaviour_tree.tres" id="5_6kgya"]
 [ext_resource type="PackedScene" uid="uid://c2mvgb8b6nuk5" path="res://assets/weapon_scenes/enemy_rifle_swat_type1.tscn" id="5_resel"]
 [ext_resource type="BehaviorTree" uid="uid://bjf3u3qvvltyk" path="res://assets/ai/trees/alert_behaviour_tree.tres" id="6_etm5s"]
-[ext_resource type="Weapon" uid="uid://c6bcoxa876t4a" path="res://assets/weapon_resources/rifle_resource.tres" id="7_6whwk"]
 [ext_resource type="BehaviorTree" uid="uid://dvtttjkg0kbl7" path="res://assets/ai/trees/combat_behaviour_tree.tres" id="7_yk5nb"]
+[ext_resource type="Weapon" uid="uid://c0y0g7ydxvuea" path="res://assets/weapon_resources/enemy_weapon_resources/enemy_rifle_resource.tres" id="9_resel"]
 [ext_resource type="PackedScene" uid="uid://bto5u4rf2xb5a" path="res://scenes/enemies/components/enemy_info.tscn" id="10_6whwk"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3w5wj"]
@@ -7427,6 +7427,10 @@ size = Vector3(8, 7.5844727, 8)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_564y7"]
 albedo_color = Color(5.2943824e-07, 0.6743359, 0.40599835, 1)
 
+[sub_resource type="SphereMesh" id="SphereMesh_resel"]
+radius = 0.1
+height = 0.2
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ygaia"]
 animation = &"Enemy_Crouch_Back"
 
@@ -7574,28 +7578,34 @@ animation = &"Enemy_Rifle_Reload"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fiqkc"]
 animation = &"Enemy_Shoot"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dvt07"]
-xfade_time = 0.2
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fiqkc"]
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dvt07"]
+
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_v5ius"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3aucl"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3psjn"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ufqgm"]
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_mwsed"]
 states/Enemy_Idle/node = SubResource("AnimationNodeAnimation_mdq0l")
-states/Enemy_Idle/position = Vector2(325, 24)
+states/Enemy_Idle/position = Vector2(330, 100)
 states/Reload/node = SubResource("AnimationNodeAnimation_564y7")
-states/Reload/position = Vector2(357, 177)
+states/Reload/position = Vector2(408, 242)
 states/Shoot/node = SubResource("AnimationNodeAnimation_fiqkc")
-states/Shoot/position = Vector2(350, 100)
+states/Shoot/position = Vector2(503, 100)
 states/Start/position = Vector2(169, 100)
-transitions = ["Start", "Shoot", SubResource("AnimationNodeStateMachineTransition_dvt07"), "Start", "Enemy_Idle", SubResource("AnimationNodeStateMachineTransition_fiqkc"), "Start", "Reload", SubResource("AnimationNodeStateMachineTransition_v5ius")]
+transitions = ["Start", "Enemy_Idle", SubResource("AnimationNodeStateMachineTransition_fiqkc"), "Enemy_Idle", "Shoot", SubResource("AnimationNodeStateMachineTransition_dvt07"), "Enemy_Idle", "Reload", SubResource("AnimationNodeStateMachineTransition_v5ius"), "Reload", "Enemy_Idle", SubResource("AnimationNodeStateMachineTransition_3aucl"), "Shoot", "Reload", SubResource("AnimationNodeStateMachineTransition_3psjn"), "Reload", "Shoot", SubResource("AnimationNodeStateMachineTransition_ufqgm")]
+graph_offset = Vector2(-55, 56)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_708gk"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_708gk"]
-graph_offset = Vector2(-529.2727, 290.45453)
+graph_offset = Vector2(-756.1818, 385.81818)
 nodes/output/position = Vector2(640, 240)
 nodes/UpperBodyTimeScale/node = SubResource("AnimationNodeTimeScale_708gk")
 nodes/UpperBodyTimeScale/position = Vector2(20, 360)
@@ -7620,7 +7630,7 @@ radius = 0.30517578
 radius = 0.30517578
 height = 1.2
 
-[sub_resource type="BlackboardPlan" id="BlackboardPlan_etm5s"]
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_resel"]
 var/ToPlayerDirection/name = &"ToPlayerDirection"
 var/ToPlayerDirection/type = 9
 var/ToPlayerDirection/value = Vector3(0, 0, 0)
@@ -7661,6 +7671,16 @@ var/IsNavigationFinished/type = 1
 var/IsNavigationFinished/value = false
 var/IsNavigationFinished/hint = 0
 var/IsNavigationFinished/hint_string = ""
+var/WantsToShoot/name = &"WantsToShoot"
+var/WantsToShoot/type = 1
+var/WantsToShoot/value = false
+var/WantsToShoot/hint = 0
+var/WantsToShoot/hint_string = ""
+var/IsAmmoEmpty/name = &"IsAmmoEmpty"
+var/IsAmmoEmpty/type = 1
+var/IsAmmoEmpty/value = false
+var/IsAmmoEmpty/hint = 0
+var/IsAmmoEmpty/hint_string = ""
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_bo2cl"]
 height = 10.0
@@ -7672,7 +7692,7 @@ playback_path = &"parameters/UpperBodyStateMachine/playback"
 [sub_resource type="AnimListData" id="AnimListData_564y7"]
 playback_path = &"parameters/UpperBodyStateMachine/playback"
 action_name = &"Reload"
-underlying_anim_name = &"Enemy_Reload"
+underlying_anim_name = &"Enemy_Rifle_Reload"
 has_valid_anim = true
 
 [sub_resource type="AnimListData" id="AnimListData_v5ius"]
@@ -7690,7 +7710,7 @@ has_valid_anim = true
 [sub_resource type="AnimListData" id="AnimListData_ygaia"]
 playback_path = &"parameters/UpperBodyStateMachine/playback"
 
-[node name="SwatOperator_Type1" type="AICharacterComponent" unique_id=1484330077 node_paths=PackedStringArray("ai_manager", "ai_state_machine", "initial_state", "bt_player_inst", "movement_manager", "movement_state_machine", "weapon_component", "weapon_manager", "weapon_state_machine", "input_command_system", "character_head", "crouch_raycast", "stairs_ahead_raycast", "stairs_below_raycast", "default_collision_shape", "crouch_collision_shape")]
+[node name="SwatOperator_Type1" type="AICharacterComponent" unique_id=1484330077 node_paths=PackedStringArray("ai_manager", "ai_state_machine", "initial_state", "bt_player_inst", "movement_manager", "movement_state_machine", "weapon_component", "weapon_manager", "weapon_state_machine", "input_command_system", "character_head", "character_marker", "crouch_raycast", "stairs_ahead_raycast", "stairs_below_raycast", "default_collision_shape", "crouch_collision_shape")]
 ai_manager = NodePath("AIManager")
 ai_behaviour_props = ExtResource("1_bo2cl")
 ai_state_machine = NodePath("AIStateMachine")
@@ -7703,12 +7723,13 @@ weapon_manager = NodePath("WeaponManager")
 weapon_state_machine = NodePath("WeaponStateMachine")
 input_command_system = NodePath("InputCommandSystem")
 character_head = NodePath("Head")
+character_marker = NodePath("EnemyMarker")
 crouch_raycast = NodePath("RayCasts/CrouchColliderRay")
 stairs_ahead_raycast = NodePath("RayCasts/StairsAheadRayCast3D")
 stairs_below_raycast = NodePath("RayCasts/StairsBelowRayCast3D")
 default_collision_shape = NodePath("EnemyCollider")
 crouch_collision_shape = NodePath("EnemyCrouchCollider")
-walk_speed = 6.0
+walk_speed = 4.0
 ground_accel = 50.0
 ground_decel = 70.0
 collision_layer = 7
@@ -7727,35 +7748,35 @@ bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, 1, 9.834552e-08, 0, -9.834552e-08, 1, -0.019378807, 0.95980024, 0.014925078)
 bones/0/enabled = true
 bones/0/position = Vector3(-0.019378807, 0.95980024, 0.014925078)
-bones/0/rotation = Quaternion(-0.058589064, -0.0621642, 0.023926146, 0.9960575)
+bones/0/rotation = Quaternion(-0.0630287, -0.037448682, 0.024595292, 0.9970056)
 bones/0/scale = Vector3(1, 1, 1)
 bones/1/name = "mixamorig_LeftUpLeg"
 bones/1/parent = 0
 bones/1/rest = Transform3D(-0.9954326, 0.095500536, 1.2628784e-05, -0.094964504, -0.98982537, -0.10596226, -0.010106944, -0.10547875, 0.99437416, 0.10890137, -0.061292112, -0.0005539276)
 bones/1/enabled = true
 bones/1/position = Vector3(0.10890137, -0.061292112, -0.0005539276)
-bones/1/rotation = Quaternion(0.09242885, 0.04436019, 0.99472225, -0.004106507)
+bones/1/rotation = Quaternion(0.101037115, 0.030183274, 0.99374616, -0.0367307)
 bones/1/scale = Vector3(1.0000032, 1.0000001, 1.0000039)
 bones/2/name = "mixamorig_LeftLeg"
 bones/2/parent = 1
 bones/2/rest = Transform3D(0.9999613, 0.008795742, -0.00012077497, -0.008796571, 0.9998634, -0.013995912, -2.3459688e-06, 0.013996434, 0.999902, -1.8044375e-09, 0.43191776, 1.04034825e-08)
 bones/2/enabled = true
 bones/2/position = Vector3(-1.8044375e-09, 0.43191776, 1.04034825e-08)
-bones/2/rotation = Quaternion(-0.14187776, -0.081308946, 0.003596989, 0.9865326)
+bones/2/rotation = Quaternion(-0.0698835, -0.0709624, 0.006028704, 0.9950098)
 bones/2/scale = Vector3(1, 1, 0.99999994)
 bones/3/name = "mixamorig_LeftFoot"
 bones/3/parent = 2
 bones/3/rest = Transform3D(0.99999404, 0.0029963404, 0.0017315506, -6.197486e-06, 0.5018991, -0.8649262, -0.003460677, 0.864921, 0.50189614, 1.21071935e-08, 0.33728176, -9.415089e-09)
 bones/3/enabled = true
 bones/3/position = Vector3(1.21071935e-08, 0.33728176, -9.415089e-09)
-bones/3/rotation = Quaternion(0.4872867, -0.010909799, 0.03689957, 0.87239397)
+bones/3/rotation = Quaternion(0.4255834, 0.0019536857, -0.0012559368, 0.9049163)
 bones/3/scale = Vector3(1, 1, 1)
 bones/4/name = "mixamorig_LeftToeBase"
 bones/4/parent = 3
 bones/4/rest = Transform3D(0.99384767, -0.06722344, -0.08802112, -3.4719703e-06, 0.794717, -0.6069801, 0.11075517, 0.60324603, 0.78982747, 1.9790605e-09, 0.2001971, 2.142042e-08)
 bones/4/enabled = true
 bones/4/position = Vector3(1.9790605e-09, 0.2001971, 2.142042e-08)
-bones/4/rotation = Quaternion(0.32369468, -0.052661914, 0.017902149, 0.94452536)
+bones/4/rotation = Quaternion(0.3203299, -0.052554343, 0.0177832, 0.94567996)
 bones/4/scale = Vector3(0.99999994, 0.99999994, 0.99999994)
 bones/5/name = "mixamorig_LeftToe_End"
 bones/5/parent = 4
@@ -7769,28 +7790,28 @@ bones/6/parent = 0
 bones/6/rest = Transform3D(-0.99542797, -0.09548768, 1.1574249e-05, 0.09493473, -0.98968154, -0.10731889, 0.010259097, -0.10682776, 0.9942212, -0.10890135, -0.061292112, -0.0037390564)
 bones/6/enabled = true
 bones/6/position = Vector3(-0.10890135, -0.061292112, -0.0037390564)
-bones/6/rotation = Quaternion(-0.14989965, -0.08148709, 0.9804637, 0.097883046)
+bones/6/rotation = Quaternion(-0.13173234, -0.06390703, 0.987753, 0.053913377)
 bones/6/scale = Vector3(0.9999973, 0.99999976, 0.99999654)
 bones/7/name = "mixamorig_RightLeg"
 bones/7/parent = 6
 bones/7/rest = Transform3D(0.99996275, -0.008625174, 0.00028391933, 0.008629838, 0.99946177, -0.031650133, -1.0778633e-05, 0.031651404, 0.99949896, -1.3795216e-08, 0.43198022, 4.951062e-10)
 bones/7/enabled = true
 bones/7/position = Vector3(-1.3795216e-08, 0.43198022, 4.951062e-10)
-bones/7/rotation = Quaternion(-0.12215712, 0.059715882, -0.03528343, 0.99008423)
+bones/7/rotation = Quaternion(-0.1798883, 0.07579405, -0.032451406, 0.9802257)
 bones/7/scale = Vector3(0.99999994, 1, 1)
 bones/8/name = "mixamorig_RightFoot"
 bones/8/parent = 7
 bones/8/rest = Transform3D(0.9999946, -0.002835703, -0.001691724, -5.499227e-06, 0.5109036, -0.85963804, 0.003301986, 0.8596334, 0.51090086, 1.0535587e-08, 0.33682302, -4.132744e-09)
 bones/8/enabled = true
 bones/8/position = Vector3(1.0535587e-08, 0.33682302, -4.132744e-09)
-bones/8/rotation = Quaternion(0.571076, 0.036473032, 0.050798096, 0.81851184)
+bones/8/rotation = Quaternion(0.6071119, 0.047974173, 0.008478597, 0.7931216)
 bones/8/scale = Vector3(1, 1, 1)
 bones/9/name = "mixamorig_RightToeBase"
 bones/9/parent = 8
 bones/9/rest = Transform3D(0.9940313, 0.06562751, 0.08714787, -3.0398369e-06, 0.7988422, -0.6015407, -0.10909501, 0.5979501, 0.79407424, 8.4983185e-09, 0.20184305, 1.1175871e-08)
 bones/9/enabled = true
 bones/9/position = Vector3(8.4983185e-09, 0.20184305, 1.1175871e-08)
-bones/9/rotation = Quaternion(0.33218414, 0.052290324, -0.01789, 0.94159406)
+bones/9/rotation = Quaternion(0.3358406, 0.05240215, -0.018022489, 0.9402874)
 bones/9/scale = Vector3(1, 1, 0.99999994)
 bones/10/name = "mixamorig_RightToe_End"
 bones/10/parent = 9
@@ -8307,7 +8328,7 @@ settings/0/invert = 0
 settings/0/additive = false
 
 [node name="RHandBoneAttachment" type="BoneAttachment3D" parent="enemy_operative1/Armature/Skeleton3D" unique_id=639989703]
-transform = Transform3D(-0.088076144, 0.61594284, 0.7828518, 0.98359287, -0.07043875, 0.16608158, 0.15744027, 0.78463537, -0.599633, -0.1119512, 1.2408906, 0.240149)
+transform = Transform3D(-0.07833853, 0.65367633, 0.75270844, 0.98531866, -0.06411553, 0.1582275, 0.15169016, 0.7540531, -0.6390569, -0.10021654, 1.2433381, 0.2415942)
 bone_name = "mixamorig_RightHand"
 bone_idx = 44
 
@@ -8347,6 +8368,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.775738, 30.455, -75.14)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_3sgys")
 
+[node name="EnemyMarker" type="Marker3D" parent="." unique_id=88569019]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.059652, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EnemyMarker" unique_id=123652847]
+visible = false
+mesh = SubResource("SphereMesh_resel")
+
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=2119136334]
 root_node = NodePath("../enemy_operative1")
 tree_root = SubResource("AnimationNodeBlendTree_708gk")
@@ -8366,7 +8394,6 @@ debug_path_custom_point_size = 8.0
 
 [node name="EnvironmentQuery3D" type="EnvironmentQuery3D" parent="." unique_id=18546140 node_paths=PackedStringArray("querier")]
 querier = NodePath("ContextPlayer")
-use_debug_shapes = true
 
 [node name="ContextEnemySelf" type="ContextTargetNode3D" parent="EnvironmentQuery3D" unique_id=964420580]
 target_node_path = NodePath("../..")
@@ -8415,7 +8442,7 @@ visible = false
 shape = SubResource("CapsuleShape3D_708gk")
 
 [node name="BTPlayer" type="BTPlayer" parent="." unique_id=847241690]
-blackboard_plan = SubResource("BlackboardPlan_etm5s")
+blackboard_plan = SubResource("BlackboardPlan_resel")
 monitor_performance = true
 
 [node name="AIStateMachine" type="LimboHSM" parent="." unique_id=2052496870]
@@ -8476,7 +8503,7 @@ anim_list = Dictionary[StringName, AnimListData]({
 
 [node name="WeaponComponent" type="WeaponComponent" parent="." unique_id=1382535762]
 weapon_resource_list = Dictionary[Weapon, PackedScene]({
-ExtResource("7_6whwk"): ExtResource("5_resel")
+ExtResource("9_resel"): ExtResource("5_resel")
 })
 
 [node name="WeaponStateMachine" type="WeaponStateMachine" parent="." unique_id=2038846235 node_paths=PackedStringArray("weapon_manager", "weapon_component")]

@@ -56,10 +56,6 @@ void MovementManager::_update(double delta)
 
 }
 
-void MovementManager::_handle_input(const Ref<InputEvent> &event)
-{
-}
-
 void MovementManager::_physics_update(double delta)
 {
   MoveCommand& move_cmd = input_command_system->get_move_command();

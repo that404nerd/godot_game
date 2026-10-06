@@ -31,6 +31,7 @@ struct WeaponStateContext
 class BaseWeaponState : public State {
 public:
   BaseWeaponState(WeaponStates weaponState, const WeaponStateData& weaponStateData);
+  void _handle_input(const Ref<InputEvent>& event) override {};
 
 protected:
   WeaponManager* m_WeaponManager { nullptr };
@@ -56,15 +57,14 @@ public:
   WeaponEquipState(const WeaponStateData& weaponStateData);
 
   void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
   void _exit() override;
 };
 
 class WeaponShootState : public BaseWeaponState {
-public:
+  public:
   WeaponShootState(const WeaponStateData& weaponStateData);
-
+  
   void _enter() override;
   void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
@@ -77,7 +77,6 @@ public:
   WeaponReloadState(const WeaponStateData& weaponStateData);
 
   void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
   void _exit() override;
 
@@ -88,7 +87,6 @@ public:
   WeaponUnequipState(const WeaponStateData& weaponStateData);
 
   void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
   void _exit() override;
 
@@ -99,7 +97,6 @@ public:
   WeaponSwitchState(const WeaponStateData& weaponStateData);
 
   void _enter() override;
-  void _handle_input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
   void _exit() override;
 };
