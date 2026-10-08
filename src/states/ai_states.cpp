@@ -47,9 +47,16 @@ void AIIdleState::_update(double delta)
   float toPlayerDist = m_Blackboard->get_var("ToPlayerDistance");
   bool canSeePlayer = m_Blackboard->get_var("CanSeePlayer");
 
+  bool isHealthZero = m_Blackboard->get_var("IsHealthZero");
+
   if(canSeePlayer)
   {
     m_AIHsm->change_active_state(get_state("Combat"));
+  }
+
+  if(isHealthZero)
+  {
+    m_AIHsm->change_active_state(get_state("Dead"));
   }
 }
 
@@ -74,6 +81,13 @@ void AIAlertState::_update(double delta)
 {
   float toPlayerDist = m_Blackboard->get_var("ToPlayerDistance");
   bool canSeePlayer = m_Blackboard->get_var("CanSeePlayer");
+
+  bool isHealthZero = m_Blackboard->get_var("IsHealthZero");
+
+  if(isHealthZero)
+  {
+    m_AIHsm->change_active_state(get_state("Dead"));
+  }
 
   // if(canSeePlayer && toPlayerDist >= m_AIBehaviourProps->get_playerDistToTriggerChase())
   // {
@@ -100,7 +114,12 @@ void AICombatState::_enter()
 
 void AICombatState::_update(double delta)
 {
+  bool isHealthZero = m_Blackboard->get_var("IsHealthZero");
 
+  if(isHealthZero)
+  {
+    m_AIHsm->change_active_state(get_state("Dead"));
+  }
 }
 
 void AICombatState::_exit()
@@ -114,6 +133,8 @@ void AICombatState::_exit()
 
 void AIDeadState::_enter()
 {
+  m_BTPlayerInst->set_behavior_tree(get_bt_resource());
+  m_BTPlayerInst->set_active(true);
 }
 
 void AIDeadState::_update(double delta)
@@ -122,4 +143,5 @@ void AIDeadState::_update(double delta)
 
 void AIDeadState::_exit()
 {
+  m_BTPlayerInst->set_active(false);
 }

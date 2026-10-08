@@ -1,0 +1,25 @@
+[gd_resource type="BehaviorTree" format=3 uid="uid://bxcx458nnm3bj"]
+
+[ext_resource type="BlackboardPlan" uid="uid://do2gs88brsu8" path="res://assets/ai/behaviour_resources/swat_op_type1_blackboard_plan.tres" id="1_iag3l"]
+
+[sub_resource type="BBNode" id="BBNode_xe5j1"]
+saved_value = NodePath("AIManager")
+resource_name = "AIManager"
+
+[sub_resource type="BTCallMethod" id="BTCallMethod_j1j00"]
+node = SubResource("BBNode_xe5j1")
+method = &"_death"
+custom_name = "Call Death Function"
+
+[sub_resource type="BTFail" id="BTFail_iag3l"]
+
+[sub_resource type="BTSequence" id="BTSequence_v5qog"]
+custom_name = "Death Sequence"
+children = [SubResource("BTCallMethod_j1j00"), SubResource("BTFail_iag3l")]
+
+[sub_resource type="BTSelector" id="BTSelector_2ln5x"]
+children = [SubResource("BTSequence_v5qog")]
+
+[resource]
+blackboard_plan = ExtResource("1_iag3l")
+root_task = SubResource("BTSelector_2ln5x")

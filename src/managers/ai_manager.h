@@ -8,6 +8,7 @@
 #include <godot_cpp/classes/animation_tree.hpp>
 
 #include "blackboard/blackboard.h"
+#include "godot_cpp/classes/two_bone_ik3d.hpp"
 #include "hsm/limbo_hsm.h"
 
 #include "../components/ai/ai_character_component.h"
@@ -42,6 +43,9 @@ public:
   BT::Status _shoot(double delta);
   void _reload();
 
+  void _on_health_finished();
+  void _death();
+
   void _rotate_character(double delta);
 
   void _update(double delta);
@@ -59,9 +63,16 @@ private:
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
+
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, rArmCopyModifier, nullptr);
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, rHandCopyModifier, nullptr);
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, spineCopyModifer, nullptr);
+
+  GD_DEFINE_PROPERTY(TwoBoneIK3D*, lHandIK, nullptr);
+  GD_DEFINE_PROPERTY(CopyTransformModifier3D*, lHandCopyModifier, nullptr);
+  GD_DEFINE_PROPERTY(CopyTransformModifier3D*, lHandThumbCopyModifier, nullptr);
+
+
 
   Ref<AIBehaviourProps> m_AIBehaviourProps { nullptr };
   Ref<Blackboard> m_BlackboardInst { nullptr };

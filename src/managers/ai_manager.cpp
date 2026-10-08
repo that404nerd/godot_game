@@ -16,6 +16,7 @@ void AIManager::_init()
     ai_vision_component->_init();
 
   EventBus::get_singleton()->connect("ammo_finished", Callable(this, "_on_ammo_finished"));
+  EventBus::get_singleton()->connect("death", Callable(this, "_on_health_finished"));
 }
 
 void AIManager::_bind_methods()
@@ -23,6 +24,9 @@ void AIManager::_bind_methods()
   ClassDB::bind_method(D_METHOD("_on_query_finished", "queryResult"), &AIManager::_on_query_finished);
   ClassDB::bind_method(D_METHOD("_idle", "delta"), &AIManager::_idle);
   ClassDB::bind_method(D_METHOD("_shoot", "delta"), &AIManager::_shoot);
+  ClassDB::bind_method(D_METHOD("_shoot", "delta"), &AIManager::_shoot);
+  ClassDB::bind_method(D_METHOD("_on_health_finished"), &AIManager::_on_health_finished);
+  ClassDB::bind_method(D_METHOD("_death"), &AIManager::_death);
 
   ClassDB::bind_method(D_METHOD("_on_ammo_finished"), &AIManager::_on_ammo_finished);
   ClassDB::bind_method(D_METHOD("_reload"), &AIManager::_reload);
@@ -33,9 +37,15 @@ void AIManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AIManager, EnvironmentQuery3D, env_query3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationTree, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, VisionComponent, ai_vision_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+
+  ADD_GROUP("IK Nodes", "");
   GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, rArmCopyModifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, rHandCopyModifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, spineCopyModifer, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+
+  GD_BIND_CUSTOM_PROPERTY(AIManager, TwoBoneIK3D, lHandIK, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, lHandCopyModifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, lHandThumbCopyModifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
 void AIManager::_on_query_finished(QueryResult3D* queryResult)
@@ -259,4 +269,29 @@ void AIManager::_reload()
   weapon_cmd = {
     .WantsToReloadWeapon = true
   };
+}
+
+void AIManager::_on_health_finished()
+{
+  m_BlackboardInst->set_var("IsHealthZero", true);
+}
+
+void AIManager::_death()
+{
+  MoveCommand& move_cmd = input_cmd_system->get_move_command();
+  WeaponCommand& weapon_cmd = input_cmd_system->get_weapon_command();
+
+  // FIXME: The player might die if on the edge of a roof or something and might not have gravity applied (Edge case)
+  move_cmd = {
+    .IsOnFloor = true,
+    .WantsToIdle = true
+  };
+  weapon_cmd = {};
+
+  lHandIK->set_active(false);
+  lHandCopyModifier->set_active(false);
+  lHandThumbCopyModifier->set_active(false);
+
+  // NOTE: Make sure that for these transitions, Allow Transition To Self is Disabled!!
+  anim_tree->set("parameters/Transition/transition_request", "DeathTransition");
 }

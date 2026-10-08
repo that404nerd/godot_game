@@ -82,9 +82,13 @@ void MovementManager::_idle(double delta)
   MoveCommand& move_cmd = input_command_system->get_move_command();
 
   if(!move_cmd.IsOnFloor)
+  {
     return;
+  }
 
   Vector3 characterVel = move_cmd.CharacterVelocity;
+
+  // print_line(get_owner()->get_name(), ": Going idle!");
 
   characterVel.x = Math::move_toward(characterVel.x, 0.0f, character_component->get_ground_decel() * (float)delta);
   characterVel.z = Math::move_toward(characterVel.z, 0.0f, character_component->get_ground_decel() * (float)delta);

@@ -202,8 +202,6 @@ void WeaponManager::_update(double delta)
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
   input_command_system->set_max_hold_time(m_HoldMaxTime);
 
-  // print_line(get_owner()->get_name(), ", AMMO: ", m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon));
-
   if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
   {
     EventBus::get_singleton()->emit_signal("ammo_finished");
@@ -245,23 +243,42 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
   m_DecalScene = nextWeapon->get_weaponDecalResource();
 }
 
-void WeaponManager::generate_decal()
+void WeaponManager::_apply_damage(Node* hitBody)
 {
+  // FIXME: Not so nice way to get the health component but FIX later.
+  if(hitBody->has_node("HealthComponent"))
+  {
+    HealthComponent* health_comp = hitBody->get_node<HealthComponent>("HealthComponent");
+    health_comp->_take_damage(20, hitBody);
+  }
+}
+
+void WeaponManager::_generate_decal()
+{
+  CollisionObject3D* colliderBody = nullptr;
+  Node* hitBody = nullptr;
+
   // for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
   {
+
     if(!m_Result.is_empty())
     {
       m_BulletDecalInstNode = m_DecalScene->instantiate();
       m_BulletDecalNode = Object::cast_to<Decal>(m_BulletDecalInstNode);
 
-      CollisionObject3D* colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
-
-      colliderBody->add_child(m_BulletDecalNode);
+      if(m_Result["collider"])
+      {
+        colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
+        hitBody = Object::cast_to<Node>(m_Result["collider"]);
+        colliderBody->add_child(m_BulletDecalNode);
+      }  
+      
       Vector3 position = Vector3(m_Result["position"]);
       m_BulletDecalNode->set_global_position(position);
       m_BulletDecalNode->look_at(m_BulletDecalNode->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
       m_BulletDecalNode->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
 
+      _apply_damage(hitBody); 
     }
   }
 }
@@ -276,8 +293,7 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
 
-    generate_decal();
-    health_component->_take_damage(20);
+    _generate_decal();
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon, get_owner());
   }
 

@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/collision_shape3d.hpp>
 
 #include "../globals.h"
+#include "../singletons/event_bus.h"
 
 using namespace godot;
 
@@ -16,11 +17,13 @@ class HealthComponent : public Node
 public:
   void _ready() override;
 
-  void _take_damage(int damage);
+  void _take_damage(int damage, Node* hitBody);
+  int get_current_health() { return m_CurrentHealth; }
 
 protected:
   static void _bind_methods();
   
 private:
   GD_DEFINE_PROPERTY(int, max_health, 0);
+  int m_CurrentHealth { 0 };
 };

@@ -64,7 +64,8 @@ public:
   void _switch_weapon_data(int weaponIndex);
   void _update_weapon_data(Ref<Weapon> nextWeapon);
   
-  void generate_decal();
+  void _generate_decal();
+  void _apply_damage(Node* hitBody);
 
 public:
 
