@@ -17,6 +17,7 @@
 #include "../components/weapon_component.h"
 #include "../components/weapon_effects_components.h"
 #include "../components/weapon_wrapper.h"
+#include "../components/health_component.h"
 #include "../components/play_anim_component.h"
 
 #include "../dd3d_cpp_api.hpp"
@@ -143,6 +144,7 @@ private:
   GD_DEFINE_PROPERTY(WeaponComponent*, weapon_component, nullptr);
   GD_DEFINE_PROPERTY(CharacterComponent*, character_component, nullptr);
   GD_DEFINE_PROPERTY(PlayAnimComponent*, play_anim_component, nullptr);
+  GD_DEFINE_PROPERTY(HealthComponent*, health_component, nullptr);
   GD_DEFINE_PROPERTY(Node3D*, hold_point_node, nullptr);
 
   GD_DEFINE_PROPERTY(bool, weapons_init_required, false);

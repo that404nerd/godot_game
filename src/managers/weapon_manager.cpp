@@ -1,5 +1,4 @@
 #include "weapon_manager.h"
-#include "godot_cpp/core/print_string.hpp"
 
 void WeaponManager::_init()
 {
@@ -181,6 +180,7 @@ void WeaponManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, WeaponComponent, weapon_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, CharacterComponent, character_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, PlayAnimComponent, play_anim_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(WeaponManager, HealthComponent, health_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(WeaponManager, Node3D, hold_point_node, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ClassDB::bind_method(D_METHOD("get_current_weapon_ammo"), &WeaponManager::get_current_weapon_ammo);
@@ -201,6 +201,8 @@ void WeaponManager::_update(double delta)
 
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
   input_command_system->set_max_hold_time(m_HoldMaxTime);
+
+  // print_line(get_owner()->get_name(), ", AMMO: ", m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon));
 
   if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
   {
@@ -275,6 +277,7 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
     m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
 
     generate_decal();
+    health_component->_take_damage(20);
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon, get_owner());
   }
 

@@ -66,6 +66,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_CLASS(WeaponWrapper);
   GDREGISTER_CLASS(WeaponComponent);
   GDREGISTER_CLASS(MuzzleFlashComponent);
+  GDREGISTER_CLASS(HealthComponent);
 
   GDREGISTER_RUNTIME_CLASS(AICharacterComponent);
   GDREGISTER_RUNTIME_CLASS(DetectionAreaComponent);

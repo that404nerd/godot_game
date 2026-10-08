@@ -30,6 +30,7 @@
 
 #include "components/weapon_effects_components.h"
 #include "components/input_component.h"
+#include "components/health_component.h"
 #include "components/muzzle_flash_component.h"
 #include "components/weapon_wrapper.h"
 #include "components/play_anim_component.h"
