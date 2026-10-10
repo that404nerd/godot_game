@@ -12,7 +12,6 @@ weaponSwayDampingRatio = 0.9
 weaponVerticalPush = 0.001
 weaponVerticalAngFreq = 20.0
 weaponVerticalDampingRatio = 0.1
-weapon_type = 2
 weaponDecalResource = ExtResource("1_eol0p")
 hold_max_time = 0.2
 slide_armature_tilt_rot = Vector3(1, 1, -40)

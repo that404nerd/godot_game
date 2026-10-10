@@ -2,15 +2,17 @@ extends Node3D
 
 @onready var movement_state_label: Label3D = $"Movement State Label"
 @onready var weapon_state_label: Label3D = $"Weapon State Label"
+@onready var health_component: HealthComponent = $"../HealthComponent"
 
 @onready var movement_state_machine: MovementStateMachine = $"../MovementStateMachine"
 @onready var weapon_state_machine: WeaponStateMachine = $"../WeaponStateMachine"
 
 func _ready():
-	EventBus.death.connect(_on_enemy_dead)
+	health_component.death.connect(_on_enemy_dead)
 	
 func _on_enemy_dead():
 	set_visible(false)
+	queue_free()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

@@ -21,9 +21,6 @@ void EventBus::_bind_methods()
   ADD_SIGNAL(MethodInfo("anim_started", PropertyInfo(Variant::STRING_NAME, "animName")));
   ADD_SIGNAL(MethodInfo("anim_finished", PropertyInfo(Variant::STRING_NAME, "animName")));
 
-  // For Health component
-  ADD_SIGNAL(MethodInfo("health_changed", PropertyInfo(Variant::INT, "currentHealth"), PropertyInfo(Variant::INT, "maxHealth")));
-  ADD_SIGNAL(MethodInfo("death"));
 }
 
 EventBus* EventBus::get_singleton()

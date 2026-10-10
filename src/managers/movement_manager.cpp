@@ -8,7 +8,7 @@ void MovementManager::_init()
   ERR_FAIL_COND_MSG(!character_component, "[Movement Manager]: Character Component is null");
   ERR_FAIL_COND_MSG(!input_command_system, "[Movement Manager]: Input Command System is null");
 
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
 
   m_CharacterHead = character_component->get_character_head();
   m_StairsBelowRaycast = character_component->get_stairs_below_raycast();
@@ -58,7 +58,7 @@ void MovementManager::_update(double delta)
 
 void MovementManager::_physics_update(double delta)
 {
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
   if(move_cmd.IsOnFloor)
   {
     m_MovementStateCtx.LastFrameOnFloor = Engine::get_singleton()->get_physics_frames();
@@ -79,7 +79,7 @@ void MovementManager::_physics_update(double delta)
 
 void MovementManager::_idle(double delta)
 {
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
 
   if(!move_cmd.IsOnFloor)
   {
@@ -98,7 +98,7 @@ void MovementManager::_idle(double delta)
 
 void MovementManager::_walk(double delta)
 {
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
 
   if(!move_cmd.IsOnFloor)
     return;
@@ -113,7 +113,7 @@ void MovementManager::_walk(double delta)
 
 void MovementManager::_sprint(double delta)
 {
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
 
   if(!move_cmd.IsOnFloor)
     return;
@@ -128,7 +128,7 @@ void MovementManager::_sprint(double delta)
 
 void MovementManager::_jump()
 {
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
 
   if(!move_cmd.IsOnFloor)
     return;
@@ -150,7 +150,7 @@ void MovementManager::_jump_end()
 
 void MovementManager::_fall(double delta)
 {
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
   m_MovementStateCtx.IsFalling = true;
 
   if(move_cmd.WantsToCrouch && m_MovementStateCtx.IsCrouchPressed == false)
@@ -242,7 +242,7 @@ void MovementManager::_slide_crouch_effect(double delta)
 
 void MovementManager::_on_slide_start()
 {
-  MoveCommand& move_cmd = input_command_system->get_move_command();
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
 
   m_MovementStateCtx.IsSlideStarted = true;
   m_MovementStateCtx.IsSlideOver = false;

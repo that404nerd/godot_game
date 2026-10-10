@@ -6,15 +6,15 @@ BaseWeaponState::BaseWeaponState(WeaponStates weaponState, const WeaponStateData
     m_InputCmdSystem(m_WeaponManager->get_input_command_system()), m_WeaponStateContext(weaponStateData.weaponManager->get_weapon_state_ctx()), 
     m_WeaponCmd(m_InputCmdSystem->get_weapon_command())
 {
-  if(m_WeaponManager == nullptr || m_WeaponStateMachine == nullptr)
+  if(!m_WeaponManager || !m_WeaponStateMachine)
   {
-    print_error("[color=WHITE][Weapon State]: [color=RED]Weapon Manager or Weapon State Machine is null");
+    print_error("[Weapon State]: Weapon Manager or Weapon State Machine is null");
     return;
   }
 
-  if(m_InputCmdSystem == nullptr)
+  if(!m_InputCmdSystem)
   {
-    print_error("[color=WHITE][Weapon State]: [color=RED]Input Command System is null");
+    print_error("[Weapon State]: Input Command System is null");
     return;
   }
 }

@@ -48,7 +48,7 @@ void WeaponStateMachine::_handle_state_machine_input(const Ref<InputEvent>& even
     return;
   }
 
-  WeaponCommand& weapon_cmd = m_InputCmdSystem->get_weapon_command();
+  const WeaponCommand& weapon_cmd = m_InputCmdSystem->get_weapon_command();
 
   if(weapon_cmd.WantsToSwitchWeapon)
   {

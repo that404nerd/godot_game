@@ -61,12 +61,12 @@ public:
   bool IsSlideOver() { return m_MovementStateCtx.IsSlideOver; }
 
   bool IsCrouching() { 
-    MoveCommand& move_cmd = input_command_system->get_move_command();
+    const MoveCommand& move_cmd = input_command_system->get_move_command();
     return move_cmd.WantsToCrouch;
   }
 
   bool WantsToSprint() { 
-    MoveCommand& move_cmd = input_command_system->get_move_command();
+    const MoveCommand& move_cmd = input_command_system->get_move_command();
     return move_cmd.WantsToSprint;
   }
 

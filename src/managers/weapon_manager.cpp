@@ -274,6 +274,9 @@ void WeaponManager::_generate_decal()
       }  
       
       Vector3 position = Vector3(m_Result["position"]);
+
+      // DebugDraw3D::draw_sphere(position, 0.05f);
+
       m_BulletDecalNode->set_global_position(position);
       m_BulletDecalNode->look_at(m_BulletDecalNode->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
       m_BulletDecalNode->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
@@ -330,9 +333,10 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
   //////////////////// For incremental reloads ///////////////////
   ////////////////////////////////////////////////////////////////
 
+  const int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
+
   int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
   int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
-  int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
   int ammoNeeded = max_mag_capacity - current_ammo;
   int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
@@ -359,6 +363,7 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
       {
         play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD_END);
 
+        m_TimeBetweenShots = 0.0f;
         m_WeaponStateCtx.IsReloading = false;
         m_WeaponStateCtx.IsReloadStarted = false;
       }
@@ -387,6 +392,7 @@ void WeaponManager::_unequip_weapon()
 {
   // Make sure to set IsReloading to false so that if the player switches a weapon mid reload the transforms don't mess and make IsReloading to true indefinitely
   m_WeaponStateCtx.IsReloading = false;
+  m_WeaponStateCtx.IsReloadStarted = false;
 
   // This function takes the weapon index from the input system and then inside assigns to the actual m_WeaponIdx used by the manager
   _switch_weapon_data(input_command_system->get_weapon_idx());
@@ -408,8 +414,7 @@ void WeaponManager::_unequip_weapon()
 void WeaponManager::_shoot_weapon(double delta)
 {
   // Don't even shoot, just switch to the idle state instead
-  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon) ||
-    (m_AmmoComp.is_ammo_empty(m_CurrentWeapon) && m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon) == 0))
+  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon) || m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon) == 0)
   {
     print_line(get_owner()->get_name(), ": ", "Ammo empty!");
     m_MuzzleComp->_enable_light_status(false);
@@ -417,7 +422,8 @@ void WeaponManager::_shoot_weapon(double delta)
     return;
   }
 
-  WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
+
+  const WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
   m_WeaponStateCtx.IsShooting = true;
 
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
@@ -428,7 +434,7 @@ void WeaponManager::_shoot_weapon(double delta)
 
   if(m_TimeBetweenShots >= 0.0f)
     m_TimeBetweenShots -= delta;
- 
+
   /*
     Two states (for now), one for automatic handling (mouse hold) and the other for just manual handling (single click). 
 
@@ -462,8 +468,6 @@ void WeaponManager::_shoot_weapon(double delta)
       
       m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
       m_WeaponStateCtx.ShootTimeBeforeIdle = MAX_SHOOT_STATE_TIME;
-      weapon_cmd.WantsToPressTrigger = false;
-      weapon_cmd.WantsToHoldTrigger = false;
     }
   }
       
@@ -493,7 +497,7 @@ void WeaponManager::_reload_weapon()
   int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
   int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
   
-  WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
+  const WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
 
   if(current_ammo >= max_mag_capacity || current_reserve_ammo <= 0)
     return;
@@ -506,7 +510,7 @@ void WeaponManager::_reload_weapon()
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
     // If we shoot mid-reload just cancel the entire reload
-    if(m_WeaponStateCtx.IsReloadStarted == false)
+    if(!m_WeaponStateCtx.IsReloadStarted)
     {
       m_WeaponStateCtx.IsReloadStarted = true;
       play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD);

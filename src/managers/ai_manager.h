@@ -11,8 +11,9 @@
 #include "godot_cpp/classes/two_bone_ik3d.hpp"
 #include "hsm/limbo_hsm.h"
 
-#include "../components/ai/ai_character_component.h"
 #include "../input_command_system.h"
+#include "../components/health_component.h"
+#include "../components/ai/ai_character_component.h"
 #include "../components/ai/vision_component.h"
 
 #include "environment_query3d.h"
@@ -63,6 +64,7 @@ private:
   GD_DEFINE_PROPERTY(NavigationAgent3D*, nav_agent_3d, nullptr);
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
+  GD_DEFINE_PROPERTY(HealthComponent*, health_component, nullptr);
 
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, rArmCopyModifier, nullptr);
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, rHandCopyModifier, nullptr);

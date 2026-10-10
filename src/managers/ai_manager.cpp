@@ -16,14 +16,13 @@ void AIManager::_init()
     ai_vision_component->_init();
 
   EventBus::get_singleton()->connect("ammo_finished", Callable(this, "_on_ammo_finished"));
-  EventBus::get_singleton()->connect("death", Callable(this, "_on_health_finished"));
+  health_component->connect("death", Callable(this, "_on_health_finished"));
 }
 
 void AIManager::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_query_finished", "queryResult"), &AIManager::_on_query_finished);
   ClassDB::bind_method(D_METHOD("_idle", "delta"), &AIManager::_idle);
-  ClassDB::bind_method(D_METHOD("_shoot", "delta"), &AIManager::_shoot);
   ClassDB::bind_method(D_METHOD("_shoot", "delta"), &AIManager::_shoot);
   ClassDB::bind_method(D_METHOD("_on_health_finished"), &AIManager::_on_health_finished);
   ClassDB::bind_method(D_METHOD("_death"), &AIManager::_death);
@@ -37,6 +36,7 @@ void AIManager::_bind_methods()
   GD_BIND_CUSTOM_PROPERTY(AIManager, EnvironmentQuery3D, env_query3d, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, AnimationTree, anim_tree, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(AIManager, VisionComponent, ai_vision_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(AIManager, HealthComponent, health_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 
   ADD_GROUP("IK Nodes", "");
   GD_BIND_CUSTOM_PROPERTY(AIManager, CopyTransformModifier3D, rArmCopyModifier, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
