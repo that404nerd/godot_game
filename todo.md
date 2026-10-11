@@ -1,5 +1,10 @@
 ## TODO 
 
+- Gather hit direction info []
+- Fix an issue where enemy collider doesn't follow the enemy's transform []
+- Add a hit impulse to the bones []
+- Generate a blood splatter on the hit point [x]
+
 - ADD LICENSE seperately for assets []
 - Clean up weapon manager and weapon effects component []
 - Add effects like landing on floor shake etc... []

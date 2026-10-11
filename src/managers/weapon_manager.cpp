@@ -1,4 +1,6 @@
 #include "weapon_manager.h"
+#include "godot_cpp/classes/gpu_particles3d.hpp"
+#include "godot_cpp/classes/resource_loader.hpp"
 
 void WeaponManager::_init()
 {
@@ -273,11 +275,28 @@ void WeaponManager::_generate_decal()
         colliderBody->add_child(m_BulletDecalNode);
       }  
       
-      Vector3 position = Vector3(m_Result["position"]);
+      // The hit position
+      Vector3 hit_position = Vector3(m_Result["position"]);
 
-      // DebugDraw3D::draw_sphere(position, 0.05f);
+      Vector3 hitDirection = (hit_position - m_WeaponMuzzleMarker->get_global_position()).normalized();
+      DebugDraw3D::draw_line(m_WeaponMuzzleMarker->get_global_position(), hit_position, Color(0, 0, 0, 0), 10.0f);
 
-      m_BulletDecalNode->set_global_position(position);
+      // FIXME: Clean this up soon
+      if(hitBody->is_in_group("enemies"))
+      {
+        Ref<PackedScene> bloodScene = ResourceLoader::get_singleton()->load("res://scenes/asset_scenes/blood.tscn");
+        GPUParticles3D* bloodNode = Object::cast_to<GPUParticles3D>(bloodScene->instantiate());
+
+        if(m_Result["collider"])
+          colliderBody->add_child(bloodNode);
+
+        bloodNode->set_emitting(true);
+        bloodNode->set_global_position(hit_position);
+      }
+
+      // DebugDraw3D::draw_sphere(hit_position, 0.05f);
+
+      m_BulletDecalNode->set_global_position(hit_position);
       m_BulletDecalNode->look_at(m_BulletDecalNode->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
       m_BulletDecalNode->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
 
@@ -363,7 +382,9 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
       {
         play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD_END);
 
+        // Reset the time between shots to 0.0 to shoot again after a reload and then the shoot function handles the rest of the timer again
         m_TimeBetweenShots = 0.0f;
+
         m_WeaponStateCtx.IsReloading = false;
         m_WeaponStateCtx.IsReloadStarted = false;
       }

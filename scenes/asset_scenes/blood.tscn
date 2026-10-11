@@ -35,13 +35,6 @@ colors = PackedColorArray(1, 0.13333334, 0.16862746, 1, 0.8358158, 0.12563148, 0
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_2ln5x"]
 gradient = SubResource("Gradient_onnvt")
 
-[sub_resource type="Curve" id="Curve_s8h3g"]
-_data = [Vector2(0, 0), 0.0, 3.7394962, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_6x0gn"]
-curve = SubResource("Curve_s8h3g")
-
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vewow"]
 lifetime_randomness = 0.5
 particle_flag_rotate_y = true
@@ -54,17 +47,14 @@ initial_velocity_min = -0.5
 initial_velocity_max = 3.0
 radial_velocity_min = -2.2351742e-05
 radial_velocity_max = 0.39997762
-scale_min = 0.5
-scale_max = 1.1999999
-scale_curve = SubResource("CurveTexture_6x0gn")
+scale_min = 0.19999999
+scale_max = 0.79999995
 color_ramp = SubResource("GradientTexture1D_2ln5x")
 alpha_curve = SubResource("CurveTexture_2ln5x")
 
 [sub_resource type="QuadMesh" id="QuadMesh_wlk34"]
 
-[node name="BloodNode" type="Node3D" unique_id=606913287]
-
-[node name="Blood" type="GPUParticles3D" parent="." unique_id=1376366426]
+[node name="Blood" type="GPUParticles3D" unique_id=154385090]
 material_override = SubResource("StandardMaterial3D_w4xp3")
 emitting = false
 amount = 10

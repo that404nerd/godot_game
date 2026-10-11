@@ -73,4 +73,6 @@ protected:
   WeaponCommand m_WeaponCmd {};
 private:
   InputCommandData m_InputCmdData;
+
+  bool m_WasHeldBefore { false };
 };
