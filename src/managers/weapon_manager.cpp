@@ -1,6 +1,4 @@
 #include "weapon_manager.h"
-#include "godot_cpp/classes/gpu_particles3d.hpp"
-#include "godot_cpp/classes/resource_loader.hpp"
 
 void WeaponManager::_init()
 {
@@ -279,7 +277,7 @@ void WeaponManager::_generate_decal()
       Vector3 hit_position = Vector3(m_Result["position"]);
 
       Vector3 hitDirection = (hit_position - m_WeaponMuzzleMarker->get_global_position()).normalized();
-      DebugDraw3D::draw_line(m_WeaponMuzzleMarker->get_global_position(), hit_position, Color(0, 0, 0, 0), 10.0f);
+      // DebugDraw3D::draw_line(m_WeaponMuzzleMarker->get_global_position(), hit_position, Color(0, 0, 0, 0), 10.0f);
 
       // FIXME: Clean this up soon
       if(hitBody->is_in_group("enemies"))

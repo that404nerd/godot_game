@@ -6,9 +6,11 @@
 #include <godot_cpp/classes/animation_node_state_machine_playback.hpp>
 #include <godot_cpp/classes/copy_transform_modifier3d.hpp>
 #include <godot_cpp/classes/animation_tree.hpp>
+#include "godot_cpp/classes/bone_attachment3d.hpp"
+#include "godot_cpp/classes/physical_bone_simulator3d.hpp"
+#include "godot_cpp/classes/two_bone_ik3d.hpp"
 
 #include "blackboard/blackboard.h"
-#include "godot_cpp/classes/two_bone_ik3d.hpp"
 #include "hsm/limbo_hsm.h"
 
 #include "../input_command_system.h"
@@ -65,6 +67,7 @@ private:
   GD_DEFINE_PROPERTY(AnimationTree*, anim_tree, nullptr);
   GD_DEFINE_PROPERTY(VisionComponent*, ai_vision_component, nullptr);
   GD_DEFINE_PROPERTY(HealthComponent*, health_component, nullptr);
+  GD_DEFINE_PROPERTY(PhysicalBoneSimulator3D*, ragdoll_simulator, nullptr);
 
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, rArmCopyModifier, nullptr);
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, rHandCopyModifier, nullptr);
@@ -73,8 +76,7 @@ private:
   GD_DEFINE_PROPERTY(TwoBoneIK3D*, lHandIK, nullptr);
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, lHandCopyModifier, nullptr);
   GD_DEFINE_PROPERTY(CopyTransformModifier3D*, lHandThumbCopyModifier, nullptr);
-
-
+  GD_DEFINE_PROPERTY(BoneAttachment3D*, rHand_BoneAttachment, nullptr);
 
   Ref<AIBehaviourProps> m_AIBehaviourProps { nullptr };
   Ref<Blackboard> m_BlackboardInst { nullptr };
@@ -83,6 +85,7 @@ private:
   AnimationNodeStateMachinePlayback *m_LowerBodyStateMachine { nullptr };
   AnimationNodeStateMachinePlayback *m_UpperBodyStateMachine { nullptr };
 
+  bool m_IsAlive { false };
   bool m_IsAmmoFinished { false };
   Player* m_Target { nullptr };
 };

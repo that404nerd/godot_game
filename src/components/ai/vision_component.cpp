@@ -5,8 +5,6 @@ void VisionComponent::_init()
 {
   m_PlayerInst = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
 
-  m_RngGen.instantiate();
-
   m_RememberTime = max_remember_time;
 
   m_BoneID = character_skeleton->find_bone(character_bone_name);
@@ -103,13 +101,12 @@ void VisionComponent::_physics_update(double delta)
       m_CollisionResult = m_SpaceState->intersect_ray(m_Query);
       
       CollisionObject3D* collidedObj = Object::cast_to<CollisionObject3D>(m_CollisionResult["collider"]);
-      if(collidedObj)
+      print_line("Collider layer: ", collidedObj->get_collision_layer(), ", Player: ", m_PlayerInst->get_collision_layer());
+
+      if(collidedObj && collidedObj == m_PlayerInst)
       {
-        if(collidedObj == m_PlayerInst)
-        {
-          m_CanSeePlayer = true;
-          m_RememberTime = max_remember_time; 
-        }
+        m_CanSeePlayer = true;
+        m_RememberTime = max_remember_time; 
       }
     }
   }

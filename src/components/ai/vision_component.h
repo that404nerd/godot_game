@@ -8,7 +8,6 @@
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/cylinder_shape3d.hpp>
 #include <godot_cpp/classes/world3d.hpp>
-#include <godot_cpp/classes/random_number_generator.hpp>
 #include <godot_cpp/classes/skeleton_modifier3d.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d.hpp>
 #include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
@@ -61,8 +60,6 @@ private:
 
   Player* m_PlayerInst { nullptr };
   Marker3D* m_PlayerMarker { nullptr };
-
-  Ref<RandomNumberGenerator> m_RngGen { nullptr };
 
   PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
   Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };

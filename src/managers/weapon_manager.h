@@ -9,6 +9,7 @@
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/classes/base_material3d.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
 
 #include "../input_command_system.h"
 #include "../components/ammo_component.h"
