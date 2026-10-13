@@ -64,18 +64,24 @@ void AIManager::_on_query_finished(QueryResult3D* queryResult)
 
 void AIManager::_update(double delta)
 {
-  if(ai_vision_component && m_IsAlive)
+  if(!m_IsAlive)
+    return;
+
+  if(ai_vision_component)
     ai_vision_component->_update(delta);
 }
 
 void AIManager::_physics_update(double delta)
 {
+  if(!m_IsAlive)
+    return;
+
   MoveCommand& move_cmd = input_cmd_system->get_move_command();
 
   Vector3 target_pos = m_Target->get_global_position();
   Vector3 ai_pos = ai_character_component->get_global_position();
   
-  if(ai_vision_component && m_IsAlive)
+  if(ai_vision_component)
   {
     ai_vision_component->_physics_update(delta);
     m_BlackboardInst->set_var("CanSeePlayer", ai_vision_component->can_see_player());
@@ -278,7 +284,7 @@ void AIManager::_reload()
 void AIManager::_on_health_finished()
 {
   m_BlackboardInst->set_var("IsHealthZero", true);
-  m_IsAlive = true;
+  m_IsAlive = false;
 }
 
 void AIManager::_death()
@@ -289,17 +295,18 @@ void AIManager::_death()
   // FIXME: The player might die if on the edge of a roof or something and might not have gravity applied (Edge case)
   move_cmd = {
     .IsOnFloor = true,
-    .WantsToIdle = true
   };
   weapon_cmd = {};
 
   lHandIK->set_active(false);
   lHandCopyModifier->set_active(false);
   lHandThumbCopyModifier->set_active(false);
-  rHand_BoneAttachment->set_bone_name("");
+
+  ai_character_component->get_default_collision_shape()->set_disabled(true);
+  ai_character_component->get_crouch_collision_shape()->set_disabled(true);
 
   ragdoll_simulator->physical_bones_start_simulation();
   // NOTE: Make sure that for these transitions, Allow Transition To Self is Disabled!!
 
-  // anim_tree->set("parameters/Transition/transition_request", "DeathTransition");
+  anim_tree->set("parameters/Transition/transition_request", "DeathTransition");
 }

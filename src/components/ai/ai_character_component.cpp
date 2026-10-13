@@ -29,17 +29,21 @@ void AICharacterComponent::_unhandled_input(const Ref<InputEvent>& event)
 
 void AICharacterComponent::_process(double delta)
 {
-  CharacterComponent::_process(delta);
+  if(!ai_manager)
+    return;
 
-  if(ai_manager)
-    ai_manager->_update(delta);
+  if(!ai_manager->get_alive_status()) return;
+
+  CharacterComponent::_process(delta);
+  ai_manager->_update(delta);
 }
 
 void AICharacterComponent::_physics_process(double delta)
 {
+  if(!ai_manager) return;
+
+  if(!ai_manager->get_alive_status()) return;
+
   CharacterComponent::_physics_process(delta);
-
-  if(ai_manager)
-    ai_manager->_physics_update(delta);
-
+  ai_manager->_physics_update(delta);
 }

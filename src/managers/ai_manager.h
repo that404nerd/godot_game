@@ -41,6 +41,8 @@ public:
   BT::Status _chase(double delta, bool shouldRotate, bool toPlayer);
   BT::Status _patrol(double delta, bool shouldRotate, bool toPlayer);
 
+  bool get_alive_status() { return m_IsAlive; }
+
   void _on_ammo_finished();
 
   BT::Status _shoot(double delta);

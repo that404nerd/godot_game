@@ -575,6 +575,7 @@ void WeaponManager::_weapon_switch()
     weapon_component->set_current_weapon_res(nextWeapon);
     _update_weapon_data(nextWeapon);
     m_WeaponStateCtx.IsWeaponSwitched = true;
+    m_TimeBetweenShots = 0.0f;
   } else {
     print_error("Can't switch weapon, weapon not found!");
   }

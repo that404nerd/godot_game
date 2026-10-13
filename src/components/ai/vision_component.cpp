@@ -101,7 +101,6 @@ void VisionComponent::_physics_update(double delta)
       m_CollisionResult = m_SpaceState->intersect_ray(m_Query);
       
       CollisionObject3D* collidedObj = Object::cast_to<CollisionObject3D>(m_CollisionResult["collider"]);
-      print_line("Collider layer: ", collidedObj->get_collision_layer(), ", Player: ", m_PlayerInst->get_collision_layer());
 
       if(collidedObj && collidedObj == m_PlayerInst)
       {
