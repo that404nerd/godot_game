@@ -155,6 +155,7 @@ void SprintMovementState::_physics_update(double delta)
 
 void SprintMovementState::_exit() 
 {
+  m_MovementManager->_sprint_end();
 }
 
 

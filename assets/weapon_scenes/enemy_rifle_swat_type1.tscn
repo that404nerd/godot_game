@@ -253,6 +253,7 @@ surface_material_override/3 = ExtResource("5_46nm7")
 
 [node name="GunTargets" type="Node3D" parent="WeaponWrapper/gun_rifle/Armature" unique_id=1184594996]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 2.910383e-11, 0, -2.910383e-11, 1, 0, 0, 0)
+visible = false
 
 [node name="RightHandTarget" type="MeshInstance3D" parent="WeaponWrapper/gun_rifle/Armature/GunTargets" unique_id=922269612]
 transform = Transform3D(0.84267145, 0.17326875, -0.50978744, -0.20142977, 0.97950363, -4.2907894e-05, 0.49933055, 0.10272248, 0.86030126, -0.05948901, 0.01290899, 0.1700487)

@@ -117,15 +117,14 @@ void WeaponManager::_change_fov()
         Then there's the Material Overrides, which is a single material that is applied to the entire mesh instead of individual parts/meshes.
 
       */
-      if(mesh->get_surface_override_material_count() > 1)
+      if(mesh->get_surface_override_material_count() >= 0)
       {
         /*
           If the mesh has surface override materials then loop through all the available ones.
         */
-        for(int surfaceMatCount = 0; surfaceMatCount < mesh->get_surface_override_material_count(); surfaceMatCount++)
+        for(int surfaceMatCount = 0; surfaceMatCount <= mesh->get_surface_override_material_count(); surfaceMatCount++)
         {
           Ref<Material> material = mesh->get_active_material(surfaceMatCount);
-          Ref<Material> dupMat = material->duplicate();
          
           /*
             First we set the existing material to the mesh before we hold another reference to material (References basically).
@@ -136,9 +135,9 @@ void WeaponManager::_change_fov()
             I have unique meshes so i didn't duplicate it before setting the m_StdMaterial 
             to the duplicated material and then setting the fov_override. 
           */
-          mesh->set_surface_override_material(surfaceMatCount, dupMat);
-          
-          m_StdMaterial = dupMat;
+          mesh->set_surface_override_material(surfaceMatCount, material);
+          m_StdMaterial = material;
+
           if(m_StdMaterial.is_valid()) {
             m_StdMaterial->set_flag(BaseMaterial3D::FLAG_USE_Z_CLIP_SCALE, true);
             m_StdMaterial->set_z_clip_scale(m_CurrentWeapon->get_weaponZClipScale());
@@ -433,7 +432,7 @@ void WeaponManager::_unequip_weapon()
 void WeaponManager::_shoot_weapon(double delta)
 {
   // Don't even shoot, just switch to the idle state instead
-  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon) || m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon) == 0)
+  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
   {
     print_line(get_owner()->get_name(), ": ", "Ammo empty!");
     m_MuzzleComp->_enable_light_status(false);
@@ -444,6 +443,7 @@ void WeaponManager::_shoot_weapon(double delta)
 
   const WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
   m_WeaponStateCtx.IsShooting = true;
+
 
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
   if(m_WeaponStateCtx.ShootTimeBeforeIdle >= 0.0f)
@@ -476,8 +476,6 @@ void WeaponManager::_shoot_weapon(double delta)
     if(weapon_cmd.WantsToPressTrigger && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
-      StringName execute_anim = play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT);
-  
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }
     
@@ -518,7 +516,7 @@ void WeaponManager::_reload_weapon()
   
   const WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
 
-  if(current_ammo >= max_mag_capacity || current_reserve_ammo <= 0)
+  if(current_ammo >= max_mag_capacity || current_reserve_ammo == 0)
     return;
 
   int ammoNeeded = max_mag_capacity - current_ammo;

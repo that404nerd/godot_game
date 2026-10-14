@@ -103,10 +103,6 @@ private:
 
   GD_DEFINE_PROPERTY(float, idle_weapon_bob_smooth_val, 2.0f);
   GD_DEFINE_PROPERTY(float, weapon_bob_smooth_val, 1.5f);
-
-// private:
-  // GD_DEFINE_PROPERTY_COND(States, current_state, States::IDLE);
-  // GD_DEFINE_PROPERTY_COND(float, test_float, 0.0f);
 };
 
 VARIANT_ENUM_CAST(Weapon::WeaponType);

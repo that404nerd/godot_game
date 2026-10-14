@@ -62,6 +62,7 @@ void InputComponent::_update(double delta)
     m_HoldCounter += delta;
     if(m_HoldCounter >= get_max_hold_time())
     {
+      print_line("Boom held!");
       m_WeaponCmd.WantsToHoldTrigger = true;
     }
   }

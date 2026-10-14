@@ -16,7 +16,6 @@
 #include "../components/character_component.h"
 #include "../components/muzzle_flash_component.h"
 #include "../components/weapon_component.h"
-#include "../components/weapon_effects_components.h"
 #include "../components/weapon_wrapper.h"
 #include "../components/health_component.h"
 #include "../components/play_anim_component.h"

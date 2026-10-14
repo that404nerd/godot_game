@@ -88,8 +88,6 @@ void MovementManager::_idle(double delta)
 
   Vector3 characterVel = move_cmd.CharacterVelocity;
 
-  // print_line(get_owner()->get_name(), ": Going idle!");
-
   characterVel.x = Math::move_toward(characterVel.x, 0.0f, character_component->get_ground_decel() * (float)delta);
   characterVel.z = Math::move_toward(characterVel.z, 0.0f, character_component->get_ground_decel() * (float)delta);
 
@@ -114,6 +112,7 @@ void MovementManager::_walk(double delta)
 void MovementManager::_sprint(double delta)
 {
   const MoveCommand& move_cmd = input_command_system->get_move_command();
+  m_MovementStateCtx.IsSprinting = true;
 
   if(!move_cmd.IsOnFloor)
     return;
@@ -124,6 +123,11 @@ void MovementManager::_sprint(double delta)
   characterVel.z = Math::move_toward(characterVel.z, character_component->get_sprint_speed() * character_component->get_wish_dir().z, character_component->get_ground_accel() * (float)delta);
 
   character_component->set_velocity(characterVel);
+}
+
+void MovementManager::_sprint_end()
+{
+  m_MovementStateCtx.IsSprinting = false;
 }
 
 void MovementManager::_jump()
@@ -189,6 +193,8 @@ void MovementManager::_crouch(double delta)
   if(!character_component->is_on_floor())
     return;
 
+  m_MovementStateCtx.IsCrouching = true;
+
   Vector3 characterVel = character_component->get_velocity();
   Vector3 characterHeadPos = m_MovementStateCtx.CharacterHeadPos;
   
@@ -208,6 +214,7 @@ void MovementManager::_on_crouch_finished()
 {
   character_component->get_crouch_collision_shape()->set_disabled(true);
   character_component->get_default_collision_shape()->set_disabled(false);
+  m_MovementStateCtx.IsCrouching = false;
 
   if(m_CrouchTween != nullptr)
   {

@@ -8,6 +8,7 @@ extends Node3D
 @onready var weapon_state_machine: WeaponStateMachine = $"../WeaponStateMachine"
 
 func _ready():
+	set_visible(true)
 	health_component.death.connect(_on_enemy_dead)
 	
 func _on_enemy_dead():

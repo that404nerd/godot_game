@@ -32,6 +32,7 @@ public:
   void _idle(double delta);
   void _walk(double delta);
   void _sprint(double delta);
+  void _sprint_end();
 
   void _jump();
   void _jump_end();
@@ -59,17 +60,8 @@ public:
   bool IsSlideStarted() { return m_MovementStateCtx.IsSlideStarted; }
   bool IsSliding() { return m_MovementStateCtx.IsSliding; }
   bool IsSlideOver() { return m_MovementStateCtx.IsSlideOver; }
-
-  bool IsCrouching() { 
-    const MoveCommand& move_cmd = input_command_system->get_move_command();
-    return move_cmd.WantsToCrouch;
-  }
-
-  bool WantsToSprint() { 
-    const MoveCommand& move_cmd = input_command_system->get_move_command();
-    return move_cmd.WantsToSprint;
-  }
-
+  bool IsCrouching() { return m_MovementStateCtx.IsCrouching; }
+  bool IsSprinting() { return m_MovementStateCtx.IsSprinting; }
   bool IsJumping() { return m_MovementStateCtx.IsJumping; }
   bool IsJumpEnded() { return m_MovementStateCtx.IsJumpEnded; }
   bool IsFalling() { return m_MovementStateCtx.IsFalling; }

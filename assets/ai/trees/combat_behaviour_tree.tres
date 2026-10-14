@@ -68,6 +68,17 @@ custom_name = "Time to stay near the query point"
 custom_name = "Move to query sequence"
 children = [SubResource("BTMoveToTarget_8ecev"), SubResource("BTCallMethod_cuh4b"), SubResource("BTWait_3sgys")]
 
+[sub_resource type="BBVariant" id="BBVariant_yyx4r"]
+type = 1
+saved_value = true
+resource_name = "true"
+
+[sub_resource type="BTCheckVar" id="BTCheckVar_0lqdb"]
+variable = &"IsAmmoEmpty"
+check_type = 5
+value = SubResource("BBVariant_yyx4r")
+custom_name = "Is Ammo Available"
+
 [sub_resource type="BBVariant" id="BBVariant_cuh4b"]
 type = 3
 saved_value = 20.0
@@ -84,7 +95,7 @@ custom_name = "Start Shooting"
 
 [sub_resource type="BTSequence" id="BTSequence_cuh4b"]
 custom_name = "Shoot sequence"
-children = [SubResource("BTCheckVar_yyx4r"), SubResource("BTShootAtTarget_3sgys")]
+children = [SubResource("BTCheckVar_0lqdb"), SubResource("BTCheckVar_yyx4r"), SubResource("BTShootAtTarget_3sgys")]
 
 [sub_resource type="BBVariant" id="BBVariant_8ecev"]
 type = 1

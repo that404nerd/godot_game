@@ -43,7 +43,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/func_godot/plugin.cfg", "res://addons/skydome/plugin.cfg")
+enabled=PackedStringArray("res://addons/Keyframe Scaling/plugin.cfg", "res://addons/func_godot/plugin.cfg", "res://addons/geqo/project/addons/geqo/plugin.cfg", "res://addons/godot-animation-reverser/plugin.cfg", "res://addons/skydome/plugin.cfg")
 
 [filesystem]
 

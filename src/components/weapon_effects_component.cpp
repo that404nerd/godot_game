@@ -1,5 +1,5 @@
-#include "character_component.h"
 #include "weapon_effects_components.h"
+#include "character_component.h"
 #include "../managers/weapon_manager.h"
 #include "../player.h"
 
@@ -31,7 +31,8 @@ void WeaponBobComponent::_update_bob_data(Ref<Weapon> currentWeapon)
   m_WeaponBobAmp = currentWeapon->get_weapon_bob_amp();
   m_WeaponBobSmoothVal = currentWeapon->get_weapon_bob_smooth_val();
 
-  m_BobVector = Vector3(0.0f, 0.0f, 0.0f);
+  m_BobOffset = Vector3(0.0f, 0.0f, 0.0f);
+  m_BobVel = Vector3(0.0f, 0.0f, 0.0f);
 }
 
 void WeaponBobComponent::weapon_bob(double delta)
@@ -41,25 +42,21 @@ void WeaponBobComponent::weapon_bob(double delta)
   m_CharacterVel = m_Player->get_velocity();
 
   bool onFloor = m_Player->is_on_floor();
-  float velocityMag = m_CharacterVel.length();
+  float speed = m_CharacterVel.length();
 
-  if(!m_MovementManager->WantsToSprint() && !m_MovementManager->IsCrouching())
+  m_WeaponBobTime += delta * onFloor;
+  
+  if(speed > 0.01f)
   {
-    Vector3 currentHoldPoint = m_HoldPointNode->get_position();
-    m_BobOffset = m_BobOffset.lerp(Vector3(0.0f, 0.0f, 0.0f), (float)delta);
-  }
+    float speed_factor = Math::clamp(speed / 10.0f, 0.0f, 1.0f);
+    float angle = m_WeaponBobTime * Math::TAU;
 
-  m_WeaponBobTime += delta * velocityMag * onFloor;
+    m_BobVector.x = Math::sin(angle) * m_WeaponBobAmp * speed_factor;
+    m_BobVector.y = Math::sin(angle * 2.0f) * m_WeaponBobAmp * speed_factor;
+  } 
 
-  if(velocityMag > 0.1f)
-  {
-    m_BobVector.x = Math::cos(m_WeaponBobTime * m_WeaponBobFreq * 0.618f) * m_WeaponBobAmp;
-    m_BobVector.y = Math::sin(m_WeaponBobTime * m_WeaponBobFreq) * m_WeaponBobAmp;
-  }
+  m_BobOffset = Utils::exp_decay(m_BobOffset, m_BobVector, 3.0f, delta);
 
-  m_BobOffset.x = Utils::exp_decay(m_BobOffset.x, m_BobVector.x, m_WeaponBobSmoothVal, (float)delta);
-  m_BobOffset.y = Utils::exp_decay(m_BobOffset.y, m_BobVector.y, m_WeaponBobSmoothVal, (float)delta);
-  m_BobOffset.z = 0.0f;
 }
 
 void WeaponSwayComponent::_init_data(const WeaponEffectsData& weaponEffectsData)
@@ -102,18 +99,15 @@ void WeaponSwayComponent::weapon_idle_sway(double delta)
   m_CharacterVel = m_Player->get_velocity();
 
   if(m_CharacterVel.length() > 0.1f || m_MovementManager->IsSliding())
-  {
-    m_IdleSwayOffset = m_IdleSwayOffset.lerp(Vector3(0.0f, 0.0f, 0.0f), (float)delta);
-    return;
-  }
+    m_IdleSwayOffset = Utils::exp_decay(m_IdleSwayVector, Vector3(0.0f, 0.0f, 0.0f), 20.0f, (float)delta);
 
   m_IdleWeaponBobTime += delta;
 
   m_IdleSwayVector.x = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq) * m_IdleWeaponBobAmp;
   m_IdleSwayVector.y = Math::sin(m_IdleWeaponBobTime * m_IdleWeaponBobFreq * 0.618f) * m_IdleWeaponBobAmp;
 
-  m_IdleSwayOffset.x = Utils::exp_decay(m_IdleSwayOffset.x, m_IdleSwayVector.x, m_IdleWeaponBobSmoothVal, (float)delta);
-  m_IdleSwayOffset.y = Utils::exp_decay(m_IdleSwayOffset.y, m_IdleSwayVector.y, m_IdleWeaponBobSmoothVal, (float)delta);
+  m_DampedSpring.CalcDampedSpringMotionParams(delta, 10.0f, 0.6f);
+  m_DampedSpring.UpdateDampedSpringMotion(m_IdleSwayOffset, m_SwayVel, m_IdleSwayVector);
 }
 
 void WeaponSwayComponent::weapon_sway(double delta, Vector3& sway_vel)
@@ -252,7 +246,6 @@ void WeaponSlideEffect::_update_slide_data(Ref<Weapon> currentWeapon)
   m_SlideArmatureDipDampingRatio = currentWeapon->get_slide_armature_dip_reset_damping_ratio();
   m_SlideArmatureTiltEndAngFreq = currentWeapon->get_slide_armature_tilt_end_ang_freq();
   m_SlideArmatureTiltEndDampingRatio = currentWeapon->get_slide_armature_tilt_end_damping_ratio();
-
 }
 
 void WeaponSlideEffect::_weapon_slide_effect(double delta)
@@ -405,7 +398,7 @@ void WeaponEffects::_init()
     .MovementManagerInst = movement_manager,
     .WeaponManagerInst = weapon_manager,
     .CharacterCompInst = player,
-    .WeaponCompInst = weapon_component
+    .WeaponCompInst = weapon_component,
   });
   
   EventBus::get_singleton()->connect("weapon_switched", Callable(this, "_on_weapon_switched"));

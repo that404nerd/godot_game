@@ -85,25 +85,22 @@ namespace Utils {
   {
     bool result = propertyParams.Condition();
     PropertyInfo propInfo {};
-    
-    if(result)
-    {
-      if(propertyParams.PropHint != PROPERTY_HINT_NONE && propertyParams.EnumValues.is_empty())
-      {
-        propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, propertyParams.PropHint);
-      }
-      else if(propertyParams.PropHint == PROPERTY_HINT_ENUM && !propertyParams.EnumValues.is_empty())
-      {
-        propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, godot::PROPERTY_HINT_ENUM, propertyParams.EnumValues);
-      } else
-      {
-        propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName);
-      }
-      
-    }
 
+    if(!result) return;
+    
+    if(propertyParams.PropHint != PROPERTY_HINT_NONE && propertyParams.EnumValues.is_empty())
+    {
+      propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, propertyParams.PropHint);
+    }
+    else if(propertyParams.PropHint == PROPERTY_HINT_ENUM && !propertyParams.EnumValues.is_empty())
+    {
+      propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName, godot::PROPERTY_HINT_ENUM, propertyParams.EnumValues);
+    } else
+    {
+      propInfo = PropertyInfo(propertyParams.VariantType, propertyParams.PropertyName);
+    }
+    
     p_list->push_back(propInfo);
-   
   }
   
   template <typename T>

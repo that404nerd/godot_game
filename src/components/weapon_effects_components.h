@@ -37,15 +37,18 @@ public:
   Vector3 get_weapon_bob_offset() const { return m_BobOffset; }
 
 private:
-  Vector3 m_BobOffset {}, m_BobVector {};
+  Vector3 m_InitialGunPos {};
+  Vector3 m_BobOffset {}, m_BobVector {}, m_BobVel {};
   Vector3 m_CharacterVel {};
+
+  DampedSpring m_DampedSpring {};
 
   float m_WeaponBobTime { 0.0f };
   float m_WeaponBobFreq { 0.0f };
   float m_WeaponBobAmp { 0.0f };
   float m_WeaponBobSmoothVal { 0.0f };
 
-  Node3D* m_HoldPointNode { nullptr };
+  Node3D *m_HoldPointNode { nullptr };
   MovementManager* m_MovementManager { nullptr };
   Player* m_Player { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };

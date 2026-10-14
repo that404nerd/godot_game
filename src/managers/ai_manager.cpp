@@ -252,20 +252,21 @@ BT::Status AIManager::_shoot(double delta)
   
   if(ai_vision_component->can_see_player() && m_Target)
   {
+    _rotate_character(delta);
+    _enable_shootIK(true);
+    
+    anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
+
     // FIXME: Should be hold trigger but it works for now
     weapon_cmd = {
       .WantsToPressTrigger = true
     };
-
+    
     if(nav_agent_3d->is_navigation_finished())
     {
       env_query3d->request_query();
     }
 
-    _rotate_character(delta);
-    _enable_shootIK(true);
-
-    anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
     
     return BT::SUCCESS;
   }
@@ -306,7 +307,4 @@ void AIManager::_death()
   ai_character_component->get_crouch_collision_shape()->set_disabled(true);
 
   ragdoll_simulator->physical_bones_start_simulation();
-  // NOTE: Make sure that for these transitions, Allow Transition To Self is Disabled!!
-
-  anim_tree->set("parameters/Transition/transition_request", "DeathTransition");
 }

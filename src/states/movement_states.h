@@ -28,6 +28,9 @@ struct MovementStateCtx
   float SlideTimer = 0.0f;
   float DashCooldown { 0.0f };
 
+  bool IsSprinting = false;
+  bool IsCrouching = false;
+
   bool IsFalling = false;
   
   bool IsSlideStarted = false;
