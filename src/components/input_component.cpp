@@ -20,8 +20,9 @@ void InputComponent::_input(const Ref<InputEvent>& event)
   m_MoveCmd.WantsToCrouch = Input::get_singleton()->is_action_just_pressed("crouch");
   m_MoveCmd.WantsToJump = Input::get_singleton()->is_action_just_pressed("jump");
 
-  m_WeaponCmd.WantsToPressTrigger = Input::get_singleton()->is_action_just_pressed("shoot_weapon");
+  m_ShootCmd.WantsToPressTrigger = Input::get_singleton()->is_action_just_pressed("shoot_weapon");
   m_WeaponCmd.WantsToReleaseShoot = Input::get_singleton()->is_action_just_released("shoot_weapon");
+
   m_WeaponCmd.WantsToReloadWeapon = Input::get_singleton()->is_action_just_pressed("reload_weapon");
 
   if(event->is_class("InputEventMouseMotion")) {
@@ -55,22 +56,37 @@ void InputComponent::build_move_command(CharacterComponent *character_comp)
   };
 }
 
+void InputComponent::build_shoot_command(double delta)
+{
+  // Did i press the mouse?
+  bool is_pressed_now = m_ShootCmd.WantsToPressTrigger;
+
+  // Did i hold the mouse?
+  bool is_held_now = m_ShootCmd.WantsToHoldTrigger;
+
+  // Did I hold the mouse? Which is true if the hold counter reaches the max hold time.
+  m_ShootCmd.WantsToHoldTrigger = is_held_now;
+
+  // Did I press the mouse (single click)? Which is true if the mouse is pressed/held and it wasn't held before
+  m_ShootCmd.WantsToPressTrigger = is_pressed_now && !m_WasHeldBefore;
+  m_WasHeldBefore = is_pressed_now;
+
+  // print_line("Is pressed: ", m_ShootCmd.WantsToPressTrigger, ", Is Held: ", m_ShootCmd.WantsToHoldTrigger);
+}
+
 void InputComponent::_update(double delta)
 {
   if(Input::get_singleton()->is_action_pressed("shoot_weapon"))
   {
     m_HoldCounter += delta;
     if(m_HoldCounter >= get_max_hold_time())
-    {
-      print_line("Boom held!");
-      m_WeaponCmd.WantsToHoldTrigger = true;
-    }
+      m_ShootCmd.WantsToHoldTrigger = true;
   }
 
   if(m_WeaponCmd.WantsToReleaseShoot)
   {
+    m_ShootCmd.WantsToHoldTrigger = false;    
     m_HoldCounter = 0.0f;   
-    m_WeaponCmd.WantsToHoldTrigger = false;
   }
 
   m_WeaponCmd.WantsToSwitchWeapon = false;

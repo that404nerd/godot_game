@@ -193,6 +193,11 @@ void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
 
 void WeaponManager::_update(double delta)
 {
+  input_command_system->build_shoot_command(delta);
+
+  if(m_TimeBetweenShots >= 0.0f)
+    m_TimeBetweenShots -= delta;
+
   m_CurrentWeapon = weapon_component->get_current_weapon_res();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
@@ -440,10 +445,9 @@ void WeaponManager::_shoot_weapon(double delta)
     return;
   }
 
-
-  const WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
   m_WeaponStateCtx.IsShooting = true;
 
+  ShootCommand& shoot_cmd = input_command_system->get_shoot_command();
 
   // Start the timer (which gives a grace period before switching to idle state of the weapon) if it's less than or equal to 0.0f
   if(m_WeaponStateCtx.ShootTimeBeforeIdle >= 0.0f)
@@ -451,8 +455,7 @@ void WeaponManager::_shoot_weapon(double delta)
     m_WeaponStateCtx.ShootTimeBeforeIdle -= delta;
   }
 
-  if(m_TimeBetweenShots >= 0.0f)
-    m_TimeBetweenShots -= delta;
+
 
   /*
     Two states (for now), one for automatic handling (mouse hold) and the other for just manual handling (single click). 
@@ -466,38 +469,34 @@ void WeaponManager::_shoot_weapon(double delta)
   if(m_TimeBetweenShots <= 0.0f)
   {
     // Check whether the fire key is held or not (for automatic weapons)
-    if(weapon_cmd.WantsToHoldTrigger &&
-      (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH)) 
+    if(shoot_cmd.WantsToHoldTrigger &&
+      (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
+      m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
-    }  
-    
+    }
+      
     // Check whether we pressed the fire key (manual), we don't check for wants_to_shoot_weapon() because it's one frame-state and not a persistent state
-    if(weapon_cmd.WantsToPressTrigger && 
+    if(shoot_cmd.WantsToPressTrigger && 
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
+      m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }
+      
+    m_MuzzleComp->_enable_light_status(true);
     
-    if(weapon_cmd.WantsToHoldTrigger || weapon_cmd.WantsToPressTrigger)
-    {
-      m_MuzzleComp->_enable_light_status(true);
-      
-      m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
-      m_WeaponStateCtx.ShootTimeBeforeIdle = MAX_SHOOT_STATE_TIME;
-    }
+    m_WeaponStateCtx.ShootTimeBeforeIdle = MAX_SHOOT_STATE_TIME;
   }
-      
+    
+  m_MuzzleLightTimeout -= delta;
+  if(m_MuzzleLightTimeout >= 0.0f)
   {
-    m_MuzzleLightTimeout -= delta;
-    if(m_MuzzleLightTimeout >= 0.0f)
-    {
-      m_MuzzleComp->_enable_light_status(true);
-    }
-    
-    if(m_MuzzleLightTimeout <= 0.0f)
-      m_MuzzleComp->_enable_light_status(false);
+    m_MuzzleComp->_enable_light_status(true);
   }
+  
+  if(m_MuzzleLightTimeout <= 0.0f)
+    m_MuzzleComp->_enable_light_status(false);
 }
 
 void WeaponManager::_shoot_weapon_over()

@@ -248,7 +248,7 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
 
 BT::Status AIManager::_shoot(double delta)
 {
-  WeaponCommand& weapon_cmd = input_cmd_system->get_weapon_command();
+  ShootCommand& shoot_cmd = input_cmd_system->get_shoot_command();
   
   if(ai_vision_component->can_see_player() && m_Target)
   {
@@ -258,7 +258,7 @@ BT::Status AIManager::_shoot(double delta)
     anim_tree->set("parameters/UpperBodyBlend/blend_amount", 1.0f);
 
     // FIXME: Should be hold trigger but it works for now
-    weapon_cmd = {
+    shoot_cmd = {
       .WantsToPressTrigger = true
     };
     
@@ -277,6 +277,9 @@ BT::Status AIManager::_shoot(double delta)
 void AIManager::_reload()
 {
   WeaponCommand& weapon_cmd = input_cmd_system->get_weapon_command();
+  ShootCommand& shoot_cmd = input_cmd_system->get_shoot_command();
+
+  shoot_cmd = {};
   weapon_cmd = {
     .WantsToReloadWeapon = true
   };
@@ -292,11 +295,13 @@ void AIManager::_death()
 {
   MoveCommand& move_cmd = input_cmd_system->get_move_command();
   WeaponCommand& weapon_cmd = input_cmd_system->get_weapon_command();
+  ShootCommand& shoot_cmd = input_cmd_system->get_shoot_command();
 
   // FIXME: The player might die if on the edge of a roof or something and might not have gravity applied (Edge case)
   move_cmd = {
     .IsOnFloor = true,
   };
+  shoot_cmd = {};
   weapon_cmd = {};
 
   lHandIK->set_active(false);

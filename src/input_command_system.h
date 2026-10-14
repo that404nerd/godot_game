@@ -33,11 +33,17 @@ struct WeaponCommand
   int WeaponIdx = 0;
   float MaxHoldTime = 0.0f;
 
-  bool WantsToPressTrigger = false;
-  bool WantsToHoldTrigger = false;
   bool WantsToReleaseShoot = false;
   bool WantsToReloadWeapon = false;
   bool WantsToSwitchWeapon = false;
+};
+
+struct ShootCommand
+{
+  bool WantsToPressTrigger = false;
+  bool WantsToHoldTrigger = false;
+  bool WasHeldBefore = false;
+  float MaxHoldTime = 0.0f;
 };
 
 class InputCommandSystem : public Node
@@ -49,12 +55,15 @@ public:
   virtual void _update(double delta);
 
   virtual void build_move_command(CharacterComponent* characterComp) {};
+  virtual void build_shoot_command(double delta) {};
+
   void set_mouse_vel(Vector2 mouseVel) { m_InputCmdData.MouseVel = mouseVel; }
   void set_max_hold_time(float val) { m_WeaponCmd.MaxHoldTime = val; }
   float get_max_hold_time() { return m_WeaponCmd.MaxHoldTime; }
 
   MoveCommand& get_move_command() { return m_MoveCmd; }
   WeaponCommand& get_weapon_command() { return m_WeaponCmd; }
+  ShootCommand& get_shoot_command() { return m_ShootCmd; }
 
   Vector2 get_mouse_vel() { return m_InputCmdData.MouseVel; };
   Vector2 get_input_dir() { return m_MoveCmd.InputDir; };
@@ -71,6 +80,7 @@ protected:
 protected:
   MoveCommand m_MoveCmd {};
   WeaponCommand m_WeaponCmd {};
+  ShootCommand m_ShootCmd {};
 private:
   InputCommandData m_InputCmdData;
 

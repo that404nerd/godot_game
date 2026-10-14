@@ -39,6 +39,7 @@ protected:
   InputCommandSystem* m_InputCmdSystem { nullptr };
   const WeaponStateContext& m_WeaponStateContext;
   const WeaponCommand& m_WeaponCmd {};
+  const ShootCommand& m_ShootCmd {};
 };
 
 ///////////////////////////// Weapon States Declaration //////////////////////////////////

@@ -18,6 +18,7 @@ public:
   InputComponent();
 
   void build_move_command(CharacterComponent* character_comp) override;
+  void build_shoot_command(double delta) override;
 
   void _input(const Ref<InputEvent>& event) override;
   void _update(double delta) override;
@@ -27,5 +28,6 @@ protected:
 
 private:
   float m_HoldCounter { 0.0f };
+  bool m_WasHeldBefore { false };
   bool m_CanJump { false };
 };
