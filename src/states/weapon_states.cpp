@@ -29,7 +29,7 @@ WeaponIdleState::WeaponIdleState(const WeaponStateData& weaponStateData)
 
 void WeaponIdleState::_handle_input(const Ref<InputEvent>& event)
 {
-  if(m_ShootCmd.WantsToPressTrigger )
+  if(m_ShootCmd.WantsToPressTrigger)
   {
     m_WeaponStateMachine->_change_state(static_cast<int>(WeaponStates::SHOOT));
   }

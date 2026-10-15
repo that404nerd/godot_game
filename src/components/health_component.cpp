@@ -5,12 +5,13 @@ void HealthComponent::_ready()
   m_CurrentHealth = max_health;
 }
 
-void HealthComponent::_take_damage(int damage, Node* hitBody)
+void HealthComponent::_take_damage(float damage, Node* hitBody)
 {
-  if(m_CurrentHealth == 0)
+  if(m_CurrentHealth <= 0.0f)
     return;
 
-  m_CurrentHealth -= damage;
+  float actual_damage = Math::max(0.0f, damage);
+  m_CurrentHealth = Math::max(0.0f, m_CurrentHealth - actual_damage);
   
   print_line(hitBody->get_name(), " current health is: ", m_CurrentHealth);
 
@@ -24,8 +25,8 @@ void HealthComponent::_take_damage(int damage, Node* hitBody)
 
 void HealthComponent::_bind_methods()
 {
-  GD_BIND_PROPERTY(HealthComponent, max_health, Variant::INT);
+  GD_BIND_PROPERTY(HealthComponent, max_health, Variant::FLOAT);
 
-  ADD_SIGNAL(MethodInfo("health_changed", PropertyInfo(Variant::INT, "currentHealth"), PropertyInfo(Variant::INT, "maxHealth")));
+  ADD_SIGNAL(MethodInfo("health_changed", PropertyInfo(Variant::FLOAT, "currentHealth"), PropertyInfo(Variant::FLOAT, "maxHealth")));
   ADD_SIGNAL(MethodInfo("death"));
 }

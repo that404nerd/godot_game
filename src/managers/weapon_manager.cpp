@@ -86,7 +86,7 @@ void WeaponManager::_init_weapon_manager_data()
   weapon_component->set_current_weapon_res(weapon_component->get_weapon_res_list()[m_WeaponIndex]);
   m_CurrentWeapon = weapon_component->get_current_weapon_res();
   m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
-  m_CharacterBody = character_component;
+  m_DamageCurve = m_CurrentWeapon->get_damage_curve();
 }
 
 void WeaponManager::_change_fov()
@@ -117,12 +117,12 @@ void WeaponManager::_change_fov()
         Then there's the Material Overrides, which is a single material that is applied to the entire mesh instead of individual parts/meshes.
 
       */
-      if(mesh->get_surface_override_material_count() >= 0)
+      if(mesh->get_surface_override_material_count() > 0)
       {
         /*
           If the mesh has surface override materials then loop through all the available ones.
         */
-        for(int surfaceMatCount = 0; surfaceMatCount <= mesh->get_surface_override_material_count(); surfaceMatCount++)
+        for(int surfaceMatCount = 0; surfaceMatCount < mesh->get_surface_override_material_count(); surfaceMatCount++)
         {
           Ref<Material> material = mesh->get_active_material(surfaceMatCount);
          
@@ -187,10 +187,6 @@ void WeaponManager::_bind_methods()
   ClassDB::bind_method(D_METHOD("get_current_weapon_name"), &WeaponManager::get_current_weapon_name);
 }
 
-void WeaponManager::_unhandled_input(const Ref<InputEvent>& event)
-{
-}
-
 void WeaponManager::_update(double delta)
 {
   input_command_system->build_shoot_command(delta);
@@ -217,13 +213,21 @@ void WeaponManager::_physics_update(double delta)
   // Get space state in _process or some other function could cause errors because
   // for some reason it's not accessible unless it's in the _physics_update
 
+  if(!m_DamageCurve.is_valid())
+  {
+    print_error(get_owner()->get_name(), ": Damege curve for weapon: ", m_CurrentWeapon, " is not valid!");
+    return;
+  }
+
   Vector3 ray_start = m_WeaponMuzzleMarker->get_global_position();
   Vector3 forwardVector = m_WeaponMuzzleMarker->get_global_basis().get_column(2);
-  Vector3 ray_end = ray_start + forwardVector * 1000.0f;
+  Vector3 ray_end = ray_start + forwardVector * m_DamageCurve->get_max_domain();
+
+  m_DamageFromWeapon = m_DamageCurve->sample((ray_end - ray_start).length());
 
   // DebugDraw3D::draw_line(ray_start, ray_end, Color(1, 1, 0));
 
-  m_SpaceState = m_CharacterBody->get_world_3d()->get_direct_space_state();
+  m_SpaceState = character_component->get_world_3d()->get_direct_space_state();
   m_Query = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
 
   ERR_FAIL_COND_MSG(!m_Query.is_valid(), "Query is not valid!");
@@ -245,15 +249,25 @@ void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
     play_anim_component = m_WeaponWrapperInst->get_play_anim_component();
 
   m_DecalScene = nextWeapon->get_weaponDecalResource();
+  m_DamageCurve = nextWeapon->get_damage_curve();
 }
 
 void WeaponManager::_apply_damage(Node* hitBody)
 {
+  /*
+    For the damage curve:
+
+    Min domain - the origin's starting value on x-axis
+    Max domain - the max value on the x-axis (Gun range)
+    Min value - the origin's starting value on y-axis
+    Max value - the max value on the y-axis (Actual damage applied by the gun)
+  */
+
   // FIXME: Not so nice way to get the health component but FIX later.
   if(hitBody->has_node("HealthComponent"))
   {
     HealthComponent* health_comp = hitBody->get_node<HealthComponent>("HealthComponent");
-    health_comp->_take_damage(20, hitBody);
+    health_comp->_take_damage(m_DamageFromWeapon, hitBody);
   }
 }
 
@@ -275,12 +289,15 @@ void WeaponManager::_generate_decal()
         colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
         hitBody = Object::cast_to<Node>(m_Result["collider"]);
         colliderBody->add_child(m_BulletDecalNode);
+
+        print_line("Damage max domain for gun: (i.e gun range: )", m_DamageCurve->get_max_domain());
+        print_line("Bullet collider layer: ", colliderBody->get_collision_layer());
       }  
       
       // The hit position
       Vector3 hit_position = Vector3(m_Result["position"]);
 
-      Vector3 hitDirection = (hit_position - m_WeaponMuzzleMarker->get_global_position()).normalized();
+      // Vector3 hitDirection = (hit_position - m_WeaponMuzzleMarker->get_global_position()).normalized();
       // DebugDraw3D::draw_line(m_WeaponMuzzleMarker->get_global_position(), hit_position, Color(0, 0, 0, 0), 10.0f);
 
       // FIXME: Clean this up soon

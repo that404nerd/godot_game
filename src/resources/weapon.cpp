@@ -28,6 +28,7 @@ void Weapon::_bind_methods() {
   GD_BIND_ENUM(Weapon, weapon_type, "Manual,Auto,Both");
 
   // GD_BIND_CUSTOM_PROPERTY(Weapon, PackedScene, weaponRecoilPatternResource, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(Weapon, Curve, damage_curve, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
   GD_BIND_CUSTOM_PROPERTY(Weapon, PackedScene, weaponDecalResource, Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE);
 
   GD_BIND_PROPERTY(Weapon, time_between_shots, Variant::FLOAT);
@@ -70,12 +71,11 @@ void Weapon::_bind_methods() {
   GD_BIND_PROPERTY(Weapon, magEnteredTimestamp, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, reloadShakeSpeedMultiplier, Variant::FLOAT);
 
-  ADD_GROUP("Weapon Bob And Range", "");
+  ADD_GROUP("Weapon Bob", "");
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_amp, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weapon_bob_freq, Variant::FLOAT);
   GD_BIND_PROPERTY(Weapon, weapon_bob_amp, Variant::FLOAT);
-  GD_BIND_PROPERTY(Weapon, gun_range, Variant::FLOAT);
 
   ADD_GROUP("Weapon Bob Multipliers and Smoothing Properties", "");
   GD_BIND_PROPERTY(Weapon, idle_weapon_bob_smooth_val, Variant::FLOAT);

@@ -1,6 +1,7 @@
+@tool
 extends Node3D
-@onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $"../PhysicalBoneSimulator3D"
+
+@export var damage_curve: Curve
 
 func _ready() -> void:
-	physical_bone_simulator_3d.physical_bones_start_simulation()	
-	pass
+	damage_curve.max_value = 10.0

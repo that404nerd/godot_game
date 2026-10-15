@@ -248,7 +248,10 @@ BT::Status AIManager::_patrol(double delta, bool shouldRotate, bool toPlayer)
 
 BT::Status AIManager::_shoot(double delta)
 {
+  WeaponCommand& weapon_cmd = input_cmd_system->get_weapon_command();
   ShootCommand& shoot_cmd = input_cmd_system->get_shoot_command();
+
+  weapon_cmd = {};
   
   if(ai_vision_component->can_see_player() && m_Target)
   {

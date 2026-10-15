@@ -17,13 +17,13 @@ class HealthComponent : public Node
 public:
   void _ready() override;
 
-  void _take_damage(int damage, Node* hitBody);
-  int get_current_health() { return m_CurrentHealth; }
+  void _take_damage(float damage, Node* hitBody);
+  float get_current_health() { return m_CurrentHealth; }
 
 protected:
   static void _bind_methods();
   
 private:
-  GD_DEFINE_PROPERTY(int, max_health, 0);
-  int m_CurrentHealth { 0 };
+  GD_DEFINE_PROPERTY(float, max_health, 0);
+  float m_CurrentHealth { 0 };
 };

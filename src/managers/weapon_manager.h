@@ -37,7 +37,6 @@ class WeaponManager : public Node {
 
 public:
   void _init();
-  void _unhandled_input(const Ref<InputEvent>& event) override;
   void _update(double delta);
   void _physics_update(double delta);
  
@@ -85,6 +84,7 @@ public:
   StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
 
   Ref<Weapon> get_current_weapon() { return m_CurrentWeapon; }
+  Ref<Curve> get_current_weapon_damage_curve() { return m_DamageCurve; };
 
   Node3D* get_weapon_armature_node() { return m_WeaponWrapperInst->get_armature_node(); }
   Skeleton3D* get_armature_skeleton() { return m_Skeleton3D; }
@@ -101,6 +101,7 @@ private:
   // Ref<Curve2D> m_RecoilCurve { nullptr };
   // Node* m_RecoilPathNode { nullptr };
   // Path2D* m_RecoilPath { nullptr };
+  Ref<Curve> m_DamageCurve { nullptr };
   
   Ref<StandardMaterial3D> m_StdMaterial { nullptr };
 
@@ -125,7 +126,6 @@ private:
   WeaponWrapper* m_WeaponWrapperInst { nullptr };
   
   Skeleton3D* m_Skeleton3D { nullptr };
-  CharacterBody3D* m_CharacterBody { nullptr };
   Dictionary m_Result;
 
 private:
@@ -134,6 +134,8 @@ private:
 
   float m_MuzzleLightTimeout { 0.0f };
   float m_HoldCounter { 0.0f }, m_HoldMaxTime { 0.0f };
+
+  float m_DamageFromWeapon { 0.0f };
 
   Vector3 m_TargetRot {}, m_CurrentRot {};
 

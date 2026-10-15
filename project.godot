@@ -43,7 +43,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Keyframe Scaling/plugin.cfg", "res://addons/func_godot/plugin.cfg", "res://addons/geqo/project/addons/geqo/plugin.cfg", "res://addons/godot-animation-reverser/plugin.cfg", "res://addons/skydome/plugin.cfg")
+enabled=PackedStringArray("res://addons/func_godot/plugin.cfg", "res://addons/geqo/project/addons/geqo/plugin.cfg", "res://addons/godot-animation-reverser/plugin.cfg", "res://addons/skydome/plugin.cfg")
 
 [filesystem]
 
@@ -140,7 +140,7 @@ request_query={
 3d_physics/layer_1="environment"
 3d_physics/layer_2="player"
 3d_physics/layer_3="enemies"
-3d_physics/layer_4="enemy_"
+3d_physics/layer_4="enemy_joints"
 
 [limbo_ai]
 

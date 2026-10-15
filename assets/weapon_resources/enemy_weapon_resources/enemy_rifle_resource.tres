@@ -2,6 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_4cygv"]
 
+[sub_resource type="Curve" id="Curve_2ln5x"]
+_limits = [0.0, 30.0, 0.0, 100.0]
+_data = [Vector2(0, 30), 0.0, 0.0, 0, 0, Vector2(100, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [resource]
 weaponName = "Rifle"
 totalAmmoCount = 180
@@ -13,6 +18,7 @@ weaponVerticalPush = 0.1
 weaponVerticalAngFreq = 30.0
 weaponVerticalDampingRatio = 0.2
 weapon_type = 2
+damage_curve = SubResource("Curve_2ln5x")
 weaponDecalResource = ExtResource("1_4cygv")
 time_between_shots = 0.2
 hold_max_time = 0.0
@@ -36,4 +42,3 @@ idle_weapon_bob_freq = 0.5
 idle_weapon_bob_amp = 0.02
 weapon_bob_freq = 1.0
 weapon_bob_amp = 0.04
-gun_range = 100.0

@@ -40,13 +40,13 @@ void VisionComponent::_bind_methods()
 
 void VisionComponent::_on_body_entered_inner_area(Node3D* body)
 {
-  if(body->get_name() == m_PlayerInst->get_name())
+  if(body == m_PlayerInst)
     m_DidEnterInnerArea = true;
 }
 
 void VisionComponent::_on_body_exited_inner_area(Node3D* body)
 {
-  if(body->get_name() == m_PlayerInst->get_name())
+  if(body == m_PlayerInst)
     m_DidEnterInnerArea = false;
 }
 
@@ -97,10 +97,13 @@ void VisionComponent::_physics_update(double delta)
       m_SpaceState = ai_character_component->get_world_3d()->get_direct_space_state();
       m_Query = PhysicsRayQueryParameters3D::create(eyeStart, eyeEnd);
       m_Query->set_collide_with_bodies(true);
-    
-      m_CollisionResult = m_SpaceState->intersect_ray(m_Query);
       
+      m_CollisionResult = m_SpaceState->intersect_ray(m_Query);
+     
       CollisionObject3D* collidedObj = Object::cast_to<CollisionObject3D>(m_CollisionResult["collider"]);
+
+      // if(collidedObj)
+        // print_line("Vision collided object layer: ", collidedObj->get_collision_layer());
 
       if(collidedObj && collidedObj == m_PlayerInst)
       {
