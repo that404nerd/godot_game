@@ -10,6 +10,8 @@ assets/blend_files/*.blend1
 assets/meshes/**/*.jpg
 assets/meshes/**/*.import
 export_presets.cfg
+*.csprog
+*.sln
 
 # folders
 build/
