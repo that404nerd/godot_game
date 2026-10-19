@@ -258,7 +258,7 @@ blend_shape_mode = 0
 [node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=978507075 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton", "weapon_anim_player", "play_anim_component")]
 mesh_instances = [NodePath("gun_pistol/Armature/Skeleton3D/arm"), NodePath("gun_pistol/Armature/Skeleton3D/pistol")]
 armature_node = NodePath("gun_pistol/Armature")
-muzzle_point_marker = NodePath("gun_pistol/Armature/Marker3D")
+muzzle_point_marker = NodePath("gun_pistol/Armature/MuzzleMarker")
 muzzle_flash_component = NodePath("gun_pistol/Armature/MuzzleFlashComponent")
 armature_skeleton = NodePath("gun_pistol/Armature/Skeleton3D")
 weapon_anim_player = NodePath("AnimationPlayer")
@@ -288,7 +288,7 @@ transform = Transform3D(-0.7, 0, 1.0569706e-07, 0, 0.7, 0, -1.0569706e-07, 0, -0
 
 [node name="Armature" type="Node3D" parent="WeaponWrapper/gun_pistol" unique_id=1688506177]
 
-[node name="Marker3D" type="Marker3D" parent="WeaponWrapper/gun_pistol/Armature" unique_id=1109547686]
+[node name="MuzzleMarker" type="Marker3D" parent="WeaponWrapper/gun_pistol/Armature" unique_id=1109547686]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4505806e-08, 0.17732832, 0.54501593)
 
 [node name="MuzzleFlashComponent" type="MuzzleFlashComponent" parent="WeaponWrapper/gun_pistol/Armature" unique_id=219364471 node_paths=PackedStringArray("omni_light_inst", "gpu_particles_inst")]

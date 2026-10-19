@@ -8,6 +8,8 @@ void AIManager::_init()
 
   m_IsAlive = true;
 
+  m_AmmoComp = ai_character_component->get_weapon_manager()->get_ammo_component();
+
   m_AIBehaviourProps = ai_character_component->get_ai_behaviour_props();
   m_BlackboardInst = ai_character_component->get_bt_player_inst()->get_blackboard();
 
@@ -17,7 +19,7 @@ void AIManager::_init()
   if(ai_vision_component)
     ai_vision_component->_init();
 
-  EventBus::get_singleton()->connect("ammo_finished", Callable(this, "_on_ammo_finished"));
+  m_AmmoComp->connect("ammo_finished", Callable(this, "_on_ammo_finished"));
   health_component->connect("death", Callable(this, "_on_health_finished"));
 }
 
@@ -270,9 +272,10 @@ BT::Status AIManager::_shoot(double delta)
       env_query3d->request_query();
     }
 
-    
     return BT::SUCCESS;
   }
+
+  shoot_cmd = {};
 
   return BT::FAILURE;
 }
@@ -305,14 +308,15 @@ void AIManager::_death()
     .IsOnFloor = true,
   };
   shoot_cmd = {};
-  weapon_cmd = {};
+  weapon_cmd = {
+    .WantsToReleaseShoot = true
+  };
 
   lHandIK->set_active(false);
   lHandCopyModifier->set_active(false);
   lHandThumbCopyModifier->set_active(false);
 
   ai_character_component->get_default_collision_shape()->set_disabled(true);
-  ai_character_component->get_crouch_collision_shape()->set_disabled(true);
 
   ragdoll_simulator->physical_bones_start_simulation();
 }

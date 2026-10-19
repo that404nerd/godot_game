@@ -60,10 +60,7 @@ private:
   GD_DEFINE_PROPERTY(Node3D*, character_head, nullptr);
   GD_DEFINE_PROPERTY(Marker3D*, character_marker, nullptr);
   GD_DEFINE_PROPERTY(RayCast3D*, crouch_raycast, nullptr);
-  GD_DEFINE_PROPERTY(RayCast3D*, stairs_below_raycast, nullptr);
-  GD_DEFINE_PROPERTY(RayCast3D*, stairs_ahead_raycast, nullptr);
   GD_DEFINE_PROPERTY(CollisionShape3D*, default_collision_shape, nullptr);
-  GD_DEFINE_PROPERTY(CollisionShape3D*, crouch_collision_shape, nullptr);
 
   GD_DEFINE_PROPERTY(float, crouch_speed, 3.0f);
   GD_DEFINE_PROPERTY(float, walk_speed, 10.0f);

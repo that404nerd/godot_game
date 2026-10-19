@@ -140,7 +140,7 @@ request_query={
 3d_physics/layer_1="environment"
 3d_physics/layer_2="player"
 3d_physics/layer_3="enemies"
-3d_physics/layer_4="enemy_joints"
+3d_physics/layer_4="enemy_physical_bones"
 
 [limbo_ai]
 

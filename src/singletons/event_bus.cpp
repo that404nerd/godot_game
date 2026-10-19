@@ -10,17 +10,11 @@ EventBus::EventBus()
 void EventBus::_bind_methods()
 {
   // For Weapon States
+
+  // BUG: The owner property doesn't really do anything even when I emit the signal, the enemy's shot also causes recoil to the player's camera.
   ADD_SIGNAL(MethodInfo("weapon_fired", PropertyInfo(Variant::OBJECT, "currentWeapon"), PropertyInfo(Variant::OBJECT, "owner")));
   ADD_SIGNAL(MethodInfo("weapon_reload_start", PropertyInfo(Variant::OBJECT, "skeleton"), PropertyInfo(Variant::OBJECT, "owner")));
   ADD_SIGNAL(MethodInfo("weapon_switched", PropertyInfo(Variant::OBJECT, "currentWeapon"), PropertyInfo(Variant::OBJECT, "owner")));
-
-  // For Ammo stuff
-  ADD_SIGNAL(MethodInfo("ammo_finished"));
-
-  // For the PlayAnimComponent interface
-  ADD_SIGNAL(MethodInfo("anim_started", PropertyInfo(Variant::STRING_NAME, "animName")));
-  ADD_SIGNAL(MethodInfo("anim_finished", PropertyInfo(Variant::STRING_NAME, "animName")));
-
 }
 
 EventBus* EventBus::get_singleton()

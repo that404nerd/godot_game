@@ -5,15 +5,13 @@ void HealthComponent::_ready()
   m_CurrentHealth = max_health;
 }
 
-void HealthComponent::_take_damage(float damage, Node* hitBody)
+void HealthComponent::_take_damage(float damage)
 {
   if(m_CurrentHealth <= 0.0f)
     return;
 
   float actual_damage = Math::max(0.0f, damage);
   m_CurrentHealth = Math::max(0.0f, m_CurrentHealth - actual_damage);
-  
-  print_line(hitBody->get_name(), " current health is: ", m_CurrentHealth);
 
   if(m_CurrentHealth <= 0.0f)
   {

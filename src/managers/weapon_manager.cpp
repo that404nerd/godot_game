@@ -4,17 +4,23 @@ void WeaponManager::_init()
 {
   set_physics_process(false);
   set_process(false);
-    
+
+  m_PlayerInst = Object::cast_to<Player>(get_tree()->get_first_node_in_group("player"));
+  
   ERR_FAIL_COND_MSG(!input_command_system, "[Weapon Manager]: Input Command System is null");
   ERR_FAIL_COND_MSG(!weapon_state_machine, "[Weapon Manager]: Weapon State Machine is null");
   ERR_FAIL_COND_MSG(!weapon_component, "[Weapon Manager]: Weapon Component is null");
-
+  
   _init_weapons();
   _init_weapon_anim_connections();
 
   // Init the weapon wrapper instance nodes
   _init_weapon_manager_data();
-  m_AmmoComp._init_data(weapon_component->get_weapon_res_list());
+
+  m_AmmoComp = memnew(AmmoComponent());
+  add_child(m_AmmoComp);
+
+  m_AmmoComp->_init_data(weapon_component->get_weapon_res_list());
 
   print_line("Weapon Manager Initialized");
 }
@@ -51,23 +57,32 @@ void WeaponManager::_init_weapons()
       m_WeaponNodes.push_back(Object::cast_to<Node3D>(weapons[i]));
     }
   }
+
 }
 
 void WeaponManager::_init_weapon_anim_connections()
 {
-  EventBus::get_singleton()->connect("anim_started", Callable(this, "_on_weapon_anim_started"));
-    
-  /* I have seperate functions in both the weapon state machine and this class that connect to the same signal
-  but the state machine's animation finished function only handles the state part only! */
-  EventBus::get_singleton()->connect("anim_finished", Callable(weapon_state_machine, "_on_animation_finished"));
-  EventBus::get_singleton()->connect("anim_finished", Callable(this, "_on_weapon_anim_finished"));
+  if(animations_from_weapon)
+  {
+    for(int i = 0; i < m_WeaponNodes.size(); i++)
+    {
+      m_WeaponWrapperInst = m_WeaponNodes[i]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+      
+      PlayAnimComponent* playAnimComp = m_WeaponWrapperInst->get_play_anim_component();
+
+      playAnimComp->connect("anim_started", Callable(this, "_on_weapon_anim_started"));
+      playAnimComp->connect("anim_finished", Callable(weapon_state_machine, "_on_animation_finished"));
+      playAnimComp->connect("anim_finished", Callable(this, "_on_weapon_anim_finished"));
+    }
+  } else {
+    play_anim_component->connect("anim_started", Callable(this, "_on_weapon_anim_started"));
+    play_anim_component->connect("anim_finished", Callable(weapon_state_machine, "_on_animation_finished"));
+    play_anim_component->connect("anim_finished", Callable(this, "_on_weapon_anim_finished"));
+  }
 }
 
 void WeaponManager::_init_weapon_manager_data()
 {
-  Node3D* weapon_node = nullptr;
-  WeaponWrapper* weapon_wrapper = nullptr;
-
   m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
   
   ERR_FAIL_COND_MSG(!m_WeaponWrapperInst, "[Weapon Manager]: Weapon Wrapper is null!");
@@ -84,9 +99,31 @@ void WeaponManager::_init_weapon_manager_data()
     _change_fov();
 
   weapon_component->set_current_weapon_res(weapon_component->get_weapon_res_list()[m_WeaponIndex]);
+
+  // Set the current weapon first
   m_CurrentWeapon = weapon_component->get_current_weapon_res();
+
   m_DecalScene = m_CurrentWeapon->get_weaponDecalResource();
   m_DamageCurve = m_CurrentWeapon->get_damage_curve();
+}
+
+// Runs when you switch a weapon (Only once)
+void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
+{
+  m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
+
+  ERR_FAIL_COND_MSG(!m_WeaponWrapperInst, "[Weapon Manager]: Weapon Wrapper is null!");
+
+  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
+  m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
+
+  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
+
+  if(animations_from_weapon)
+    play_anim_component = m_WeaponWrapperInst->get_play_anim_component();
+
+  m_DecalScene = nextWeapon->get_weaponDecalResource();
+  m_DamageCurve = nextWeapon->get_damage_curve();
 }
 
 void WeaponManager::_change_fov()
@@ -201,21 +238,20 @@ void WeaponManager::_update(double delta)
 
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
   input_command_system->set_max_hold_time(m_HoldMaxTime);
-
-  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
-  {
-    EventBus::get_singleton()->emit_signal("ammo_finished");
-  }
 }
 
 void WeaponManager::_physics_update(double delta)
 {
   // Get space state in _process or some other function could cause errors because
   // for some reason it's not accessible unless it's in the _physics_update
+  m_SpaceState = character_component->get_world_3d()->get_direct_space_state();
+}
 
+void WeaponManager::_calculate_ray_intersection()
+{
   if(!m_DamageCurve.is_valid())
   {
-    print_error(get_owner()->get_name(), ": Damege curve for weapon: ", m_CurrentWeapon, " is not valid!");
+    print_error(get_owner()->get_name(), ": Damage curve for weapon: ", m_CurrentWeapon, " is not valid!");
     return;
   }
 
@@ -223,36 +259,26 @@ void WeaponManager::_physics_update(double delta)
   Vector3 forwardVector = m_WeaponMuzzleMarker->get_global_basis().get_column(2);
   Vector3 ray_end = ray_start + forwardVector * m_DamageCurve->get_max_domain();
 
+  Ref<PhysicsRayQueryParameters3D> hitQuery = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
+
+  if(!hitQuery.is_valid())
+  {
+    print_error("Hit Query is not valid!");
+    return;
+  }
+
+  hitQuery->set_collide_with_bodies(true);
+  // Make sure that the bullet can collide with everything except the the enemy layer (which includes the default capsule collision shape)
+  hitQuery->set_collision_mask((1 << 0 | 1 << 1 | 1 << 3)); 
+
+  m_Result = m_SpaceState->intersect_ray(hitQuery);
+  
   m_DamageFromWeapon = m_DamageCurve->sample((ray_end - ray_start).length());
+  // DebugDraw3D::draw_line(ray_start, ray_end, Color(1, 1, 0), 5.0f);
 
-  // DebugDraw3D::draw_line(ray_start, ray_end, Color(1, 1, 0));
-
-  m_SpaceState = character_component->get_world_3d()->get_direct_space_state();
-  m_Query = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
-
-  ERR_FAIL_COND_MSG(!m_Query.is_valid(), "Query is not valid!");
-  ERR_FAIL_COND_MSG(!m_SpaceState, "Space State is not valid!");
-
-  m_Query->set_collide_with_bodies(true);
-  m_Result = m_SpaceState->intersect_ray(m_Query);
 }
 
-// Runs when you switch a weapon (Only once)
-void WeaponManager::_update_weapon_data(Ref<Weapon> nextWeapon)
-{
-  m_WeaponWrapperInst = m_WeaponNodes[m_WeaponIndex]->get_node<WeaponWrapper>(NodePath("WeaponWrapper"));
-  m_MuzzleComp = m_WeaponWrapperInst->get_muzzle_flash_component();
-  m_WeaponMuzzleMarker = m_WeaponWrapperInst->get_muzzle_point_marker();
-  m_Skeleton3D = m_WeaponWrapperInst->get_armature_skeleton();
-
-  if(animations_from_weapon)
-    play_anim_component = m_WeaponWrapperInst->get_play_anim_component();
-
-  m_DecalScene = nextWeapon->get_weaponDecalResource();
-  m_DamageCurve = nextWeapon->get_damage_curve();
-}
-
-void WeaponManager::_apply_damage(Node* hitBody)
+void WeaponManager::_apply_damage(Node* hitEntity)
 {
   /*
     For the damage curve:
@@ -263,22 +289,44 @@ void WeaponManager::_apply_damage(Node* hitBody)
     Max value - the max value on the y-axis (Actual damage applied by the gun)
   */
 
-  // FIXME: Not so nice way to get the health component but FIX later.
-  if(hitBody->has_node("HealthComponent"))
+  HitBoxComponent* hitBoxComp = nullptr;
+  float total_damage = 0.0f;
+
+  // This is the most cursed code I've written in this whole project. This needs a big change if I need environmental weapons (like say explosive tanks) but for now its fine
+  if(hitEntity == m_PlayerInst)
   {
-    HealthComponent* health_comp = hitBody->get_node<HealthComponent>("HealthComponent");
-    health_comp->_take_damage(m_DamageFromWeapon, hitBody);
+    hitBoxComp = m_PlayerInst->get_player_hitbox();
+    total_damage = m_DamageFromWeapon * hitBoxComp->get_damage_multiplier();
+
+    // Send the hitEntity directly since it hits the player directly
+    hitBoxComp->emit_signal("hitbox_collided", total_damage, get_owner(), hitEntity); 
+  } else {
+    for(size_t i = 0; i < hitEntity->get_child_count(); i++)
+    {
+      Node* node = Object::cast_to<Node>(hitEntity->get_children()[i]);
+
+      // Search through the bone's children for a node named HitBoxComponent (it's a shitty way but ignore it for now.)
+      // FUTURE: Override the PhysicalBone3D and add custom properties which will completely remove the loop for searching.
+      if(node->get_class() == HitBoxComponent::get_class_static())
+      {
+        hitBoxComp = Object::cast_to<HitBoxComponent>(node);
+        total_damage = m_DamageFromWeapon * hitBoxComp->get_damage_multiplier();
+
+        // Send the owner since the hit entity is a bone and we need the owner i.e the enemy
+        hitBoxComp->emit_signal("hitbox_collided", total_damage, get_owner(), hitEntity->get_owner()); 
+      }
+    }
   }
 }
 
 void WeaponManager::_generate_decal()
 {
   CollisionObject3D* colliderBody = nullptr;
+  HitBoxComponent* colliderArea = nullptr;
   Node* hitBody = nullptr;
 
   // for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
   {
-
     if(!m_Result.is_empty())
     {
       m_BulletDecalInstNode = m_DecalScene->instantiate();
@@ -287,21 +335,22 @@ void WeaponManager::_generate_decal()
       if(m_Result["collider"])
       {
         colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
+        colliderArea = Object::cast_to<HitBoxComponent>(m_Result["collider"]);
         hitBody = Object::cast_to<Node>(m_Result["collider"]);
         colliderBody->add_child(m_BulletDecalNode);
 
-        print_line("Damage max domain for gun: (i.e gun range: )", m_DamageCurve->get_max_domain());
-        print_line("Bullet collider layer: ", colliderBody->get_collision_layer());
+        // print_line("Damage max domain for gun: (i.e gun range: )", m_DamageCurve->get_max_domain());
+        // print_line("Bullet collider layer: ", colliderBody->get_collision_layer());
       }  
       
       // The hit position
       Vector3 hit_position = Vector3(m_Result["position"]);
 
-      // Vector3 hitDirection = (hit_position - m_WeaponMuzzleMarker->get_global_position()).normalized();
+      Vector3 hitDirection = (hit_position - m_WeaponMuzzleMarker->get_global_position()).normalized();
       // DebugDraw3D::draw_line(m_WeaponMuzzleMarker->get_global_position(), hit_position, Color(0, 0, 0, 0), 10.0f);
 
       // FIXME: Clean this up soon
-      if(hitBody->is_in_group("enemies"))
+      if(hitBody->get_owner()->is_in_group("enemies"))
       {
         Ref<PackedScene> bloodScene = ResourceLoader::get_singleton()->load("res://scenes/asset_scenes/blood.tscn");
         GPUParticles3D* bloodNode = Object::cast_to<GPUParticles3D>(bloodScene->instantiate());
@@ -315,10 +364,14 @@ void WeaponManager::_generate_decal()
 
       // DebugDraw3D::draw_sphere(hit_position, 0.05f);
 
-      m_BulletDecalNode->set_global_position(hit_position);
-      m_BulletDecalNode->look_at(m_BulletDecalNode->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
-      m_BulletDecalNode->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+      if(!hitBody->get_owner()->is_in_group("enemies"))
+      {
+        m_BulletDecalNode->set_global_position(hit_position);
+        m_BulletDecalNode->look_at(m_BulletDecalNode->get_global_transform().origin + m_Result["normal"], Vector3(0.0f, 1.0f, 0.0f));
+        m_BulletDecalNode->rotate_object_local(Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+      }
 
+      // Since each hitBody is a bone, we need to get the actual enemy that has the HealthComponent
       _apply_damage(hitBody); 
     }
   }
@@ -332,14 +385,16 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
     m_MuzzleComp->_set_particles_status(true);
     m_MuzzleLightTimeout = m_MuzzleComp->get_particle_lifetime();
 
-    m_AmmoComp.consume_ammo(m_CurrentWeapon, 1);
+    m_AmmoComp->consume_ammo(m_CurrentWeapon, 1);
 
+    _calculate_ray_intersection();
     _generate_decal();
     EventBus::get_singleton()->emit_signal("weapon_fired", m_CurrentWeapon, get_owner());
   }
 
   if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_EQUIP))
   {
+    print_line("Shit!");
     m_WeaponStateCtx.IsEquipOver = false;
   }
 
@@ -373,8 +428,8 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 
   const int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
 
-  int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
-  int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
+  int current_ammo = m_AmmoComp->get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
+  int current_reserve_ammo = m_AmmoComp->get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
   int ammoNeeded = max_mag_capacity - current_ammo;
   int ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
@@ -388,11 +443,11 @@ void WeaponManager::_on_weapon_anim_finished(const StringName& anim_name)
 
     if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_RELOAD))
     {
-      m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
-      m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - 1);
+      m_AmmoComp->set_current_weapon_ammo(m_CurrentWeapon, current_ammo + 1);
+      m_AmmoComp->set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - 1);
       
-      current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
-      current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
+      current_ammo = m_AmmoComp->get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
+      current_reserve_ammo = m_AmmoComp->get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
       ammoNeeded = max_mag_capacity - current_ammo;
       ammoToBeReloaded = Math::min(ammoNeeded, current_reserve_ammo);
 
@@ -454,9 +509,9 @@ void WeaponManager::_unequip_weapon()
 void WeaponManager::_shoot_weapon(double delta)
 {
   // Don't even shoot, just switch to the idle state instead
-  if(m_AmmoComp.is_ammo_empty(m_CurrentWeapon))
+  if(m_AmmoComp->is_ammo_empty(m_CurrentWeapon))
   {
-    print_line(get_owner()->get_name(), ": ", "Ammo empty!");
+    m_AmmoComp->emit_signal("ammo_finished");
     m_MuzzleComp->_enable_light_status(false);
     m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
     return;
@@ -471,8 +526,6 @@ void WeaponManager::_shoot_weapon(double delta)
   {
     m_WeaponStateCtx.ShootTimeBeforeIdle -= delta;
   }
-
-
 
   /*
     Two states (for now), one for automatic handling (mouse hold) and the other for just manual handling (single click). 
@@ -526,8 +579,8 @@ void WeaponManager::_shoot_weapon_over()
   
 void WeaponManager::_reload_weapon()
 {
-  int current_ammo = m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
-  int current_reserve_ammo = m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
+  int current_ammo = m_AmmoComp->get_current_weapon_ammo(m_CurrentWeapon); // ammo that's currently in the magazine
+  int current_reserve_ammo = m_AmmoComp->get_current_weapon_reserve_ammo(m_CurrentWeapon); // reserve ammo
   int max_mag_capacity = m_CurrentWeapon->get_magAmmoCount(); // total capacity of the magazine (read only)
   
   const WeaponCommand& weapon_cmd = input_command_system->get_weapon_command();
@@ -554,8 +607,8 @@ void WeaponManager::_reload_weapon()
 
     // This will work for weapons that are not using incremental reloads
     // The ammo won't be set if you change the weapon before the mag is entered
-    m_AmmoComp.set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
-    m_AmmoComp.set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
+    m_AmmoComp->set_current_weapon_ammo(m_CurrentWeapon, current_ammo + ammoToBeReloaded);
+    m_AmmoComp->set_current_weapon_reserve_ammo(m_CurrentWeapon, current_reserve_ammo - ammoToBeReloaded);
   }
 }
 
@@ -604,4 +657,9 @@ void WeaponManager::_switch_weapon_data(int weaponIndex)
   weapon_component->set_next_weapon(next_weapon);
   weapon_component->set_next_weapon_name(next_weapon->get_weaponName());
   m_WeaponIndex = weaponIndex;
+}
+
+WeaponManager::~WeaponManager()
+{
+
 }

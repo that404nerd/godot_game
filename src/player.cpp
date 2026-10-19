@@ -7,6 +7,9 @@ Player::Player()
 void Player::_bind_methods()
 {
   GD_BIND_CUSTOM_PROPERTY(Player, WeaponEffectsComponent, weapon_effects_component, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(Player, HitBoxComponent, player_hitbox, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(Player, RayCast3D, stairs_below_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
+  GD_BIND_CUSTOM_PROPERTY(Player, RayCast3D, stairs_ahead_raycast, Variant::OBJECT, PROPERTY_HINT_NODE_TYPE);
 }
 
 void Player::_ready()

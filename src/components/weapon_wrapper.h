@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 
 #include "muzzle_flash_component.h"
+#include "hitbox_component.h"
 #include "play_anim_component.h"
 
 using namespace godot;

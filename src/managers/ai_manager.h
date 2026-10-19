@@ -8,6 +8,7 @@
 #include <godot_cpp/classes/animation_tree.hpp>
 #include "godot_cpp/classes/bone_attachment3d.hpp"
 #include "godot_cpp/classes/physical_bone_simulator3d.hpp"
+#include "godot_cpp/classes/physical_bone3d.hpp"
 #include "godot_cpp/classes/two_bone_ik3d.hpp"
 
 #include "blackboard/blackboard.h"
@@ -16,6 +17,8 @@
 #include "../input_command_system.h"
 #include "../components/health_component.h"
 #include "../components/ai/ai_character_component.h"
+#include "../managers/weapon_manager.h"
+#include "../components/ammo_component.h"
 #include "../components/ai/vision_component.h"
 
 #include "environment_query3d.h"
@@ -86,6 +89,8 @@ private:
 private:
   AnimationNodeStateMachinePlayback *m_LowerBodyStateMachine { nullptr };
   AnimationNodeStateMachinePlayback *m_UpperBodyStateMachine { nullptr };
+
+  AmmoComponent* m_AmmoComp { nullptr };
 
   bool m_IsAlive { false };
   bool m_IsAmmoFinished { false };

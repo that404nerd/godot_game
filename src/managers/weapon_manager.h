@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/physics_ray_query_parameters3d.hpp>
 #include <godot_cpp/classes/physics_direct_space_state3d.hpp>
 #include <godot_cpp/classes/decal.hpp>
+#include <godot_cpp/classes/area3d.hpp>
 #include <godot_cpp/classes/world3d.hpp>
 #include <godot_cpp/classes/base_material3d.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
@@ -39,6 +40,8 @@ public:
   void _init();
   void _update(double delta);
   void _physics_update(double delta);
+
+  ~WeaponManager();
  
 public:
 
@@ -63,8 +66,9 @@ public:
   void _switch_weapon_data(int weaponIndex);
   void _update_weapon_data(Ref<Weapon> nextWeapon);
   
+  void _calculate_ray_intersection();
   void _generate_decal();
-  void _apply_damage(Node* hitBody);
+  void _apply_damage(Node* hitEntity);
 
 public:
 
@@ -79,13 +83,14 @@ public:
   WeaponStateContext& get_weapon_state_ctx() { return m_WeaponStateCtx; }
   float get_time_between_shots() { return m_TimeBetweenShots; }
 
-  int get_current_weapon_ammo() { return m_AmmoComp.get_current_weapon_ammo(m_CurrentWeapon); }
-  int get_current_reserve_ammo() { return m_AmmoComp.get_current_weapon_reserve_ammo(m_CurrentWeapon); }
+  int get_current_weapon_ammo() { return m_AmmoComp->get_current_weapon_ammo(m_CurrentWeapon); }
+  int get_current_reserve_ammo() { return m_AmmoComp->get_current_weapon_reserve_ammo(m_CurrentWeapon); }
   StringName get_current_weapon_name() { return m_CurrentWeapon->get_weaponName(); }
 
   Ref<Weapon> get_current_weapon() { return m_CurrentWeapon; }
   Ref<Curve> get_current_weapon_damage_curve() { return m_DamageCurve; };
 
+  AmmoComponent* get_ammo_component() { return m_AmmoComp; };
   Node3D* get_weapon_armature_node() { return m_WeaponWrapperInst->get_armature_node(); }
   Skeleton3D* get_armature_skeleton() { return m_Skeleton3D; }
 
@@ -97,36 +102,29 @@ protected:
   static void _bind_methods();
 
 private:
-  // Ref<PackedScene> m_RecoilResource { nullptr };
-  // Ref<Curve2D> m_RecoilCurve { nullptr };
-  // Node* m_RecoilPathNode { nullptr };
-  // Path2D* m_RecoilPath { nullptr };
-  Ref<Curve> m_DamageCurve { nullptr };
+  WeaponStateContext m_WeaponStateCtx;
+  Dictionary m_Result;
   
   Ref<StandardMaterial3D> m_StdMaterial { nullptr };
-
-  Vector<PlayAnimComponent*> m_WeaponCompList;
   Vector<Node3D*> m_WeaponNodes;
-  Vector<Node3D*> m_WeaponSceneNodes;
-
-  PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
-  Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
-
+  
+  Ref<Curve> m_DamageCurve { nullptr };
   Ref<Weapon> m_CurrentWeapon { nullptr };
   Ref<PackedScene> m_DecalScene { nullptr };
-
+  
+  PhysicsDirectSpaceState3D* m_SpaceState { nullptr };
+  Ref<PhysicsRayQueryParameters3D> m_Query { nullptr };
+  
+  WeaponWrapper* m_WeaponWrapperInst { nullptr };
+  
+  Player* m_PlayerInst { nullptr };
+  AmmoComponent* m_AmmoComp { nullptr };
   Marker3D* m_WeaponMuzzleMarker { nullptr };
   Node* m_BulletDecalInstNode { nullptr };
   Decal* m_BulletDecalNode { nullptr };
-
-  WeaponStateContext m_WeaponStateCtx;
-  AmmoComponent m_AmmoComp;
-
   MuzzleFlashComponent* m_MuzzleComp { nullptr };
-  WeaponWrapper* m_WeaponWrapperInst { nullptr };
   
   Skeleton3D* m_Skeleton3D { nullptr };
-  Dictionary m_Result;
 
 private:
   float m_TimeBetweenShots { 0.0f };

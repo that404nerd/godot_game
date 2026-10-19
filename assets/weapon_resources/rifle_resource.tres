@@ -3,15 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_bdfqo"]
 
 [sub_resource type="Curve" id="Curve_bdfqo"]
-_limits = [0.0, 30.0, 0.0, 100.0]
-_data = [Vector2(0, 30), 0.0, 0.0, 0, 0, Vector2(100, 0), 0.0, 0.0, 0, 0]
+_limits = [0.0, 30.0, 0.0, 200.0]
+_data = [Vector2(0, 30), 0.0, 0.0, 0, 0, Vector2(200, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [resource]
 weaponName = "Rifle"
 totalAmmoCount = 180
 magAmmoCount = 30
-weaponFOV = 55.0
+weaponFOV = 60.0
 weaponSwayAngularFreq = 40.0
 weaponSwayDampingRatio = 0.9
 weaponVerticalPush = 0.1

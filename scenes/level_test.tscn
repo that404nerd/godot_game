@@ -8,25 +8,25 @@
 [ext_resource type="Texture2D" uid="uid://d3u4ab5fyivaq" path="res://assets/textures/grid.jpg" id="5_r2no1"]
 [ext_resource type="PackedScene" uid="uid://8vkq041s8uuh" path="res://scenes/enemies/enemy_swat_operator1.tscn" id="5_yvmk3"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_7dxvt"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_r2no1"]
 seed = 10
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6g5uf"]
-noise = SubResource("FastNoiseLite_7dxvt")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7dxvt"]
+noise = SubResource("FastNoiseLite_r2no1")
 seamless = true
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_vogc1"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6g5uf"]
 seed = 100
 frequency = 0.008
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tdoqa"]
-noise = SubResource("FastNoiseLite_vogc1")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vogc1"]
+noise = SubResource("FastNoiseLite_6g5uf")
 seamless = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ddr63"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tdoqa"]
 shader = ExtResource("1_r2no1")
-shader_parameter/cloud_tex_a = SubResource("NoiseTexture2D_6g5uf")
-shader_parameter/cloud_tex_b = SubResource("NoiseTexture2D_tdoqa")
+shader_parameter/cloud_tex_a = SubResource("NoiseTexture2D_7dxvt")
+shader_parameter/cloud_tex_b = SubResource("NoiseTexture2D_vogc1")
 shader_parameter/lower_sky_color = Color(0.655, 0.706, 0.79, 1)
 shader_parameter/horizon_color = Color(0.832, 0.86, 0.886, 1)
 shader_parameter/zenith_color = Color(0.2373352, 0.4190016, 0.7890625, 1)
@@ -95,23 +95,23 @@ shader_parameter/custom_sun_dir = Vector3(-0.8499332, 0.3903619, -0.35388008)
 shader_parameter/custom_moon_dir = Vector3(-0.6664064, 0.40620056, -0.62522286)
 shader_parameter/celestial_matrix = Basis(-0.7045101, -6.204342e-08, 0.70969397, 0, -1, -8.742278e-08, 0.70969397, -6.159023e-08, 0.7045101)
 shader_parameter/rendered_day_of_year = 1.0
-shader_parameter/rendered_time_of_day = 16.492999999999995
+shader_parameter/rendered_time_of_day = 16.493
 shader_parameter/observer_latitude_deg = -90.0
-shader_parameter/cloud_time = 98.95799999999997
+shader_parameter/cloud_time = 98.958
 shader_parameter/cloud_wind_direction = Vector2(0.9363292, 0.35112345)
 shader_parameter/cloud_wind_speed = 1.0
-shader_parameter/cloud_motion_time = 9.822543e-11
+shader_parameter/cloud_motion_time = 0.0
 shader_parameter/cloud_motion_scale = 0.12
-shader_parameter/cloud_evolution_time = 3.274181e-11
+shader_parameter/cloud_evolution_time = 0.0
 shader_parameter/cloud_evolution_strength = 0.18
 shader_parameter/cloud_evolution_scale = 0.018
 
-[sub_resource type="Sky" id="Sky_0dj0t"]
-sky_material = SubResource("ShaderMaterial_ddr63")
+[sub_resource type="Sky" id="Sky_ddr63"]
+sky_material = SubResource("ShaderMaterial_tdoqa")
 
 [sub_resource type="Environment" id="Environment_vkcgd"]
 background_mode = 2
-sky = SubResource("Sky_0dj0t")
+sky = SubResource("Sky_ddr63")
 ambient_light_source = 3
 reflected_light_source = 2
 tonemap_mode = 4
@@ -319,7 +319,7 @@ fog_mode = 2
 fog_density = 0.197
 fog_sky_affect_intensity = 0.0
 vol_fog_sky_affect_intensity = 0.0
-moon_phase_debug = 0.05713539902923579
+moon_phase_debug = 0.057135399029235805
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1756748502]
 navigation_mesh = SubResource("NavigationMesh_b0qfj")

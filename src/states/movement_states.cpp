@@ -128,14 +128,15 @@ void SprintMovementState::_handle_input(const Ref<InputEvent>& event)
   
   if(m_MoveCmd.WantsToCrouch)
   {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
+
+    if(m_MoveCmd.CharacterVelocity.length() > (m_MovementStateCtx.CharacterSprintSpeed * 0.85f))
+    {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SLIDE));
+    } else {
+      m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::CROUCH));
+    }
+
   }
-  
-  if(m_MoveCmd.CharacterVelocity.length() > (m_MovementStateCtx.CharacterSprintSpeed * 0.85f) && m_MoveCmd.WantsToCrouch)
-  {
-    m_MovementStateMachine->_change_state(static_cast<int>(MovementStates::SLIDE));
-  }
-  
 }
 
 void SprintMovementState::_physics_update(double delta) 
@@ -236,6 +237,7 @@ CrouchMovementState::CrouchMovementState(const MovementStateData& movementStateD
 
 void CrouchMovementState::_enter()
 { 
+  m_MovementManager->_on_crouch_start();
 }
 
 void CrouchMovementState::_handle_input(const Ref<InputEvent>& event) 

@@ -1254,3 +1254,7 @@ func _get_active_viewport_size() -> Vector2:
 
 func get_day_blend() -> float:
 	return _day_blend
+
+
+func _on_area_3d_body_entered(body: Node3D) -> void:
+	pass # Replace with function body.

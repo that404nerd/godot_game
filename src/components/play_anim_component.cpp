@@ -14,4 +14,7 @@ void PlayAnimComponent::_bind_methods()
 {
   ClassDB::bind_method(D_METHOD("_on_anim_started", "animName"), &PlayAnimComponent::_on_anim_started);
   ClassDB::bind_method(D_METHOD("_on_anim_finished", "animName"), &PlayAnimComponent::_on_anim_finished);
+
+  ADD_SIGNAL(MethodInfo("anim_started", PropertyInfo(Variant::STRING_NAME, "animName")));
+  ADD_SIGNAL(MethodInfo("anim_finished", PropertyInfo(Variant::STRING_NAME, "animName")));
 }

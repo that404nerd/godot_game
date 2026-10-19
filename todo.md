@@ -1,8 +1,8 @@
 ## TODO 
 
 - Gather hit direction info []
-- Fix an issue where enemy collider doesn't follow the enemy's transform []
 - Add a hit impulse to the bones []
+- Fix an issue where enemy collider doesn't follow the enemy's transform [x]
 - Generate a blood splatter on the hit point [x]
 
 - ADD LICENSE seperately for assets []

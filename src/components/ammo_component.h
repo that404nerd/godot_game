@@ -17,27 +17,23 @@ struct AmmoData
   int ReserveAmmo;
 };
 
-class AmmoComponent {
-
+class AmmoComponent : public Node {
+  GDCLASS(AmmoComponent, Node);
 public:
 
   void _init_data(Array weaponList);
   void consume_ammo(Ref<Weapon> currentWeapon, int ammoCount);
 
-  void set_current_weapon_ammo(Ref<Weapon> currentWeapon, int ammo) { 
-    m_WeaponAmmoMap[currentWeapon].CurrentAmmo = ammo; // Sets the ammo in the mag
-  } 
-
-  void set_current_weapon_reserve_ammo(Ref<Weapon> currentWeapon, int ammo)
-  {
-    if(m_WeaponAmmoMap[currentWeapon].ReserveAmmo > 0)
-      m_WeaponAmmoMap[currentWeapon].ReserveAmmo = ammo; // Subtracts the reserve ammo by the give ammo count
-  }
+  void set_current_weapon_ammo(Ref<Weapon> currentWeapon, int ammo);
+  void set_current_weapon_reserve_ammo(Ref<Weapon> currentWeapon, int ammo);
 
   bool is_ammo_empty(Ref<Weapon> currentWeapon);
 
   int get_current_weapon_ammo(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].CurrentAmmo; }
   int get_current_weapon_reserve_ammo(Ref<Weapon> currentWeapon) { return m_WeaponAmmoMap[currentWeapon].ReserveAmmo; }
+
+protected:
+  static void _bind_methods();
 
 private:
   AHashMap<Ref<Weapon>, AmmoData> m_WeaponAmmoMap;

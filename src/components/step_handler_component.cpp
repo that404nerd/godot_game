@@ -1,12 +1,20 @@
 #include "step_handler_component.h"
 
+StepHandlerComponent::StepHandlerComponent(StepHandlerData stepHandlerData) 
+  : m_StepHandlerData(stepHandlerData) 
+{
+  ERR_FAIL_COND_MSG(!stepHandlerData.CharacterCompInst, "[StepHandler Component]: Character Component is null");
+  ERR_FAIL_COND_MSG(!stepHandlerData.StairsAheadRaycast, "[StepHandler Component]: Stairs Ahead Raycast is null");
+  ERR_FAIL_COND_MSG(!stepHandlerData.StairsBelowRaycast, "[StepHandler Component]: Stairs Below Raycast is null");
+}
+
 void StepHandlerComponent::_snap_down_to_stairs_check()
 {
   bool did_snap = false;
 
   if(!(m_StepHandlerData.StairsAheadRaycast && m_StepHandlerData.StairsBelowRaycast))
   {
-    print_error("[color=WHITE][Step Handler Component]: [color=RED]Step Handling Raycasts are null");
+    print_error("[Step Handler Component]: Step Handling Raycasts are null");
     return;
   }
   
@@ -15,7 +23,7 @@ void StepHandlerComponent::_snap_down_to_stairs_check()
   bool floor_below = m_StepHandlerData.StairsBelowRaycast->is_colliding() && !is_surface_too_steep(m_StepHandlerData.StairsBelowRaycast->get_collision_normal());
   bool was_on_floor_last_frame = Engine::get_singleton()->get_physics_frames() - m_StepHandlerData.MovementCtx.LastFrameOnFloor == 1;
 
-  if(!m_StepHandlerData.MoveCmd.IsOnFloor && m_StepHandlerData.MoveCmd.CharacterVelocity.y <= 0.0f && (was_on_floor_last_frame || _snapped_to_stairs_last_frame) && floor_below)
+  if(!m_StepHandlerData.CharacterCompInst->is_on_floor() && m_StepHandlerData.MoveCmd.CharacterVelocity.y <= 0.0f && (was_on_floor_last_frame || _snapped_to_stairs_last_frame) && floor_below)
   {
     Ref<PhysicsTestMotionResult3D> body_test_result;
     body_test_result.instantiate();
@@ -27,12 +35,13 @@ void StepHandlerComponent::_snap_down_to_stairs_check()
 
     if(_run_body_test_motion(m_StepHandlerData.CharacterCompInst->get_global_transform(), Vector3(0.0f, -MAX_STEP_HEIGHT, 0.0f), body_test_result))
     {
-      float translate_y = body_test_result->get_travel().y;
-      Vector3 charPosition = m_StepHandlerData.CharacterCompInst->get_position();
-      charPosition.y += translate_y;
+      Vector3 travel = body_test_result->get_travel();
+      Transform3D transform = m_StepHandlerData.CharacterCompInst->get_global_transform();
+      transform.origin += travel;
+      m_StepHandlerData.CharacterCompInst->set_global_transform(transform);
+
       m_StepHandlerData.CharacterCompInst->apply_floor_snap();
       did_snap = true;
-      m_StepHandlerData.CharacterCompInst->set_position(charPosition);
     }
 
     _snapped_to_stairs_last_frame = did_snap;
@@ -44,11 +53,11 @@ bool StepHandlerComponent::_snap_up_stairs_check(double delta)
 
   if(!(m_StepHandlerData.StairsAheadRaycast && m_StepHandlerData.StairsBelowRaycast))
   {
-    print_error("[color=WHITE][Step Handler Component]: [color=RED]Step Handling Raycasts are null");
+    print_error("[Step Handler Component]: Step Handling Raycasts are null");
     return false;
   }
 
-  if(m_StepHandlerData.MoveCmd.IsOnFloor)
+  if(m_StepHandlerData.CharacterCompInst->is_on_floor())
   {
     Vector3 expected_move_pos = m_StepHandlerData.MoveCmd.CharacterVelocity * Vector3(1.0f, 0.0f, 1.0f) * delta; // Forward vector (x, z)
     

@@ -28,12 +28,12 @@ void PlayAnimFromPlayer::_bind_methods()
 
 void PlayAnimFromPlayer::_on_anim_started(StringName animName)
 {
-  EventBus::get_singleton()->emit_signal("anim_started", animName); 
+  emit_signal("anim_started", animName); 
 }
 
 void PlayAnimFromPlayer::_on_anim_finished(StringName animName)
 {
-  EventBus::get_singleton()->emit_signal("anim_finished", animName); 
+  emit_signal("anim_finished", animName); 
 }
 
 StringName PlayAnimFromPlayer::get_anim_name(AnimTypes animType)

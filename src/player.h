@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 
+#include "components/hitbox_component.h"
 #include "components/character_component.h"
 #include "components/weapon_effects_components.h"
 
@@ -32,4 +33,7 @@ private:
   InputCommandSystem* m_InputCmdSystem { nullptr };
 
   GD_DEFINE_PROPERTY(WeaponEffects*, weapon_effects_component, nullptr);
+  GD_DEFINE_PROPERTY(HitBoxComponent*, player_hitbox, nullptr);
+  GD_DEFINE_PROPERTY(RayCast3D*, stairs_below_raycast, nullptr);
+  GD_DEFINE_PROPERTY(RayCast3D*, stairs_ahead_raycast, nullptr);
 };

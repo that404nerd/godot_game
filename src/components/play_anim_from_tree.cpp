@@ -28,12 +28,12 @@ void PlayAnimFromTree::_ready()
 
 void PlayAnimFromTree::_on_anim_started(StringName animName)
 {
-  EventBus::get_singleton()->emit_signal("anim_started", animName); 
+  emit_signal("anim_started", animName); 
 }
 
 void PlayAnimFromTree::_on_anim_finished(StringName animName)
 {
-  EventBus::get_singleton()->emit_signal("anim_finished", animName); 
+  emit_signal("anim_finished", animName); 
 }
 
 bool PlayAnimFromTree::has_valid_anim(AnimTypes animType)
