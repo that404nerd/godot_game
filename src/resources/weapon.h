@@ -30,10 +30,6 @@ public:
     MANUAL, AUTO, BOTH, NONE = -1
   };
 
-  // Temporary (Must be in the same order as the one defined in _get_property_list())
-  // enum class States { IDLE, WALK, RUN, JUMP };
-
-
 private:
 
   GD_DEFINE_PROPERTY(String, weaponName, "");
@@ -45,7 +41,6 @@ private:
   GD_DEFINE_PROPERTY(float, hold_max_time, 0.5f);
 
   GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponDecalResource, nullptr);
-  // GD_DEFINE_PROPERTY(Ref<PackedScene>, weaponRecoilPatternResource, nullptr);
 
   GD_DEFINE_PROPERTY(Vector3, slide_armature_tilt_rot, Vector3(2.0f, 2.0f, -30.0f));
   GD_DEFINE_PROPERTY(Vector3, slide_armature_dip, Vector3(-3.0f, 0.0f, 0.0f));

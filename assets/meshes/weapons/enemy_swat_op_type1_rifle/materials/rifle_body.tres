@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://degq8qg0teo2c"]
+
+[ext_resource type="Texture2D" uid="uid://bi381rgisxbvn" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Rifle_albedo.jpeg" id="1_xk332"]
+[ext_resource type="Texture2D" uid="uid://7dvewxvkgfdw" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Rifle_AO.jpeg" id="2_o13yy"]
+[ext_resource type="Texture2D" uid="uid://43yvcs0m84b" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Rifle_metallic.jpeg" id="3_ngevf"]
+[ext_resource type="Texture2D" uid="uid://dl55upm4wv0r2" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Rifle_normal.jpeg" id="4_jsj7o"]
+[ext_resource type="Texture2D" uid="uid://ccs5eil3wf5ce" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Rifle_roughness.jpeg" id="5_ilq54"]
+
+[resource]
+albedo_texture = ExtResource("1_xk332")
+metallic = 1.0
+metallic_texture = ExtResource("3_ngevf")
+roughness_texture = ExtResource("5_ilq54")
+normal_enabled = true
+normal_texture = ExtResource("4_jsj7o")
+ao_enabled = true
+ao_texture = ExtResource("2_o13yy")
+z_clip_scale = 0.65
+fov_override = 50.0

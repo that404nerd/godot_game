@@ -6,7 +6,7 @@
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/node.hpp>
 
-#include "../input_command_system.h"
+#include "../systems/input_command_system.h"
 
 using namespace godot;
 

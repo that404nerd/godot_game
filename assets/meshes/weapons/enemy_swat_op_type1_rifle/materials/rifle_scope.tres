@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://d06p75337fu77"]
+
+[ext_resource type="Texture2D" uid="uid://8ukq4oac5ggg" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Scope_albedo.jpeg" id="1_pjcsm"]
+[ext_resource type="Texture2D" uid="uid://b6hvsxapwf82e" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Scope_metallic.jpeg" id="3_wvdia"]
+[ext_resource type="Texture2D" uid="uid://cwf7pr1ugxpt" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Scope_roughness.jpeg" id="4_ta5v0"]
+
+[resource]
+albedo_texture = ExtResource("1_pjcsm")
+metallic = 1.0
+metallic_texture = ExtResource("3_wvdia")
+roughness_texture = ExtResource("4_ta5v0")
+emission_enabled = true
+z_clip_scale = 0.65
+fov_override = 50.0

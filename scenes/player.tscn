@@ -148,5 +148,10 @@ character_component = NodePath("..")
 movement_manager = NodePath("../MovementManager")
 unique_name_in_owner = true
 
+[node name="DamageSystem" type="DamageSystem" parent="." unique_id=2039330088 node_paths=PackedStringArray("hitboxComp", "healthComp")]
+hitboxType = 1
+hitboxComp = NodePath("../HitBoxComponent")
+healthComp = NodePath("../HealthComponent")
+
 [node name="HealthComponent" type="HealthComponent" parent="." unique_id=1634309217]
 max_health = 100.0

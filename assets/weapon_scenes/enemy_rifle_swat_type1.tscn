@@ -1,10 +1,10 @@
 [gd_scene format=4 uid="uid://c2mvgb8b6nuk5"]
 
 [ext_resource type="Texture2D" uid="uid://du0kcanripneo" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/enemy_operative_rifle_Image.png" id="1_8apaq"]
-[ext_resource type="Material" uid="uid://degq8qg0teo2c" path="res://assets/meshes/weapons/rifle/materials/rifle_1.tres" id="2_yh23j"]
-[ext_resource type="Material" uid="uid://cp20v4ksgfu6q" path="res://assets/meshes/weapons/rifle/materials/rifle_2.tres" id="3_gj14b"]
-[ext_resource type="Material" uid="uid://d06p75337fu77" path="res://assets/meshes/weapons/rifle/materials/rifle_3.tres" id="4_cg1ea"]
-[ext_resource type="Material" uid="uid://duwqmi72o2wnc" path="res://assets/meshes/weapons/rifle/materials/rifle_4.tres" id="5_46nm7"]
+[ext_resource type="Material" uid="uid://degq8qg0teo2c" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/materials/rifle_body.tres" id="2_yh23j"]
+[ext_resource type="Material" uid="uid://cp20v4ksgfu6q" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/materials/rifle_silencer.tres" id="3_gj14b"]
+[ext_resource type="Material" uid="uid://d06p75337fu77" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/materials/rifle_scope.tres" id="4_cg1ea"]
+[ext_resource type="Material" uid="uid://duwqmi72o2wnc" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/materials/rifle_mag.tres" id="5_46nm7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3sgys"]
 albedo_color = Color(0.9302433, 0.63578683, 0.04153192, 1)
@@ -177,13 +177,12 @@ bind/6/pose = Transform3D(1, 3.3592809e-09, -4.8613657e-07, 3.7303494e-14, 0.999
 [node name="Rifle" type="Node3D" unique_id=1052168126]
 transform = Transform3D(1.1350494e-09, 1.0000002, 2.3841858e-07, 6.109476e-07, -3.2037497e-07, 1.0000007, 1, 4.627509e-08, -4.4656917e-07, 0, 0, 0)
 
-[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=1681881635 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "hitbox_component", "armature_skeleton")]
+[node name="WeaponWrapper" type="WeaponWrapper" parent="." unique_id=1681881635 node_paths=PackedStringArray("armature_node", "muzzle_point_marker", "muzzle_flash_component", "armature_skeleton")]
 mesh_instances = [NodePath("gun_rifle/Armature/Skeleton3D/ACRRifle"), NodePath("gun_rifle/Armature/GunTargets/RightHandTarget"), NodePath("gun_rifle/Armature/GunTargets/LeftHandTarget")]
 anim_component_required = false
 armature_node = NodePath("gun_rifle/Armature")
 muzzle_point_marker = NodePath("gun_rifle/Armature/MuzzleMarker")
 muzzle_flash_component = NodePath("gun_rifle/Armature/MuzzleFlashComponent")
-hitbox_component = NodePath("")
 armature_skeleton = NodePath("gun_rifle/Armature/Skeleton3D")
 
 [node name="gun_rifle" type="Node3D" parent="WeaponWrapper" unique_id=1074308750]

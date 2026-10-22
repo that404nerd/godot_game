@@ -17,7 +17,7 @@ class HealthComponent : public Node
 public:
   void _ready() override;
 
-  void _take_damage(float damage);
+  void _take_damage(float damage, Node* hitBody);
   float get_current_health() { return m_CurrentHealth; }
 
 protected:

@@ -16,7 +16,7 @@
 #include "../resources/ai_behaviour_props.h"
 #include "../components/ai/ai_character_component.h"
 #include "../utils/damped_spring.h"
-#include "../input_command_system.h"
+#include "../systems/input_command_system.h"
 
 using namespace godot;
 

@@ -3,7 +3,7 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 
-#include "../input_command_system.h"
+#include "../systems/input_command_system.h"
 
 #include "../components/ammo_component.h"
 #include "../state_machines/weapon_state_machine.h"

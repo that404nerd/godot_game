@@ -6,7 +6,7 @@
 #include "magic_enum/magic_enum.hpp"
 
 #include "../components/play_anim_component.h"
-#include "../input_command_system.h"
+#include "../systems/input_command_system.h"
 #include "../components/weapon_component.h"
 #include "./state_machine.h"
 

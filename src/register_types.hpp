@@ -22,7 +22,8 @@
 #include "singletons/event_bus.h"
 #include "singletons/event_bus.h"
 
-#include "input_command_system.h"
+#include "systems/input_command_system.h"
+#include "systems/damage_system.h"
 
 #include "resources/ai_behaviour_props.h"
 #include "resources/anim_list_data.h"
@@ -31,6 +32,7 @@
 #include "components/weapon_effects_components.h"
 #include "components/input_component.h"
 #include "components/hitbox_component.h"
+#include "components/physical_bone_hitbox.h"
 #include "components/health_component.h"
 #include "components/muzzle_flash_component.h"
 #include "components/weapon_wrapper.h"

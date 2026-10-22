@@ -4,7 +4,6 @@
 #include <godot_cpp/classes/property_tweener.hpp>
 
 #include "state.h"
-#include "../input_command_system.h"
 #include "../components/character_component.h"
 #include "../singletons/event_bus.h"
 

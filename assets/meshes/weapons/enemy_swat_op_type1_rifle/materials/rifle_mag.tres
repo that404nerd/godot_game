@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://duwqmi72o2wnc"]
+
+[ext_resource type="Texture2D" uid="uid://c5ypsyj5pwher" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Pmag_albedo.jpeg" id="1_lnuhq"]
+[ext_resource type="Texture2D" uid="uid://cd02qm81v7v4a" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Pmag_metallic.jpeg" id="2_wyw32"]
+[ext_resource type="Texture2D" uid="uid://clj7ktuh7d2o6" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Pmag_normal.jpeg" id="3_hq6f4"]
+[ext_resource type="Texture2D" uid="uid://cx056js3t7x1m" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Pmag_roughness.jpeg" id="4_uq0i7"]
+
+[resource]
+albedo_texture = ExtResource("1_lnuhq")
+metallic = 1.0
+metallic_texture = ExtResource("2_wyw32")
+roughness_texture = ExtResource("4_uq0i7")
+normal_enabled = true
+normal_texture = ExtResource("3_hq6f4")
+z_clip_scale = 0.65
+fov_override = 50.0

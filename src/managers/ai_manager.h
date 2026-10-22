@@ -14,7 +14,7 @@
 #include "blackboard/blackboard.h"
 #include "hsm/limbo_hsm.h"
 
-#include "../input_command_system.h"
+#include "../systems/input_command_system.h"
 #include "../components/health_component.h"
 #include "../components/ai/ai_character_component.h"
 #include "../managers/weapon_manager.h"

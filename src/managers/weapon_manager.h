@@ -12,8 +12,9 @@
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 
-#include "../input_command_system.h"
+#include "../systems/input_command_system.h"
 #include "../components/ammo_component.h"
+#include "../components/physical_bone_hitbox.h"
 #include "../components/character_component.h"
 #include "../components/muzzle_flash_component.h"
 #include "../components/weapon_component.h"

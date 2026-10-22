@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cp20v4ksgfu6q"]
+
+[ext_resource type="Texture2D" uid="uid://wbmmycj2bu1n" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Silencer_albedo.jpeg" id="1_xiiy3"]
+[ext_resource type="Texture2D" uid="uid://yd62dtq0dled" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Silencer_metallic.jpeg" id="2_d83lp"]
+[ext_resource type="Texture2D" uid="uid://bmuuc3pj03mis" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Silencer_normal.jpeg" id="3_xjs1c"]
+[ext_resource type="Texture2D" uid="uid://jkq4fl0ip0hd" path="res://assets/meshes/weapons/enemy_swat_op_type1_rifle/textures/Silencer_roughness.jpeg" id="4_t00dt"]
+
+[resource]
+albedo_texture = ExtResource("1_xiiy3")
+metallic = 1.0
+metallic_texture = ExtResource("2_d83lp")
+roughness_texture = ExtResource("4_t00dt")
+normal_enabled = true
+normal_texture = ExtResource("3_xjs1c")
+z_clip_scale = 0.65
+fov_override = 50.0

@@ -301,20 +301,14 @@ void WeaponManager::_apply_damage(Node* hitEntity)
     // Send the hitEntity directly since it hits the player directly
     hitBoxComp->emit_signal("hitbox_collided", total_damage, get_owner(), hitEntity); 
   } else {
-    for(size_t i = 0; i < hitEntity->get_child_count(); i++)
+    if(hitEntity->get_class() == PhysicalBoneHitbox::get_class_static())
     {
-      Node* node = Object::cast_to<Node>(hitEntity->get_children()[i]);
+      PhysicalBoneHitbox* physicalHitbox = Object::cast_to<PhysicalBoneHitbox>(hitEntity);
+      hitBoxComp = Object::cast_to<HitBoxComponent>(physicalHitbox->get_boneHitBox());
+      total_damage = m_DamageFromWeapon * hitBoxComp->get_damage_multiplier();
 
-      // Search through the bone's children for a node named HitBoxComponent (it's a shitty way but ignore it for now.)
-      // FUTURE: Override the PhysicalBone3D and add custom properties which will completely remove the loop for searching.
-      if(node->get_class() == HitBoxComponent::get_class_static())
-      {
-        hitBoxComp = Object::cast_to<HitBoxComponent>(node);
-        total_damage = m_DamageFromWeapon * hitBoxComp->get_damage_multiplier();
-
-        // Send the owner since the hit entity is a bone and we need the owner i.e the enemy
-        hitBoxComp->emit_signal("hitbox_collided", total_damage, get_owner(), hitEntity->get_owner()); 
-      }
+      // // Send the owner since the hit entity is a bone and we need the owner i.e the enemy
+      hitBoxComp->emit_signal("hitbox_collided", total_damage, get_owner(), hitEntity->get_owner()); 
     }
   }
 }

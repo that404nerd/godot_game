@@ -17,8 +17,6 @@ class HitBoxComponent : public Node3D
 public:
   void _ready() override;
 
-  void _on_hit(float totalDamage, Node* hitSource, Node* hitTarget);
-
 protected:
   static void _bind_methods();
 

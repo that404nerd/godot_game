@@ -55,10 +55,12 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_RUNTIME_CLASS(AIManager);
 
   GDREGISTER_RUNTIME_CLASS(InputCommandSystem);
+  GDREGISTER_RUNTIME_CLASS(DamageSystem);
   
   // Components
   GDREGISTER_RUNTIME_CLASS(InputComponent);
   GDREGISTER_RUNTIME_CLASS(AmmoComponent);
+  GDREGISTER_RUNTIME_CLASS(PhysicalBoneHitbox);
   GDREGISTER_RUNTIME_CLASS(WeaponEffects);
   GDREGISTER_RUNTIME_CLASS(WeaponActionEffects);
   GDREGISTER_ABSTRACT_CLASS(PlayAnimComponent);
@@ -66,7 +68,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
   GDREGISTER_CLASS(PlayAnimFromPlayer);
   GDREGISTER_CLASS(PlayAnimFromTree);
   GDREGISTER_CLASS(WeaponWrapper);
-  GDREGISTER_RUNTIME_CLASS(HitBoxComponent);
+  GDREGISTER_CLASS(HitBoxComponent);
   GDREGISTER_CLASS(WeaponComponent);
   GDREGISTER_CLASS(MuzzleFlashComponent);
   GDREGISTER_CLASS(HealthComponent);

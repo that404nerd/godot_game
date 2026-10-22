@@ -9,7 +9,7 @@
 #include <godot_cpp/classes/ray_cast3d.hpp>
 #include <godot_cpp/classes/capsule_shape3d.hpp>
 
-#include "../input_command_system.h"
+#include "../systems/input_command_system.h"
 #include "../components/character_component.h"
 #include "../components/input_component.h"
 #include "../components/step_handler_component.h"
