@@ -148,9 +148,9 @@ character_component = NodePath("..")
 movement_manager = NodePath("../MovementManager")
 unique_name_in_owner = true
 
-[node name="DamageSystem" type="DamageSystem" parent="." unique_id=2039330088 node_paths=PackedStringArray("hitboxComp", "healthComp")]
+[node name="DamageSystem" type="DamageSystem" parent="." unique_id=2039330088 node_paths=PackedStringArray("genericHitboxComp", "healthComp")]
 hitboxType = 1
-hitboxComp = NodePath("../HitBoxComponent")
+genericHitboxComp = NodePath("../HitBoxComponent")
 healthComp = NodePath("../HealthComponent")
 
 [node name="HealthComponent" type="HealthComponent" parent="." unique_id=1634309217]

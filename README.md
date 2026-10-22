@@ -30,7 +30,7 @@ sh build.sh
 Weapons and Rigs from Sketchfab:
 - [Pistol](https://sketchfab.com/3d-models/pistol-animated-f4d14fe2e7d94070afe730ab99458714)
 - [Shotgun](https://sketchfab.com/3d-models/shotgun-animated-963e540358b84ca9b72a5e4d59acd57c)
-- [Rifle](https://sketchfab.com/3d-models/animated-fps-hands-rifle-animation-pack-5f2d0ed780a94724b36ab505f7564057)
+- [Rifle](https://sketchfab.com/3d-models/fps-ak-74m-animations-94be8385c402474cacd39bc096c6ca14)
 
 ## Credits
 - [func_godot](https://github.com/func-godot/func_godot_plugin) - Trenchbroom Level Editing integration with Godot
@@ -38,4 +38,5 @@ Weapons and Rigs from Sketchfab:
 - [godot-cpp](https://github.com/godotengine/godot-cpp) - Godot C++ Bindings
 - [magic_enum](https://github.com/Neargye/magic_enum) - Provides Static reflection for enums
 - [godot-skydome](https://github.com/GamesNotDeveloped/godot-skydome) - Skydome addon 
+- [limboai](https://github.com/limbonaut/limboai) - LimboAI (Behaviour Trees)
 - [geqo](https://github.com/geqo-godot/geqo) - Godot Environment Query Orchestrator

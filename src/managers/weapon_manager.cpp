@@ -388,7 +388,6 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
 
   if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_EQUIP) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_EQUIP))
   {
-    print_line("Shit!");
     m_WeaponStateCtx.IsEquipOver = false;
   }
 

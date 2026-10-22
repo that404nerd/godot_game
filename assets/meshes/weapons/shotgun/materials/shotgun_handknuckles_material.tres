@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://l23ddijtar60"]
+
+[ext_resource type="Texture2D" uid="uid://cton2u26418u3" path="res://assets/meshes/weapons/rifle/textures/armColor.png" id="1_ug6ot"]
+[ext_resource type="Texture2D" uid="uid://dybyv6jg4qs3u" path="res://assets/meshes/weapons/rifle/textures/armRoughness.png" id="2_mbhtt"]
+
+[resource]
+albedo_texture = ExtResource("1_ug6ot")
+roughness_texture = ExtResource("2_mbhtt")
+normal_enabled = true
