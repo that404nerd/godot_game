@@ -54,6 +54,7 @@ public:
   void _equip_weapon();
   void _unequip_weapon();
   
+  void _manage_muzzle_timers(double delta);
   void _shoot_weapon(double delta);
   void _shoot_weapon_over();
 

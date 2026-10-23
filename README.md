@@ -29,8 +29,8 @@ sh build.sh
 
 Weapons and Rigs from Sketchfab:
 - [Pistol](https://sketchfab.com/3d-models/pistol-animated-f4d14fe2e7d94070afe730ab99458714)
-- [Shotgun](https://sketchfab.com/3d-models/shotgun-animated-963e540358b84ca9b72a5e4d59acd57c)
 - [Rifle](https://sketchfab.com/3d-models/fps-ak-74m-animations-94be8385c402474cacd39bc096c6ca14)
+- [Shotgun](https://sketchfab.com/3d-models/animated-shotgun-e048ba220f9e49c29a3e808cddc22a0a)
 
 ## Credits
 - [func_godot](https://github.com/func-godot/func_godot_plugin) - Trenchbroom Level Editing integration with Godot

@@ -38,6 +38,9 @@ void WeaponBobComponent::_update_bob_data(Ref<Weapon> currentWeapon)
 void WeaponBobComponent::weapon_bob(double delta)
 {
   if (!m_Player) return;
+
+  if(m_MovementManager->IsSliding())
+    return;
   
   m_CharacterVel = m_Player->get_velocity();
 

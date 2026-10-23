@@ -231,6 +231,8 @@ void WeaponManager::_update(double delta)
   if(m_TimeBetweenShots >= 0.0f)
     m_TimeBetweenShots -= delta;
 
+  _manage_muzzle_timers(delta); 
+
   m_CurrentWeapon = weapon_component->get_current_weapon_res();
   m_WeaponStateCtx.CurrentWeaponType = m_CurrentWeapon->get_weapon_type();
 
@@ -238,6 +240,17 @@ void WeaponManager::_update(double delta)
 
   m_HoldMaxTime = m_CurrentWeapon->get_hold_max_time();
   input_command_system->set_max_hold_time(m_HoldMaxTime);
+
+  input_command_system->_clear_commands();
+}
+
+void WeaponManager::_manage_muzzle_timers(double delta)
+{
+  if(m_MuzzleLightTimeout >= 0.0f)
+    m_MuzzleLightTimeout -= delta;
+ 
+  if(m_MuzzleLightTimeout <= 0.0f)
+    m_MuzzleComp->_enable_light_status(false);
 }
 
 void WeaponManager::_physics_update(double delta)
@@ -273,9 +286,8 @@ void WeaponManager::_calculate_ray_intersection()
 
   m_Result = m_SpaceState->intersect_ray(hitQuery);
   
-  m_DamageFromWeapon = m_DamageCurve->sample((ray_end - ray_start).length());
+  m_DamageFromWeapon = m_DamageCurve->sample((ray_end - m_WeaponMuzzleMarker->get_global_position()).length());
   // DebugDraw3D::draw_line(ray_start, ray_end, Color(1, 1, 0), 5.0f);
-
 }
 
 void WeaponManager::_apply_damage(Node* hitEntity)
@@ -377,6 +389,7 @@ void WeaponManager::_on_weapon_anim_started(const StringName& anim_name)
   if(anim_name == play_anim_component->get_anim_name(AnimTypes::WEAPON_SHOOT) && play_anim_component->has_valid_anim(AnimTypes::WEAPON_SHOOT))
   {
     m_MuzzleComp->_set_particles_status(true);
+    m_MuzzleComp->_enable_light_status(true);
     m_MuzzleLightTimeout = m_MuzzleComp->get_particle_lifetime();
 
     m_AmmoComp->consume_ammo(m_CurrentWeapon, 1);
@@ -505,7 +518,6 @@ void WeaponManager::_shoot_weapon(double delta)
   if(m_AmmoComp->is_ammo_empty(m_CurrentWeapon))
   {
     m_AmmoComp->emit_signal("ammo_finished");
-    m_MuzzleComp->_enable_light_status(false);
     m_WeaponStateCtx.ShootTimeBeforeIdle = 0.0f;
     return;
   }
@@ -547,19 +559,11 @@ void WeaponManager::_shoot_weapon(double delta)
       play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
     }
       
-    m_MuzzleComp->_enable_light_status(true);
     
     m_WeaponStateCtx.ShootTimeBeforeIdle = MAX_SHOOT_STATE_TIME;
   }
     
-  m_MuzzleLightTimeout -= delta;
-  if(m_MuzzleLightTimeout >= 0.0f)
-  {
-    m_MuzzleComp->_enable_light_status(true);
-  }
-  
-  if(m_MuzzleLightTimeout <= 0.0f)
-    m_MuzzleComp->_enable_light_status(false);
+
 }
 
 void WeaponManager::_shoot_weapon_over()
@@ -588,11 +592,11 @@ void WeaponManager::_reload_weapon()
   
   if(m_CurrentWeapon->get_is_incremental_reload())
   {
-    // If we shoot mid-reload just cancel the entire reload
+    // ADD: If we shoot mid-reload just cancel the entire reload
     if(!m_WeaponStateCtx.IsReloadStarted)
     {
       m_WeaponStateCtx.IsReloadStarted = true;
-      play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD);
+      play_anim_component->execute_anim(AnimTypes::WEAPON_RELOAD_START);
     }
 
   } else {

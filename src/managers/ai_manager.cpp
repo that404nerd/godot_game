@@ -71,6 +71,8 @@ void AIManager::_update(double delta)
 
   if(ai_vision_component)
     ai_vision_component->_update(delta);
+
+  input_cmd_system->_clear_commands();
 }
 
 void AIManager::_physics_update(double delta)

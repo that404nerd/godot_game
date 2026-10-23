@@ -88,6 +88,4 @@ void InputComponent::_update(double delta)
     m_ShootCmd.WantsToHoldTrigger = false;    
     m_HoldCounter = 0.0f;   
   }
-
-  m_WeaponCmd.WantsToSwitchWeapon = false;
 }

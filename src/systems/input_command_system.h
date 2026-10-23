@@ -74,6 +74,10 @@ public:
   void set_weapon_list_size(int val) { m_WeaponCmd.WeaponListSize = val; }
   int get_weapon_res_list_size() { return m_WeaponCmd.WeaponListSize; }
 
+  void _clear_commands() {
+    m_WeaponCmd.WantsToSwitchWeapon = m_WeaponCmd.WantsToReleaseShoot = false;
+  }
+
 protected:
   static void _bind_methods();
 

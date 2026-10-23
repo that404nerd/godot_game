@@ -46,24 +46,25 @@ void MovementManager::_bind_methods()
 void MovementManager::_update(double delta)
 {
   ERR_FAIL_COND_MSG(!character_component->get_crouch_raycast(), "[Movement Manager]: Crouch Raycast is null");
+  const MoveCommand& move_cmd = input_command_system->get_move_command();
+
+  if(move_cmd.IsOnFloor)
+  {
+    m_MovementStateCtx.LastFrameOnFloor = Engine::get_singleton()->get_physics_frames();
+  }
 
   m_MovementStateCtx.CharacterSprintSpeed = character_component->get_sprint_speed();
   m_MovementStateCtx.CharacterHeadPos = m_CharacterHead->get_position();
   m_MovementStateCtx.IsCrouchRayCastColliding = character_component->get_crouch_raycast()->is_colliding();
 
   input_command_system->build_move_command(character_component);
+
+  input_command_system->_clear_commands();
 }
 
 void MovementManager::_physics_update(double delta)
 {
-  const MoveCommand& move_cmd = input_command_system->get_move_command();
-
   character_component->_update_gravity(delta);
-
-  if(move_cmd.IsOnFloor)
-  {
-    m_MovementStateCtx.LastFrameOnFloor = Engine::get_singleton()->get_physics_frames();
-  }
 
   if(should_use_step_handler)
   {
