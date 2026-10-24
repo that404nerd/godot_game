@@ -8,7 +8,7 @@ func _get_visible_name() -> String:
 	return 'Quake Map'
 
 func _get_resource_type() -> String:
-	return 'Resource'
+	return 'QuakeMapFile'
 
 func _get_recognized_extensions() -> PackedStringArray:
 	return PackedStringArray(['map','vmf'])
@@ -34,8 +34,11 @@ func _import(source_file, save_path, options, r_platform_variants, r_gen_files) 
 	var map_resource : QuakeMapFile = null
 
 	if ResourceLoader.exists(save_path_str):
-		map_resource = load(save_path_str) as QuakeMapFile
-		map_resource.revision += 1
+		map_resource = load(save_path_str)
+		if map_resource is QuakeMapFile:
+			map_resource.revision += 1
+		else:
+			map_resource = QuakeMapFile.new()		
 	else:
 		map_resource = QuakeMapFile.new()
 	map_resource.map_data = FileAccess.open(source_file, FileAccess.READ).get_as_text()

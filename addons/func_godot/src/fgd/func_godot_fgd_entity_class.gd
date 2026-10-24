@@ -57,6 +57,13 @@ var prefix: String = ""
 ## Optional array of node groups to add the generated node to.
 @export var node_groups : Array[String] = []
 
+## Optional script where `_func_godot_attach_properties` will be called, passing this Entity Resource during FGD Export
+## This can be used to programmatically generate class properties when you need it
+@export var entity_extension_script: Script
+
+## Attaches entity properties from the entity onto the output node's metadata as `"func_godot_properties"`
+@export var add_properties_to_metadata : bool = false
+
 ## Parses the definition and outputs it into the FGD format.
 func build_def_text(target_editor: FuncGodotFGDFile.FuncGodotTargetMapEditors = FuncGodotFGDFile.FuncGodotTargetMapEditors.TRENCHBROOM) -> String:
 	# Class prefix
@@ -65,6 +72,12 @@ func build_def_text(target_editor: FuncGodotFGDFile.FuncGodotTargetMapEditors = 
 	# Meta properties
 	var base_str = ""
 	var meta_props = meta_properties.duplicate()
+
+	# Attach generated class properties first
+	if self.entity_extension_script:
+		var ex: RefCounted = self.entity_extension_script.new()
+		if ex.has_method("_func_godot_attach_properties"):
+			ex.call("_func_godot_attach_properties", self)
 	
 	for base_class in base_classes:
 		if not 'classname' in base_class:
@@ -90,7 +103,7 @@ func build_def_text(target_editor: FuncGodotFGDFile.FuncGodotTargetMapEditors = 
 		res += " " + prop + "("
 		
 		if value is AABB:
-			res += "%s %s %s, %s %s %s" % [
+			res += "%d %d %d, %d %d %d" % [
 				value.position.x,
 				value.position.y,
 				value.position.z,
@@ -153,7 +166,7 @@ func build_def_text(target_editor: FuncGodotFGDFile.FuncGodotTargetMapEditors = 
 			TYPE_FLOAT:
 				prop_type = "float"
 				prop_val = "\"" + str(value) + "\""
-			TYPE_STRING:
+			TYPE_STRING, TYPE_STRING_NAME:
 				prop_type = "string"
 				prop_val = "\"" + value + "\""
 			TYPE_BOOL:
@@ -164,13 +177,13 @@ func build_def_text(target_editor: FuncGodotFGDFile.FuncGodotTargetMapEditors = 
 				prop_val += "\t]"
 			TYPE_VECTOR2, TYPE_VECTOR2I:
 				prop_type = "string"
-				prop_val = "\"%s %s\"" % [value.x, value.y]
+				prop_val = "\"%d %d\"" % [value.x, value.y]
 			TYPE_VECTOR3, TYPE_VECTOR3I:
 				prop_type = "string"
-				prop_val = "\"%s %s %s\"" % [value.x, value.y, value.z]
+				prop_val = "\"%d %d %d\"" % [value.x, value.y, value.z]
 			TYPE_VECTOR4, TYPE_VECTOR4I:
 				prop_type = "string"
-				prop_val = "\"%s %s %s %s\"" % [value[0], value[1], value[2], value[3]]
+				prop_val = "\"%d %d %d %d\"" % [value[0], value[1], value[2], value[3]]
 			TYPE_COLOR:
 				prop_type = "color255"
 				prop_val = "\"%s %s %s\"" % [value.r8, value.g8, value.b8]
@@ -236,15 +249,15 @@ func build_def_text(target_editor: FuncGodotFGDFile.FuncGodotTargetMapEditors = 
 	return res
 
 func retrieve_all_class_properties(properties: Dictionary[String, Variant] = {}) -> Dictionary[String, Variant]:
-	for key in class_properties.keys():
-		properties[key] = class_properties[key]
 	for b in base_classes:
 		properties = b.retrieve_all_class_properties(properties)
+	for key in class_properties.keys():
+		properties[key] = class_properties[key]
 	return properties
 
 func retrieve_all_class_property_descriptions(descriptions: Dictionary[String, Variant] = {}) -> Dictionary[String, Variant]:
-	for key in class_property_descriptions.keys():
-		descriptions[key] = class_property_descriptions[key]
 	for b in base_classes:
 		descriptions = b.retrieve_all_class_property_descriptions(descriptions)
+	for key in class_property_descriptions.keys():
+		descriptions[key] = class_property_descriptions[key]
 	return descriptions

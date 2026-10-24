@@ -40,6 +40,15 @@ func generate_group_node(group_data: _GroupData) -> Node3D:
 	group_data.node = group_node
 	return group_node
 
+func name_node(node:Node, node_name:String):
+	if node_name.begins_with("%"):
+		node_name = node_name.trim_prefix("%")
+		node.name = node_name
+		node.unique_name_in_owner = true
+	else:
+		node.name = node_name
+
+
 ## Generates and assembles a new [Node] based upon processed [FuncGodotData.EntityData]. Depending upon provided data, 
 ## additional [MeshInstance3D], [CollisionShape3D], and [OccluderInstance3D] nodes may also be generated.
 func generate_solid_entity_node(node: Node, node_name: String, data: _EntityData, definition: FuncGodotFGDSolidClass) -> Node:
@@ -56,7 +65,7 @@ func generate_solid_entity_node(node: Node, node_name: String, data: _EntityData
 	else:
 		node = Node3D.new()
 	
-	node.name = node_name
+	name_node(node,node_name)
 	node_name = node_name.trim_suffix(definition.classname).trim_suffix("_")
 	var properties: Dictionary[String, Variant] = data.properties
 	
@@ -167,7 +176,7 @@ func generate_point_entity_node(node: Node, node_name: String, properties: Dicti
 	if not node:
 		node = Node3D.new()
 	
-	node.name = node_name
+	name_node(node,node_name)
 	
 	if "rotation_degrees" in node and definition.apply_rotation_on_map_build:
 		var angles := Vector3.ZERO
@@ -255,12 +264,23 @@ func apply_entity_properties(node: Node, data: _EntityData) -> void:
 				if property in node:
 					if typeof(node.get(property)) == typeof(properties[property]):
 						node.set(property, properties[property])
+					elif typeof(properties[property]) == TYPE_STRING:
+						match typeof(node.get(property)):
+							TYPE_STRING, TYPE_STRING_NAME:
+								node.set(property, properties[property])
+							TYPE_NODE_PATH:
+								node.set(property, NodePath(properties[property]))
+							_:
+								push_error("Entity %s property \'%s\' type mismatch with matching generated node property." % [node.name, property])
 					else:
 						push_error("Entity %s property \'%s\' type mismatch with matching generated node property." % [node.name, property])
 	
 	if "func_godot_properties" in node:
 		node.func_godot_properties = properties
 	
+	if data.definition.add_properties_to_metadata:
+		node.set_meta("func_godot_properties", properties)
+
 	if node.has_method("_func_godot_apply_properties"):
 		node.call("_func_godot_apply_properties", properties)
 	
@@ -286,7 +306,10 @@ func generate_entity_node(entity_data: _EntityData, entity_index: int) -> Node:
 	elif map_settings.entity_name_property in properties:
 		name_prop = str(properties[map_settings.entity_name_property])
 	if not name_prop.is_empty():
-		node_name = "entity_" + name_prop
+		if name_prop.begins_with("%"):
+			node_name = name_prop
+		else:
+			node_name = "entity_" + name_prop
 	
 	if entity_def is FuncGodotFGDSolidClass:
 		node = generate_solid_entity_node(node, node_name, entity_data, entity_def)

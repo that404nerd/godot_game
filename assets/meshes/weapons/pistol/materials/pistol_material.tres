@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://daqs0ocsyo5vl"]
+
+[ext_resource type="Texture2D" uid="uid://bca3hgveo2u16" path="res://assets/meshes/weapons/pistol/textures/pistol_albedo.png" id="1_2gfi3"]
+[ext_resource type="Texture2D" uid="uid://dbcn8bj3hysmc" path="res://assets/meshes/weapons/pistol/textures/pistol_metallic.png" id="2_jfx3m"]
+[ext_resource type="Texture2D" uid="uid://mnggow14tdtw" path="res://assets/meshes/weapons/pistol/textures/pistol_normal.png" id="3_sbkmx"]
+
+[resource]
+albedo_texture = ExtResource("1_2gfi3")
+metallic = 1.0
+metallic_texture = ExtResource("2_jfx3m")
+roughness = 0.5
+normal_enabled = true
+normal_texture = ExtResource("3_sbkmx")

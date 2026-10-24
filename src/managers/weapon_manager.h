@@ -42,8 +42,6 @@ public:
   void _update(double delta);
   void _physics_update(double delta);
 
-  ~WeaponManager();
- 
 public:
 
   void _init_weapons();
@@ -55,6 +53,7 @@ public:
   void _unequip_weapon();
   
   void _manage_muzzle_timers(double delta);
+  void _shoot_weapon_start();
   void _shoot_weapon(double delta);
   void _shoot_weapon_over();
 
@@ -70,7 +69,7 @@ public:
   
   void _calculate_ray_intersection();
   void _generate_decal();
-  void _apply_damage(Node* hitEntity);
+  void _apply_damage(Node3D* hitEntity);
 
 public:
 
@@ -138,6 +137,7 @@ private:
   float m_DamageFromWeapon { 0.0f };
 
   Vector3 m_TargetRot {}, m_CurrentRot {};
+  Vector3 m_RayStart {}, m_ForwardVector {}, m_RayEnd {};
 
   const float MAX_SHOOT_STATE_TIME { 1.0f };
 

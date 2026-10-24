@@ -26,7 +26,7 @@ class PlayAnimComponent : public Node {
 public:
 
   void _ready() override;
-  virtual void execute_anim(AnimTypes anim_type) = 0;
+  virtual void execute_anim(AnimTypes anim_type, bool playImmediately=false) = 0;
   virtual void _on_anim_started(StringName animName) = 0;
   virtual void _on_anim_finished(StringName animName) = 0;
 

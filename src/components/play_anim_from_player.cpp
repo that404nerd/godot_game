@@ -48,8 +48,12 @@ StringName PlayAnimFromPlayer::get_anim_name(AnimTypes animType)
   return StringName();
 }
 
-void PlayAnimFromPlayer::execute_anim(AnimTypes anim_type)
+void PlayAnimFromPlayer::execute_anim(AnimTypes anim_type, bool playImmediately)
 {
   StringName anim_name = get_anim_name(anim_type);
+
+  if(playImmediately)
+    anim_player->stop();
+
   anim_player->play(anim_name);
 }

@@ -268,11 +268,11 @@ void WeaponManager::_calculate_ray_intersection()
     return;
   }
 
-  Vector3 ray_start = m_WeaponMuzzleMarker->get_global_position();
-  Vector3 forwardVector = m_WeaponMuzzleMarker->get_global_basis().get_column(2);
-  Vector3 ray_end = ray_start + forwardVector * m_DamageCurve->get_max_domain();
+  m_RayStart = m_WeaponMuzzleMarker->get_global_position();
+  m_ForwardVector = (m_WeaponMuzzleMarker->get_global_basis().get_column(2)).normalized();
+  m_RayEnd = m_RayStart + m_ForwardVector * m_DamageCurve->get_max_domain();
 
-  Ref<PhysicsRayQueryParameters3D> hitQuery = PhysicsRayQueryParameters3D::create(ray_start, ray_end);
+  Ref<PhysicsRayQueryParameters3D> hitQuery = PhysicsRayQueryParameters3D::create(m_RayStart, m_RayEnd);
 
   if(!hitQuery.is_valid())
   {
@@ -285,12 +285,9 @@ void WeaponManager::_calculate_ray_intersection()
   hitQuery->set_collision_mask((1 << 0 | 1 << 1 | 1 << 3)); 
 
   m_Result = m_SpaceState->intersect_ray(hitQuery);
-  
-  m_DamageFromWeapon = m_DamageCurve->sample((ray_end - m_WeaponMuzzleMarker->get_global_position()).length());
-  // DebugDraw3D::draw_line(ray_start, ray_end, Color(1, 1, 0), 5.0f);
 }
 
-void WeaponManager::_apply_damage(Node* hitEntity)
+void WeaponManager::_apply_damage(Node3D* hitEntity)
 {
   /*
     For the damage curve:
@@ -310,6 +307,9 @@ void WeaponManager::_apply_damage(Node* hitEntity)
     hitBoxComp = m_PlayerInst->get_player_hitbox();
     total_damage = m_DamageFromWeapon * hitBoxComp->get_damage_multiplier();
 
+    m_RayEnd = hitEntity->get_global_position();
+
+    m_DamageFromWeapon = m_DamageCurve->sample((m_RayEnd - m_WeaponMuzzleMarker->get_global_position()).length());
     // Send the hitEntity directly since it hits the player directly
     hitBoxComp->emit_signal("hitbox_collided", total_damage, get_owner(), hitEntity); 
   } else {
@@ -317,9 +317,15 @@ void WeaponManager::_apply_damage(Node* hitEntity)
     {
       PhysicalBoneHitbox* physicalHitbox = Object::cast_to<PhysicalBoneHitbox>(hitEntity);
       hitBoxComp = Object::cast_to<HitBoxComponent>(physicalHitbox->get_boneHitBox());
+
+      m_RayEnd = hitEntity->get_global_position();
+      m_DamageFromWeapon = m_DamageCurve->sample((m_RayEnd - m_WeaponMuzzleMarker->get_global_position()).length());
+
       total_damage = m_DamageFromWeapon * hitBoxComp->get_damage_multiplier();
 
-      // // Send the owner since the hit entity is a bone and we need the owner i.e the enemy
+      // print_line("Damage from weapon: ", m_DamageFromWeapon);
+
+      // Send the owner since the hit entity is a bone and we need the owner i.e the enemy
       hitBoxComp->emit_signal("hitbox_collided", total_damage, get_owner(), hitEntity->get_owner()); 
     }
   }
@@ -329,7 +335,7 @@ void WeaponManager::_generate_decal()
 {
   CollisionObject3D* colliderBody = nullptr;
   HitBoxComponent* colliderArea = nullptr;
-  Node* hitBody = nullptr;
+  Node3D* hitBody = nullptr;
 
   // for(int i = 0; i < m_CurrentWeapon->get_noOfProjectilesAtSameTime(); i++)
   {
@@ -342,11 +348,9 @@ void WeaponManager::_generate_decal()
       {
         colliderBody = Object::cast_to<CollisionObject3D>(m_Result["collider"]);
         colliderArea = Object::cast_to<HitBoxComponent>(m_Result["collider"]);
-        hitBody = Object::cast_to<Node>(m_Result["collider"]);
+        hitBody = Object::cast_to<Node3D>(m_Result["collider"]);
         colliderBody->add_child(m_BulletDecalNode);
 
-        // print_line("Damage max domain for gun: (i.e gun range: )", m_DamageCurve->get_max_domain());
-        // print_line("Bullet collider layer: ", colliderBody->get_collision_layer());
       }  
       
       // The hit position
@@ -512,6 +516,12 @@ void WeaponManager::_unequip_weapon()
   }
 }
 
+void WeaponManager::_shoot_weapon_start()
+{
+  ShootCommand& shoot_cmd = input_command_system->get_shoot_command();
+  shoot_cmd.WantsToPressTrigger = shoot_cmd.WantsToHoldTrigger = true;
+}
+
 void WeaponManager::_shoot_weapon(double delta)
 {
   // Don't even shoot, just switch to the idle state instead
@@ -548,7 +558,7 @@ void WeaponManager::_shoot_weapon(double delta)
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::AUTO || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
       m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
-      play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
+      play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT, true);
     }
       
     // Check whether we pressed the fire key (manual), we don't check for wants_to_shoot_weapon() because it's one frame-state and not a persistent state
@@ -556,7 +566,7 @@ void WeaponManager::_shoot_weapon(double delta)
       (m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::MANUAL || m_WeaponStateCtx.CurrentWeaponType == Weapon::WeaponType::BOTH))
     {
       m_TimeBetweenShots = m_CurrentWeapon->get_time_between_shots();
-      play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT);
+      play_anim_component->execute_anim(AnimTypes::WEAPON_SHOOT, true);
     }
       
     
@@ -654,9 +664,4 @@ void WeaponManager::_switch_weapon_data(int weaponIndex)
   weapon_component->set_next_weapon(next_weapon);
   weapon_component->set_next_weapon_name(next_weapon->get_weaponName());
   m_WeaponIndex = weaponIndex;
-}
-
-WeaponManager::~WeaponManager()
-{
-
 }

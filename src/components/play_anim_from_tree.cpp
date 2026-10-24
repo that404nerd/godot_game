@@ -52,7 +52,7 @@ StringName PlayAnimFromTree::get_anim_name(AnimTypes animType)
   return data->get_underlying_anim_name();
 }
 
-void PlayAnimFromTree::execute_anim(AnimTypes animType)
+void PlayAnimFromTree::execute_anim(AnimTypes animType, bool playImmediately)
 {
   Ref<AnimListData> data = anim_list.get(m_AnimsMap.at(animType).c_str(), nullptr);
 

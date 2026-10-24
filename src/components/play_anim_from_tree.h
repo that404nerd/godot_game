@@ -20,7 +20,7 @@ class PlayAnimFromTree : public PlayAnimComponent
 public:
   void _ready() override;
 
-  void execute_anim(AnimTypes animType) override;
+  void execute_anim(AnimTypes animType, bool playImmediately=false) override;
   void _on_anim_started(StringName animName) override;
   void _on_anim_finished(StringName animName) override;
 

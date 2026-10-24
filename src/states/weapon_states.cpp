@@ -91,6 +91,7 @@ WeaponShootState::WeaponShootState(const WeaponStateData& weaponStateData)
 
 void WeaponShootState::_enter()
 {
+  m_WeaponManager->_shoot_weapon_start();
 }
 
 void WeaponShootState::_handle_input(const Ref<InputEvent>& event)

@@ -2,9 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_eol0p"]
 
-[sub_resource type="Curve" id="Curve_otwp0"]
-_limits = [0.0, 20.0, 0.0, 100.0]
-_data = [Vector2(0, 20), 0.0, 0.0, 0, 0, Vector2(100, 0), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_eol0p"]
+_limits = [0.0, 10.0, 0.0, 200.0]
+_data = [Vector2(0, 10), 0.0, 0.0, 0, 0, Vector2(200, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [resource]
@@ -18,25 +18,27 @@ weaponVerticalPush = 0.001
 weaponVerticalAngFreq = 20.0
 weaponVerticalDampingRatio = 0.1
 weapon_type = 2
-damage_curve = SubResource("Curve_otwp0")
+damage_curve = SubResource("Curve_eol0p")
 weaponDecalResource = ExtResource("1_eol0p")
+time_between_shots = 0.15
 hold_max_time = 0.2
-slide_armature_tilt_rot = Vector3(1, 1, -40)
+slide_armature_tilt_rot = Vector3(0, 0, -5)
 slide_armature_dip = Vector3(0, -0.02, 0)
-slide_armature_tilt_ang_freq = 8.0
+slide_armature_tilt_ang_freq = 9.0
 slide_armature_tilt_damping_ratio = 0.4
-slide_armature_tilt_end_ang_freq = 8.0
-slide_armature_tilt_end_damping_ratio = 0.4
-jump_armature_weapon_rot = Vector3(-2, 1, -2)
+slide_armature_tilt_end_ang_freq = 7.0
+jump_armature_weapon_rot = Vector3(0, 1, 0)
 jump_armature_weapon_rise_ang_freq = 10.0
+jump_armature_weapon_rise_damping_ratio = 0.3
 jump_armature_weapon_rot_ang_freq = 5.0
+jump_armature_weapon_rot_damping_ratio = 0.4
 recoilVector = Vector3(3, 1, 0)
 recoil_ang_freq = 25.0
 recoil_damping_ratio = 0.7
-weaponReloadRootBoneName = "weapon"
+weaponReloadRootBoneName = "IK_PoleController.L"
 auto_reload = true
 magEnteredTimestamp = 0.7
-reloadShakeSpeedMultiplier = 0.2
+reloadShakeSpeedMultiplier = 0.05
 idle_weapon_bob_freq = 0.5
 idle_weapon_bob_amp = 0.03
 weapon_bob_freq = 1.0

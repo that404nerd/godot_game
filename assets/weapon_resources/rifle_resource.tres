@@ -3,8 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_bdfqo"]
 
 [sub_resource type="Curve" id="Curve_bdfqo"]
-_limits = [0.0, 30.0, 0.0, 200.0]
-_data = [Vector2(0, 30), 0.0, 0.0, 0, 0, Vector2(200, 0), 0.0, 0.0, 0, 0]
+_limits = [0.0, 12.0, 0.0, 200.0]
+_data = [Vector2(0, 12), 0.0, 0.0, 0, 0, Vector2(200, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [resource]
@@ -20,7 +20,7 @@ weaponVerticalDampingRatio = 0.2
 weapon_type = 2
 damage_curve = SubResource("Curve_bdfqo")
 weaponDecalResource = ExtResource("1_bdfqo")
-time_between_shots = 0.01
+time_between_shots = 0.15
 hold_max_time = 0.2
 slide_armature_tilt_rot = Vector3(0, 0, -50)
 slide_armature_dip = Vector3(0, -0.02, 0)

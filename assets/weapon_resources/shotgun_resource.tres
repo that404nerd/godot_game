@@ -3,8 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://beolpb36xthnb" path="res://assets/decals/bullet_decal.tscn" id="1_lvpox"]
 
 [sub_resource type="Curve" id="Curve_2ln5x"]
-_limits = [0.0, 40.0, 0.0, 100.0]
-_data = [Vector2(0, 40), 0.0, 0.0, 0, 0, Vector2(100, 0), 0.0, 0.0, 0, 0]
+_limits = [0.0, 25.0, 0.0, 100.0]
+_data = [Vector2(0, 25), 0.0, 0.0, 0, 0, Vector2(100, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [resource]
@@ -19,7 +19,7 @@ weaponVerticalAngFreq = 30.0
 weaponVerticalDampingRatio = 0.3
 damage_curve = SubResource("Curve_2ln5x")
 weaponDecalResource = ExtResource("1_lvpox")
-time_between_shots = 0.1
+time_between_shots = 0.8
 noOfProjectilesAtSameTime = 5
 hold_max_time = 0.0
 slide_armature_tilt_rot = Vector3(0, 0, -5)
